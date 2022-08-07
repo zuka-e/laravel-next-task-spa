@@ -11,6 +11,10 @@ import { CardActions } from '@material-ui/core';
 import { mdCommands } from 'config/mdEditor';
 import { SubmitButton } from 'templates';
 
+// cf. https://github.com/uiwjs/react-md-editor/issues/52
+import '@uiw/react-md-editor/markdown-editor.css';
+import '@uiw/react-markdown-preview/markdown.css';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     previewBox: {
