@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
+import { useRouter } from 'next/router';
 
-import { useHistory } from 'react-router-dom';
 import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import {
   Folder as FolderIcon,
@@ -14,10 +14,10 @@ import {
 import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 import { makeEmail } from 'utils/generator';
 import { useAppSelector, useAppDispatch } from 'utils/hooks';
-import { createUser, signInWithEmail, signOutFromAPI } from 'store/thunks/auth';
+import { createUser, signInWithEmail, signOut } from 'store/thunks/auth';
 
 const SideMenu = () => {
-  const history = useHistory();
+  const router = useRouter();
   const userId = useAppSelector((state) => state.auth.user?.id);
   const dispatch = useAppDispatch();
 
@@ -46,20 +46,20 @@ const SideMenu = () => {
   const handleClick = (key: keyof typeof menuItem) => () => {
     switch (key) {
       case 'boards':
-        history.push(`/users/${userId}/boards`);
+        router.push(`/users/${userId}/boards`);
         break;
       case 'logout':
-        dispatch(signOutFromAPI());
+        dispatch(signOut());
         break;
 
       case 'register':
-        history.push('register');
+        router.push('register');
         break;
       case 'login':
-        history.push('login');
+        router.push('login');
         break;
       case 'guestRegister':
-        history.push('/register'); // `EmailVerification`を表示するため
+        router.push('/register'); // `EmailVerification`を表示するため
         dispatch(
           createUser({
             email: makeEmail(),

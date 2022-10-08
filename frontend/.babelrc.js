@@ -3,8 +3,7 @@ const plugins = [
     'babel-plugin-import',
     {
       libraryName: '@material-ui/core',
-      // Use "'libraryDirectory': ''," if your bundler does not support ES modules
-      libraryDirectory: 'esm',
+      libraryDirectory: '', // if `esm`, `Unexpected token 'export'` occurs.
       camel2DashComponentName: false,
     },
     'core',
@@ -13,12 +12,16 @@ const plugins = [
     'babel-plugin-import',
     {
       libraryName: '@material-ui/icons',
-      // Use "'libraryDirectory': ''," if your bundler does not support ES modules
-      libraryDirectory: 'esm',
+      libraryDirectory: '',
       camel2DashComponentName: false,
     },
     'icons',
   ],
 ];
 
-module.exports = { plugins };
+// https://nextjs.org/docs/advanced-features/customizing-babel-config
+module.exports = {
+  // Without `next/babel`, errors like `Unexpected token, expected ","` occur.
+  presets: ['next/babel'],
+  plugins,
+};

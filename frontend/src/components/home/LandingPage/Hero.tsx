@@ -1,6 +1,15 @@
-import { useHistory } from 'react-router-dom';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Container, Grid, Typography, List, ListItem } from '@material-ui/core';
+import {
+  Container,
+  Grid,
+  Typography,
+  List,
+  ListItem,
+  Box,
+} from '@material-ui/core';
 import {
   PersonAdd as PersonAddIcon,
   LockOpen as LockOpenIcon,
@@ -49,16 +58,16 @@ const useStyles = makeStyles((theme: Theme) =>
 const Hero = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
-  const history = useHistory();
+  const router = useRouter();
 
-  const handleGuestSignUp = () => {
+  const handleGuestSignUp = async () => {
     const user = {
       name: GUEST_NAME,
       email: makeEmail(),
       password: GUEST_PASSWORD,
       password_confirmation: GUEST_PASSWORD,
     };
-    history.push('/register'); // `EmailVerification`を表示するため
+    await router.push('/register'); // `EmailVerification`を表示するため
     dispatch(createUser(user));
   };
 
@@ -117,7 +126,9 @@ const Hero = () => {
             </Grid>
           </Grid>
           <Grid item md={5} sm={10} xs={10}>
-            <img src={hero} alt="hero" width="100%" height="100%" />
+            <Box position="relative" width="100%" height="100%">
+              <Image src={hero.src} alt="hero" layout="fill" priority />
+            </Box>
           </Grid>
         </Grid>
       </Container>

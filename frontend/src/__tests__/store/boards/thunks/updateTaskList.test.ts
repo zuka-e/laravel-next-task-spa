@@ -5,11 +5,7 @@ import { fetchTaskBoard } from 'store/thunks/boards';
 import { updateTaskList, UpdateTaskListRequest } from 'store/thunks/lists';
 import { generateRandomString } from 'utils/generator';
 import { initializeStore, store } from 'mocks/store';
-import {
-  getFlashState,
-  getUserState,
-  isSignedIn,
-} from 'mocks/utils/store/auth';
+import { getUserState, isSignedIn } from 'mocks/utils/store/auth';
 import { isLoading } from 'mocks/utils/store/boards';
 import { uuid } from 'mocks/utils/uuid';
 import { CSRF_TOKEN } from 'mocks/utils/validation';
@@ -53,30 +49,20 @@ describe('Thunk updating a task list', () => {
 
       expect(updateTaskList.rejected.match(response)).toBeTruthy();
       expect(isLoading(store)).toEqual(false);
-      expect(isSignedIn(store)).toEqual(false);
-      expect(getUserState(store)).toEqual(null);
-      expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'error',
-        message: 'ログインしてください',
-      });
+      expect(store.getState().app.httpStatus).toBe(401);
     });
 
     it('should receive 419 without a valid token', async () => {
       expect(isSignedIn(store)).toEqual(undefined);
       await store.dispatch(signInWithEmail(signInRequest)); // ログイン
-      sessionStorage.removeItem(CSRF_TOKEN); // token削除
+      localStorage.removeItem(CSRF_TOKEN); // token削除
       expect(isSignedIn(store)).toEqual(true);
       expect(getUserState(store)?.id).toEqual(guestUser.id);
       const response = await store.dispatch(updateTaskList(payload));
 
       expect(updateTaskList.rejected.match(response)).toBeTruthy();
       expect(isLoading(store)).toEqual(false);
-      expect(isSignedIn(store)).toEqual(false);
-      expect(getUserState(store)).toEqual(null);
-      expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'error',
-        message: 'ログインしてください',
-      });
+      expect(store.getState().app.httpStatus).toBe(419);
     });
 
     it('should receive 403 unless having been verified', async () => {
@@ -97,10 +83,7 @@ describe('Thunk updating a task list', () => {
       expect(isLoading(store)).toEqual(false);
       expect(isSignedIn(store)).toEqual(true);
       expect(getUserState(store)?.id).toEqual(unverifiedUser.id);
-      expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'error',
-        message: '不正なリクエストです',
-      });
+      expect(store.getState().app.httpStatus).toBe(403);
     });
 
     it('should receive 404 if the parent does not exist', async () => {
@@ -113,7 +96,7 @@ describe('Thunk updating a task list', () => {
       );
 
       expect(updateTaskList.rejected.match(response)).toBeTruthy();
-      expect(store.getState().app.notFound).toEqual(true);
+      expect(store.getState().app.httpStatus).toBe(404);
       expect(isLoading(store)).toEqual(false);
       expect(isSignedIn(store)).toEqual(true);
       expect(getUserState(store)?.id).toEqual(guestUser.id);
@@ -131,10 +114,7 @@ describe('Thunk updating a task list', () => {
       expect(updateTaskList.rejected.match(response)).toBeTruthy();
       expect(isLoading(store)).toEqual(false);
       expect(isSignedIn(store)).toEqual(true);
-      expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'error',
-        message: '不正なリクエストです',
-      });
+      expect(store.getState().app.httpStatus).toBe(403);
     });
 
     it('should receive 404 if the list does not exist', async () => {
@@ -147,7 +127,7 @@ describe('Thunk updating a task list', () => {
       );
 
       expect(updateTaskList.rejected.match(response)).toBeTruthy();
-      expect(store.getState().app.notFound).toEqual(true);
+      expect(store.getState().app.httpStatus).toBe(404);
       expect(isLoading(store)).toEqual(false);
       expect(isSignedIn(store)).toEqual(true);
       expect(getUserState(store)?.id).toEqual(guestUser.id);
@@ -165,10 +145,7 @@ describe('Thunk updating a task list', () => {
       expect(updateTaskList.rejected.match(response)).toBeTruthy();
       expect(isLoading(store)).toEqual(false);
       expect(isSignedIn(store)).toEqual(true);
-      expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'error',
-        message: '不正なリクエストです',
-      });
+      expect(store.getState().app.httpStatus).toBe(403);
     });
   });
 
