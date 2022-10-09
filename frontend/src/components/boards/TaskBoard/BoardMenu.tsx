@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
-import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import {
   Sort as SortIcon,
   Info as InfoIcon,
   Delete as DeleteIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 
 import { TaskBoard } from 'models';
 import { useAppDispatch, useAppSelector, useRoute } from 'utils/hooks';

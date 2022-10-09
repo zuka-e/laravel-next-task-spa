@@ -1,13 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { Theme } from '@mui/material/styles';
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
 import {
   List,
   ListSubheader,
   ListItem,
   ListItemText,
   CardContent,
-} from '@material-ui/core';
+} from '@mui/material';
 
 import { useAppDispatch, useDeepEqualSelector, useRoute } from 'utils/hooks';
 import { openInfoBox } from 'store/slices';

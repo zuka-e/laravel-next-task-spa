@@ -6,7 +6,7 @@ import type { GetStaticProps } from 'next';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { TextField, Divider, Grid, Box } from '@material-ui/core';
+import { TextField, Divider, Grid, Box } from '@mui/material';
 
 import {
   ResetPasswordRequest,

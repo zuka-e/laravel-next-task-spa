@@ -1,4 +1,5 @@
-import { Alert, AlertProps, AlertTitle, Color } from '@material-ui/lab';
+import { Alert, AlertTitle } from '@mui/material';
+import { AlertProps, Color } from '@mui/lab';
 
 const headerMap: Record<Color, Capitalize<Color>> = {
   success: 'Success',

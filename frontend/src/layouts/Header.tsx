@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import Image from 'next/image';
 
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { AppBar, Toolbar, Drawer, Avatar, IconButton } from '@material-ui/core';
+import { Theme } from '@mui/material/styles';
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
+import { AppBar, Toolbar, Drawer, Avatar, IconButton } from '@mui/material';
 import {
   AccountCircle as AccountCircleIcon,
   Person as PersonIcon,
   Menu as MenuIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 
 import { APP_NAME } from 'config/app';
 import { isSignedIn } from 'utils/auth';
@@ -48,7 +50,7 @@ const Header = () => {
   const AccountMenuButton = () => (
     <PopoverControl
       trigger={
-        <IconButton aria-label="account-menu">
+        <IconButton aria-label="account-menu" size="large">
           <Avatar alt="avatar" src={undefined} className={classes.avatar}>
             <PersonIcon />
           </Avatar>
@@ -71,6 +73,7 @@ const Header = () => {
           aria-controls="menu"
           aria-haspopup="true"
           onClick={toggleDrawer(true)}
+          size="large"
         >
           <MenuIcon />
         </IconButton>

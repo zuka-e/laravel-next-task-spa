@@ -9,10 +9,14 @@ import Head from 'next/head';
 import { Provider } from 'react-redux';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { ThemeProvider } from '@material-ui/core/styles';
+import {
+  ThemeProvider,
+  Theme,
+  StyledEngineProvider,
+} from '@mui/material/styles';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import CssBaseline from '@mui/material/CssBaseline';
 
 import { APP_NAME } from 'config/app';
 import store from 'store';
@@ -22,6 +26,11 @@ import { PageHandler } from 'components/pages';
 
 import 'styles/globals.css';
 import 'config/moment';
+
+declare module '@mui/styles/defaultTheme' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
 
 if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
   // With `import` instead of `require`, API requests start before MSW enabled,
@@ -40,16 +49,18 @@ const App = ({ Component, pageProps }: AppProps) => {
         <title>{APP_NAME}</title>
       </Head>
       <Provider store={store}>
-        <ThemeProvider theme={theme}>
-          <MuiPickersUtilsProvider utils={MomentUtils}>
-            <DndProvider backend={HTML5Backend}>
-              <CssBaseline />
-              <Loading />
-              <FlashNotification />
-              <PageHandler {...{ Component, pageProps }} />
-            </DndProvider>
-          </MuiPickersUtilsProvider>
-        </ThemeProvider>
+        <StyledEngineProvider injectFirst>
+          <ThemeProvider theme={theme}>
+            <MuiPickersUtilsProvider utils={MomentUtils}>
+              <DndProvider backend={HTML5Backend}>
+                <CssBaseline />
+                <Loading />
+                <FlashNotification />
+                <PageHandler {...{ Component, pageProps }} />
+              </DndProvider>
+            </MuiPickersUtilsProvider>
+          </ThemeProvider>
+        </StyledEngineProvider>
       </Provider>
     </>
   );

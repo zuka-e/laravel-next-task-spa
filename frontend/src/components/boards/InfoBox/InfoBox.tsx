@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { ClickAwayListener } from '@material-ui/core';
+import { Theme } from '@mui/material/styles';
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
+import { ClickAwayListener } from '@mui/material';
 
 import theme from 'theme';
 import { TaskBoard, TaskList, TaskCard } from 'models';

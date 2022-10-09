@@ -1,5 +1,7 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Button, ButtonProps, ButtonTypeMap } from '@material-ui/core';
+import { Theme } from '@mui/material/styles';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import { Button, ButtonProps, ButtonTypeMap } from '@mui/material';
 
 import { NextLinkComposed } from 'templates/Link';
 

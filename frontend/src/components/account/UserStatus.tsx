@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { Box, Button, Grid, Typography } from '@material-ui/core';
+import { Box, Button, Grid, Typography } from '@mui/material';
 
 import { sendEmailVerificationLink } from 'store/thunks/auth';
 import { useAppSelector, useAppDispatch } from 'utils/hooks';

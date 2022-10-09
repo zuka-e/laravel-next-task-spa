@@ -1,8 +1,10 @@
 import { useRef } from 'react';
 
 import { useDrag, useDrop } from 'react-dnd';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Card, Typography } from '@material-ui/core';
+import { Theme } from '@mui/material/styles';
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
+import { Card, Typography } from '@mui/material';
 
 import theme from 'theme';
 import * as Model from 'models';

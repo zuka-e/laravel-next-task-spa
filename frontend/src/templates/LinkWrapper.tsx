@@ -1,5 +1,6 @@
-import { createStyles, makeStyles } from '@material-ui/core/styles';
-import { Link, LinkProps } from '@material-ui/core';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import { Link, LinkProps } from '@mui/material';
 
 import { NextLinkComposed } from 'templates/Link';
 

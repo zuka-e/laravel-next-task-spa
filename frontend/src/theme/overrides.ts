@@ -1,4 +1,4 @@
-import { Overrides } from '@material-ui/core/styles/overrides';
+import { Overrides } from '@mui/material/styles';
 
 const overrides: Overrides = {
   MuiCssBaseline: {

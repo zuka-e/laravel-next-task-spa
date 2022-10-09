@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 
-import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import { ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import {
   Folder as FolderIcon,
   ExitToApp as ExitToAppIcon,
@@ -8,7 +8,7 @@ import {
   PersonAddOutlined as PersonAddOutlinedIcon,
   LockOpen as LockOpenIcon,
   AccountCircle as AccountCircleIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 
 import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 import { makeEmail } from 'utils/generator';

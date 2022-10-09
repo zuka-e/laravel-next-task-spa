@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import Snackbar from '@material-ui/core/Snackbar';
-import { Alert } from '@material-ui/lab';
+import Snackbar from '@mui/material/Snackbar';
+import { Alert } from '@mui/material';
 
 import { useDeepEqualSelector } from 'utils/hooks';
 

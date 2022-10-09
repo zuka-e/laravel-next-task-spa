@@ -1,7 +1,9 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { Theme } from '@mui/material/styles';
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
 import {
   Container,
   Grid,
@@ -9,12 +11,12 @@ import {
   List,
   ListItem,
   Box,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   PersonAdd as PersonAddIcon,
   LockOpen as LockOpenIcon,
   Menu as MenuIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 
 import { GUEST_EMAIL, GUEST_NAME, GUEST_PASSWORD } from 'config/app';
 import { createUser, signInWithEmail } from 'store/thunks/auth';
@@ -39,14 +41,14 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     hero: {
       justifyContent: 'space-around',
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         flexDirection: 'column-reverse',
         alignItems: 'center',
       },
     },
     description: {
       marginBottom: theme.spacing(12),
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         marginTop: theme.spacing(4),
         marginBottom: theme.spacing(6),
       },

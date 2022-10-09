@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { Box, Grid, TextField } from '@material-ui/core';
+import { Box, Grid, TextField } from '@mui/material';
 
 import { UpdateProfileRequest, updateProfile } from 'store/thunks/auth';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';

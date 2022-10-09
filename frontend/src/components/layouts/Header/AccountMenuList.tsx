@@ -1,11 +1,12 @@
 import { useRouter } from 'next/router';
 
-import { makeStyles, createStyles } from '@material-ui/core/styles';
-import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
+import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import {
   AccountCircle as AccountCircleIcon,
   ExitToApp as ExitToAppIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 
 import { signOut } from 'store/thunks/auth';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';

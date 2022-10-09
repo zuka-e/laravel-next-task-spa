@@ -1,5 +1,7 @@
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Container, Grid } from '@material-ui/core';
+import { Theme } from '@mui/material/styles';
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
+import { Container, Grid } from '@mui/material';
 
 import { Link, Markdown } from 'templates';
 
@@ -7,7 +9,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       marginTop: theme.spacing(8),
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         marginTop: theme.spacing(6),
       },
       marginBottom: theme.spacing(4),

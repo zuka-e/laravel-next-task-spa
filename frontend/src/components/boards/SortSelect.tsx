@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import { Check as CheckIcon } from '@material-ui/icons';
+import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Check as CheckIcon } from '@mui/icons-material';
 
 import { DocumentBase, TaskCard, TaskList } from 'models';
 import { SortOperation } from 'utils/sort';

@@ -1,7 +1,9 @@
 import Head from 'next/head';
 import type { GetStaticProps } from 'next';
 
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { Theme } from '@mui/material/styles';
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
 import {
   Box,
   Card,
@@ -9,7 +11,7 @@ import {
   CardHeader,
   Divider,
   Container,
-} from '@material-ui/core';
+} from '@mui/material';
 
 import { isGuest } from 'utils/auth';
 import { BaseLayout } from 'layouts';

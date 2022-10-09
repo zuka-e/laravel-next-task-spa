@@ -1,6 +1,8 @@
 import * as yup from 'yup';
 import moment from 'moment';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { Theme } from '@mui/material/styles';
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
 import {
   Grid,
   Card,
@@ -11,12 +13,12 @@ import {
   Typography,
   Breadcrumbs,
   Tooltip,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   Close as CloseIcon,
   ListAlt as ListAltIcon,
   FolderOpen as FolderOpenIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 
 import { TaskList } from 'models';
 import { closeInfoBox } from 'store/slices/taskBoardSlice';

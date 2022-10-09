@@ -1,6 +1,8 @@
 import { useState } from 'react';
 
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { Theme } from '@mui/material/styles';
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
 import {
   ClickAwayListener,
   TextField,
@@ -8,8 +10,8 @@ import {
   IconButton,
   Popper,
   Card,
-} from '@material-ui/core';
-import { Search as SearchIcon } from '@material-ui/icons';
+} from '@mui/material';
+import { Search as SearchIcon } from '@mui/icons-material';
 
 import { SearchResult } from '.';
 
@@ -62,7 +64,7 @@ const SearchField = () => {
 
   if (!inputOpen)
     return (
-      <IconButton onClick={handleOpen} title={SEARCH}>
+      <IconButton onClick={handleOpen} title={SEARCH} size="large">
         <SearchIcon />
       </IconButton>
     );

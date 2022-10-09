@@ -13,7 +13,7 @@ import {
   Divider,
   Grid,
   Box,
-} from '@material-ui/core';
+} from '@mui/material';
 
 import { APP_NAME } from 'config/app';
 import { SignInRequest, signInWithEmail } from 'store/thunks/auth';

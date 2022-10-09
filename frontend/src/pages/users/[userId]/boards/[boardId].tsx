@@ -2,15 +2,17 @@ import { useEffect } from 'react';
 import Head from 'next/head';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { Theme } from '@mui/material/styles';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import {
   Container,
   Grid,
   Divider,
   IconButton,
   useMediaQuery,
-} from '@material-ui/core';
-import { MoreVert as MoreVertIcon } from '@material-ui/icons';
+} from '@mui/material';
+import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 
 import { makeIndexMap } from 'utils/dnd';
 import { useAppDispatch, useDeepEqualSelector, useRoute } from 'utils/hooks';
@@ -86,7 +88,7 @@ export const getStaticProps: GetStaticProps<TaskBoardProps> = async () => {
 };
 
 const TaskBoard = () => {
-  const belowSm = useMediaQuery((theme: Theme) => theme.breakpoints.down('xs'));
+  const belowSm = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
   const classes = useStyles();
   const { pathParams } = useRoute();
   const dispatch = useAppDispatch();
@@ -139,7 +141,7 @@ const TaskBoard = () => {
             <Grid item>
               <PopoverControl
                 trigger={
-                  <IconButton title="Menu">
+                  <IconButton title="Menu" size="large">
                     <MoreVertIcon />
                   </IconButton>
                 }

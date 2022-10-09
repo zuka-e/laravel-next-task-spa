@@ -1,12 +1,14 @@
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { Theme } from '@mui/material/styles';
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
 import {
   Typography,
   List,
   ListSubheader,
   Divider,
   IconButton,
-} from '@material-ui/core';
-import { Menu as MenuIcon } from '@material-ui/icons';
+} from '@mui/material';
+import { Menu as MenuIcon } from '@mui/icons-material';
 
 import { SideMenu } from 'components/layouts/Sidebar';
 
@@ -47,7 +49,7 @@ const Sidebar = (props: SidebarProps) => {
             component="div"
             id="menu-header"
           >
-            <IconButton onClick={toggleDrawer(false)}>
+            <IconButton onClick={toggleDrawer(false)} size="large">
               <MenuIcon />
             </IconButton>
             <Typography className={classes.listHeaderTitle}>Menu</Typography>

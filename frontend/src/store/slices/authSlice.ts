@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Color } from '@material-ui/lab';
+import { Color } from '@mui/lab';
 
 import { User } from 'models/User';
 import {

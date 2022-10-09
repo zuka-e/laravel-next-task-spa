@@ -1,5 +1,5 @@
 import MarkdownToJsx, { MarkdownToJSX } from 'markdown-to-jsx';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 
 const options: MarkdownToJSX.Options = {
   slugify: (str) => str, // 自動生成されるid属性を日本語で利用

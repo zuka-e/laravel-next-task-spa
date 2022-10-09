@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 
 import * as yup from 'yup';
 import moment from 'moment';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { Theme } from '@mui/material/styles';
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
 import {
   Grid,
   Card,
@@ -14,13 +16,13 @@ import {
   IconButton,
   Typography,
   Breadcrumbs,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   Close as CloseIcon,
   ListAlt as ListAltIcon,
   Assignment as AssignmentIcon,
   Delete as DeleteIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 
 import { TaskCard } from 'models';
 import { useAppDispatch, useDeepEqualSelector, useRoute } from 'utils/hooks';

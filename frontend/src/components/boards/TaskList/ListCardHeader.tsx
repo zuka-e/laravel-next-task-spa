@@ -1,7 +1,9 @@
 import moment from 'moment';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { CardHeader, Typography, IconButton } from '@material-ui/core';
-import { MoreVert as MoreVertIcon } from '@material-ui/icons';
+import { Theme } from '@mui/material/styles';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import { CardHeader, Typography, IconButton } from '@mui/material';
+import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 
 import { TaskList } from 'models';
 import { PopoverControl } from 'templates';

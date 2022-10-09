@@ -1,13 +1,9 @@
 import { useState } from 'react';
 
-import { createStyles, makeStyles } from '@material-ui/core/styles';
-import {
-  ClickAwayListener,
-  Card,
-  CardActions,
-  Button,
-} from '@material-ui/core';
-import { Add as AddIcon } from '@material-ui/icons';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import { ClickAwayListener, Card, CardActions, Button } from '@mui/material';
+import { Add as AddIcon } from '@mui/icons-material';
 
 import theme from 'theme';
 import { FormAction } from 'store/slices/taskBoardSlice';

@@ -3,9 +3,11 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Container, Grid, Card, Divider, Typography } from '@material-ui/core';
-import { Pagination } from '@material-ui/lab';
+import { Theme } from '@mui/material/styles';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import { Container, Grid, Card, Divider, Typography } from '@mui/material';
+import { Pagination } from '@mui/material';
 
 import { fetchTaskBoards } from 'store/thunks/boards';
 import {

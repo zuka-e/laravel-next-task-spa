@@ -1,8 +1,10 @@
 import { useState } from 'react';
 
 import { useDrop } from 'react-dnd';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Card, CardActions, CardContent, Grid, Chip } from '@material-ui/core';
+import { Theme } from '@mui/material/styles';
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
+import { Card, CardActions, CardContent, Grid, Chip } from '@mui/material';
 
 import * as Model from 'models';
 import { draggableItem, DragItem } from 'utils/dnd';
@@ -29,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
       '& > .listWrapper': { margin: `-${borderWidth}` },
     },
     disablePadding: {
-      padding: `0px ${theme.spacing(1)}px`,
+      padding: `0px ${theme.spacing(1)}`,
     },
     cardItemBox: {
       maxHeight: '90vh',

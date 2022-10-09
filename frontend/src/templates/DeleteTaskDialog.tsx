@@ -5,7 +5,7 @@ import {
   DialogActions,
   DialogContentText,
   Button,
-} from '@material-ui/core';
+} from '@mui/material';
 
 import { DeleteAction } from 'store/slices';
 import { AlertButton } from 'templates';

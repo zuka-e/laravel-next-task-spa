@@ -1,5 +1,6 @@
-import { makeStyles, Theme } from '@material-ui/core/styles';
-import { LinearProgress, LinearProgressProps } from '@material-ui/core';
+import { Theme } from '@mui/material/styles';
+import makeStyles from '@mui/styles/makeStyles';
+import { LinearProgress, LinearProgressProps } from '@mui/material';
 
 import { useAppSelector } from 'utils/hooks';
 

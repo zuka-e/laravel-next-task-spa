@@ -3,8 +3,10 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticProps } from 'next';
 
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Container, Card, Grid, Typography, Button } from '@material-ui/core';
+import { Theme } from '@mui/material/styles';
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
+import { Container, Card, Grid, Typography, Button } from '@mui/material';
 
 import { removeEmailVerificationPage } from 'store/slices/authSlice';
 import { sendEmailVerificationLink } from 'store/thunks/auth';
