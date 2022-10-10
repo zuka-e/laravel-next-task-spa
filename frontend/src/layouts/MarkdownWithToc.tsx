@@ -25,10 +25,11 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 type MarkdownWithTocProps = {
+  children: Parameters<typeof Markdown>[0]['children'];
   articles: string[];
 };
 
-const MarkdownWithToc: React.FC<MarkdownWithTocProps> = (props) => {
+const MarkdownWithToc = (props: MarkdownWithTocProps) => {
   const { children, articles } = props;
   const classes = useStyles();
 

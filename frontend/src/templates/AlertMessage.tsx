@@ -11,6 +11,7 @@ type AlertMessageProps = {
   severity: Color;
   header?: string;
   body?: string;
+  children?: React.ReactNode;
 } & AlertProps;
 
 const AlertMessage = (props: AlertMessageProps) => {

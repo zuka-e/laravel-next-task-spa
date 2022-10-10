@@ -1,8 +1,11 @@
 import { Header, Footer } from 'layouts';
 
-type BaseLayoutProps = { withoutHeaders?: boolean };
+type BaseLayoutProps = {
+  children: React.ReactNode;
+  withoutHeaders?: boolean;
+};
 
-const BaseLayout: React.FC<BaseLayoutProps> = (props) => (
+const BaseLayout = (props: BaseLayoutProps) => (
   <>
     {!props.withoutHeaders && <Header />}
     {props.children}

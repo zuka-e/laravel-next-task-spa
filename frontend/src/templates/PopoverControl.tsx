@@ -57,11 +57,12 @@ const makePopoverOriginSet = (position?: PopoverPosition) => {
 };
 
 type PopoverControlProps = {
+  children: React.ReactNode;
   trigger: JSX.Element;
   position?: PopoverPosition;
 };
 
-const PopoverControl: React.FC<PopoverControlProps> = (props) => {
+const PopoverControl = (props: PopoverControlProps) => {
   const { children, trigger, position } = props;
   const classes = useStyles();
   const [className, setClassName] = useState<string | undefined>(classes.root);

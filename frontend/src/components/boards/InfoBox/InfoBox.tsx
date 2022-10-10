@@ -97,7 +97,7 @@ const InfoBox: React.FC<JSX.IntrinsicElements['div']> = (props) => {
 /**
  * 要素外のクリックで`open`状態を解除する機能を付与するためのラッパー。
  */
-const Wrapper: React.FC = (props) => {
+const Wrapper = (props: { children: React.ReactNode }) => {
   const dispatch = useAppDispatch();
   const currentState = useDeepEqualSelector(
     (state) => state.boards.infoBox.data

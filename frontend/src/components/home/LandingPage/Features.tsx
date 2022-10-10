@@ -37,7 +37,13 @@ const basename = (filename: string) => {
   return filename.slice(startIndex, endIndex);
 };
 
-const FeatureLayout: React.FC<{ image: string; header: string }> = (props) => {
+type FeatureLayoutProps = {
+  children: React.ReactNode;
+  image: string;
+  header: string;
+};
+
+const FeatureLayout = (props: FeatureLayoutProps) => {
   const { children, image, header } = props;
 
   return (

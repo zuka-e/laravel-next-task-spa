@@ -47,11 +47,12 @@ const Copyright = () => (
 );
 
 type FormLayoutProps = {
+  children: React.ReactNode;
   title: string;
   message?: string;
 };
 
-const FormLayout: React.FC<FormLayoutProps> = (props) => {
+const FormLayout = (props: FormLayoutProps) => {
   const { children, title, message } = props;
   const classes = useStyles();
 
