@@ -4,6 +4,7 @@ import { Theme } from '@mui/material/styles';
 import makeStyles from '@mui/styles/makeStyles';
 import createStyles from '@mui/styles/createStyles';
 import { ClickAwayListener } from '@mui/material';
+import type { ClickAwayListenerProps } from '@mui/material';
 
 import theme from 'theme';
 import { TaskBoard, TaskList, TaskCard } from 'models';
@@ -116,7 +117,7 @@ const Wrapper = (props: { children: React.ReactNode }) => {
    * - 別のデータを表示する操作
    * - 事前に指定された要素のクリック
    */
-  const handleClickAway = (event: React.MouseEvent<Document, MouseEvent>) => {
+  const handleClickAway: ClickAwayListenerProps['onClickAway'] = (event) => {
     if (isItself()) {
       deactivateEventAttr('shown');
       return;

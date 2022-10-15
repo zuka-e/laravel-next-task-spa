@@ -5,6 +5,7 @@ import { Theme } from '@mui/material/styles';
 import makeStyles from '@mui/styles/makeStyles';
 import createStyles from '@mui/styles/createStyles';
 import { Card, CardActions, CardContent, Grid, Chip } from '@mui/material';
+import type { SelectProps } from '@mui/material';
 
 import * as Model from 'models';
 import { draggableItem, DragItem } from 'utils/dnd';
@@ -113,7 +114,7 @@ const TaskList = (props: TaskListProps) => {
     else return true;
   });
 
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleChange: SelectProps['onChange'] = (event) => {
     setfilterValue(event.target.value as FilterName); // unknown型から変換
   };
 
