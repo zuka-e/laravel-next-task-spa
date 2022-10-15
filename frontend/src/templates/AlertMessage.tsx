@@ -1,7 +1,7 @@
 import { Alert, AlertTitle } from '@mui/material';
-import { AlertProps, Color } from '@mui/lab';
+import type { AlertProps, AlertColor } from '@mui/material';
 
-const headerMap: Record<Color, Capitalize<Color>> = {
+const headerMap: Record<AlertColor, Capitalize<AlertColor>> = {
   success: 'Success',
   info: 'Info',
   warning: 'Warning',
@@ -9,7 +9,7 @@ const headerMap: Record<Color, Capitalize<Color>> = {
 };
 
 type AlertMessageProps = {
-  severity: Color;
+  severity: AlertColor;
   header?: string;
   body?: string;
   children?: React.ReactNode;
