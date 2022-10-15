@@ -3,14 +3,12 @@ import type { ThemeOptions } from '@mui/material/styles';
 const overrides: ThemeOptions['components'] = {
   MuiCssBaseline: {
     styleOverrides: {
-      '@global': {
-        a: {
-          color: '#1a73e8',
-          textDecoration: 'none',
-          '&:hover': {
-            color: '#ffa133',
-            textDecoration: 'underline',
-          },
+      a: {
+        color: '#1a73e8',
+        textDecoration: 'none',
+        '&:hover': {
+          color: '#ffa133',
+          textDecoration: 'underline',
         },
       },
     },
