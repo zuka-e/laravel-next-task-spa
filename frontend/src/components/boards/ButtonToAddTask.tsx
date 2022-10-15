@@ -9,13 +9,12 @@ import theme from 'theme';
 import { FormAction } from 'store/slices/taskBoardSlice';
 import { TitleForm } from '.';
 
-const margin = theme.spacing(0.75);
 const useStyles = makeStyles(() =>
   createStyles({
     root: { justifyContent: 'flex-start' },
     wrapper: {
-      margin: margin,
-      width: `calc(100% - ${margin * 2}px)`,
+      margin: theme.spacing(0.75),
+      width: `calc(100% - ${theme.spacing(0.75 * 2)})`,
     },
     transparent: {
       backgroundColor: 'inherit',
