@@ -1,15 +1,13 @@
-import { createTheme, adaptV4Theme } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
 
 import palette from './palette';
 import typography from './typography';
-import overrides from './overrides';
+import components from './overrides';
 
-const theme = createTheme(
-  adaptV4Theme({
-    palette,
-    typography,
-    overrides,
-  })
-);
+const theme = createTheme({
+  palette,
+  typography,
+  components,
+});
 
 export default theme;

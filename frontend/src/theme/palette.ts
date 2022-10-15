@@ -1,6 +1,6 @@
-import { PaletteOptions } from '@mui/material/styles';
+import type { ThemeOptions } from '@mui/material/styles';
 
-const palette: PaletteOptions = {
+const palette: ThemeOptions['palette'] = {
   primary: {
     light: '#e0fffa',
     main: '#40cbb5',
