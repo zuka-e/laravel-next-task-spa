@@ -5,7 +5,7 @@ import { FormControlLabel, Checkbox, CheckboxProps } from '@mui/material';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    label: { color: theme.palette.text.hint },
+    label: { color: theme.palette.text.secondary },
   })
 );
 
