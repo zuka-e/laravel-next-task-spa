@@ -1,4 +1,4 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Theme } from '@mui/material/styles';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
@@ -46,7 +46,7 @@ const BoardCardHeader = (props: BoardCardHeaderProps) => {
 
   const Subheader = () => (
     <Typography color="textSecondary" variant="body2">
-      {moment(board.updatedAt).calendar()}
+      {dayjs(board.updatedAt).calendar()}
     </Typography>
   );
 

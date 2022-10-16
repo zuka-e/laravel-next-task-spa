@@ -1,4 +1,4 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Theme } from '@mui/material/styles';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
@@ -48,7 +48,7 @@ const ListCardHeader = (props: ListCardHeaderProps) => {
 
   const Subheader = () => (
     <Typography color="textSecondary" variant="body2">
-      {moment(list.updatedAt).calendar()}
+      {dayjs(list.updatedAt).calendar()}
     </Typography>
   );
 

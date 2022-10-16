@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import * as yup from 'yup';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Theme } from '@mui/material/styles';
 import makeStyles from '@mui/styles/makeStyles';
 import createStyles from '@mui/styles/createStyles';
@@ -100,8 +100,6 @@ const TaskCardDetails = (props: TaskCardDetailsProps) => {
     listId: card.listId,
   };
 
-  const isInTime = (date: Date) => moment(new Date()).isBefore(date, 'minute');
-
   const handleCheckbox = () => {
     setChecked(!checked);
     dispatch(
@@ -178,7 +176,9 @@ const TaskCardDetails = (props: TaskCardDetailsProps) => {
           <Grid item className={classes.label}>
             <label
               className={
-                !isInTime(card.deadline) && !card.done ? classes.timeout : ''
+                dayjs().isAfter(card.deadline, 'minute') && !card.done
+                  ? classes.timeout
+                  : ''
               }
             >
               締切日時
@@ -186,7 +186,7 @@ const TaskCardDetails = (props: TaskCardDetailsProps) => {
           </Grid>
           <Grid item>
             <DatetimeInput
-              initialValue={card.deadline ? moment(card.deadline) : null}
+              initialValue={card.deadline ? dayjs(card.deadline) : null}
               onAccept={handleDateChange}
             />
           </Grid>
@@ -195,13 +195,13 @@ const TaskCardDetails = (props: TaskCardDetailsProps) => {
           <Grid item className={classes.label}>
             <label>作成日時</label>
           </Grid>
-          <Grid item>{moment(card.createdAt).calendar()}</Grid>
+          <Grid item>{dayjs(card.createdAt).calendar()}</Grid>
         </Grid>
         <Grid container>
           <Grid item className={classes.label}>
             <label>変更日時</label>
           </Grid>
-          <Grid item>{moment(card.updatedAt).calendar()}</Grid>
+          <Grid item>{dayjs(card.updatedAt).calendar()}</Grid>
         </Grid>
       </CardContent>
 

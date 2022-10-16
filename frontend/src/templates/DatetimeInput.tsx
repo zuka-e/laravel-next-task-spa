@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 
-import moment from 'moment';
+import dayjs from 'dayjs';
+import type { Dayjs } from 'dayjs';
 import { TextField } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import type { DateTimePickerProps } from '@mui/x-date-pickers/DateTimePicker';
 
 export type DatetimeInputProps = {
-  initialValue?: DateTimePickerProps<moment.Moment, moment.Moment>['value'];
-} & Partial<DateTimePickerProps<moment.Moment, moment.Moment>>;
+  initialValue?: DateTimePickerProps<Dayjs, Dayjs>['value'];
+} & Partial<DateTimePickerProps<Dayjs, Dayjs>>;
 
 /**
  * @see https://mui.com/x/react-date-pickers/date-time-picker
@@ -15,13 +16,13 @@ export type DatetimeInputProps = {
 const DatetimeInput = (props: DatetimeInputProps) => {
   const { initialValue } = props;
 
-  const [datetime, setDatetime] = useState<moment.Moment | null>(
-    initialValue ? moment(initialValue) : null
+  const [datetime, setDatetime] = useState<Dayjs | null>(
+    initialValue ? dayjs(initialValue) : null
   );
 
   // 表示するデータが変更された場合に値を初期化する
   useEffect(() => {
-    setDatetime(initialValue ? moment(initialValue) : null);
+    setDatetime(initialValue ? dayjs(initialValue) : null);
   }, [initialValue]);
 
   return (
@@ -29,7 +30,7 @@ const DatetimeInput = (props: DatetimeInputProps) => {
       renderInput={(params) => <TextField {...params} />}
       inputFormat="YYYY/MM/DD/ HH:mm"
       ampm={false}
-      minDateTime={moment()}
+      minDateTime={dayjs()}
       minutesStep={5}
       value={datetime}
       onChange={setDatetime}

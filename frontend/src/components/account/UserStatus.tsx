@@ -1,4 +1,4 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Box, Button, Grid, Typography } from '@mui/material';
 
 import { sendEmailVerificationLink } from 'store/thunks/auth';
@@ -14,6 +14,8 @@ const UserStatus = () => {
     dispatch(sendEmailVerificationLink());
   };
 
+  if (!createdAt) throw new Error();
+
   const showEmailVerificationState = () =>
     isVerified() ? (
       <AlertMessage severity="success" body="認証済みです" />
@@ -27,7 +29,7 @@ const UserStatus = () => {
             </strong>
           </Typography>
           <Typography variant="body2">
-            {`登録日時 ${moment(createdAt).format('YYYY/MM/DD HH:mm')}`}
+            {`登録日時 ${dayjs(createdAt).format('YYYY/MM/DD HH:mm')}`}
           </Typography>
         </AlertMessage>
         <Box mt={3} mb={1}>

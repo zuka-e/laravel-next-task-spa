@@ -15,7 +15,7 @@ import {
   StyledEngineProvider,
 } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import CssBaseline from '@mui/material/CssBaseline';
 
 import { APP_NAME } from 'config/app';
@@ -25,7 +25,7 @@ import { FlashNotification, Loading } from 'layouts';
 import { PageHandler } from 'components/pages';
 
 import 'styles/globals.css';
-import 'config/moment';
+import 'config/dayjs';
 
 declare module '@mui/styles/defaultTheme' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -51,7 +51,7 @@ const App = ({ Component, pageProps }: AppProps) => {
       <Provider store={store}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={theme}>
-            <LocalizationProvider dateAdapter={AdapterMoment}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DndProvider backend={HTML5Backend}>
                 <CssBaseline />
                 <Loading />

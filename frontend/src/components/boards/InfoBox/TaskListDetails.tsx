@@ -1,5 +1,5 @@
 import * as yup from 'yup';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Theme } from '@mui/material/styles';
 import makeStyles from '@mui/styles/makeStyles';
 import createStyles from '@mui/styles/createStyles';
@@ -129,13 +129,13 @@ const TaskListDetails = (props: TaskListDetailsProps) => {
           <Grid item className={classes.label}>
             <label>作成日時</label>
           </Grid>
-          <Grid item>{moment(list.createdAt).calendar()}</Grid>
+          <Grid item>{dayjs(list.createdAt).calendar()}</Grid>
         </Grid>
         <Grid container>
           <Grid item className={classes.label}>
             <label>変更日時</label>
           </Grid>
-          <Grid item>{moment(list.updatedAt).calendar()}</Grid>
+          <Grid item>{dayjs(list.updatedAt).calendar()}</Grid>
         </Grid>
       </CardContent>
 
