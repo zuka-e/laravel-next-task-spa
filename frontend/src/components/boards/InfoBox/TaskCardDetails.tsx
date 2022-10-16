@@ -35,6 +35,7 @@ import {
   MarkdownEditor,
 } from 'templates';
 import { EditableTitle } from '..';
+import type { DatetimeInputProps } from 'templates/DatetimeInput';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -117,13 +118,13 @@ const TaskCardDetails = (props: TaskCardDetailsProps) => {
     dispatch(closeInfoBox());
   };
 
-  const handleDateChange = (date?: Date) => {
+  const handleDateChange: DatetimeInputProps['onAccept'] = (date) => {
     dispatch(
       updateTaskCard({
         id: card.id,
         boardId: card.boardId,
         listId: card.listId,
-        deadline: date,
+        deadline: date?.toDate(),
       })
     );
   };
@@ -184,7 +185,10 @@ const TaskCardDetails = (props: TaskCardDetailsProps) => {
             </label>
           </Grid>
           <Grid item>
-            <DatetimeInput onChange={handleDateChange} value={card.deadline} />
+            <DatetimeInput
+              initialValue={card.deadline ? moment(card.deadline) : null}
+              onAccept={handleDateChange}
+            />
           </Grid>
         </Grid>
         <Grid container>

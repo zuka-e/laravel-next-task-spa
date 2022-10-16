@@ -14,8 +14,8 @@ import {
   Theme,
   StyledEngineProvider,
 } from '@mui/material/styles';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import MomentUtils from '@date-io/moment';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import CssBaseline from '@mui/material/CssBaseline';
 
 import { APP_NAME } from 'config/app';
@@ -51,14 +51,14 @@ const App = ({ Component, pageProps }: AppProps) => {
       <Provider store={store}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={theme}>
-            <MuiPickersUtilsProvider utils={MomentUtils}>
+            <LocalizationProvider dateAdapter={AdapterMoment}>
               <DndProvider backend={HTML5Backend}>
                 <CssBaseline />
                 <Loading />
                 <FlashNotification />
                 <PageHandler {...{ Component, pageProps }} />
               </DndProvider>
-            </MuiPickersUtilsProvider>
+            </LocalizationProvider>
           </ThemeProvider>
         </StyledEngineProvider>
       </Provider>
