@@ -122,7 +122,7 @@ const TaskCardDetails = (props: TaskCardDetailsProps) => {
         id: card.id,
         boardId: card.boardId,
         listId: card.listId,
-        deadline: date?.toDate(),
+        deadline: date?.toISOString(),
       })
     );
   };

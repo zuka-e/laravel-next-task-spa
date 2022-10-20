@@ -9,7 +9,7 @@ export const reset = (request: ResetPasswordRequest) => {
   const requestedUser = db.where('users', 'email', request.email)[0];
   const newUserDoc: UserDocument = {
     ...requestedUser,
-    updatedAt: new Date(),
+    updatedAt: new Date().toISOString(),
     password: digestText(request.password),
   };
 

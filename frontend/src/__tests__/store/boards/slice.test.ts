@@ -15,8 +15,8 @@ describe('taskBoardSlice reducers', () => {
     title: `${faker.hacker.adjective()} ${faker.hacker.verb()}`,
     description: faker.hacker.phrase(),
     lists: [],
-    createdAt: faker.date.past(),
-    updatedAt: faker.date.recent(),
+    createdAt: faker.date.past().toISOString(),
+    updatedAt: faker.date.recent().toISOString(),
   };
 
   const taskList: TaskList = {
@@ -25,8 +25,8 @@ describe('taskBoardSlice reducers', () => {
     title: `${faker.hacker.adjective()} ${faker.hacker.verb()}`,
     description: faker.hacker.phrase(),
     cards: [],
-    createdAt: faker.date.past(),
-    updatedAt: faker.date.recent(),
+    createdAt: faker.date.past().toISOString(),
+    updatedAt: faker.date.recent().toISOString(),
   };
 
   const taskCard: TaskCard = {
@@ -35,9 +35,9 @@ describe('taskBoardSlice reducers', () => {
     title: `${faker.hacker.adjective()} ${faker.hacker.verb()}`,
     content: faker.hacker.phrase(),
     done: true,
-    deadline: faker.date.future(),
-    createdAt: faker.date.past(),
-    updatedAt: faker.date.recent(),
+    deadline: faker.date.future().toISOString(),
+    createdAt: faker.date.past().toISOString(),
+    updatedAt: faker.date.recent().toISOString(),
   };
 
   describe('openInfoBox', () => {

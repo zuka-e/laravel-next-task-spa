@@ -16,8 +16,8 @@ export interface CollectionBase {
  */
 export interface DocumentBase {
   id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 /**
@@ -108,8 +108,8 @@ const collection = <T extends keyof DB>(model: T) => {
 const create = <T extends keyof DB>(model: T, doc: Doc<T>) => {
   const defaultValues: DocumentBase = {
     id: uuid(),
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   };
   // `guestUser`など、プロパティ設定がある場合はデフォルト値を上書きする
   const newDoc = { ...defaultValues, ...doc };

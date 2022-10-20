@@ -10,8 +10,8 @@ export interface CollectionBase<T extends DocumentBase> {
  */
 export interface DocumentBase {
   id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   index?: number;
 }
 

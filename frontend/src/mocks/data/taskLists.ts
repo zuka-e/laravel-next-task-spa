@@ -11,8 +11,8 @@ export const listOfGuestUser: TaskListDocument = {
   boardId: boardOfGuestUser.id,
   title: 'ゲストユーザーのTaskList',
   description: 'ゲストユーザーが所有するTaskList',
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
 };
 
 export const listOfOtherUser: TaskListDocument = {
@@ -21,8 +21,8 @@ export const listOfOtherUser: TaskListDocument = {
   boardId: boardOfOtherUser.id,
   title: '他のユーザーのTaskList',
   description: '他のユーザーが所有するTaskList',
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
 };
 
 const initialLists: TaskListDocument[] = [listOfGuestUser, listOfOtherUser];
@@ -50,8 +50,8 @@ const runSeeder = (props: SeederProps) => {
       boardId: props.belongsTo.board.id,
       title: `${faker.hacker.adjective()} ${faker.hacker.verb()}`,
       description: faker.hacker.phrase(),
-      createdAt: faker.date.past(),
-      updatedAt: faker.date.recent(),
+      createdAt: faker.date.past().toISOString(),
+      updatedAt: faker.date.recent().toISOString(),
     });
   });
 };

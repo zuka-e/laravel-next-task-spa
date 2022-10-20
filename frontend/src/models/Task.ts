@@ -26,6 +26,6 @@ export type TaskCard = {
   boardId: string;
   title: string;
   content: string;
-  deadline: Date;
+  deadline: string;
   done: boolean;
 } & DocumentBase;
