@@ -1,5 +1,9 @@
 /* https://nextjs.org/docs/basic-features/built-in-css-support#adding-a-global-stylesheet */
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 #__next {
   display: flex;
   flex-direction: column;

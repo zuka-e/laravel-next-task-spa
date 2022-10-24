@@ -1,5 +1,9 @@
 import type { ThemeOptions } from '@mui/material/styles';
 
+/** Root element for Next.js */
+const rootElement =
+  typeof window !== 'undefined' ? document.getElementById('__next') : undefined;
+
 const overrides: ThemeOptions['components'] = {
   MuiCssBaseline: {
     styleOverrides: {
@@ -25,6 +29,13 @@ const overrides: ThemeOptions['components'] = {
       root: { textTransform: 'unset' },
     },
   },
+  MuiDrawer: {
+    defaultProps: {
+      // Required for applying styles in `Portal`-related elements.
+      // https://mui.com/material-ui/guides/interoperability/#tailwind-css (5)
+      container: rootElement,
+    },
+  },
   MuiLink: {
     defaultProps: {
       // https://mui.com/material-ui/migration/v5-component-changes/#✅-update-default-underline-prop
@@ -48,6 +59,18 @@ const overrides: ThemeOptions['components'] = {
         overflow: 'hidden',
         textOverflow: 'ellipsis',
       },
+    },
+  },
+  MuiPopover: {
+    defaultProps: {
+      // https://mui.com/material-ui/guides/interoperability/#tailwind-css (5)
+      container: rootElement,
+    },
+  },
+  MuiPopper: {
+    defaultProps: {
+      // https://mui.com/material-ui/guides/interoperability/#tailwind-css (5)
+      container: rootElement,
     },
   },
   MuiTypography: {
