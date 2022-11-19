@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
-import { Container, Grid, Typography, List, ListItem } from '@mui/material';
+import { Grid, Typography, List, ListItem } from '@mui/material';
 import {
   PersonAdd as PersonAddIcon,
   LockOpen as LockOpenIcon,
@@ -37,64 +37,60 @@ const Hero = () => {
   };
 
   return (
-    <main className="bg-image-secondary">
-      <Container className="relative my-24 sm:min-h-[75vh]">
-        <Grid
-          container
-          className="justify-around max-md:flex-col-reverse max-md:items-center max-md:gap-16"
-        >
-          <Grid item md={6}>
-            <div className="mb-24 max-md:mb-12 max-md:mt-8">
-              <Typography variant="h1" className="mb-12">
-                タスク管理で課題を明確化
-              </Typography>
-              <Typography variant="h4" component="p" color="textSecondary">
-                複雑なタスクを視覚的に確認し、現在の状況を把握した上で意思決定に役立てることができます。
-              </Typography>
-            </div>
-            <Grid container spacing={2}>
-              <Grid item>
-                <LinkButton startIcon={<PersonAddIcon />} to="/register">
-                  登録する
-                </LinkButton>
-              </Grid>
-              <Grid item>
-                <LinkButton
-                  startIcon={<LockOpenIcon />}
-                  color="secondary"
-                  to="/login"
-                >
-                  ログイン
-                </LinkButton>
-              </Grid>
-              <Grid item>
-                <PopoverControl
-                  trigger={
-                    <AlertButton startIcon={<MenuIcon />} color="info">
-                      又はゲストユーザーで試す
-                    </AlertButton>
-                  }
-                >
-                  <List component="nav">
-                    <ListItem button onClick={handleGuestSignUp}>
-                      登録 (メール認証不可)
-                    </ListItem>
-                    <ListItem button onClick={handleGuestSignIn}>
-                      ログイン (メール認証済み)
-                    </ListItem>
-                  </List>
-                </PopoverControl>
-              </Grid>
-            </Grid>
+    <Grid
+      container
+      className="justify-around max-md:flex-col-reverse max-md:items-center max-md:gap-16"
+    >
+      <Grid md={6}>
+        <div className="mb-24 max-md:mb-12 max-md:mt-8">
+          <Typography variant="h1" className="mb-12">
+            タスク管理で課題を明確化
+          </Typography>
+          <Typography variant="h4" component="p" color="textSecondary">
+            複雑なタスクを視覚的に確認し、現在の状況を把握した上で意思決定に役立てることができます。
+          </Typography>
+        </div>
+        <Grid container spacing={2}>
+          <Grid item>
+            <LinkButton startIcon={<PersonAddIcon />} to="/register">
+              登録する
+            </LinkButton>
           </Grid>
-          <Grid item md={5} sm={10} xs={10}>
-            <div className="relative h-full w-full">
-              <Image src={hero.src} alt="hero" layout="fill" priority />
-            </div>
+          <Grid item>
+            <LinkButton
+              startIcon={<LockOpenIcon />}
+              color="secondary"
+              to="/login"
+            >
+              ログイン
+            </LinkButton>
+          </Grid>
+          <Grid item>
+            <PopoverControl
+              trigger={
+                <AlertButton startIcon={<MenuIcon />} color="info">
+                  又はゲストユーザーで試す
+                </AlertButton>
+              }
+            >
+              <List component="nav">
+                <ListItem button onClick={handleGuestSignUp}>
+                  登録 (メール認証不可)
+                </ListItem>
+                <ListItem button onClick={handleGuestSignIn}>
+                  ログイン (メール認証済み)
+                </ListItem>
+              </List>
+            </PopoverControl>
           </Grid>
         </Grid>
-      </Container>
-    </main>
+      </Grid>
+      <Grid item md={5} sm={10} xs={10}>
+        <div className="relative h-72 w-full">
+          <Image src={hero.src} alt="hero" layout="fill" priority />
+        </div>
+      </Grid>
+    </Grid>
   );
 };
 
