@@ -2,9 +2,6 @@ import { useEffect, useState } from 'react';
 
 import * as yup from 'yup';
 import dayjs from 'dayjs';
-import { Theme } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
 import {
   Grid,
   Card,
@@ -32,45 +29,11 @@ import {
   AlertButton,
   DatetimeInput,
   DeleteTaskDialog,
+  Link,
   MarkdownEditor,
 } from 'templates';
 import { EditableTitle } from '..';
 import type { DatetimeInputProps } from 'templates/DatetimeInput';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%',
-      borderRadius: 0,
-    },
-    breadcrumbs: {
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      '& li > *': { display: 'flex', alignItems: 'center' },
-    },
-    icon: {
-      marginRight: theme.spacing(0.5),
-      width: 20,
-      height: 20,
-    },
-    rightAction: { marginLeft: 'auto' },
-    header: { paddingBottom: 0 },
-    rows: {
-      paddingTop: 0,
-      paddingBottom: 0,
-      '& > div': {
-        marginBottom: theme.spacing(1),
-        alignItems: 'center',
-      },
-    },
-    label: { flex: '0 0 100px' },
-    timeout: { color: theme.palette.error.main },
-    footer: { flex: '1 1 auto' },
-  })
-);
 
 type TaskCardDetailsProps = {
   card: TaskCard;
@@ -78,8 +41,7 @@ type TaskCardDetailsProps = {
 
 const TaskCardDetails = (props: TaskCardDetailsProps) => {
   const { card } = props;
-  const classes = useStyles();
-  const { pathname, pathParams } = useRoute();
+  const { pathParams } = useRoute();
   const dispatch = useAppDispatch();
   const list = useDeepEqualSelector((state) =>
     state.boards.docs[pathParams.boardId?.toString()].lists.find(
@@ -136,34 +98,44 @@ const TaskCardDetails = (props: TaskCardDetailsProps) => {
   };
 
   return (
-    <Card className={classes.root}>
-      <CardActions disableSpacing>
-        <Breadcrumbs aria-label="breadcrumb" className={classes.breadcrumbs}>
-          <a href={`${pathname}#${list?.id}`}>
-            <ListAltIcon className={classes.icon} />
+    <Card className="flex h-full flex-col rounded-none">
+      <CardActions
+        disableSpacing
+        className="sticky top-0 z-10 gap-2 bg-inherit shadow-sm"
+      >
+        <Breadcrumbs
+          aria-label="breadcrumb"
+          className="overflow-x-auto whitespace-nowrap"
+          classes={{
+            ol: 'flex-nowrap',
+            li: '[&>*]:flex [&>*]:items-center',
+          }}
+        >
+          <Link href={`#${list?.id}`}>
+            <ListAltIcon className="mr-1 h-6 w-6" />
             {list?.title}
-          </a>
+          </Link>
           <Typography>
-            <AssignmentIcon className={classes.icon} />
+            <AssignmentIcon className="mr-1 h-6 w-6" />
             {'Card'}
           </Typography>
         </Breadcrumbs>
         <IconButton
           aria-label="close"
           onClick={handleClose}
-          size="small"
-          className={classes.rightAction}
+          className="ml-auto"
         >
           <CloseIcon />
         </IconButton>
       </CardActions>
       <CardHeader
-        classes={{ root: classes.header }}
         title={<EditableTitle method="PATCH" model="card" data={card} />}
+        className="pb-0"
       />
-      <CardContent className={classes.rows}>
+      <CardContent className="flex flex-col gap-3 py-0">
         <FormControlLabel
           label={card.done ? 'Completed' : 'Incompleted'}
+          className="w-fit"
           control={
             <Checkbox
               color="primary"
@@ -172,12 +144,12 @@ const TaskCardDetails = (props: TaskCardDetailsProps) => {
             />
           }
         />
-        <Grid container>
-          <Grid item className={classes.label}>
+        <Grid container className="items-center">
+          <Grid item className="mr-4 w-32">
             <label
               className={
                 dayjs().isAfter(card.deadline, 'minute') && !card.done
-                  ? classes.timeout
+                  ? 'text-error'
                   : ''
               }
             >
@@ -191,14 +163,14 @@ const TaskCardDetails = (props: TaskCardDetailsProps) => {
             />
           </Grid>
         </Grid>
-        <Grid container>
-          <Grid item className={classes.label}>
+        <Grid container className="items-center">
+          <Grid item className="mr-4 w-32">
             <label>作成日時</label>
           </Grid>
           <Grid item>{dayjs(card.createdAt).calendar()}</Grid>
         </Grid>
-        <Grid container>
-          <Grid item className={classes.label}>
+        <Grid container className="items-center">
+          <Grid item className="mr-4 w-32">
             <label>変更日時</label>
           </Grid>
           <Grid item>{dayjs(card.updatedAt).calendar()}</Grid>
@@ -209,13 +181,13 @@ const TaskCardDetails = (props: TaskCardDetailsProps) => {
         <MarkdownEditor
           onSubmit={handleSubmitText}
           schema={yup.object().shape({
-            content: yup.string().label('Content').max(2000),
+            content: yup.string().label('Content').min(20),
           })}
           defaultValue={card.content}
         />
       </CardContent>
 
-      <CardActions className={classes.footer}>
+      <CardActions className="flex-auto">
         {openDeleteDialog && (
           <DeleteTaskDialog
             model="card"
@@ -228,7 +200,7 @@ const TaskCardDetails = (props: TaskCardDetailsProps) => {
           startIcon={<DeleteIcon />}
           title="削除"
           color="danger"
-          className={classes.rightAction}
+          className="ml-auto self-end"
         >
           削除
         </AlertButton>

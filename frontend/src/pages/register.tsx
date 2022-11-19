@@ -6,12 +6,18 @@ import type { GetStaticProps } from 'next';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { TextField, Divider, Grid, Box } from '@mui/material';
+import {
+  TextField,
+  Divider,
+  Grid,
+  FormControlLabel,
+  Checkbox,
+} from '@mui/material';
 
 import { SignUpRequest, createUser } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { FormLayout } from 'layouts';
-import { AlertButton, LabeledCheckbox, SubmitButton } from 'templates';
+import { AlertButton, SubmitButton } from 'templates';
 import type { GuestPage } from 'routes';
 
 // Input items
@@ -72,6 +78,10 @@ const SignUp = () => {
     resolver: yupResolver(schema),
   });
 
+  const togglePasswordVisibility = () => {
+    setVisiblePassword(!visiblePassword);
+  };
+
   // エラー発生時はメッセージを表示する
   const onSubmit = async (data: FormData) => {
     const response = await dispatch(createUser(data));
@@ -127,19 +137,21 @@ const SignUp = () => {
             }
             error={!!errors?.password_confirmation}
           />
-          <Box ml={1} mb={2}>
-            <LabeledCheckbox
-              label="Show Password"
-              checked={visiblePassword}
-              setChecked={setVisiblePassword}
-            />
-          </Box>
-          <Box my={4}>
+          <FormControlLabel
+            label="Show Password"
+            className="mx-0 mb-4 block w-fit text-gray-600"
+            control={
+              <Checkbox
+                onChange={togglePasswordVisibility}
+                color="primary"
+                size="small"
+              />
+            }
+          />
+          <div className="my-8">
             <SubmitButton fullWidth>{'Create an account'}</SubmitButton>
-          </Box>
-          <Box mb={2}>
-            <Divider />
-          </Box>
+          </div>
+          <Divider className="my-4" />
           <Grid container justifyContent="flex-end">
             <Grid item>
               {'Already have an account? '}

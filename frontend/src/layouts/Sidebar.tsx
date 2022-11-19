@@ -1,32 +1,14 @@
-import { Theme } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
 import {
   Typography,
   List,
   ListSubheader,
   Divider,
   IconButton,
+  ListItemIcon,
 } from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';
 
 import { SideMenu } from 'components/layouts/Sidebar';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    drawer: {
-      width: '250px',
-    },
-    listHeader: {
-      display: 'flex',
-      padding: '4px',
-    },
-    listHeaderTitle: {
-      marginLeft: theme.spacing(2),
-      lineHeight: 'unset',
-    },
-  })
-);
 
 type SidebarProps = {
   toggleDrawer: (
@@ -36,23 +18,24 @@ type SidebarProps = {
 
 const Sidebar = (props: SidebarProps) => {
   const { toggleDrawer } = props;
-  const classes = useStyles();
 
   return (
-    <div className={classes.drawer}>
+    <div className="w-64">
       <List
         component="nav"
         aria-labelledby="menu-header"
         subheader={
           <ListSubheader
-            className={classes.listHeader}
             component="div"
             id="menu-header"
+            className="flex items-center gap-2 p-1"
           >
-            <IconButton onClick={toggleDrawer(false)} size="large">
-              <MenuIcon />
-            </IconButton>
-            <Typography className={classes.listHeaderTitle}>Menu</Typography>
+            <ListItemIcon>
+              <IconButton onClick={toggleDrawer(false)} size="large">
+                <MenuIcon />
+              </IconButton>
+            </ListItemIcon>
+            <Typography>Menu</Typography>
           </ListSubheader>
         }
       >

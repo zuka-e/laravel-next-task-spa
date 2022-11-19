@@ -33,6 +33,7 @@ module.exports = {
         error: colors.red[500],
         info: colors.cyan[500],
         warning: colors.yellow[500],
+        link: colors.sky[600],
       },
     },
   },

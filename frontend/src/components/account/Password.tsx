@@ -3,12 +3,12 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { Box, Grid, TextField } from '@mui/material';
+import { Checkbox, FormControlLabel, Grid, TextField } from '@mui/material';
 
 import { UpdatePasswordRequest, updatePassword } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { isGuest } from 'utils/auth';
-import { LabeledCheckbox, AlertMessage, SubmitButton } from 'templates';
+import { AlertMessage, SubmitButton } from 'templates';
 
 type FormData = UpdatePasswordRequest;
 
@@ -54,6 +54,10 @@ const Password = () => {
     reset,
     formState: { errors },
   } = useForm<FormData>({ mode: 'onBlur', resolver: yupResolver(schema) });
+
+  const togglePasswordVisibility = () => {
+    setVisiblePassword(!visiblePassword);
+  };
 
   // エラー発生時はメッセージを表示する
   const onSubmit = async (data: FormData) => {
@@ -119,13 +123,17 @@ const Password = () => {
           />
         </Grid>
       </Grid>
-      <Box ml={1} mb={2}>
-        <LabeledCheckbox
-          label="Show Password"
-          checked={visiblePassword}
-          setChecked={setVisiblePassword}
-        />
-      </Box>
+      <FormControlLabel
+        label="Show Password"
+        control={
+          <Checkbox
+            onChange={togglePasswordVisibility}
+            color="primary"
+            size="small"
+          />
+        }
+        className="mx-0 mb-4 block text-gray-600"
+      />
       {!isGuest() && <SubmitButton>パスワードを変更する</SubmitButton>}
     </form>
   );

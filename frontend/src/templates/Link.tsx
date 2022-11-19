@@ -79,7 +79,7 @@ const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(function Link(
 
   const router = useRouter();
   const pathname = typeof href === 'string' ? href : href.pathname;
-  const className = `${classNameProps} ${
+  const className = `text-link ${classNameProps} ${
     router.pathname === pathname ? activeClassName : ''
   }`;
 

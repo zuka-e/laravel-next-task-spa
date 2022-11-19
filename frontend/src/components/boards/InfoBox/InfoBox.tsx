@@ -1,8 +1,5 @@
 import { useEffect } from 'react';
 
-import { Theme } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
 import { ClickAwayListener } from '@mui/material';
 import type { ClickAwayListenerProps } from '@mui/material';
 
@@ -18,40 +15,13 @@ import {
 } from 'utils/infoBox';
 import { TaskBoardDetails, TaskListDetails, TaskCardDetails } from '.';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      transition: theme.transitions.create('all'),
-      overflow: 'hidden',
-      position: 'relative',
-      width: '100%',
-      maxWidth: 0,
-      minWidth: 0,
-      '& > .infoWrapper': {
-        position: 'absolute',
-        height: '100%',
-        width: '100%',
-        borderLeft: '1px solid ' + theme.palette.divider,
-        '& > div': {
-          overflowY: 'auto',
-        },
-      },
-    },
-    open: { maxWidth: '100%' },
-  })
-);
-
 const InfoBox = (props: JSX.IntrinsicElements['div']) => {
   const { className, ...divProps } = props;
-  const classes = useStyles();
   const dispatch = useAppDispatch();
   const currentState = useDeepEqualSelector((state) => state.boards.infoBox);
   const previousState = usePrevious(
     currentState.model ? currentState : undefined
   );
-  const classNameProp = `${classes.root} ${
-    currentState.open ? classes.open : ''
-  } ${className || ''}`;
 
   useEffect(() => {
     if (!previousState) return; // `open`を実行していない(`prev`が存在していない)場合
@@ -87,11 +57,20 @@ const InfoBox = (props: JSX.IntrinsicElements['div']) => {
   };
 
   return (
-    <div className={classNameProp} {...divProps}>
+    <div
+      className={
+        'relative w-full min-w-0 overflow-hidden shadow transition-all' +
+        (className ? ` ${className} ` : ' ') +
+        (currentState.open ? 'max-w-full' : 'max-w-0')
+      }
+      {...divProps}
+    >
       {currentState.model ? (
-        <Wrapper>{renderInfoBox()}</Wrapper>
+        <div className="absolute h-full w-full [&>*]:overflow-y-auto">
+          <Wrapper>{renderInfoBox()}</Wrapper>
+        </div>
       ) : (
-        <h2 style={{ textAlign: 'center' }}>There is no content</h2>
+        <h2 className="text-center">There is no content</h2>
       )}
     </div>
   );

@@ -3,9 +3,6 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 
-import { Theme } from '@mui/material/styles';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import { Container, Grid, Card, Divider, Typography } from '@mui/material';
 import { Pagination } from '@mui/material';
 
@@ -17,32 +14,10 @@ import {
   useRoute,
 } from 'utils/hooks';
 import { BaseLayout, StandbyScreen } from 'layouts';
-import { LinkWrapper, ScrolledDiv } from 'templates';
+import { Link } from 'templates';
 import { ButtonToAddTask } from 'components/boards';
 import { BoardCardHeader } from 'components/boards/TaskBoard';
 import type { AuthPage } from 'routes';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    main: {
-      paddingTop: theme.spacing(4),
-      paddingBottom: theme.spacing(4),
-    },
-    content: {
-      height: '150px',
-      padding: theme.spacing(2),
-      marginTop: theme.spacing(0.5),
-      marginRight: theme.spacing(0.5),
-    },
-    pagination: {
-      marginTop: theme.spacing(4),
-      marginBottom: theme.spacing(4),
-    },
-    paginationUl: {
-      justifyContent: 'center',
-    },
-  })
-);
 
 type TaskBoardIndexProps = AuthPage;
 
@@ -71,7 +46,6 @@ export const getStaticProps: GetStaticProps<TaskBoardIndexProps> = async () => {
 };
 
 const TaskBoardIndex = () => {
-  const classes = useStyles();
   const router = useRouter();
   const route = useRoute();
   const dispatch = useAppDispatch();
@@ -105,26 +79,27 @@ const TaskBoardIndex = () => {
         <title>Boards</title>
       </Head>
       <BaseLayout>
-        <Container component="main" className={classes.main}>
+        <Container component="main" className="my-8">
           <Grid container spacing={2}>
             {boards.map((board) => (
-              <Grid item lg={3} md={4} xs={6} key={board.id}>
+              <Grid item md={4} sm={6} xs={12} key={board.id}>
                 <Card elevation={7}>
-                  <LinkWrapper
-                    to={`/users/${route.pathParams.userId?.toString()}/boards/${
+                  <Link
+                    href={`/users/${route.pathParams.userId.toString()}/boards/${
                       board.id
                     }`}
+                    className="text-inherit"
                   >
-                    <ScrolledDiv className={classes.content}>
+                    <div className="h-40 overflow-y-auto break-words p-4">
                       <Typography>{board.description}</Typography>
-                    </ScrolledDiv>
-                  </LinkWrapper>
+                    </div>
+                  </Link>
                   <Divider />
                   <BoardCardHeader board={board} />
                 </Card>
               </Grid>
             ))}
-            <Grid item lg={3} sm={4} xs={6}>
+            <Grid item md={4} sm={6} xs={12}>
               <ButtonToAddTask method="POST" model="board" />
             </Grid>
           </Grid>
@@ -138,7 +113,8 @@ const TaskBoardIndex = () => {
             color="primary"
             size="large"
             onChange={handleChange}
-            classes={{ root: classes.pagination, ul: classes.paginationUl }}
+            className="my-8"
+            classes={{ ul: 'justify-center' }}
           />
         )}
       </BaseLayout>

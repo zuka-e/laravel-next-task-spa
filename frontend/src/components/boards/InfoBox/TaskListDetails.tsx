@@ -1,8 +1,5 @@
 import * as yup from 'yup';
 import dayjs from 'dayjs';
-import { Theme } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
 import {
   Grid,
   Card,
@@ -24,41 +21,8 @@ import { TaskList } from 'models';
 import { closeInfoBox } from 'store/slices/taskBoardSlice';
 import { updateTaskList } from 'store/thunks/lists';
 import { useAppDispatch, useAppSelector, useRoute } from 'utils/hooks';
-import { MarkdownEditor } from 'templates';
+import { Link, MarkdownEditor } from 'templates';
 import { EditableTitle } from '..';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%',
-      borderRadius: 0,
-    },
-    breadcrumbs: {
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      '& li > *': { display: 'flex', alignItems: 'center' },
-    },
-    icon: {
-      marginRight: theme.spacing(0.5),
-      width: 20,
-      height: 20,
-    },
-    close: { marginLeft: 'auto' },
-    cardHeader: { paddingBottom: 0 },
-    rows: {
-      paddingTop: 0,
-      paddingBottom: 0,
-      '& > div': {
-        marginBottom: theme.spacing(1),
-        alignItems: 'center',
-      },
-    },
-    label: { flex: '0 0 100px', marginRight: theme.spacing(2) },
-  })
-);
 
 type TaskListDetailsProps = {
   list: TaskList;
@@ -66,8 +30,7 @@ type TaskListDetailsProps = {
 
 const TaskListDetails = (props: TaskListDetailsProps) => {
   const { list } = props;
-  const classes = useStyles();
-  const { pathname, pathParams } = useRoute();
+  const { pathParams } = useRoute();
   const boardName = useAppSelector(
     (state) => state.boards.docs[pathParams.boardId?.toString()].title
   );
@@ -84,55 +47,64 @@ const TaskListDetails = (props: TaskListDetailsProps) => {
   };
 
   return (
-    <Card className={classes.root}>
-      <CardActions disableSpacing>
-        <Breadcrumbs aria-label="breadcrumb" className={classes.breadcrumbs}>
+    <Card className="flex h-full flex-col rounded-none">
+      <CardActions
+        disableSpacing
+        className="sticky top-0 z-10 gap-2 bg-inherit shadow-sm"
+      >
+        <Breadcrumbs
+          aria-label="breadcrumb"
+          className="overflow-x-auto whitespace-nowrap"
+          classes={{
+            ol: 'flex-nowrap',
+            li: '[&>*]:flex [&>*]:items-center',
+          }}
+        >
           <Tooltip title={boardName}>
             <Typography>
-              <FolderOpenIcon className={classes.icon} />
+              <FolderOpenIcon className="mr-1 h-6 w-6" />
               {'Board'}
             </Typography>
           </Tooltip>
-          <a href={`${pathname}#${list?.id}`} title={list.title}>
-            <ListAltIcon className={classes.icon} />
+          <Link href={`#${list?.id}`} title={list.title}>
+            <ListAltIcon className="mr-1 h-6 w-6" />
             {list.title}
-          </a>
+          </Link>
         </Breadcrumbs>
         <IconButton
           aria-label="close"
           onClick={handleClose}
-          size="small"
-          className={classes.close}
+          className="ml-auto"
         >
           <CloseIcon />
         </IconButton>
       </CardActions>
       <CardHeader
-        className={classes.cardHeader}
-        disableTypography
         title={<EditableTitle method="PATCH" model="list" data={list} />}
+        disableTypography
+        className="pb-0"
       />
-      <CardContent className={classes.rows}>
-        <Grid container>
-          <Grid item className={classes.label}>
+      <CardContent className="flex flex-col gap-3 py-0">
+        <Grid container className="items-center">
+          <Grid item className="mr-4 w-32">
             <label>タスク総数</label>
           </Grid>
           <Grid item>{list.cards.length}</Grid>
         </Grid>
-        <Grid container>
-          <Grid item className={classes.label}>
+        <Grid container className="items-center">
+          <Grid item className="mr-4 w-32">
             <label>(完了済)</label>
           </Grid>
           <Grid item>{list.cards.filter((card) => card.done).length}</Grid>
         </Grid>
-        <Grid container>
-          <Grid item className={classes.label}>
+        <Grid container className="items-center">
+          <Grid item className="mr-4 w-32">
             <label>作成日時</label>
           </Grid>
           <Grid item>{dayjs(list.createdAt).calendar()}</Grid>
         </Grid>
-        <Grid container>
-          <Grid item className={classes.label}>
+        <Grid container className="items-center">
+          <Grid item className="mr-4 w-32">
             <label>変更日時</label>
           </Grid>
           <Grid item>{dayjs(list.updatedAt).calendar()}</Grid>

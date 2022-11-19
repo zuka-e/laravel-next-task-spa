@@ -1,33 +1,11 @@
 import Image from 'next/image';
 
-import { Theme } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
-import { Container, Grid, Typography, Box } from '@mui/material';
+import { Container, Grid, Typography } from '@mui/material';
 
-import { LinkButton, ScrolledTypography } from 'templates';
+import { LinkButton } from 'templates';
 import filingSystem from 'images/filing_system.svg';
 import drag from 'images/drag.svg';
 import search from 'images/search.svg';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      background:
-        'repeating-linear-gradient(240deg, #e0fffa87, transparent 250px)',
-    },
-    container: {
-      marginTop: theme.spacing(12),
-      marginBottom: theme.spacing(12),
-      [theme.breakpoints.up('sm')]: {
-        minHeight: '90vh',
-      },
-    },
-    features: {
-      '& > .feature': { padding: theme.spacing(4) },
-    },
-  })
-);
 
 /** パスを含むファイル名からパス及び拡張子を取り除く */
 const basename = (filename: string) => {
@@ -49,16 +27,16 @@ const FeatureLayout = (props: FeatureLayoutProps) => {
   const { children, image, header } = props;
 
   return (
-    <Grid item md={4} sm={9} xs={11} className="feature">
-      <Grid container direction="column" alignItems="center">
-        <Box position="relative" width="100%" height="300px">
+    <Grid item md={4} sm={9} xs={11}>
+      <Grid container direction="column" alignItems="center" className="gap-6">
+        <div className="relative h-80 w-full">
           <Image src={image} alt={basename(image)} layout="fill" />
-        </Box>
-        <Box width="100%" mt={2}>
-          <ScrolledTypography variant="h3" align="center" gutterBottom>
+        </div>
+        <div className="w-full">
+          <Typography variant="h3" align="center">
             {header}
-          </ScrolledTypography>
-        </Box>
+          </Typography>
+        </div>
         <Typography paragraph>{children}</Typography>
       </Grid>
     </Grid>
@@ -66,19 +44,13 @@ const FeatureLayout = (props: FeatureLayoutProps) => {
 };
 
 const Features = () => {
-  const classes = useStyles();
-
   return (
-    <section className={classes.root}>
-      <Container className={classes.container}>
+    <section className="bg-image-primary">
+      <Container className="my-24 sm:min-h-[75vh]">
         <Typography variant="h2" title="Features" hidden>
           {'Features'}
         </Typography>
-        <Grid
-          container
-          justifyContent="space-around"
-          className={classes.features}
-        >
+        <Grid container spacing={8} className="justify-around">
           <FeatureLayout image={filingSystem.src} header="サブタスク管理">
             各タスクはカードと呼ばれる単位で扱われ、リストの下に配置されます。
             リストは複数のカードを持ち、またボード上で複数のリストを管理することができます。
@@ -92,11 +64,11 @@ const Features = () => {
             多くの情報の中から目的のタスクを探し出す手間を省きます。
           </FeatureLayout>
         </Grid>
-        <Box mt={12} mb={8} mx="auto" width={300}>
+        <div className="my-16 mx-auto w-80">
           <LinkButton to="/register" size="large" fullWidth>
             始める
           </LinkButton>
-        </Box>
+        </div>
       </Container>
     </section>
   );

@@ -5,9 +5,6 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { ObjectShape } from 'yup/lib/object';
-import { Theme } from '@mui/material/styles';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import { CardActions } from '@mui/material';
 import type { MDEditorProps, PreviewType } from '@uiw/react-md-editor';
 import type { MarkdownPreviewProps } from '@uiw/react-markdown-preview';
@@ -46,22 +43,6 @@ const MarkdownPreview = dynamic<MarkdownPreviewProps>(
   { ssr: false }
 );
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    previewBox: {
-      '&:hover': {
-        boxShadow: `0 0 0 1px ${theme.palette.divider}`,
-        borderRadius: theme.shape.borderRadius,
-      },
-    },
-    error: { boxShadow: `0 0 0 1px ${theme.palette.error.main}` },
-    helperText: {
-      flexGrow: 1,
-      '&.error': { color: theme.palette.error.main },
-    },
-  })
-);
-
 type MarkdownEditorProps = {
   schema: yup.ObjectSchema<ObjectShape>;
   onSubmit: (text: string) => void;
@@ -71,7 +52,6 @@ type MarkdownEditorProps = {
 const MarkdownEditor = (props: MarkdownEditorProps) => {
   const { schema, defaultValue } = props;
   const prop = Object.keys(schema.fields)[0];
-  const classes = useStyles();
   const [mode, setMode] = useState<PreviewType>(
     defaultValue ? 'preview' : 'edit'
   );
@@ -102,7 +82,10 @@ const MarkdownEditor = (props: MarkdownEditorProps) => {
 
   if (mode === 'preview' && defaultValue)
     return (
-      <CardActions onClick={handleClick} className={classes.previewBox}>
+      <CardActions
+        onClick={handleClick}
+        className="overflow-y-auto rounded outline-1 hover:outline"
+      >
         <MarkdownPreview source={value} />
       </CardActions>
     );
@@ -121,18 +104,16 @@ const MarkdownEditor = (props: MarkdownEditorProps) => {
           name: register(prop)['name'],
           onBlur: register(prop)['onBlur'],
         }}
-        className={errors[prop] ? classes.error : undefined}
+        className={errors[prop] ? 'outline outline-1 outline-error' : undefined}
       />
-      <CardActions>
-        <span
-          className={`${classes.helperText}${errors[prop] ? ' error' : ''}`}
-        >
+      <div className="my-2 flex items-baseline">
+        <span className={errors[prop] ? 'text-error' : ''}>
           {errors[prop]?.message}
         </span>
         <SubmitButton onClick={handleSubmit(onSubmit)} size="small">
           {'Save'}
         </SubmitButton>
-      </CardActions>
+      </div>
     </>
   );
 };

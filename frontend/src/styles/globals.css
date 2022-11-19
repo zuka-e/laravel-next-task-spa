@@ -9,3 +9,19 @@
   flex-direction: column;
   min-height: 100vh;
 }
+
+.bg-image-primary {
+  background-image: repeating-linear-gradient(
+    240deg,
+    #e0fffa87,
+    transparent 250px
+  );
+}
+
+.bg-image-secondary {
+  background-image: repeating-linear-gradient(
+    330deg,
+    #ffa0320d,
+    transparent 175px
+  );
+}

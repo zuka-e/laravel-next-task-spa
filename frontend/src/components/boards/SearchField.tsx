@@ -1,8 +1,5 @@
 import { useState } from 'react';
 
-import { Theme } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
 import {
   ClickAwayListener,
   TextField,
@@ -15,28 +12,9 @@ import { Search as SearchIcon } from '@mui/icons-material';
 
 import { SearchResult } from '.';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    input: {
-      minWidth: '320px',
-      maxWidth: '350px',
-    },
-    inputPaper: { backgroundColor: theme.palette.background.paper },
-    popper: {
-      marginTop: theme.spacing(0.5),
-      minWidth: '320px',
-      maxWidth: '350px',
-      maxHeight: '60vh',
-      overflowY: 'auto',
-      border: '1px solid' + theme.palette.primary.main,
-    },
-  })
-);
-
 const SEARCH = 'search' as const;
 
 const SearchField = () => {
-  const classes = useStyles();
   const [inputOpen, setInputOpen] = useState(false);
   const [popperOpen, setPopperOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -81,10 +59,8 @@ const SearchField = () => {
           defaultValue={value}
           autoFocus
           variant="outlined"
-          classes={{ root: classes.input }}
+          className="w-80"
           InputProps={{
-            margin: 'dense',
-            classes: { root: classes.inputPaper },
             startAdornment: (
               <InputAdornment position="start">
                 <SearchIcon />
@@ -92,9 +68,14 @@ const SearchField = () => {
             ),
           }}
         />
-        <Popper open={popperOpen} anchorEl={anchorEl} placement="bottom-end">
+        <Popper
+          open={popperOpen}
+          anchorEl={anchorEl}
+          placement="bottom-end"
+          className="!top-1 rounded outline outline-primary"
+        >
           <Card
-            classes={{ root: classes.popper }}
+            className="max-h-96 w-80 overflow-y-auto"
             aria-labelledby="search-result"
           >
             <SearchResult input={value} />

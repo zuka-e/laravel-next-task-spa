@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { Box, Grid, TextField } from '@mui/material';
+import { Grid, TextField } from '@mui/material';
 
 import { UpdateProfileRequest, updateProfile } from 'store/thunks/auth';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
@@ -96,10 +96,12 @@ const UserProfile = () => {
             error={!!errors?.email}
           />
         </Grid>
+        {!isGuest() && (
+          <Grid item>
+            <SubmitButton>プロフィールを更新する</SubmitButton>
+          </Grid>
+        )}
       </Grid>
-      <Box mt={3} mb={1}>
-        {!isGuest() && <SubmitButton>プロフィールを更新する</SubmitButton>}
-      </Box>
     </form>
   );
 };

@@ -1,10 +1,6 @@
 import { useState } from 'react';
 
-import { Theme } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
 import {
-  Box,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -17,19 +13,12 @@ import { deleteAccount } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { AlertButton } from 'templates';
 
-const useStyles = makeStyles((_theme: Theme) =>
-  createStyles({
-    triggerWrapper: { display: 'contents' },
-  })
-);
-
 type DeleteAccountDialogProps = {
   trigger: JSX.Element;
 };
 
 const DeleteAccountDialog = (props: DeleteAccountDialogProps) => {
   const { trigger } = props;
-  const classes = useStyles();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
 
@@ -43,9 +32,9 @@ const DeleteAccountDialog = (props: DeleteAccountDialogProps) => {
 
   return (
     <>
-      <Box onClick={handleClickOpen} className={classes.triggerWrapper}>
+      <div onClick={handleClickOpen} className="contents">
         {trigger}
-      </Box>
+      </div>
       <Dialog
         open={open}
         onClose={handleClose}

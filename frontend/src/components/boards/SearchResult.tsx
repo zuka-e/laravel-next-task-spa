@@ -1,8 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { Theme } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
 import {
   List,
   ListSubheader,
@@ -14,36 +11,12 @@ import {
 import { useAppDispatch, useDeepEqualSelector, useRoute } from 'utils/hooks';
 import { openInfoBox } from 'store/slices';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    textPrimary: { fontWeight: 'bold' },
-    textSecondary: {
-      overflow: 'hidden',
-      display: '-webkit-box',
-      '-webkit-box-orient': 'vertical',
-      '-webkit-line-clamp': 5,
-    },
-    subheader: {
-      borderBottom: '1px solid ' + theme.palette.primary.main,
-      '& > li': {
-        backgroundColor: theme.palette.background.paper,
-        borderLeft: '3px solid ' + theme.palette.primary.main,
-        borderBottom: '1px solid ' + theme.palette.primary.main,
-        lineHeight: 1.2,
-        paddingTop: theme.spacing(1),
-        paddingBottom: theme.spacing(1),
-      },
-    },
-  })
-);
-
 type SearchResultProps = {
   input: string;
 };
 
 const SearchResult = (props: SearchResultProps) => {
   const { input } = props;
-  const classes = useStyles();
   const route = useRoute();
   const dispatch = useAppDispatch();
   const lists = useDeepEqualSelector(
@@ -97,8 +70,12 @@ const SearchResult = (props: SearchResultProps) => {
       {results.lists.length > 0 && (
         <List
           dense
-          subheader={<ListSubheader>{'リスト'}</ListSubheader>}
-          classes={{ subheader: classes.subheader }}
+          className="p-0"
+          subheader={
+            <ListSubheader className="border border-l-4 border-r-0 border-solid border-primary py-2 leading-5">
+              {'リスト'}
+            </ListSubheader>
+          }
         >
           {results.lists.map((list) => (
             <ListItem
@@ -109,9 +86,11 @@ const SearchResult = (props: SearchResultProps) => {
               <ListItemText
                 primary={list.title}
                 secondary={list.description}
-                classes={{
-                  primary: classes.textPrimary,
-                  secondary: classes.textSecondary,
+                primaryTypographyProps={{
+                  className: 'font-bold',
+                }}
+                secondaryTypographyProps={{
+                  className: 'line-clamp-5',
                 }}
               />
             </ListItem>
@@ -122,8 +101,12 @@ const SearchResult = (props: SearchResultProps) => {
       {results.cards.length > 0 && (
         <List
           dense
-          subheader={<ListSubheader>{'カード'}</ListSubheader>}
-          classes={{ subheader: classes.subheader }}
+          className="p-0"
+          subheader={
+            <ListSubheader className="border border-l-4 border-r-0 border-solid border-primary py-2 leading-5">
+              {'カード'}
+            </ListSubheader>
+          }
         >
           {results.cards.map((card) => (
             <ListItem
@@ -134,9 +117,11 @@ const SearchResult = (props: SearchResultProps) => {
               <ListItemText
                 primary={card.title}
                 secondary={card.content}
-                classes={{
-                  primary: classes.textPrimary,
-                  secondary: classes.textSecondary,
+                primaryTypographyProps={{
+                  className: 'font-bold',
+                }}
+                secondaryTypographyProps={{
+                  className: 'line-clamp-5',
                 }}
               />
             </ListItem>

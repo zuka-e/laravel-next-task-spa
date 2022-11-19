@@ -1,44 +1,9 @@
-import { Theme } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
 import { Container, Card, Grid, Avatar, Typography } from '@mui/material';
 
 import { APP_NAME } from 'config/app';
 import { AlertMessage } from 'templates';
-import { NextLinkComposed } from 'templates/Link';
+import Link, { NextLinkComposed } from 'templates/Link';
 import logo from 'images/logo_short.svg';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    main: {
-      marginTop: theme.spacing(8),
-      marginBottom: theme.spacing(8),
-    },
-    error: {
-      width: '100%',
-      marginBottom: theme.spacing(2),
-      whiteSpace: 'pre-wrap',
-      fontSize: theme.typography.caption.fontSize,
-    },
-    paper: { padding: theme.spacing(3) },
-    logo: {
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(1),
-      width: theme.spacing(10),
-      height: theme.spacing(10),
-    },
-    content: {
-      width: '100%',
-      '& > form': { width: '100%' },
-    },
-    separator: {
-      display: 'inline',
-      borderLeft: '1px solid',
-      marginLeft: theme.spacing(1),
-      paddingLeft: theme.spacing(1),
-    },
-  })
-);
 
 const Copyright = () => (
   <Typography variant="body2" color="textSecondary" align="center">
@@ -54,45 +19,44 @@ type FormLayoutProps = {
 
 const FormLayout = (props: FormLayoutProps) => {
   const { children, title, message } = props;
-  const classes = useStyles();
 
   return (
     <>
-      <Container className={classes.main} component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs" className="my-4 sm:my-16">
         {message && (
           <AlertMessage
             severity="error"
             body={message}
-            className={classes.error}
+            className="mb-4 whitespace-pre-wrap text-xs"
           />
         )}
-        <Card classes={{ root: classes.paper }} elevation={2}>
-          <Grid container direction="column" alignItems="center">
+        <Card elevation={2} className="p-6">
+          <Grid container className="flex-col items-center">
             <Avatar
-              className={classes.logo}
               component={NextLinkComposed}
               to="/"
               src={logo.src}
               alt={APP_NAME}
               title={APP_NAME}
+              className="my-2 h-20 w-20"
             />
             <Typography component="h1" variant="h5" gutterBottom>
               {title}
             </Typography>
-            <div className={classes.content}>{children}</div>
+            <div className="w-full">{children}</div>
           </Grid>
         </Card>
       </Container>
       <footer>
         <Grid container direction="column" alignItems="center">
           <Grid item>
-            <a href="/terms" target="_blank">
+            <Link href="/terms" target="_blank" rel="noopener noreferrer">
               {'Terms'}
-            </a>
-            <div className={classes.separator} />
-            <a href="/privacy" target="_blank">
+            </Link>
+            <span className="ml-2 border-0 border-l border-solid pl-2" />
+            <Link href="/privacy" target="_blank" rel="noopener noreferrer">
               {'Privacy'}
-            </a>
+            </Link>
           </Grid>
           <Grid item>
             <Copyright />

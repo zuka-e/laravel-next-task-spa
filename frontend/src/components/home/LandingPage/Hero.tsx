@@ -1,17 +1,7 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
-import { Theme } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
-import {
-  Container,
-  Grid,
-  Typography,
-  List,
-  ListItem,
-  Box,
-} from '@mui/material';
+import { Container, Grid, Typography, List, ListItem } from '@mui/material';
 import {
   PersonAdd as PersonAddIcon,
   LockOpen as LockOpenIcon,
@@ -25,40 +15,7 @@ import { makeEmail } from 'utils/generator';
 import { AlertButton, LinkButton, PopoverControl } from 'templates';
 import hero from 'images/hero.svg';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    main: {
-      background:
-        'repeating-linear-gradient(330deg, #ffa0320d, transparent 175px)',
-    },
-    container: {
-      position: 'relative',
-      marginTop: theme.spacing(12),
-      marginBottom: theme.spacing(12),
-      [theme.breakpoints.up('sm')]: {
-        minHeight: '75vh',
-      },
-    },
-    hero: {
-      justifyContent: 'space-around',
-      [theme.breakpoints.down('md')]: {
-        flexDirection: 'column-reverse',
-        alignItems: 'center',
-      },
-    },
-    description: {
-      marginBottom: theme.spacing(12),
-      [theme.breakpoints.down('md')]: {
-        marginTop: theme.spacing(4),
-        marginBottom: theme.spacing(6),
-      },
-    },
-    catchphrase: { marginBottom: theme.spacing(6) },
-  })
-);
-
 const Hero = () => {
-  const classes = useStyles();
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -80,12 +37,15 @@ const Hero = () => {
   };
 
   return (
-    <main className={classes.main}>
-      <Container className={classes.container}>
-        <Grid container className={classes.hero}>
+    <main className="bg-image-secondary">
+      <Container className="relative my-24 sm:min-h-[75vh]">
+        <Grid
+          container
+          className="justify-around max-md:flex-col-reverse max-md:items-center max-md:gap-16"
+        >
           <Grid item md={6}>
-            <div className={classes.description}>
-              <Typography variant="h1" className={classes.catchphrase}>
+            <div className="mb-24 max-md:mb-12 max-md:mt-8">
+              <Typography variant="h1" className="mb-12">
                 タスク管理で課題を明確化
               </Typography>
               <Typography variant="h4" component="p" color="textSecondary">
@@ -128,9 +88,9 @@ const Hero = () => {
             </Grid>
           </Grid>
           <Grid item md={5} sm={10} xs={10}>
-            <Box position="relative" width="100%" height="100%">
+            <div className="relative h-full w-full">
               <Image src={hero.src} alt="hero" layout="fill" priority />
-            </Box>
+            </div>
           </Grid>
         </Grid>
       </Container>

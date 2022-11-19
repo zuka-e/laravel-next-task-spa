@@ -1,11 +1,7 @@
 import Head from 'next/head';
 import type { GetStaticProps } from 'next';
 
-import { Theme } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
 import {
-  Box,
   Card,
   CardContent,
   CardHeader,
@@ -24,16 +20,6 @@ import {
 } from 'components/account';
 import type { AuthPage } from 'routes';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    card: {
-      marginTop: theme.spacing(8),
-      marginBottom: theme.spacing(8),
-      padding: theme.spacing(3),
-    },
-  })
-);
-
 type AccountProps = AuthPage;
 
 export const getStaticProps: GetStaticProps<AccountProps> = async () => {
@@ -46,50 +32,50 @@ export const getStaticProps: GetStaticProps<AccountProps> = async () => {
 };
 
 const Account = () => {
-  const classes = useStyles();
-
   return (
     <>
       <Head>
         <title>Account</title>
       </Head>
       <BaseLayout>
-        <Container component="main" maxWidth="md">
-          <Card className={classes.card} elevation={2}>
-            <Box component="section" mb={3}>
-              <CardHeader title="Profile" />
-              <Divider />
-              <CardContent>
-                <UserProfile />
-              </CardContent>
-            </Box>
-            <Box component="section" mb={3}>
-              <CardHeader title="Password" />
-              <Divider />
-              <CardContent>
-                <Password />
-              </CardContent>
-            </Box>
-            <Box component="section" mb={3}>
-              <CardHeader title="Status" />
-              <Divider />
-              <CardContent>
-                <UserStatus />
-              </CardContent>
-            </Box>
-            <Box component="section" mb={3}>
-              <CardHeader title="Delete account" />
-              <Divider />
-              <CardContent>
-                <DeleteAccountDialog
-                  trigger={
-                    <AlertButton disabled={isGuest()} color="danger">
-                      アカウントを削除
-                    </AlertButton>
-                  }
-                />
-              </CardContent>
-            </Box>
+        <Container component="main" maxWidth="md" className="max-sm:px-0">
+          <Card elevation={2} className="max-sm:rounded-none sm:my-8 md:my-16">
+            <CardContent>
+              <section>
+                <CardHeader title="Profile" />
+                <Divider />
+                <CardContent>
+                  <UserProfile />
+                </CardContent>
+              </section>
+              <section>
+                <CardHeader title="Password" />
+                <Divider />
+                <CardContent>
+                  <Password />
+                </CardContent>
+              </section>
+              <section>
+                <CardHeader title="Status" />
+                <Divider />
+                <CardContent>
+                  <UserStatus />
+                </CardContent>
+              </section>
+              <section>
+                <CardHeader title="Delete account" />
+                <Divider />
+                <CardContent>
+                  <DeleteAccountDialog
+                    trigger={
+                      <AlertButton disabled={isGuest()} color="danger">
+                        アカウントを削除
+                      </AlertButton>
+                    }
+                  />
+                </CardContent>
+              </section>
+            </CardContent>
           </Card>
         </Container>
       </BaseLayout>

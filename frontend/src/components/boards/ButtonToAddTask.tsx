@@ -1,28 +1,10 @@
 import { useState } from 'react';
 
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import { ClickAwayListener, Card, CardActions, Button } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 
-import theme from 'theme';
 import { FormAction } from 'store/slices/taskBoardSlice';
 import { TitleForm } from '.';
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: { justifyContent: 'flex-start' },
-    wrapper: {
-      margin: theme.spacing(0.75),
-      width: `calc(100% - ${theme.spacing(0.75 * 2)})`,
-    },
-    transparent: {
-      backgroundColor: 'inherit',
-      boxShadow: 'unset',
-    },
-    dim: { backgroundColor: 'rgb(0,0,0,0.1)' },
-  })
-);
 
 type ButtonToAddTaskProps = FormAction & {
   transparent?: boolean;
@@ -30,7 +12,6 @@ type ButtonToAddTaskProps = FormAction & {
 
 const ButtonToAddTask = (props: ButtonToAddTaskProps) => {
   const { transparent, ...formActionType } = props;
-  const classes = useStyles();
   const [isEditing, setIsEditing] = useState(false);
 
   const toggleForm = () => {
@@ -44,14 +25,17 @@ const ButtonToAddTask = (props: ButtonToAddTaskProps) => {
   return (
     <ClickAwayListener mouseEvent="onMouseDown" onClickAway={handleClickAway}>
       {isEditing ? (
-        <Card
-          elevation={7}
-          className={props.transparent ? classes.transparent : ''}
-        >
-          <CardActions style={{ display: 'block' }}>
+        transparent ? (
+          <div className="w-full">
             <TitleForm {...formActionType} handleClose={toggleForm} />
-          </CardActions>
-        </Card>
+          </div>
+        ) : (
+          <Card elevation={7}>
+            <CardActions className="block">
+              <TitleForm {...formActionType} handleClose={toggleForm} />
+            </CardActions>
+          </Card>
+        )
       ) : (
         <Button
           // https://mui.com/material-ui/migration/v5-component-changes/✅-remove-default-color-prop
@@ -59,10 +43,10 @@ const ButtonToAddTask = (props: ButtonToAddTaskProps) => {
           fullWidth
           startIcon={<AddIcon />}
           onClick={toggleForm}
-          classes={{
-            root: `${classes.root} ${props.transparent ? classes.wrapper : ''}`,
-          }}
-          className={props.transparent ? classes.transparent : classes.dim}
+          className={
+            'justify-start hover:backdrop-brightness-75 ' +
+            (transparent ? 'shadow-none' : 'backdrop-brightness-90')
+          }
         >
           Add new {props.model}
         </Button>

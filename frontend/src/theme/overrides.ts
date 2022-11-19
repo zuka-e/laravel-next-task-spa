@@ -8,10 +8,8 @@ const overrides: ThemeOptions['components'] = {
   MuiCssBaseline: {
     styleOverrides: {
       a: {
-        color: '#1a73e8',
         textDecoration: 'none',
         '&:hover': {
-          color: '#ffa133',
           textDecoration: 'underline',
         },
       },

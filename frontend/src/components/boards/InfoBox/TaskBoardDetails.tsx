@@ -1,8 +1,5 @@
 import * as yup from 'yup';
 import dayjs from 'dayjs';
-import { Theme } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
 import {
   Grid,
   Card,
@@ -26,46 +23,12 @@ import { useAppDispatch, useAppSelector } from 'utils/hooks';
 import { Link, MarkdownEditor } from 'templates';
 import { EditableTitle } from '..';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%',
-      borderRadius: 0,
-    },
-    breadcrumbs: {
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      '& li > *': { display: 'flex', alignItems: 'center' },
-    },
-    icon: {
-      marginRight: theme.spacing(0.5),
-      width: 20,
-      height: 20,
-    },
-    close: { marginLeft: 'auto' },
-    cardHeader: { paddingBottom: 0 },
-    rows: {
-      paddingTop: 0,
-      paddingBottom: 0,
-      '& > div': {
-        marginBottom: theme.spacing(1),
-        alignItems: 'center',
-      },
-    },
-    label: { flex: '0 0 100px', marginRight: theme.spacing(2) },
-  })
-);
-
 type TaskBoardDetailsProps = {
   board: TaskBoard;
 };
 
 const TaskBoardDetails = (props: TaskBoardDetailsProps) => {
   const { board } = props;
-  const classes = useStyles();
   const userId = useAppSelector((state) => state.auth.user?.id);
   const dispatch = useAppDispatch();
 
@@ -91,41 +54,50 @@ const TaskBoardDetails = (props: TaskBoardDetailsProps) => {
   };
 
   return (
-    <Card className={classes.root}>
-      <CardActions disableSpacing>
-        <Breadcrumbs aria-label="breadcrumb" className={classes.breadcrumbs}>
-          <Link href={`/users/${userId}/boards`} color="inherit">
-            <FolderIcon className={classes.icon} />
+    <Card className="flex h-full flex-col rounded-none">
+      <CardActions
+        disableSpacing
+        className="sticky top-0 z-10 gap-2 bg-inherit shadow-sm"
+      >
+        <Breadcrumbs
+          aria-label="breadcrumb"
+          className="overflow-x-auto whitespace-nowrap"
+          classes={{
+            ol: 'flex-nowrap',
+            li: '[&>*]:flex [&>*]:items-center',
+          }}
+        >
+          <Link href={`/users/${userId}/boards`}>
+            <FolderIcon className="mr-1 h-6 w-6" />
             {'Boards'}
           </Link>
-          <Typography>
-            <FolderOpenIcon className={classes.icon} />
+          <Typography className="line-clamp-1">
+            <FolderOpenIcon className="mr-1 h-6 w-6" />
             {board.title}
           </Typography>
         </Breadcrumbs>
         <IconButton
           aria-label="close"
           onClick={handleClose}
-          size="small"
-          className={classes.close}
+          className="ml-auto"
         >
           <CloseIcon />
         </IconButton>
       </CardActions>
       <CardHeader
-        className={classes.cardHeader}
+        className="pb-0"
         disableTypography
         title={<EditableTitle method="PATCH" model="board" data={board} />}
       />
-      <CardContent className={classes.rows}>
-        <Grid container>
-          <Grid item className={classes.label}>
+      <CardContent className="flex flex-col gap-3 py-0">
+        <Grid container className="items-center">
+          <Grid item className="mr-4 w-32">
             <label>合計リスト</label>
           </Grid>
           <Grid item>{board.lists.length}</Grid>
         </Grid>
-        <Grid container>
-          <Grid item className={classes.label}>
+        <Grid container className="items-center">
+          <Grid item className="mr-4 w-32">
             <label>
               合計カード
               <br />
@@ -137,14 +109,14 @@ const TaskBoardDetails = (props: TaskBoardDetailsProps) => {
             {totalList - totalCompletedCard})
           </Grid>
         </Grid>
-        <Grid container>
-          <Grid item className={classes.label}>
+        <Grid container className="items-center">
+          <Grid item className="mr-4 w-32">
             <label>作成日時</label>
           </Grid>
           <Grid item>{dayjs(board.createdAt).calendar()}</Grid>
         </Grid>
-        <Grid container>
-          <Grid item className={classes.label}>
+        <Grid container className="items-center">
+          <Grid item className="mr-4 w-32">
             <label>変更日時</label>
           </Grid>
           <Grid item>{dayjs(board.updatedAt).calendar()}</Grid>

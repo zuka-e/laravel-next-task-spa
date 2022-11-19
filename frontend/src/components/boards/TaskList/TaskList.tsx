@@ -1,10 +1,7 @@
 import { useState } from 'react';
 
 import { useDrop } from 'react-dnd';
-import { Theme } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
-import { Card, CardActions, CardContent, Grid, Chip } from '@mui/material';
+import { Card, CardActions, Grid, Chip } from '@mui/material';
 import type { SelectProps } from '@mui/material';
 
 import * as Model from 'models';
@@ -12,38 +9,10 @@ import { draggableItem, DragItem } from 'utils/dnd';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
 import { moveCard } from 'store/slices';
 import { updateTaskCardRelationships } from 'store/thunks/cards';
-import { LabeledSelect, ScrolledDiv } from 'templates';
+import { LabeledSelect } from 'templates';
 import { ButtonToAddTask } from '..';
 import { TaskCard } from '../TaskCard';
 import { ListCardHeader } from '.';
-
-const borderWidth = '2px';
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      boxShadow: theme.shadows[7],
-      backgroundColor: theme.palette.secondary.main,
-      color: theme.palette.secondary.contrastText,
-    },
-    selected: {
-      boxShadow: theme.shadows[3],
-      backgroundColor: theme.palette.secondary.dark,
-      border: borderWidth + ' solid ' + theme.palette.primary.main,
-      '& > .listWrapper': { margin: `-${borderWidth}` },
-    },
-    disablePadding: {
-      padding: `0px ${theme.spacing(1)}`,
-    },
-    cardItemBox: {
-      maxHeight: '90vh',
-      marginRight: theme.spacing(-0.5),
-      paddingRight: theme.spacing(0.5),
-      '& > .cardItem': {
-        marginBottom: theme.spacing(1),
-      },
-    },
-  })
-);
 
 const cardFilter = {
   ALL: 'All',
@@ -60,7 +29,6 @@ type TaskListProps = {
 
 const TaskList = (props: TaskListProps) => {
   const { list, listIndex } = props;
-  const classes = useStyles();
   const selectedId = useAppSelector((state) => state.boards.infoBox.data?.id);
   const dispatch = useAppDispatch();
   const [filterValue, setfilterValue] = useState<FilterName>(cardFilter.ALL);
@@ -106,7 +74,6 @@ const TaskList = (props: TaskListProps) => {
   });
 
   const isSelected = () => list.id === selectedId;
-  const rootClass = `${classes.root} ${isSelected() ? classes.selected : ''}`;
 
   const filteredCards = list.cards.filter((card) => {
     if (filterValue === cardFilter.TODO) return !card.done;
@@ -119,38 +86,49 @@ const TaskList = (props: TaskListProps) => {
   };
 
   return (
-    <Card ref={drop} className={rootClass}>
-      <div className="listWrapper">
-        <ListCardHeader list={list} />
+    <Card
+      ref={drop}
+      elevation={7}
+      className={
+        'bg-secondary text-white' +
+        (isSelected() ? ' bg-secondary-dark outline outline-primary' : '')
+      }
+    >
+      <ListCardHeader list={list} />
 
-        <CardActions>
-          <Grid container alignItems="center" justifyContent="space-between">
-            <Grid item>
-              <LabeledSelect
-                label="Filter"
-                options={cardFilter}
-                value={filterValue}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item>
-              <Chip label={filteredCards.length} title="タスク数" />
-            </Grid>
+      <CardActions>
+        <Grid container alignItems="center" justifyContent="space-between">
+          <Grid item>
+            <LabeledSelect
+              label="Filter"
+              options={cardFilter}
+              value={filterValue}
+              color="error"
+              onChange={handleChange}
+            />
           </Grid>
-        </CardActions>
+          <Grid item>
+            <Chip label={filteredCards.length} title="タスク数" />
+          </Grid>
+        </Grid>
+      </CardActions>
 
-        <CardContent className={classes.disablePadding}>
-          <ScrolledDiv className={classes.cardItemBox}>
-            {filteredCards.map((card, i) => (
-              <div key={card.id} className="cardItem">
-                <TaskCard card={card} cardIndex={i} listIndex={listIndex} />
-              </div>
-            ))}
-          </ScrolledDiv>
-        </CardContent>
-
-        <ButtonToAddTask method="POST" model="card" parent={list} transparent />
+      <div className="max-h-[90vh] overflow-y-auto p-2">
+        <div className="flex flex-col gap-2">
+          {filteredCards.map((card, i) => (
+            <TaskCard
+              key={card.id}
+              card={card}
+              cardIndex={i}
+              listIndex={listIndex}
+            />
+          ))}
+        </div>
       </div>
+
+      <CardActions>
+        <ButtonToAddTask method="POST" model="card" parent={list} transparent />
+      </CardActions>
     </Card>
   );
 };

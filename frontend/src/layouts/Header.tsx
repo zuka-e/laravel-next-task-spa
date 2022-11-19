@@ -1,9 +1,6 @@
 import { useState } from 'react';
 import Image from 'next/image';
 
-import { Theme } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
-import createStyles from '@mui/styles/createStyles';
 import { AppBar, Toolbar, Drawer, Avatar, IconButton } from '@mui/material';
 import {
   AccountCircle as AccountCircleIcon,
@@ -13,21 +10,12 @@ import {
 
 import { APP_NAME } from 'config/app';
 import { isSignedIn } from 'utils/auth';
-import { LinkButton, LinkWrapper, PopoverControl } from 'templates';
+import { Link, LinkButton, PopoverControl } from 'templates';
 import { AccountMenuList } from 'components/layouts/Header';
 import Sidebar from './Sidebar';
 import logo from 'images/logo.svg';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: { flexGrow: 1 },
-    title: { marginLeft: theme.spacing(2) },
-    avatar: { backgroundColor: theme.palette.secondary.dark },
-  })
-);
-
 const Header = () => {
-  const classes = useStyles();
   const [open, setOpen] = useState(false);
 
   const toggleDrawer =
@@ -51,13 +39,13 @@ const Header = () => {
     <PopoverControl
       trigger={
         <IconButton aria-label="account-menu" size="large">
-          <Avatar alt="avatar" src={undefined} className={classes.avatar}>
+          <Avatar alt="avatar" src={undefined} className="bg-secondary">
             <PersonIcon />
           </Avatar>
         </IconButton>
       }
     >
-      <div className={classes.root}>
+      <div className="flex-auto">
         <AccountMenuList />
       </div>
     </PopoverControl>
@@ -80,10 +68,10 @@ const Header = () => {
         <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
           <Sidebar toggleDrawer={toggleDrawer} />
         </Drawer>
-        <div className={`${classes.root} ${classes.title}`}>
-          <LinkWrapper to={'/'}>
+        <div className="ml-4 flex-auto">
+          <Link href={'/'}>
             <Image src={logo.src} alt={APP_NAME} width="120" height="30" />
-          </LinkWrapper>
+          </Link>
         </div>
         {isSignedIn() ? <AccountMenuButton /> : <SignInLinkButton />}
       </Toolbar>

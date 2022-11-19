@@ -1,7 +1,4 @@
 import dayjs from 'dayjs';
-import { Theme } from '@mui/material/styles';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import { CardHeader, Typography, Tooltip, IconButton } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 
@@ -10,38 +7,15 @@ import { PopoverControl } from 'templates';
 import { EditableTitle } from '..';
 import { BoardMenu } from '.';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(1.5),
-      paddingTop: theme.spacing(0.5),
-    },
-    action: { alignSelf: 'flex-end' },
-    title: {
-      overflow: 'hidden',
-      display: '-webkit-box',
-      '-webkit-box-orient': 'vertical',
-      '-webkit-line-clamp': 1,
-    },
-  })
-);
-
 type BoardCardHeaderProps = {
   board: TaskBoard;
 };
 
 const BoardCardHeader = (props: BoardCardHeaderProps) => {
   const { board } = props;
-  const classes = useStyles();
 
   const Title = () => (
-    <EditableTitle
-      method="PATCH"
-      model="board"
-      data={board}
-      disableMargin
-      inputStyle={classes.title}
-    />
+    <EditableTitle method="PATCH" model="board" data={board} disableMargin />
   );
 
   const Subheader = () => (
@@ -66,14 +40,12 @@ const BoardCardHeader = (props: BoardCardHeaderProps) => {
 
   return (
     <CardHeader
-      classes={{
-        root: classes.root,
-        action: classes.action,
-      }}
       disableTypography
       title={<Title />}
       subheader={<Subheader />}
       action={<Action />}
+      className="p-3"
+      classes={{ action: 'self-end' }}
     />
   );
 };
