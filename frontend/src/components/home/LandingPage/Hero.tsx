@@ -1,7 +1,13 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
-import { Button, Grid, Typography, List, ListItem } from '@mui/material';
+import {
+  Button,
+  Unstable_Grid2 as Grid,
+  Typography,
+  List,
+  ListItem,
+} from '@mui/material';
 import {
   PersonAdd as PersonAddIcon,
   LockOpen as LockOpenIcon,
@@ -51,12 +57,12 @@ const Hero = () => {
           </Typography>
         </div>
         <Grid container spacing={2}>
-          <Grid item>
+          <Grid>
             <LinkButton startIcon={<PersonAddIcon />} to="/register">
               登録する
             </LinkButton>
           </Grid>
-          <Grid item>
+          <Grid>
             <LinkButton
               startIcon={<LockOpenIcon />}
               color="secondary"
@@ -65,10 +71,14 @@ const Hero = () => {
               ログイン
             </LinkButton>
           </Grid>
-          <Grid item>
+          <Grid>
             <PopoverControl
               trigger={
-                <Button startIcon={<MenuIcon />} color="info">
+                <Button
+                  startIcon={<MenuIcon />}
+                  variant="contained"
+                  color="info"
+                >
                   又はゲストユーザーで試す
                 </Button>
               }
@@ -85,7 +95,7 @@ const Hero = () => {
           </Grid>
         </Grid>
       </Grid>
-      <Grid item md={5} sm={10} xs={10}>
+      <Grid xs={10} sm={10} md={5}>
         <div className="relative h-72 w-full">
           <Image src={hero.src} alt="hero" layout="fill" priority />
         </div>
