@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import { Check as CheckIcon } from '@material-ui/icons';

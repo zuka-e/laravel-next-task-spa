@@ -1,5 +1,3 @@
-import React from 'react';
-
 import * as yup from 'yup';
 import moment from 'moment';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';

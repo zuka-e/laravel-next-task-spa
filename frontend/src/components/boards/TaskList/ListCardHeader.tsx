@@ -1,5 +1,3 @@
-import React from 'react';
-
 import moment from 'moment';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { CardHeader, Typography, IconButton } from '@material-ui/core';

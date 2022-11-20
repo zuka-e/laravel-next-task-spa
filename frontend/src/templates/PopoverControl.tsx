@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Popover, PopoverOrigin } from '@material-ui/core';

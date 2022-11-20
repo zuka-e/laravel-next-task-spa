@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { useDrop } from 'react-dnd';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
