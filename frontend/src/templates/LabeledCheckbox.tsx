@@ -13,7 +13,7 @@ type LabeledCheckboxProps = {
   setChecked: React.Dispatch<React.SetStateAction<boolean>>;
 } & CheckboxProps;
 
-const LabeledCheckbox: React.FC<LabeledCheckboxProps> = (props) => {
+const LabeledCheckbox = (props: LabeledCheckboxProps) => {
   const { label, checked, setChecked, ...checkboxProps } = props;
   const classes = useStyles();
 

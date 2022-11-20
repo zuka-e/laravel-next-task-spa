@@ -44,7 +44,7 @@ type TaskCardProps = {
   listIndex: number;
 };
 
-const TaskCard: React.FC<TaskCardProps> = (props) => {
+const TaskCard = (props: TaskCardProps) => {
   const { card, cardIndex, listIndex } = props;
   const classes = useStyles();
   const selectedId = useAppSelector((state) => state.boards.infoBox.data?.id);

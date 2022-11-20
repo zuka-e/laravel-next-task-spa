@@ -64,7 +64,7 @@ type TaskListDetailsProps = {
   list: TaskList;
 };
 
-const TaskListDetails: React.FC<TaskListDetailsProps> = (props) => {
+const TaskListDetails = (props: TaskListDetailsProps) => {
   const { list } = props;
   const classes = useStyles();
   const { pathname, pathParams } = useRoute();

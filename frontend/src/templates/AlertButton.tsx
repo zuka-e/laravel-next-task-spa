@@ -45,7 +45,7 @@ type AlertButtonProps = {
   variant?: 'contained' | 'text';
 } & Omit<ButtonProps, 'color'>;
 
-const AlertButton: React.FC<AlertButtonProps> = (props) => {
+const AlertButton = (props: AlertButtonProps) => {
   const { color, variant, className, ...buttonProps } = props;
   const classes = useStyles();
   const classKey = `${variant || 'contained'}_${color}` as const;

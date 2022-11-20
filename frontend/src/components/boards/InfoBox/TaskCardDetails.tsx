@@ -73,7 +73,7 @@ type TaskCardDetailsProps = {
   card: TaskCard;
 };
 
-const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
+const TaskCardDetails = (props: TaskCardDetailsProps) => {
   const { card } = props;
   const classes = useStyles();
   const { pathname, pathParams } = useRoute();

@@ -55,7 +55,7 @@ type TaskListProps = {
   listIndex: number;
 };
 
-const TaskList: React.FC<TaskListProps> = (props) => {
+const TaskList = (props: TaskListProps) => {
   const { list, listIndex } = props;
   const classes = useStyles();
   const selectedId = useAppSelector((state) => state.boards.infoBox.data?.id);

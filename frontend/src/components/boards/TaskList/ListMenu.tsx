@@ -24,7 +24,7 @@ type ListMenuProps = {
   list: TaskList;
 };
 
-const ListMenu: React.FC<ListMenuProps> = (props) => {
+const ListMenu = (props: ListMenuProps) => {
   const { list } = props;
   const selectedId = useAppSelector((state) => state.boards.infoBox.data?.id);
   const dispatch = useAppDispatch();

@@ -39,7 +39,7 @@ type EditableTitleProps = FormAction & {
   maxRows?: number;
 } & TextFieldProps;
 
-const EditableTitle: React.FC<EditableTitleProps> = (props) => {
+const EditableTitle = (props: EditableTitleProps) => {
   const { inputStyle, disableMargin, maxRows, ...formProps } = props;
   const { method, model, variant, ...textFieldProps } = formProps;
   const defaultValue = props.method === 'PATCH' ? props.data.title : '';

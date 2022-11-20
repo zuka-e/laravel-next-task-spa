@@ -39,7 +39,7 @@ type SearchResultProps = {
   input: string;
 };
 
-const SearchResult: React.FC<SearchResultProps> = (props) => {
+const SearchResult = (props: SearchResultProps) => {
   const { input } = props;
   const classes = useStyles();
   const route = useRoute();

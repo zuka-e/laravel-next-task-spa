@@ -33,7 +33,7 @@ type ButtonToAddTaskProps = FormAction & {
   transparent?: boolean;
 };
 
-const ButtonToAddTask: React.FC<ButtonToAddTaskProps> = (props) => {
+const ButtonToAddTask = (props: ButtonToAddTaskProps) => {
   const { transparent, ...formActionType } = props;
   const classes = useStyles();
   const [isEditing, setIsEditing] = useState(false);

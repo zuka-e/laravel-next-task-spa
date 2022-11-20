@@ -24,7 +24,7 @@ type BoardMenuProps = {
   board: TaskBoard;
 };
 
-const BoardMenu: React.FC<BoardMenuProps> = (props) => {
+const BoardMenu = (props: BoardMenuProps) => {
   const { board } = props;
   const { pathParams } = useRoute();
   const selectedId = useAppSelector((state) => state.boards.infoBox.data?.id);

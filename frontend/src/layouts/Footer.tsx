@@ -24,7 +24,7 @@ const Copyright = () => (
   </Typography>
 );
 
-const Footer: React.FC = () => {
+const Footer = () => {
   const classes = useStyles();
 
   return (

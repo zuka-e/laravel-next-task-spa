@@ -30,7 +30,7 @@ type BoardCardHeaderProps = {
   board: TaskBoard;
 };
 
-const BoardCardHeader: React.FC<BoardCardHeaderProps> = (props) => {
+const BoardCardHeader = (props: BoardCardHeaderProps) => {
   const { board } = props;
   const classes = useStyles();
 

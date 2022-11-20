@@ -25,7 +25,7 @@ type DeleteAccountDialogProps = {
   trigger: JSX.Element;
 };
 
-const DeleteAccountDialog: React.FC<DeleteAccountDialogProps> = (props) => {
+const DeleteAccountDialog = (props: DeleteAccountDialogProps) => {
   const { trigger } = props;
   const classes = useStyles();
   const dispatch = useAppDispatch();

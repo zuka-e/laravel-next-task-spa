@@ -20,7 +20,7 @@ type DeleteTaskDialogProps = DeleteAction & {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const DeleteTaskDialog: React.FC<DeleteTaskDialogProps> = (props) => {
+const DeleteTaskDialog = (props: DeleteTaskDialogProps) => {
   const dispatch = useAppDispatch();
 
   const renderTitle = () => {

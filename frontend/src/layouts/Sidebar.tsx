@@ -34,7 +34,7 @@ type SidebarProps = {
   ) => (event: React.KeyboardEvent | React.MouseEvent) => void;
 };
 
-const Sidebar: React.FC<SidebarProps> = (props) => {
+const Sidebar = (props: SidebarProps) => {
   const { toggleDrawer } = props;
   const classes = useStyles();
 

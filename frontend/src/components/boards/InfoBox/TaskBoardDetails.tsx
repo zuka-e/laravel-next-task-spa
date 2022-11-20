@@ -63,7 +63,7 @@ type TaskBoardDetailsProps = {
   board: TaskBoard;
 };
 
-const TaskBoardDetails: React.FC<TaskBoardDetailsProps> = (props) => {
+const TaskBoardDetails = (props: TaskBoardDetailsProps) => {
   const { board } = props;
   const classes = useStyles();
   const userId = useAppSelector((state) => state.auth.user?.id);

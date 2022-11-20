@@ -66,7 +66,7 @@ type MarkdownEditorProps = {
   defaultValue?: string;
 };
 
-const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
+const MarkdownEditor = (props: MarkdownEditorProps) => {
   const { schema, defaultValue } = props;
   const prop = Object.keys(schema.fields)[0];
   const classes = useStyles();

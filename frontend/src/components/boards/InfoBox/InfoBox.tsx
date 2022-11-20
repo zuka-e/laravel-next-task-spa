@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const InfoBox: React.FC<JSX.IntrinsicElements['div']> = (props) => {
+const InfoBox = (props: JSX.IntrinsicElements['div']) => {
   const { className, ...divProps } = props;
   const classes = useStyles();
   const dispatch = useAppDispatch();

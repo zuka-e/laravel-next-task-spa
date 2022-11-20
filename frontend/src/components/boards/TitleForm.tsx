@@ -31,7 +31,7 @@ type FormProps = FormAction & {
   handleClose: () => void;
 } & TextFieldProps;
 
-const TitleForm: React.FC<FormProps> = (props) => {
+const TitleForm = (props: FormProps) => {
   const { method, model, handleClose, ...textFieldProps } = props;
   const dispatch = useAppDispatch();
   const submitRef = useRef<HTMLInputElement>(null);

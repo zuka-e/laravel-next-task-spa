@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Header: React.FC = () => {
+const Header = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
 

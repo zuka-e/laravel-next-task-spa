@@ -22,7 +22,7 @@ type SortSelectProps =
   | { model: 'list'; boardId: TaskList['boardId'] }
   | { model: 'card'; boardId: TaskCard['boardId']; listId: TaskCard['listId'] };
 
-const SortSelect: React.FC<SortSelectProps> = (props) => {
+const SortSelect = (props: SortSelectProps) => {
   const boardId = props.boardId;
   const listId = props.model === 'card' ? props.listId : undefined;
   const dispatch = useAppDispatch();

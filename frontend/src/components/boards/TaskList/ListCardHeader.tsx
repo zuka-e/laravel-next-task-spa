@@ -32,7 +32,7 @@ type ListCardHeaderProps = {
   list: TaskList;
 };
 
-const ListCardHeader: React.FC<ListCardHeaderProps> = (props) => {
+const ListCardHeader = (props: ListCardHeaderProps) => {
   const { list } = props;
   const classes = useStyles();
 

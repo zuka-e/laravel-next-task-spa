@@ -48,7 +48,7 @@ type LabeledSelectProps = {
   options: Record<string, MenuItemProps['value']>;
 } & SelectProps;
 
-const LabeledSelect: React.FC<LabeledSelectProps> = (props) => {
+const LabeledSelect = (props: LabeledSelectProps) => {
   const { label, options, color, ...selectProps } = props;
   const classes = useStyles();
 

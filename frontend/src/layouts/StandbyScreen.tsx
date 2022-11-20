@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Header, Footer, Progressbar } from 'layouts';
 
-const StandbyScreen: React.FC = () => {
+const StandbyScreen = () => {
   return (
     <React.Fragment>
       <Header />
