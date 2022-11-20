@@ -9,11 +9,7 @@ import Head from 'next/head';
 import { Provider } from 'react-redux';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import {
-  ThemeProvider,
-  Theme,
-  StyledEngineProvider,
-} from '@mui/material/styles';
+import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -26,11 +22,6 @@ import { PageHandler } from 'components/pages';
 
 import 'styles/globals.css';
 import 'config/dayjs';
-
-declare module '@mui/styles/defaultTheme' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface DefaultTheme extends Theme {}
-}
 
 if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
   // With `import` instead of `require`, API requests start before MSW enabled,
