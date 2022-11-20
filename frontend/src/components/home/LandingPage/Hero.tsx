@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
-import { Grid, Typography, List, ListItem } from '@mui/material';
+import { Button, Grid, Typography, List, ListItem } from '@mui/material';
 import {
   PersonAdd as PersonAddIcon,
   LockOpen as LockOpenIcon,
@@ -12,7 +12,7 @@ import { GUEST_EMAIL, GUEST_NAME, GUEST_PASSWORD } from 'config/app';
 import { createUser, signInWithEmail } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { makeEmail } from 'utils/generator';
-import { AlertButton, LinkButton, PopoverControl } from 'templates';
+import { LinkButton, PopoverControl } from 'templates';
 import hero from 'images/hero.svg';
 
 const Hero = () => {
@@ -68,9 +68,9 @@ const Hero = () => {
           <Grid item>
             <PopoverControl
               trigger={
-                <AlertButton startIcon={<MenuIcon />} color="info">
+                <Button startIcon={<MenuIcon />} color="info">
                   又はゲストユーザーで試す
-                </AlertButton>
+                </Button>
               }
             >
               <List component="nav">

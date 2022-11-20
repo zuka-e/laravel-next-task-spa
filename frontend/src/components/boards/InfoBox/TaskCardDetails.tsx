@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import dayjs from 'dayjs';
 import {
+  Button,
   Grid,
   Card,
   CardHeader,
@@ -26,7 +27,6 @@ import { useAppDispatch, useDeepEqualSelector, useRoute } from 'utils/hooks';
 import { closeInfoBox } from 'store/slices/taskBoardSlice';
 import { updateTaskCard } from 'store/thunks/cards';
 import {
-  AlertButton,
   DatetimeInput,
   DeleteTaskDialog,
   Link,
@@ -44,7 +44,7 @@ const TaskCardDetails = (props: TaskCardDetailsProps) => {
   const { pathParams } = useRoute();
   const dispatch = useAppDispatch();
   const list = useDeepEqualSelector((state) =>
-    state.boards.docs[pathParams.boardId?.toString()].lists.find(
+    state.boards.docs[pathParams.boardId.toString()].lists.find(
       (list) => list.id === card.listId
     )
   );
@@ -195,15 +195,15 @@ const TaskCardDetails = (props: TaskCardDetailsProps) => {
             setOpen={setOpenDeleteDialog}
           />
         )}
-        <AlertButton
+        <Button
           onClick={handleDelete}
           startIcon={<DeleteIcon />}
           title="削除"
-          color="danger"
+          color="error"
           className="ml-auto self-end"
         >
           削除
-        </AlertButton>
+        </Button>
       </CardActions>
     </Card>
   );

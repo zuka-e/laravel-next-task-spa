@@ -11,7 +11,6 @@ import {
 
 import { deleteAccount } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
-import { AlertButton } from 'templates';
 
 type DeleteAccountDialogProps = {
   trigger: JSX.Element;
@@ -53,9 +52,9 @@ const DeleteAccountDialog = (props: DeleteAccountDialogProps) => {
           <Button onClick={handleClose} color="primary" autoFocus>
             キャンセル
           </Button>
-          <AlertButton onClick={handleDelete} color="danger">
+          <Button onClick={handleDelete} color="error">
             削除
-          </AlertButton>
+          </Button>
         </DialogActions>
       </Dialog>
     </>

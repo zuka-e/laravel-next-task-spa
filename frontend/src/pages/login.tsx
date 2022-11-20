@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {
+  Button,
   TextField,
   Checkbox,
   FormControlLabel,
@@ -18,7 +19,7 @@ import { APP_NAME } from 'config/app';
 import { SignInRequest, signInWithEmail } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { FormLayout } from 'layouts';
-import { AlertButton, SubmitButton } from 'templates';
+import { SubmitButton } from 'templates';
 import type { GuestPage } from 'routes';
 
 type FormData = SignInRequest;
@@ -136,26 +137,26 @@ const SignIn = () => {
           <div className="my-8">
             <SubmitButton fullWidth>{'Sign In'}</SubmitButton>
           </div>
-          <AlertButton
+          <Button
             color="info"
             variant="text"
             size="small"
             onClick={() => router.push('/forgot-password')}
           >
             {'Forgot password?'}
-          </AlertButton>
+          </Button>
           <Divider className="my-4" />
           <Grid container justifyContent="flex-end">
             <Grid item>
               {`New to ${APP_NAME}? `}
-              <AlertButton
+              <Button
                 color="info"
                 variant="text"
                 size="small"
                 onClick={() => router.push('/register')}
               >
                 {'Create an account'}
-              </AlertButton>
+              </Button>
             </Grid>
           </Grid>
         </form>

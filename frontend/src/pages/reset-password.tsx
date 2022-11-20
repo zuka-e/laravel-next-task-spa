@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {
+  Button,
   TextField,
   Divider,
   Grid,
@@ -21,7 +22,7 @@ import {
 } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { FormLayout } from 'layouts';
-import { AlertButton, SubmitButton } from 'templates';
+import { SubmitButton } from 'templates';
 import type { GuestPage } from 'routes';
 
 type FormData = ResetPasswordRequest;
@@ -146,14 +147,14 @@ const ResetPassword = () => {
           <Divider className="my-4" />
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <AlertButton
+              <Button
                 color="info"
                 variant="text"
                 size="small"
                 onClick={() => router.push('/')}
               >
                 {'Cancel'}
-              </AlertButton>
+              </Button>
             </Grid>
           </Grid>
         </form>

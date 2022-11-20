@@ -2,6 +2,7 @@ import Head from 'next/head';
 import type { GetStaticProps } from 'next';
 
 import {
+  Button,
   Card,
   CardContent,
   CardHeader,
@@ -11,7 +12,6 @@ import {
 
 import { isGuest } from 'utils/auth';
 import { BaseLayout } from 'layouts';
-import { AlertButton } from 'templates';
 import {
   UserProfile,
   Password,
@@ -68,9 +68,9 @@ const Account = () => {
                 <CardContent>
                   <DeleteAccountDialog
                     trigger={
-                      <AlertButton disabled={isGuest()} color="danger">
+                      <Button disabled={isGuest()} color="error">
                         アカウントを削除
-                      </AlertButton>
+                      </Button>
                     }
                   />
                 </CardContent>
