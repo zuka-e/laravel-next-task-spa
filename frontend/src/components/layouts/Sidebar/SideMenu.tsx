@@ -1,4 +1,3 @@
-import { Fragment } from 'react';
 import { useRouter } from 'next/router';
 
 import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
@@ -77,14 +76,14 @@ const SideMenu = () => {
   };
 
   return (
-    <Fragment>
+    <>
       {(Object.keys(menuItem) as (keyof typeof menuItem)[]).map((key) => (
         <ListItem key={key} button onClick={handleClick(key)}>
           <ListItemIcon>{renderIcon(key)}</ListItemIcon>
           <ListItemText primary={menuItem[key]} />
         </ListItem>
       ))}
-    </Fragment>
+    </>
   );
 };
 

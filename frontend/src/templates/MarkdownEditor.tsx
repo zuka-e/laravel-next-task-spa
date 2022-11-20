@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 
 import { useForm } from 'react-hook-form';
@@ -106,7 +106,7 @@ const MarkdownEditor = (props: MarkdownEditorProps) => {
     );
 
   return (
-    <Fragment>
+    <>
       <MDEditor
         autoFocus
         preview={mode}
@@ -131,7 +131,7 @@ const MarkdownEditor = (props: MarkdownEditorProps) => {
           {'Save'}
         </SubmitButton>
       </CardActions>
-    </Fragment>
+    </>
   );
 };
 

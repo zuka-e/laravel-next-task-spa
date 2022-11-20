@@ -40,7 +40,7 @@ const DeleteAccountDialog = (props: DeleteAccountDialogProps) => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <Box onClick={handleClickOpen} className={classes.triggerWrapper}>
         {trigger}
       </Box>
@@ -67,7 +67,7 @@ const DeleteAccountDialog = (props: DeleteAccountDialogProps) => {
           </AlertButton>
         </DialogActions>
       </Dialog>
-    </React.Fragment>
+    </>
   );
 };
 

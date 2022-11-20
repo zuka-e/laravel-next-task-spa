@@ -91,7 +91,7 @@ const PopoverControl = (props: PopoverControlProps) => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <div
         aria-describedby={htmlId}
         onClick={handleClick}
@@ -111,7 +111,7 @@ const PopoverControl = (props: PopoverControlProps) => {
       >
         {children}
       </Popover>
-    </React.Fragment>
+    </>
   );
 };
 

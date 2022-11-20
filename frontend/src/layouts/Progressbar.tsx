@@ -24,7 +24,7 @@ const Progressbar = (props: LinearProgressProps) => {
         {...props}
       />
     );
-  else return <React.Fragment />;
+  else return <></>;
 };
 
 export default Progressbar;

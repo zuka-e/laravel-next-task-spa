@@ -57,7 +57,7 @@ const FormLayout = (props: FormLayoutProps) => {
   const classes = useStyles();
 
   return (
-    <React.Fragment>
+    <>
       <Container className={classes.main} component="main" maxWidth="xs">
         {message && (
           <AlertMessage
@@ -99,7 +99,7 @@ const FormLayout = (props: FormLayoutProps) => {
           </Grid>
         </Grid>
       </footer>
-    </React.Fragment>
+    </>
   );
 };
 

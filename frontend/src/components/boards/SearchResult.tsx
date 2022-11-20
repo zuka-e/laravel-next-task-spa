@@ -91,7 +91,7 @@ const SearchResult = (props: SearchResultProps) => {
     return <CardContent>{'ここに検索結果が表示されます。'}</CardContent>;
 
   return (
-    <React.Fragment>
+    <>
       {results.lists.length > 0 && (
         <List
           dense
@@ -141,7 +141,7 @@ const SearchResult = (props: SearchResultProps) => {
           ))}
         </List>
       )}
-    </React.Fragment>
+    </>
   );
 };
 

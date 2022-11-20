@@ -19,7 +19,7 @@ const FlashNotification = () => {
   };
 
   // `flash`が初期値の場合表示しない
-  if (flash.length === 0) return <React.Fragment />;
+  if (flash.length === 0) return <></>;
 
   return (
     <Snackbar

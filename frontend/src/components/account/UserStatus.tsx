@@ -1,5 +1,3 @@
-import { Fragment } from 'react';
-
 import moment from 'moment';
 import { Box, Button, Grid, Typography } from '@material-ui/core';
 
@@ -20,7 +18,7 @@ const UserStatus = () => {
     isVerified() ? (
       <AlertMessage severity="success" body="認証済みです" />
     ) : (
-      <Fragment>
+      <>
         <AlertMessage severity="warning">
           <Typography variant="body2">{`メール認証が必要です。`}</Typography>
           <Typography variant="body2" paragraph>
@@ -37,7 +35,7 @@ const UserStatus = () => {
             メールを再送信する
           </Button>
         </Box>
-      </Fragment>
+      </>
     );
 
   return (
