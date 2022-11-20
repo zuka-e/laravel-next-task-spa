@@ -27,6 +27,12 @@ const overrides: ThemeOptions['components'] = {
       root: { textTransform: 'unset' },
     },
   },
+  MuiLink: {
+    defaultProps: {
+      // https://mui.com/material-ui/migration/v5-component-changes/#✅-update-default-underline-prop
+      underline: 'hover',
+    },
+  },
   MuiList: {
     styleOverrides: {
       dense: { paddingTop: '4px', paddingBottom: '4px' },
