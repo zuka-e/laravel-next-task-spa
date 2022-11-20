@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 
 import type { AsyncThunk } from '@reduxjs/toolkit';
 import { useForm } from 'react-hook-form';
@@ -39,12 +39,6 @@ const TitleForm = (props: FormProps) => {
     mode: 'onBlur',
     resolver: yupResolver(schema),
   });
-
-  useEffect(() => {
-    return function cleanup() {
-      handleClose();
-    };
-  }, [handleClose]);
 
   const handleDispatch = async <
     T extends AsyncThunk<
