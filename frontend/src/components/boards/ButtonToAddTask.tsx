@@ -55,6 +55,8 @@ const ButtonToAddTask = (props: ButtonToAddTaskProps) => {
         </Card>
       ) : (
         <Button
+          // https://mui.com/material-ui/migration/v5-component-changes/✅-remove-default-color-prop
+          color="inherit"
           fullWidth
           startIcon={<AddIcon />}
           onClick={toggleForm}
