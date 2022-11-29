@@ -9,7 +9,9 @@ import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 import SignUp from 'pages/register';
 
 jest.mock('next/router', () => ({
-  useRouter: jest.fn(),
+  useRouter: jest.fn(() => ({
+    pathname: 'any',
+  })),
 }));
 
 beforeEach(() => {
