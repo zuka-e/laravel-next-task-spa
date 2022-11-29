@@ -40,7 +40,7 @@ describe('SignIn', () => {
     });
   });
 
-  it('should display password by a show password option', () => {
+  it('should display password by a show password option', async () => {
     render(
       <Provider store={store}>
         <SignIn />
@@ -51,7 +51,9 @@ describe('SignIn', () => {
       screen.queryByRole('textbox', { name: passwordFieldName })
     ).toBeNull();
 
-    userEvent.click(screen.getByRole('checkbox', { name: /Show password/i }));
+    await userEvent.click(
+      screen.getByRole('checkbox', { name: /Show password/i })
+    );
 
     expect(
       screen.getByRole('textbox', { name: passwordFieldName })
@@ -59,7 +61,7 @@ describe('SignIn', () => {
   });
 
   describe('Link existence', () => {
-    it('has a link to the registration page', () => {
+    it('has a link to the registration page', async () => {
       (useRouter as jest.Mock).mockReturnValue({
         push: jest.fn(),
       });
@@ -70,11 +72,14 @@ describe('SignIn', () => {
         </Provider>
       );
 
-      userEvent.click(screen.getByRole('button', { name: signUpFormName }));
+      await userEvent.click(
+        screen.getByRole('button', { name: signUpFormName })
+      );
+
       expect(useRouter().push).toHaveBeenCalledWith('/register');
     });
 
-    it('has a button link to the forgot-password page', () => {
+    it('has a button link to the forgot-password page', async () => {
       (useRouter as jest.Mock).mockReturnValue({
         push: jest.fn(),
       });
@@ -85,7 +90,7 @@ describe('SignIn', () => {
         </Provider>
       );
 
-      userEvent.click(
+      await userEvent.click(
         screen.getByRole('button', { name: forgotPasswordFormName })
       );
 
@@ -95,6 +100,7 @@ describe('SignIn', () => {
 
   describe('Form input', () => {
     it('should display an error message with the wrong input', async () => {
+      const user = userEvent.setup();
       render(
         <Provider store={store}>
           <SignIn />
@@ -109,15 +115,16 @@ describe('SignIn', () => {
       expect(screen.queryByRole('alert')).toBeNull();
       expect(screen.queryByText(errorMessage)).toBeNull();
 
-      userEvent.type(emailField, GUEST_EMAIL);
-      userEvent.type(passwordField, GUEST_PASSWORD + 'a');
-      userEvent.click(submit);
+      await user.type(emailField, GUEST_EMAIL);
+      await user.type(passwordField, GUEST_PASSWORD + 'a');
+      await user.click(submit);
 
       expect(await screen.findByRole('alert')).toBeVisible();
       expect(screen.getByText(errorMessage)).toBeVisible();
     });
 
     it('should be authenticated with the right input', async () => {
+      const user = userEvent.setup();
       render(
         <Provider store={store}>
           <SignIn />
@@ -130,9 +137,9 @@ describe('SignIn', () => {
       const passwordField = screen.getByLabelText(passwordFieldName);
       const submit = screen.getByRole('button', { name: submitButtonName });
 
-      userEvent.type(emailField, GUEST_EMAIL);
-      userEvent.type(passwordField, GUEST_PASSWORD);
-      userEvent.click(submit);
+      await user.type(emailField, GUEST_EMAIL);
+      await user.type(passwordField, GUEST_PASSWORD);
+      await user.click(submit);
 
       await waitFor(() => {
         expect(store.getState().auth.signedIn).toBe(true);
