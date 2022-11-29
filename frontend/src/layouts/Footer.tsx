@@ -1,41 +1,24 @@
-import React from 'react';
-
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Container, Grid, Box, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@mui/material';
 
 import { APP_NAME } from 'config/app';
 import { Link } from 'templates';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    footer: {
-      marginTop: 'auto',
-      paddingTop: theme.spacing(4),
-      paddingBottom: theme.spacing(1),
-      backgroundColor: theme.palette.common.black,
-      color: theme.palette.common.white,
-    },
-  })
-);
-
 const Copyright = () => (
-  <Typography variant="body2" color="inherit">
+  <Typography variant="body2" className="text-inherit">
     © {APP_NAME} {new Date().getFullYear()}
   </Typography>
 );
 
-const Footer: React.FC = () => {
-  const classes = useStyles();
-
+const Footer = () => {
   return (
-    <Container component="footer" className={classes.footer} maxWidth={false}>
+    <footer className="mt-auto bg-black py-8 text-white">
       <Grid container direction="column" alignItems="center">
         <Grid item>
-          <Link href="/terms" color="inherit">
+          <Link href="/terms" className="text-inherit">
             Terms
           </Link>
-          <Box display="inline" borderLeft="1px solid" ml={1} pl={1} />
-          <Link href="/privacy" color="inherit">
+          <span className="ml-2 border-0 border-l border-solid pl-2" />
+          <Link href="/privacy" className="text-inherit">
             Privacy
           </Link>
         </Grid>
@@ -43,7 +26,7 @@ const Footer: React.FC = () => {
           <Copyright />
         </Grid>
       </Grid>
-    </Container>
+    </footer>
   );
 };
 

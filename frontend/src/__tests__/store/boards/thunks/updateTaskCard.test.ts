@@ -32,7 +32,7 @@ describe('Thunk updating a task card', () => {
   const requestBody: UpdateTaskCardRequest = {
     title: generateRandomString(20),
     content: generateRandomString(255),
-    deadline: new Date(),
+    deadline: new Date().toISOString(),
     done: !cardOfGuestUser.done,
   };
 

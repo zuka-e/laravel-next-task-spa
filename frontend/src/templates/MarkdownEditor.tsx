@@ -1,12 +1,12 @@
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
+import type { SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { ObjectShape } from 'yup/lib/object';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { CardActions } from '@material-ui/core';
+import type { ObjectShape } from 'yup/lib/object';
+import { CardActions } from '@mui/material';
 import type { MDEditorProps, PreviewType } from '@uiw/react-md-editor';
 import type { MarkdownPreviewProps } from '@uiw/react-markdown-preview';
 
@@ -44,94 +44,86 @@ const MarkdownPreview = dynamic<MarkdownPreviewProps>(
   { ssr: false }
 );
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    previewBox: {
-      '&:hover': {
-        boxShadow: `0 0 0 1px ${theme.palette.divider}`,
-        borderRadius: theme.shape.borderRadius,
-      },
-    },
-    error: { boxShadow: `0 0 0 1px ${theme.palette.error.main}` },
-    helperText: {
-      flexGrow: 1,
-      '&.error': { color: theme.palette.error.main },
-    },
-  })
-);
-
 type MarkdownEditorProps = {
   schema: yup.ObjectSchema<ObjectShape>;
   onSubmit: (text: string) => void;
   defaultValue?: string;
 };
 
-const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
+const MarkdownEditor = (props: MarkdownEditorProps) => {
   const { schema, defaultValue } = props;
-  const prop = Object.keys(schema.fields)[0];
-  const classes = useStyles();
+  const prop: keyof typeof schema.fields = Object.keys(schema.fields)[0];
   const [mode, setMode] = useState<PreviewType>(
     defaultValue ? 'preview' : 'edit'
   );
-  const [value, setValue] = useState(defaultValue);
   const {
-    register,
-    handleSubmit,
     formState: { errors },
+    control,
+    handleSubmit,
+    resetField,
   } = useForm<Record<typeof prop, string>>({
     mode: 'onBlur',
     resolver: yupResolver(schema),
   });
 
+  const handleClickPreview = () => {
+    setMode('edit');
+  };
+
+  const onSubmit: SubmitHandler<Record<typeof prop, string>> = (data) => {
+    if (data[prop] === defaultValue) {
+      setMode('preview');
+      return;
+    }
+
+    props.onSubmit(data[prop]);
+  };
+
   // 表示するデータが変更された場合に値を初期化する
   useEffect(() => {
     setMode(defaultValue ? 'preview' : 'edit');
-    setValue(defaultValue);
-  }, [defaultValue]);
-
-  const handleClick = () => setMode('edit');
-
-  const onSubmit = (data: Record<typeof prop, string>) => {
-    data[prop] && setMode('preview');
-
-    if (defaultValue === data[prop]) return;
-    else props.onSubmit(data[prop]);
-  };
+    resetField(prop, { defaultValue });
+  }, [defaultValue, prop, resetField]);
 
   if (mode === 'preview' && defaultValue)
     return (
-      <CardActions onClick={handleClick} className={classes.previewBox}>
-        <MarkdownPreview source={value} />
+      <CardActions
+        onClick={handleClickPreview}
+        className="overflow-y-auto rounded outline-1 hover:outline"
+      >
+        <MarkdownPreview source={defaultValue} />
       </CardActions>
     );
 
   return (
-    <Fragment>
-      <MDEditor
-        autoFocus
-        preview={mode}
-        previewOptions={{ style: { padding: '10px' } }}
-        commands={mdCommands}
-        value={value}
-        onChange={setValue}
-        textareaProps={{
-          placeholder: 'Enter the text',
-          name: register(prop)['name'],
-          onBlur: register(prop)['onBlur'],
-        }}
-        className={errors[prop] ? classes.error : undefined}
+    <form onSubmit={handleSubmit(onSubmit)}>
+      {/* cf. https://react-hook-form.com/get-started/#IntegratingwithUIlibraries */}
+      <Controller
+        control={control}
+        name={prop}
+        defaultValue={defaultValue}
+        render={({ field }) => (
+          <MDEditor
+            autoFocus
+            preview={mode}
+            commands={mdCommands}
+            className={errors[prop] ? 'outline outline-1 outline-error' : ''}
+            {...field}
+            textareaProps={{
+              placeholder: 'Enter the text',
+            }}
+          />
+        )}
       />
-      <CardActions>
-        <span
-          className={`${classes.helperText}${errors[prop] ? ' error' : ''}`}
-        >
+      <div className="my-2 flex items-baseline">
+        <span className={errors[prop] ? 'text-error' : ''}>
           {errors[prop]?.message}
         </span>
-        <SubmitButton onClick={handleSubmit(onSubmit)} size="small">
+        <SubmitButton size="small" className="ml-auto">
           {'Save'}
         </SubmitButton>
-      </CardActions>
-    </Fragment>
+      </div>
+    </form>
   );
 };
 

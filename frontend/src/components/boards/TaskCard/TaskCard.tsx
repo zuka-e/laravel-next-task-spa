@@ -1,42 +1,13 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 
 import { useDrag, useDrop } from 'react-dnd';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Card, Typography } from '@material-ui/core';
+import { Card, Typography } from '@mui/material';
 
-import theme from 'theme';
 import * as Model from 'models';
 import { draggableItem, DragItem } from 'utils/dnd';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
 import { activateEventAttr as activateInfoBoxEventAttr } from 'utils/infoBox';
 import { moveCard, openInfoBox } from 'store/slices/taskBoardSlice';
-
-const defaultPadding = theme.spacing(0.75);
-const borderWidth = '2px';
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      boxShadow: theme.shadows[1],
-      cursor: 'pointer',
-      '&:hover': { opacity: 0.8 },
-      '& > p': {
-        overflow: 'hidden',
-        display: '-webkit-box',
-        '-webkit-box-orient': 'vertical',
-        '-webkit-line-clamp': 3,
-        padding: defaultPadding,
-        whiteSpace: 'pre-wrap',
-      },
-    },
-    selected: {
-      boxShadow: theme.shadows[3],
-      backgroundColor: theme.palette.primary.light,
-      border: borderWidth + ' solid ' + theme.palette.primary.main,
-      '& > p': { padding: `calc(${defaultPadding}px - ${borderWidth})` },
-    },
-    dragAndHover: { opacity: 0 },
-  })
-);
 
 type TaskCardProps = {
   card: Model.TaskCard;
@@ -44,9 +15,8 @@ type TaskCardProps = {
   listIndex: number;
 };
 
-const TaskCard: React.FC<TaskCardProps> = (props) => {
+const TaskCard = (props: TaskCardProps) => {
   const { card, cardIndex, listIndex } = props;
-  const classes = useStyles();
   const selectedId = useAppSelector((state) => state.boards.infoBox.data?.id);
   const dispatch = useAppDispatch();
   const ref = useRef<HTMLDivElement>(null);
@@ -97,9 +67,6 @@ const TaskCard: React.FC<TaskCardProps> = (props) => {
   drag(drop(ref));
 
   const isSelected = () => card.id === selectedId;
-  const className = `${classes.root} ${isSelected() ? classes.selected : ''} ${
-    isOver ? classes.dragAndHover : ''
-  }`;
 
   const handleClick = () => {
     if (isSelected()) activateInfoBoxEventAttr('shown');
@@ -107,8 +74,21 @@ const TaskCard: React.FC<TaskCardProps> = (props) => {
   };
 
   return (
-    <Card ref={ref} onClick={handleClick} className={className}>
-      <Typography title={card.title}>{card.title}</Typography>
+    <Card
+      ref={ref}
+      onClick={handleClick}
+      className={
+        'cursor-pointer hover:opacity-80' +
+        (isSelected() ? ' opacity-80 outline outline-primary ' : ' ') +
+        (isOver ? 'opacity-0' : '')
+      }
+    >
+      <Typography
+        title={card.title}
+        className="whitespace-pre-wrap p-1.5 line-clamp-3"
+      >
+        {card.title}
+      </Typography>
     </Card>
   );
 };

@@ -260,9 +260,11 @@ export const taskBoardSlice = createSlice({
         (list) => list.id === updatedList.id
       );
 
+      if (!currentList) throw new Error();
+
       Object.assign(currentList, updatedList);
 
-      if (currentList?.id === state.infoBox.data?.id)
+      if (currentList.id === state.infoBox.data?.id)
         state.infoBox.data = { ...state.infoBox.data, ...updatedList };
 
       state.loading = false;
@@ -303,8 +305,10 @@ export const taskBoardSlice = createSlice({
 
       newCard.boardId = boardId;
       const list = state.docs[boardId].lists.find((list) => list.id === listId);
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      list!.cards = [...list!.cards, { ...newCard }];
+
+      if (!list) throw new Error();
+
+      list.cards = [...list.cards, { ...newCard }];
 
       state.loading = false;
     });
@@ -325,6 +329,8 @@ export const taskBoardSlice = createSlice({
       const currentCard = list?.cards.find(
         (card) => card.id === updatedCard.id
       );
+
+      if (!currentCard) throw new Error();
 
       Object.assign(currentCard, updatedCard);
 

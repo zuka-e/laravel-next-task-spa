@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 
 import { useRouter } from 'next/router';
 import { Provider } from 'react-redux';
@@ -35,7 +35,10 @@ describe('Page handler', () => {
           <PageHandler Component={() => <></>} pageProps={{}} />
         </Provider>
       );
-      store.dispatch(setHttpStatus(status));
+
+      act(() => {
+        store.dispatch(setHttpStatus(status));
+      });
 
       expect(screen.getByRole('heading', { name: errorMessage })).toBeVisible();
     });

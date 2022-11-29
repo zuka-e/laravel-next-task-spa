@@ -1,15 +1,17 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { useRouter } from 'next/router';
 import { Provider } from 'react-redux';
 
 import { initializeStore, store } from 'mocks/store';
+import { setup } from 'mocks/utils/user-events';
 import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 import SignUp from 'pages/register';
 
 jest.mock('next/router', () => ({
-  useRouter: jest.fn(),
+  useRouter: jest.fn(() => ({
+    pathname: 'any',
+  })),
 }));
 
 beforeEach(() => {
@@ -42,18 +44,19 @@ describe('Sign Up', () => {
       push: jest.fn(),
     });
 
-    render(
+    const { user } = setup(
       <Provider store={store}>
         <SignUp />
       </Provider>
     );
 
-    userEvent.click(screen.getByRole('button', { name: /Sign in/i }));
+    await user.click(screen.getByRole('button', { name: /Sign in/i }));
+
     expect(useRouter().push).toHaveBeenCalledWith('/login');
   });
 
-  it('should display password by a show password option', () => {
-    render(
+  it('should display password by a show password option', async () => {
+    const { user } = setup(
       <Provider store={store}>
         <SignUp />
       </Provider>
@@ -63,7 +66,7 @@ describe('Sign Up', () => {
       screen.queryByRole('textbox', { name: passwordFieldName })
     ).toBeNull();
 
-    userEvent.click(screen.getByRole('checkbox', { name: /Show password/i }));
+    await user.click(screen.getByRole('checkbox', { name: /Show password/i }));
 
     const passwordField = screen.getByRole('textbox', {
       name: passwordFieldName,
@@ -81,7 +84,7 @@ describe('Sign Up', () => {
     const password = 'password';
 
     it('should not be registered with the wrong email input', async () => {
-      render(
+      const { user } = setup(
         <Provider store={store}>
           <SignUp />
         </Provider>
@@ -97,10 +100,10 @@ describe('Sign Up', () => {
 
       expect(store.getState().auth.signedIn).toBe(undefined);
 
-      userEvent.type(emailField, invalidEmail);
-      userEvent.type(passwordField, password);
-      userEvent.type(passwordConfirmField, password + 'a');
-      userEvent.click(submit);
+      await user.type(emailField, invalidEmail);
+      await user.type(passwordField, password);
+      await user.type(passwordConfirmField, password + 'a');
+      await user.click(submit);
 
       await waitFor(() => {
         expect(store.getState().auth.signedIn).toBeFalsy();
@@ -108,7 +111,7 @@ describe('Sign Up', () => {
     });
 
     it('should not be registered with the wrong password input', async () => {
-      render(
+      const { user } = setup(
         <Provider store={store}>
           <SignUp />
         </Provider>
@@ -123,10 +126,10 @@ describe('Sign Up', () => {
 
       expect(store.getState().auth.signedIn).toBe(undefined);
 
-      userEvent.type(emailField, newEmail);
-      userEvent.type(passwordField, password);
-      userEvent.type(passwordConfirmField, password + 'a');
-      userEvent.click(submit);
+      await user.type(emailField, newEmail);
+      await user.type(passwordField, password);
+      await user.type(passwordConfirmField, password + 'a');
+      await user.click(submit);
 
       await waitFor(() => {
         expect(store.getState().auth.signedIn).toBeFalsy();
@@ -134,7 +137,7 @@ describe('Sign Up', () => {
     });
 
     it('should display an error message when email already exists', async () => {
-      render(
+      const { user } = setup(
         <Provider store={store}>
           <SignUp />
         </Provider>
@@ -151,17 +154,17 @@ describe('Sign Up', () => {
       expect(screen.queryByRole('alert')).toBeNull();
       expect(screen.queryByText(errorMessage)).toBeNull();
 
-      userEvent.type(emailField, GUEST_EMAIL);
-      userEvent.type(passwordField, GUEST_PASSWORD);
-      userEvent.type(passwordConfirmField, GUEST_PASSWORD);
-      userEvent.click(submit);
+      await user.type(emailField, GUEST_EMAIL);
+      await user.type(passwordField, GUEST_PASSWORD);
+      await user.type(passwordConfirmField, GUEST_PASSWORD);
+      await user.click(submit);
 
       expect(await screen.findByRole('alert')).toBeVisible();
       expect(screen.getByText(errorMessage)).toBeVisible();
     });
 
     it('should be registered with the right input', async () => {
-      render(
+      const { user } = setup(
         <Provider store={store}>
           <SignUp />
         </Provider>
@@ -174,10 +177,10 @@ describe('Sign Up', () => {
       );
       const submit = screen.getByRole('button', { name: submitButtonName });
 
-      userEvent.type(emailField, newEmail);
-      userEvent.type(passwordField, password);
-      userEvent.type(passwordConfirmField, password);
-      userEvent.click(submit);
+      await user.type(emailField, newEmail);
+      await user.type(passwordField, password);
+      await user.type(passwordConfirmField, password);
+      await user.click(submit);
 
       await waitFor(() => {
         expect(store.getState().auth.signedIn).toBe(true);

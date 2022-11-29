@@ -4,7 +4,7 @@ import { CollectionBase, DocumentBase } from '.';
 export interface UserDocument extends DocumentBase {
   name: string;
   email: string;
-  emailVerifiedAt: Date | null;
+  emailVerifiedAt: string | null;
   password: string;
 }
 

@@ -1,33 +1,23 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
-  Box,
   Dialog,
   DialogContent,
   DialogTitle,
   DialogActions,
   DialogContentText,
   Button,
-} from '@material-ui/core';
+} from '@mui/material';
 
 import { deleteAccount } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
-import { AlertButton } from 'templates';
-
-const useStyles = makeStyles((_theme: Theme) =>
-  createStyles({
-    triggerWrapper: { display: 'contents' },
-  })
-);
 
 type DeleteAccountDialogProps = {
   trigger: JSX.Element;
 };
 
-const DeleteAccountDialog: React.FC<DeleteAccountDialogProps> = (props) => {
+const DeleteAccountDialog = (props: DeleteAccountDialogProps) => {
   const { trigger } = props;
-  const classes = useStyles();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
 
@@ -40,10 +30,10 @@ const DeleteAccountDialog: React.FC<DeleteAccountDialogProps> = (props) => {
   };
 
   return (
-    <React.Fragment>
-      <Box onClick={handleClickOpen} className={classes.triggerWrapper}>
+    <>
+      <div onClick={handleClickOpen} className="contents">
         {trigger}
-      </Box>
+      </div>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -62,12 +52,12 @@ const DeleteAccountDialog: React.FC<DeleteAccountDialogProps> = (props) => {
           <Button onClick={handleClose} color="primary" autoFocus>
             キャンセル
           </Button>
-          <AlertButton onClick={handleDelete} color="danger">
+          <Button onClick={handleDelete} color="error">
             削除
-          </AlertButton>
+          </Button>
         </DialogActions>
       </Dialog>
-    </React.Fragment>
+    </>
   );
 };
 

@@ -15,7 +15,7 @@ export const update = (props: UpdatePasswordProps) => {
 
   const newUserDoc: UserDocument = {
     ...currentUser,
-    updatedAt: new Date(),
+    updatedAt: new Date().toISOString(),
     password: digestText(request.password),
   };
 

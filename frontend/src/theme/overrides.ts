@@ -1,37 +1,81 @@
-import { Overrides } from '@material-ui/core/styles/overrides';
+import type { ThemeOptions } from '@mui/material/styles';
 
-const overrides: Overrides = {
+/** Root element for Next.js */
+const rootElement =
+  typeof window !== 'undefined' ? document.getElementById('__next') : undefined;
+
+const overrides: ThemeOptions['components'] = {
   MuiCssBaseline: {
-    // GlobalCSS
-    '@global': {
+    styleOverrides: {
       a: {
-        color: '#1a73e8',
         textDecoration: 'none',
         '&:hover': {
-          color: '#ffa133',
           textDecoration: 'underline',
         },
       },
     },
   },
   MuiButtonBase: {
-    root: {
-      '& *': { pointerEvents: 'none' }, // `event.target`として捕捉されるのを防ぐ
+    styleOverrides: {
+      root: {
+        '& *': { pointerEvents: 'none' }, // `event.target`として捕捉されるのを防ぐ
+      },
     },
   },
-  MuiButton: { root: { textTransform: 'unset' } }, // Buttonテキストの大文字変換設定を解除
-  MuiList: { dense: { paddingTop: '4px', paddingBottom: '4px' } },
-  MuiListItemIcon: { root: { minWidth: undefined, paddingRight: '16px' } },
+  MuiButton: {
+    styleOverrides: {
+      root: { textTransform: 'unset' },
+    },
+  },
+  MuiDrawer: {
+    defaultProps: {
+      // Required for applying styles in `Portal`-related elements.
+      // https://mui.com/material-ui/guides/interoperability/#tailwind-css (5)
+      container: rootElement,
+    },
+  },
+  MuiLink: {
+    defaultProps: {
+      // https://mui.com/material-ui/migration/v5-component-changes/#✅-update-default-underline-prop
+      underline: 'hover',
+    },
+  },
+  MuiList: {
+    styleOverrides: {
+      dense: { paddingTop: '4px', paddingBottom: '4px' },
+    },
+  },
+  MuiListItemIcon: {
+    styleOverrides: {
+      root: { minWidth: undefined, paddingRight: '16px' },
+    },
+  },
   MuiListItemText: {
-    primary: {
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
+    styleOverrides: {
+      primary: {
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+      },
+    },
+  },
+  MuiPopover: {
+    defaultProps: {
+      // https://mui.com/material-ui/guides/interoperability/#tailwind-css (5)
+      container: rootElement,
+    },
+  },
+  MuiPopper: {
+    defaultProps: {
+      // https://mui.com/material-ui/guides/interoperability/#tailwind-css (5)
+      container: rootElement,
     },
   },
   MuiTypography: {
-    gutterBottom: {
-      '&:not(div)': { marginBottom: '1.2rem' },
+    styleOverrides: {
+      gutterBottom: {
+        '&:not(div)': { marginBottom: '1.2rem' },
+      },
     },
   },
 };

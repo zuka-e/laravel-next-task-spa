@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import * as yup from 'yup';
-import moment from 'moment';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import dayjs from 'dayjs';
 import {
+  Button,
   Grid,
   Card,
   CardHeader,
@@ -14,72 +14,37 @@ import {
   IconButton,
   Typography,
   Breadcrumbs,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   Close as CloseIcon,
   ListAlt as ListAltIcon,
   Assignment as AssignmentIcon,
   Delete as DeleteIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 
 import { TaskCard } from 'models';
 import { useAppDispatch, useDeepEqualSelector, useRoute } from 'utils/hooks';
 import { closeInfoBox } from 'store/slices/taskBoardSlice';
 import { updateTaskCard } from 'store/thunks/cards';
 import {
-  AlertButton,
   DatetimeInput,
   DeleteTaskDialog,
+  Link,
   MarkdownEditor,
 } from 'templates';
 import { EditableTitle } from '..';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%',
-      borderRadius: 0,
-    },
-    breadcrumbs: {
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      '& li > *': { display: 'flex', alignItems: 'center' },
-    },
-    icon: {
-      marginRight: theme.spacing(0.5),
-      width: 20,
-      height: 20,
-    },
-    rightAction: { marginLeft: 'auto' },
-    header: { paddingBottom: 0 },
-    rows: {
-      paddingTop: 0,
-      paddingBottom: 0,
-      '& > div': {
-        marginBottom: theme.spacing(1),
-        alignItems: 'center',
-      },
-    },
-    label: { flex: '0 0 100px' },
-    timeout: { color: theme.palette.error.main },
-    footer: { flex: '1 1 auto' },
-  })
-);
+import type { DatetimeInputProps } from 'templates/DatetimeInput';
 
 type TaskCardDetailsProps = {
   card: TaskCard;
 };
 
-const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
+const TaskCardDetails = (props: TaskCardDetailsProps) => {
   const { card } = props;
-  const classes = useStyles();
-  const { pathname, pathParams } = useRoute();
+  const { pathParams } = useRoute();
   const dispatch = useAppDispatch();
   const list = useDeepEqualSelector((state) =>
-    state.boards.docs[pathParams.boardId?.toString()].lists.find(
+    state.boards.docs[pathParams.boardId.toString()].lists.find(
       (list) => list.id === card.listId
     )
   );
@@ -97,8 +62,6 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
     listId: card.listId,
   };
 
-  const isInTime = (date: Date) => moment(new Date()).isBefore(date, 'minute');
-
   const handleCheckbox = () => {
     setChecked(!checked);
     dispatch(
@@ -115,13 +78,13 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
     dispatch(closeInfoBox());
   };
 
-  const handleDateChange = (date?: Date) => {
+  const handleDateChange: DatetimeInputProps['onAccept'] = (date) => {
     dispatch(
       updateTaskCard({
         id: card.id,
         boardId: card.boardId,
         listId: card.listId,
-        deadline: date,
+        deadline: date?.toISOString(),
       })
     );
   };
@@ -135,34 +98,44 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
   };
 
   return (
-    <Card className={classes.root}>
-      <CardActions disableSpacing>
-        <Breadcrumbs aria-label="breadcrumb" className={classes.breadcrumbs}>
-          <a href={`${pathname}#${list?.id}`}>
-            <ListAltIcon className={classes.icon} />
+    <Card className="flex h-full flex-col rounded-none">
+      <CardActions
+        disableSpacing
+        className="sticky top-0 z-10 gap-2 bg-inherit shadow-sm"
+      >
+        <Breadcrumbs
+          aria-label="breadcrumb"
+          className="overflow-x-auto whitespace-nowrap"
+          classes={{
+            ol: 'flex-nowrap',
+            li: '[&>*]:flex [&>*]:items-center',
+          }}
+        >
+          <Link href={`#${list?.id}`}>
+            <ListAltIcon className="mr-1 h-6 w-6" />
             {list?.title}
-          </a>
+          </Link>
           <Typography>
-            <AssignmentIcon className={classes.icon} />
+            <AssignmentIcon className="mr-1 h-6 w-6" />
             {'Card'}
           </Typography>
         </Breadcrumbs>
         <IconButton
           aria-label="close"
           onClick={handleClose}
-          size="small"
-          className={classes.rightAction}
+          className="ml-auto"
         >
           <CloseIcon />
         </IconButton>
       </CardActions>
       <CardHeader
-        classes={{ root: classes.header }}
         title={<EditableTitle method="PATCH" model="card" data={card} />}
+        className="pb-0"
       />
-      <CardContent className={classes.rows}>
+      <CardContent className="flex flex-col gap-3 py-0">
         <FormControlLabel
           label={card.done ? 'Completed' : 'Incompleted'}
+          className="w-fit"
           control={
             <Checkbox
               color="primary"
@@ -171,31 +144,36 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
             />
           }
         />
-        <Grid container>
-          <Grid item className={classes.label}>
+        <Grid container className="items-center">
+          <Grid item className="mr-4 w-32">
             <label
               className={
-                !isInTime(card.deadline) && !card.done ? classes.timeout : ''
+                dayjs().isAfter(card.deadline, 'minute') && !card.done
+                  ? 'text-error'
+                  : ''
               }
             >
               締切日時
             </label>
           </Grid>
           <Grid item>
-            <DatetimeInput onChange={handleDateChange} value={card.deadline} />
+            <DatetimeInput
+              initialValue={card.deadline ? dayjs(card.deadline) : null}
+              onAccept={handleDateChange}
+            />
           </Grid>
         </Grid>
-        <Grid container>
-          <Grid item className={classes.label}>
+        <Grid container className="items-center">
+          <Grid item className="mr-4 w-32">
             <label>作成日時</label>
           </Grid>
-          <Grid item>{moment(card.createdAt).calendar()}</Grid>
+          <Grid item>{dayjs(card.createdAt).calendar()}</Grid>
         </Grid>
-        <Grid container>
-          <Grid item className={classes.label}>
+        <Grid container className="items-center">
+          <Grid item className="mr-4 w-32">
             <label>変更日時</label>
           </Grid>
-          <Grid item>{moment(card.updatedAt).calendar()}</Grid>
+          <Grid item>{dayjs(card.updatedAt).calendar()}</Grid>
         </Grid>
       </CardContent>
 
@@ -203,13 +181,13 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
         <MarkdownEditor
           onSubmit={handleSubmitText}
           schema={yup.object().shape({
-            content: yup.string().label('Content').max(2000),
+            content: yup.string().label('Content').min(20),
           })}
           defaultValue={card.content}
         />
       </CardContent>
 
-      <CardActions className={classes.footer}>
+      <CardActions className="flex-auto">
         {openDeleteDialog && (
           <DeleteTaskDialog
             model="card"
@@ -217,15 +195,15 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
             setOpen={setOpenDeleteDialog}
           />
         )}
-        <AlertButton
+        <Button
           onClick={handleDelete}
           startIcon={<DeleteIcon />}
           title="削除"
-          color="danger"
-          className={classes.rightAction}
+          color="error"
+          className="ml-auto self-end"
         >
           削除
-        </AlertButton>
+        </Button>
       </CardActions>
     </Card>
   );

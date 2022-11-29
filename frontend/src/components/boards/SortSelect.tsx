@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import { Check as CheckIcon } from '@material-ui/icons';
+import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Check as CheckIcon } from '@mui/icons-material';
 
 import { DocumentBase, TaskCard, TaskList } from 'models';
 import { SortOperation } from 'utils/sort';
@@ -22,7 +22,7 @@ type SortSelectProps =
   | { model: 'list'; boardId: TaskList['boardId'] }
   | { model: 'card'; boardId: TaskCard['boardId']; listId: TaskCard['listId'] };
 
-const SortSelect: React.FC<SortSelectProps> = (props) => {
+const SortSelect = (props: SortSelectProps) => {
   const boardId = props.boardId;
   const listId = props.model === 'card' ? props.listId : undefined;
   const dispatch = useAppDispatch();

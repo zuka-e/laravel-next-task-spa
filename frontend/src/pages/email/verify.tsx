@@ -41,7 +41,9 @@ const VerifyEmail = () => {
       <Head>
         <title>Verify Email</title>
       </Head>
-      <BaseLayout />
+      <BaseLayout>
+        <></>
+      </BaseLayout>
     </>
   );
 };

@@ -1,14 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 
 import type { AsyncThunk } from '@reduxjs/toolkit';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import {
-  TextField,
-  TextFieldProps,
-  ClickAwayListener,
-} from '@material-ui/core';
+import { TextField, TextFieldProps, ClickAwayListener } from '@mui/material';
 
 import type { FormAction } from 'store/slices/taskBoardSlice';
 import type { AsyncThunkConfig } from 'store/thunks/config';
@@ -31,7 +27,7 @@ type FormProps = FormAction & {
   handleClose: () => void;
 } & TextFieldProps;
 
-const TitleForm: React.FC<FormProps> = (props) => {
+const TitleForm = (props: FormProps) => {
   const { method, model, handleClose, ...textFieldProps } = props;
   const dispatch = useAppDispatch();
   const submitRef = useRef<HTMLInputElement>(null);
@@ -43,12 +39,6 @@ const TitleForm: React.FC<FormProps> = (props) => {
     mode: 'onBlur',
     resolver: yupResolver(schema),
   });
-
-  useEffect(() => {
-    return function cleanup() {
-      handleClose();
-    };
-  }, [handleClose]);
 
   const handleDispatch = async <
     T extends AsyncThunk<

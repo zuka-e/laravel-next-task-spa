@@ -1,6 +1,6 @@
-import { TypographyOptions } from '@material-ui/core/styles/createTypography';
+import type { ThemeOptions } from '@mui/material/styles';
 
-const typography: TypographyOptions = {
+const typography: ThemeOptions['typography'] = {
   h1: {
     fontWeight: 'bold',
     fontSize: '2.8rem',

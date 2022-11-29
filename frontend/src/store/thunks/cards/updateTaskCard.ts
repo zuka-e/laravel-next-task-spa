@@ -31,7 +31,7 @@ export const updateTaskCard = createAsyncThunk<
    */
   const request = !requestBody.deadline
     ? requestBody
-    : { ...requestBody, deadline: requestBody.deadline.toLocaleString() };
+    : { ...requestBody, deadline: requestBody.deadline };
 
   try {
     const response = await apiClient().patch(path, request);

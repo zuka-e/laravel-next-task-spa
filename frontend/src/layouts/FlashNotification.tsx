@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import Snackbar from '@material-ui/core/Snackbar';
-import { Alert } from '@material-ui/lab';
+import { Snackbar, Alert } from '@mui/material';
 
 import { useDeepEqualSelector } from 'utils/hooks';
 
@@ -13,13 +12,16 @@ const FlashNotification = () => {
   // `flash`(store) の変更を監視
   useEffect(() => setOpen(true), [flash]);
 
-  const handleClose = (_event?: React.SyntheticEvent, reason?: string) => {
+  const handleClose = (
+    _event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
     if (reason === 'clickaway') return;
     else setOpen(false);
   };
 
   // `flash`が初期値の場合表示しない
-  if (flash.length === 0) return <React.Fragment />;
+  if (flash.length === 0) return <></>;
 
   return (
     <Snackbar

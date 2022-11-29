@@ -3,8 +3,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticProps } from 'next';
 
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Container, Card, Grid, Typography, Button } from '@material-ui/core';
+import { Container, Card, Grid, Typography, Button } from '@mui/material';
 
 import { removeEmailVerificationPage } from 'store/slices/authSlice';
 import { sendEmailVerificationLink } from 'store/thunks/auth';
@@ -13,19 +12,6 @@ import { isAfterRegistration, isVerified } from 'utils/auth';
 import { BaseLayout } from 'layouts';
 import { AlertMessage } from 'templates';
 import type { AuthPage } from 'routes';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    main: {
-      marginTop: theme.spacing(8),
-      marginBottom: theme.spacing(8),
-    },
-    paper: {
-      marginTop: theme.spacing(2),
-      padding: theme.spacing(4),
-    },
-  })
-);
 
 type EmailVerificationProps = AuthPage;
 
@@ -41,7 +27,6 @@ export const getStaticProps: GetStaticProps<
 };
 
 const EmailVerification = () => {
-  const classes = useStyles();
   const dispatch = useAppDispatch();
   const afterRegistration = useAppSelector(
     (state) => state.auth.afterRegistration
@@ -71,13 +56,15 @@ const EmailVerification = () => {
         <title>Email Verification</title>
       </Head>
       <BaseLayout>
-        <Container className={classes.main} component="main" maxWidth="sm">
-          <AlertMessage severity="warning" elevation={2}>
-            <strong>
-              {`登録から24時間以内に認証を完了させなかった場合、一定時間経過後に登録が抹消されます。`}
-            </strong>
+        <Container
+          component="main"
+          maxWidth="sm"
+          className="my-4 flex flex-col gap-4 sm:my-16"
+        >
+          <AlertMessage severity="warning" elevation={2} className="font-bold">
+            {`登録から24時間以内に認証を完了させなかった場合、一定時間経過後に登録が抹消されます。`}
           </AlertMessage>
-          <Card classes={{ root: classes.paper }} elevation={2}>
+          <Card elevation={2} className="p-8">
             <Grid container direction="column" alignItems="center">
               <Typography variant="h4" component="h1" gutterBottom>
                 {`認証用メールを送信しました。`}

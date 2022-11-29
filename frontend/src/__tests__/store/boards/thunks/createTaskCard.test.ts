@@ -24,7 +24,7 @@ describe('Thunk creating a new task card', () => {
   const requestBody: CreateTaskCardRequest = {
     title: generateRandomString(20),
     content: generateRandomString(255),
-    deadline: new Date(),
+    deadline: new Date().toISOString(),
     done: true,
   };
 

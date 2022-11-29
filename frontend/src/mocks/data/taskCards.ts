@@ -11,10 +11,10 @@ export const cardOfGuestUser: TaskCardDocument = {
   listId: listOfGuestUser.id,
   title: 'ゲストユーザーのTaskCard',
   content: 'ゲストユーザーが所有するTaskCard',
-  deadline: new Date(),
+  deadline: new Date().toISOString(),
   done: true,
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
 };
 
 export const cardOfOtherUser: TaskCardDocument = {
@@ -23,10 +23,10 @@ export const cardOfOtherUser: TaskCardDocument = {
   listId: listOfOtherUser.id,
   title: '他のユーザーのTaskCard',
   content: '他のユーザーが所有するTaskCard',
-  deadline: new Date(),
+  deadline: new Date().toISOString(),
   done: false,
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
 };
 
 const initialCards: TaskCardDocument[] = [cardOfGuestUser, cardOfOtherUser];
@@ -55,9 +55,9 @@ const runSeeder = (props: SeederProps) => {
       title: `${faker.hacker.adjective()} ${faker.hacker.verb()}`,
       content: faker.hacker.phrase(),
       done: Math.floor(Math.random() * 10) % 3 === 0,
-      deadline: faker.date.future(),
-      createdAt: faker.date.past(),
-      updatedAt: faker.date.recent(),
+      deadline: faker.date.future().toISOString(),
+      createdAt: faker.date.past().toISOString(),
+      updatedAt: faker.date.recent().toISOString(),
     });
   });
 };

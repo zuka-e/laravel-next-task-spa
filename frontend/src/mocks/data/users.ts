@@ -9,9 +9,9 @@ export const guestUser: UserDocument = {
   id: uuid(),
   name: 'ゲストユーザー',
   email: GUEST_EMAIL,
-  emailVerifiedAt: new Date(),
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  emailVerifiedAt: new Date().toISOString(),
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
   password: digestText(GUEST_PASSWORD),
 };
 
@@ -19,9 +19,9 @@ export const otherUser: UserDocument = {
   id: uuid(),
   name: 'other_ユーザー',
   email: 'other_' + GUEST_EMAIL,
-  emailVerifiedAt: new Date(),
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  emailVerifiedAt: new Date().toISOString(),
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
   password: digestText(GUEST_PASSWORD),
 };
 
@@ -30,8 +30,8 @@ export const unverifiedUser: UserDocument = {
   name: '未認証ユーザー',
   email: 'unverified_' + GUEST_EMAIL,
   emailVerifiedAt: null,
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
   password: digestText(GUEST_PASSWORD),
 };
 
@@ -46,10 +46,10 @@ const runSeeder = (props: { count: number }) => {
     db.create('users', {
       name: `${faker.name.firstName()} ${faker.name.lastName()}`,
       email: faker.internet.email(),
-      emailVerifiedAt: faker.date.recent(),
+      emailVerifiedAt: faker.date.recent().toISOString(),
       password: digestText(GUEST_PASSWORD),
-      createdAt: faker.date.past(),
-      updatedAt: faker.date.recent(),
+      createdAt: faker.date.past().toISOString(),
+      updatedAt: faker.date.recent().toISOString(),
     });
   });
 };

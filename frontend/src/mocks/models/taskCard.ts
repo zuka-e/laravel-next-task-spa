@@ -5,7 +5,7 @@ export type TaskCardDocument = {
   listId: string;
   title: string;
   content: string;
-  deadline: Date;
+  deadline: string;
   done: boolean;
 } & DocumentBase;
 

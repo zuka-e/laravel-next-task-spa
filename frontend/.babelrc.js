@@ -1,9 +1,11 @@
+// https://mui.com/material-ui/guides/minimizing-bundle-size/#option-two-use-a-babel-plugin
+
 const plugins = [
   [
     'babel-plugin-import',
     {
-      libraryName: '@material-ui/core',
-      libraryDirectory: '', // if `esm`, `Unexpected token 'export'` occurs.
+      libraryName: '@mui/material',
+      libraryDirectory: '',
       camel2DashComponentName: false,
     },
     'core',
@@ -11,7 +13,7 @@ const plugins = [
   [
     'babel-plugin-import',
     {
-      libraryName: '@material-ui/icons',
+      libraryName: '@mui/icons-material',
       libraryDirectory: '',
       camel2DashComponentName: false,
     },

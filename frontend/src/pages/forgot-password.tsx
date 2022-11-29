@@ -6,12 +6,12 @@ import type { GetStaticProps } from 'next';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { TextField, Divider, Grid, Box } from '@material-ui/core';
+import { Button, TextField, Divider, Grid } from '@mui/material';
 
 import { ForgotPasswordRequest, forgotPassword } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { FormLayout } from 'layouts';
-import { AlertButton, SubmitButton } from 'templates';
+import { SubmitButton } from 'templates';
 import type { GuestPage } from 'routes';
 
 type FormData = ForgotPasswordRequest;
@@ -75,23 +75,21 @@ const ForgotPassword = () => {
             helperText={errors?.email?.message}
             error={!!errors?.email}
           />
-          <Box my={4}>
+          <div className="my-8">
             <SubmitButton fullWidth>{'Send password reset email'}</SubmitButton>
-          </Box>
-          <Box mb={2}>
-            <Divider />
-          </Box>
+          </div>
+          <Divider className="my-4" />
           <Grid container justifyContent="flex-end">
             <Grid item>
               {'Back to'}
-              <AlertButton
+              <Button
                 color="info"
                 variant="text"
                 size="small"
                 onClick={() => router.push('/login')}
               >
                 {'Sign in'}
-              </AlertButton>
+              </Button>
             </Grid>
           </Grid>
         </form>

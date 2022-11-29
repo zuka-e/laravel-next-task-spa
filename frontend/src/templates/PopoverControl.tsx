@@ -1,20 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Popover, PopoverOrigin } from '@material-ui/core';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: { display: 'contents' },
-    popover: {
-      '& > .MuiPopover-paper': {
-        minWidth: '250px',
-        maxWidth: '300px',
-        border: `1px solid ${theme.palette.info.light}`,
-      },
-    },
-  })
-);
+import { Popover, PopoverOrigin } from '@mui/material';
 
 type PopoverPosition = 'top' | 'right' | 'bottom' | 'left';
 
@@ -57,14 +43,14 @@ const makePopoverOriginSet = (position?: PopoverPosition) => {
 };
 
 type PopoverControlProps = {
+  children: React.ReactNode;
   trigger: JSX.Element;
   position?: PopoverPosition;
 };
 
-const PopoverControl: React.FC<PopoverControlProps> = (props) => {
+const PopoverControl = (props: PopoverControlProps) => {
   const { children, trigger, position } = props;
-  const classes = useStyles();
-  const [className, setClassName] = useState<string | undefined>(classes.root);
+  const [className, setClassName] = useState<string | undefined>('contents');
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const open = Boolean(anchorEl);
@@ -85,12 +71,12 @@ const PopoverControl: React.FC<PopoverControlProps> = (props) => {
   };
 
   const handleClose = () => {
-    setClassName(classes.root);
+    setClassName('contents');
     setAnchorEl(null);
   };
 
   return (
-    <React.Fragment>
+    <>
       <div
         aria-describedby={htmlId}
         onClick={handleClick}
@@ -100,7 +86,6 @@ const PopoverControl: React.FC<PopoverControlProps> = (props) => {
         {trigger}
       </div>
       <Popover
-        className={classes.popover}
         id={htmlId}
         open={open}
         anchorEl={anchorEl}
@@ -108,9 +93,11 @@ const PopoverControl: React.FC<PopoverControlProps> = (props) => {
         anchorOrigin={anchorOrigin}
         transformOrigin={transformOrigin}
       >
-        {children}
+        <div className="w-72 rounded border border-solid border-blue-400">
+          {children}
+        </div>
       </Popover>
-    </React.Fragment>
+    </>
   );
 };
 

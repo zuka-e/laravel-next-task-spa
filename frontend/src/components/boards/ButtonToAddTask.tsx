@@ -1,41 +1,17 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-import { createStyles, makeStyles } from '@material-ui/core/styles';
-import {
-  ClickAwayListener,
-  Card,
-  CardActions,
-  Button,
-} from '@material-ui/core';
-import { Add as AddIcon } from '@material-ui/icons';
+import { ClickAwayListener, Card, CardActions, Button } from '@mui/material';
+import { Add as AddIcon } from '@mui/icons-material';
 
-import theme from 'theme';
 import { FormAction } from 'store/slices/taskBoardSlice';
 import { TitleForm } from '.';
-
-const margin = theme.spacing(0.75);
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: { justifyContent: 'flex-start' },
-    wrapper: {
-      margin: margin,
-      width: `calc(100% - ${margin * 2}px)`,
-    },
-    transparent: {
-      backgroundColor: 'inherit',
-      boxShadow: 'unset',
-    },
-    dim: { backgroundColor: 'rgb(0,0,0,0.1)' },
-  })
-);
 
 type ButtonToAddTaskProps = FormAction & {
   transparent?: boolean;
 };
 
-const ButtonToAddTask: React.FC<ButtonToAddTaskProps> = (props) => {
+const ButtonToAddTask = (props: ButtonToAddTaskProps) => {
   const { transparent, ...formActionType } = props;
-  const classes = useStyles();
   const [isEditing, setIsEditing] = useState(false);
 
   const toggleForm = () => {
@@ -49,23 +25,28 @@ const ButtonToAddTask: React.FC<ButtonToAddTaskProps> = (props) => {
   return (
     <ClickAwayListener mouseEvent="onMouseDown" onClickAway={handleClickAway}>
       {isEditing ? (
-        <Card
-          elevation={7}
-          className={props.transparent ? classes.transparent : ''}
-        >
-          <CardActions style={{ display: 'block' }}>
+        transparent ? (
+          <div className="w-full">
             <TitleForm {...formActionType} handleClose={toggleForm} />
-          </CardActions>
-        </Card>
+          </div>
+        ) : (
+          <Card elevation={7}>
+            <CardActions className="block">
+              <TitleForm {...formActionType} handleClose={toggleForm} />
+            </CardActions>
+          </Card>
+        )
       ) : (
         <Button
+          // https://mui.com/material-ui/migration/v5-component-changes/✅-remove-default-color-prop
+          color="inherit"
           fullWidth
           startIcon={<AddIcon />}
           onClick={toggleForm}
-          classes={{
-            root: `${classes.root} ${props.transparent ? classes.wrapper : ''}`,
-          }}
-          className={props.transparent ? classes.transparent : classes.dim}
+          className={
+            'justify-start hover:backdrop-brightness-75 ' +
+            (transparent ? 'shadow-none' : 'backdrop-brightness-90')
+          }
         >
           Add new {props.model}
         </Button>

@@ -1,7 +1,5 @@
-import { ReactNode } from 'react';
-
 import MarkdownToJsx, { MarkdownToJSX } from 'markdown-to-jsx';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 
 const options: MarkdownToJSX.Options = {
   slugify: (str) => str, // 自動生成されるid属性を日本語で利用
@@ -34,12 +32,8 @@ const options: MarkdownToJSX.Options = {
   },
 };
 
-const Markdown: React.FC = ({ children }) => {
-  return (
-    <MarkdownToJsx options={options}>
-      {children as string & ReactNode}
-    </MarkdownToJsx>
-  );
+const Markdown = ({ children }: Parameters<typeof MarkdownToJsx>[0]) => {
+  return <MarkdownToJsx options={options}>{children}</MarkdownToJsx>;
 };
 
 export default Markdown;

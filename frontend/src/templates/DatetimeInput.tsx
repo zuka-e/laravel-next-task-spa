@@ -1,50 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import moment from 'moment';
-import {
-  KeyboardDateTimePicker,
-  KeyboardDateTimePickerProps,
-} from '@material-ui/pickers';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import dayjs from 'dayjs';
+import type { Dayjs } from 'dayjs';
+import { TextField } from '@mui/material';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import type { DateTimePickerProps } from '@mui/x-date-pickers/DateTimePicker';
 
-type DatetimeInputProps = {
-  onChange: (date?: Date) => void;
-} & Omit<KeyboardDateTimePickerProps, 'onChange'>;
+export type DatetimeInputProps = {
+  initialValue?: DateTimePickerProps<Dayjs, Dayjs>['value'];
+} & Partial<DateTimePickerProps<Dayjs, Dayjs>>;
 
 /**
- * @see https://material-ui-pickers.dev/demo/datetime-picker#inline-mode
- * @see https://material-ui-pickers.dev/api/KeyboardDateTimePicker
+ * @see https://mui.com/x/react-date-pickers/date-time-picker
  */
-const DatetimeInput: React.FC<DatetimeInputProps> = (props) => {
-  const { value, onChange, ...keyboardDatetimePickerProps } = props;
-  const [datetime, setDatetime] = useState<MaterialUiPickersDate>(
-    value ? moment(value) : null
+const DatetimeInput = (props: DatetimeInputProps) => {
+  const { initialValue } = props;
+
+  const [datetime, setDatetime] = useState<Dayjs | null>(
+    initialValue ? dayjs(initialValue) : null
   );
 
   // 表示するデータが変更された場合に値を初期化する
   useEffect(() => {
-    setDatetime(value ? moment(value) : null);
-  }, [value]);
-
-  /** state`datetime`が変更された場合にデータの更新を実行 */
-  const handleClose = () => {
-    if (moment(value).unix() === datetime?.unix()) return;
-    props.onChange(datetime?.toDate());
-  };
+    setDatetime(initialValue ? dayjs(initialValue) : null);
+  }, [initialValue]);
 
   return (
-    <KeyboardDateTimePicker
-      variant="inline"
-      format="YYYY/MM/DD/ HH:mm"
+    <DateTimePicker
+      renderInput={(params) => <TextField {...params} />}
+      inputFormat="YYYY/MM/DD/ HH:mm"
       ampm={false}
-      minDate={new Date().valueOf()}
-      minDateMessage="" // デフォルトのメッセージを削除
-      // autoOk : `分`設定後自動で(`onChange`実行前に)閉じる
+      minDateTime={dayjs()}
+      minutesStep={5}
       value={datetime}
       onChange={setDatetime}
-      onClose={handleClose}
       onError={console.log}
-      {...keyboardDatetimePickerProps}
+      {...props}
     />
   );
 };

@@ -2,7 +2,9 @@ import type { AppProps } from 'next/app';
 
 import { AuthRoute, GuestRoute } from 'routes';
 
-const Route = (props: Pick<AppProps, 'Component' | 'pageProps'>) => {
+const Route = (
+  props: Pick<AppProps<Record<string, unknown>>, 'Component' | 'pageProps'>
+) => {
   const { Component, pageProps } = props;
 
   return (

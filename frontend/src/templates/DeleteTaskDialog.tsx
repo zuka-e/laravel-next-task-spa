@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {
   Dialog,
   DialogContent,
@@ -7,10 +5,9 @@ import {
   DialogActions,
   DialogContentText,
   Button,
-} from '@material-ui/core';
+} from '@mui/material';
 
 import { DeleteAction } from 'store/slices';
-import { AlertButton } from 'templates';
 import { useAppDispatch } from 'utils/hooks';
 import { destroyTaskBoard } from 'store/thunks/boards';
 import { destroyTaskList } from 'store/thunks/lists';
@@ -20,7 +17,7 @@ type DeleteTaskDialogProps = DeleteAction & {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const DeleteTaskDialog: React.FC<DeleteTaskDialogProps> = (props) => {
+const DeleteTaskDialog = (props: DeleteTaskDialogProps) => {
   const dispatch = useAppDispatch();
 
   const renderTitle = () => {
@@ -78,9 +75,9 @@ const DeleteTaskDialog: React.FC<DeleteTaskDialogProps> = (props) => {
         <Button onClick={handleClose} color="primary" autoFocus>
           キャンセル
         </Button>
-        <AlertButton onClick={handleDelete} color="danger">
+        <Button onClick={handleDelete} color="error">
           削除
-        </AlertButton>
+        </Button>
       </DialogActions>
     </Dialog>
   );

@@ -14,7 +14,7 @@ export const update = (props: UpdateProfileProps) => {
     name: request.name || currentUser.name,
     email: request.email || currentUser.email,
     emailVerifiedAt: IsEmailUpdated ? null : currentUser.emailVerifiedAt,
-    updatedAt: new Date(),
+    updatedAt: new Date().toISOString(),
   };
 
   db.update('users', newUserDoc);

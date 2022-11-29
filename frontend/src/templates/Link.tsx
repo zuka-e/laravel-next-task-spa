@@ -6,16 +6,19 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 
-import type { LinkProps as MuiLinkProps } from '@material-ui/core/Link';
-import MuiLink from '@material-ui/core/Link';
-import { styled } from '@material-ui/core/styles';
+import type { LinkProps as MuiLinkProps } from '@mui/material/Link';
+import MuiLink from '@mui/material/Link';
+import { styled } from '@mui/material/styles';
 
 // Add support for the sx prop for consistency with the other branches.
 const Anchor = styled('a')({});
 
 interface NextLinkComposedProps
   extends Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'>,
-    Omit<NextLinkProps, 'href' | 'as' | 'onClick' | 'onMouseEnter'> {
+    Omit<
+      NextLinkProps,
+      'href' | 'as' | 'onClick' | 'onMouseEnter' | 'onTouchStart'
+    > {
   to: NextLinkProps['href'];
   linkAs?: NextLinkProps['as'];
 }
@@ -76,7 +79,7 @@ const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(function Link(
 
   const router = useRouter();
   const pathname = typeof href === 'string' ? href : href.pathname;
-  const className = `${classNameProps} ${
+  const className = `text-link ${classNameProps} ${
     router.pathname === pathname ? activeClassName : ''
   }`;
 
