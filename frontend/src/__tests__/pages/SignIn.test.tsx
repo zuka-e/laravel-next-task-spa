@@ -1,10 +1,10 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { useRouter } from 'next/router';
 import { Provider } from 'react-redux';
 
 import { initializeStore, store } from 'mocks/store';
+import { setup } from 'mocks/utils/user-events';
 import { APP_NAME, GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 import SignIn from 'pages/login';
 
@@ -41,7 +41,7 @@ describe('SignIn', () => {
   });
 
   it('should display password by a show password option', async () => {
-    render(
+    const { user } = setup(
       <Provider store={store}>
         <SignIn />
       </Provider>
@@ -51,9 +51,7 @@ describe('SignIn', () => {
       screen.queryByRole('textbox', { name: passwordFieldName })
     ).toBeNull();
 
-    await userEvent.click(
-      screen.getByRole('checkbox', { name: /Show password/i })
-    );
+    await user.click(screen.getByRole('checkbox', { name: /Show password/i }));
 
     expect(
       screen.getByRole('textbox', { name: passwordFieldName })
@@ -66,15 +64,13 @@ describe('SignIn', () => {
         push: jest.fn(),
       });
 
-      render(
+      const { user } = setup(
         <Provider store={store}>
           <SignIn />
         </Provider>
       );
 
-      await userEvent.click(
-        screen.getByRole('button', { name: signUpFormName })
-      );
+      await user.click(screen.getByRole('button', { name: signUpFormName }));
 
       expect(useRouter().push).toHaveBeenCalledWith('/register');
     });
@@ -84,13 +80,13 @@ describe('SignIn', () => {
         push: jest.fn(),
       });
 
-      render(
+      const { user } = setup(
         <Provider store={store}>
           <SignIn />
         </Provider>
       );
 
-      await userEvent.click(
+      await user.click(
         screen.getByRole('button', { name: forgotPasswordFormName })
       );
 
@@ -100,8 +96,7 @@ describe('SignIn', () => {
 
   describe('Form input', () => {
     it('should display an error message with the wrong input', async () => {
-      const user = userEvent.setup();
-      render(
+      const { user } = setup(
         <Provider store={store}>
           <SignIn />
         </Provider>
@@ -124,8 +119,7 @@ describe('SignIn', () => {
     });
 
     it('should be authenticated with the right input', async () => {
-      const user = userEvent.setup();
-      render(
+      const { user } = setup(
         <Provider store={store}>
           <SignIn />
         </Provider>
