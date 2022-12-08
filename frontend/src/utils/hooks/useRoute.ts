@@ -73,17 +73,20 @@ const useRoute = (): AppRoute => {
    * `query` have no query parameters even if `asPath` contains the query string.
    * (e.g. `asPath` => `/users/1?foo=bar`, `query` => `{ userId: 1 }`)
    */
-  const queryParams =
-    queryString
-      ?.split('&')
-      .reduce((obj: NextRouter['query'], eachQueryString) => {
-        const queryNameAndValue = eachQueryString.split('=');
-        const queryName = queryNameAndValue[0];
-        const queryValue = queryNameAndValue[1] ?? '';
+  const queryParams = getQueryParamNames(router).reduce(
+    (obj: NextRouter['query'], queryParamName: string) => {
+      const queryValue = router.query[queryParamName];
 
-        obj[queryName] = queryValue;
-        return obj;
-      }, {}) ?? {};
+      if (router.isReady && typeof queryValue === 'undefined') {
+        console.error('Unexpected query parameter format.');
+      }
+
+      obj[queryParamName] = queryValue;
+
+      return obj;
+    },
+    {}
+  );
 
   return {
     pathname,
@@ -101,5 +104,18 @@ const useRoute = (): AppRoute => {
  */
 const getPathParamNames = (router: NextRouter): string[] | null =>
   router.pathname.match(/(?<=\[)[^\]]+(?=\])/g);
+
+/**
+ * Get the query parameter keys from NextRouter.
+ *
+ * @example
+ * router.asPath ==='/users?foo=x&bar=y&bar=' => ['foo', 'bar']
+ */
+const getQueryParamNames = (router: NextRouter): string[] => {
+  const queryString = router.asPath.split('?')[1];
+  const queryParams = queryString.split('&') ?? [];
+
+  return [...new Set(queryParams.map((param) => param.split('=')[0]))];
+};
 
 export default useRoute;
