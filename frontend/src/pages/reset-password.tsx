@@ -20,7 +20,7 @@ import {
   resetPassword,
   signInWithEmail,
 } from 'store/thunks/auth';
-import { useAppDispatch } from 'utils/hooks';
+import { useAppDispatch, useRoute } from 'utils/hooks';
 import { FormLayout } from 'layouts';
 import { SubmitButton } from 'templates';
 import type { GuestPage } from 'routes';
@@ -64,6 +64,7 @@ export const getStaticProps: GetStaticProps<ResetPasswordProps> = async () => {
 
 const ResetPassword = () => {
   const router = useRouter();
+  const route = useRoute();
   const dispatch = useAppDispatch();
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
@@ -75,8 +76,8 @@ const ResetPassword = () => {
     mode: 'onBlur',
     resolver: yupResolver(schema),
     defaultValues: {
-      email: router.query.email?.toString() || '',
-      token: router.query.token?.toString() || '',
+      email: route.queryParams.email?.toString() ?? '',
+      token: route.queryParams.token?.toString() ?? '',
     },
     // `defaultValues`はフォーム入力では変更不可
   });
