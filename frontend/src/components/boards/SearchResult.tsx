@@ -20,7 +20,7 @@ const SearchResult = (props: SearchResultProps) => {
   const route = useRoute();
   const dispatch = useAppDispatch();
   const lists = useDeepEqualSelector(
-    (state) => state.boards.docs[route.queryParams.boardId?.toString()].lists
+    (state) => state.boards.docs[route.pathParams.boardId].lists
   );
   // `useMemo`: `useEffect`依存配列による無限ループを防止
   const cards = useMemo(() => {

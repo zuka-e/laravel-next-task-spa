@@ -57,7 +57,7 @@ const TaskBoardIndex = () => {
   useEffect(() => {
     dispatch(
       fetchTaskBoards({
-        userId: route.pathParams.userId?.toString(),
+        userId: route.pathParams.userId,
         page: route.queryParams.page?.toString(),
       })
     );
@@ -70,8 +70,7 @@ const TaskBoardIndex = () => {
     });
   };
 
-  if (!boards || userId !== route.pathParams.userId?.toString())
-    return <StandbyScreen />;
+  if (!boards || userId !== route.pathParams.userId) return <StandbyScreen />;
 
   return (
     <>
@@ -85,9 +84,7 @@ const TaskBoardIndex = () => {
               <Grid item md={4} sm={6} xs={12} key={board.id}>
                 <Card elevation={7}>
                   <Link
-                    href={`/users/${route.pathParams.userId.toString()}/boards/${
-                      board.id
-                    }`}
+                    href={`/users/${route.pathParams.userId}/boards/${board.id}`}
                     className="text-inherit"
                   >
                     <div className="h-40 overflow-y-auto break-words p-4">

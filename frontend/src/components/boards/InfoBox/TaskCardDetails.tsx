@@ -44,7 +44,7 @@ const TaskCardDetails = (props: TaskCardDetailsProps) => {
   const { pathParams } = useRoute();
   const dispatch = useAppDispatch();
   const list = useDeepEqualSelector((state) =>
-    state.boards.docs[pathParams.boardId.toString()].lists.find(
+    state.boards.docs[pathParams.boardId].lists.find(
       (list) => list.id === card.listId
     )
   );
