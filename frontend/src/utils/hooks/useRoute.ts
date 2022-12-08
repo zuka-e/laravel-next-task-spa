@@ -1,3 +1,5 @@
+import type { ParsedUrlQuery } from 'querystring';
+
 import { useRouter } from 'next/router';
 import type { NextRouter } from 'next/router';
 
@@ -6,7 +8,10 @@ import type { NextRouter } from 'next/router';
  *
  * @see https://nextjs.org/docs/api-reference/next/router#router-object
  */
-export type AppRoute = {
+export type AppRoute<
+  Path extends string[] | void = void,
+  Query extends ParsedUrlQuery | void = void
+> = {
   /**
    * Pathname without query string. - *e.g.*`'/users/1'`
    */
@@ -19,18 +24,31 @@ export type AppRoute = {
    * Path parameters as key-value object - *e.g.*`{ userId: 1 }`
    * The key name is determined by the filename.
    */
-  pathParams: { [key: string]: string };
+  pathParams: Path extends string[]
+    ? { [K in Path[number]]: string }
+    : { [key: string]: string };
   /**
    * Query parameters as key-value object - *e.g.*`{ page: 1 }`
    */
-  queryParams: NextRouter['query'];
+  queryParams: Query extends ParsedUrlQuery
+    ? { [K in keyof Query]: Query[K] }
+    : ParsedUrlQuery;
 };
 
 /**
  * Return the route object including values
  * that Next `router` object doesn't have directly.
+ *
+ * @example
+ * // In case of generics being used.
+ * const route = useRoute<['userId'], { page: string }>();
+ * route.pathParams.userId // `string`
+ * route.queryParams.page // `string`
  */
-const useRoute = (): AppRoute => {
+const useRoute = <
+  Path extends string[] | void = void,
+  Query extends ParsedUrlQuery | void = void
+>(): AppRoute<Path, Query> => {
   const router = useRouter();
 
   /**
@@ -45,14 +63,14 @@ const useRoute = (): AppRoute => {
    * After the router is ready on the client side, the values are updated.
    */
   const pathAndQuery = router.asPath.split('?');
-  const pathname = pathAndQuery[0];
-  const queryString = pathAndQuery[1] as AppRoute['queryString'];
+  const pathname: AppRoute['pathname'] = pathAndQuery[0];
+  const queryString: AppRoute['queryString'] = pathAndQuery[1];
 
   /**
    * `NextRouter.query` value containing only path params.
    */
-  const pathParams = (getPathParamNames(router) ?? []).reduce(
-    (obj: AppRoute['pathParams'], pathParamName: string) => {
+  const pathParams = getPathParamNames(router).reduce(
+    (obj, pathParamName: string) => {
       const value = router.query[pathParamName];
 
       if (typeof value !== 'string') throw new Error('Unexpected.');
@@ -61,7 +79,7 @@ const useRoute = (): AppRoute => {
 
       return obj;
     },
-    {}
+    {} as AppRoute<Path, Query>['pathParams']
   );
 
   /**
@@ -74,7 +92,7 @@ const useRoute = (): AppRoute => {
    * (e.g. `asPath` => `/users/1?foo=bar`, `query` => `{ userId: 1 }`)
    */
   const queryParams = getQueryParamNames(router).reduce(
-    (obj: NextRouter['query'], queryParamName: string) => {
+    (obj, queryParamName: string) => {
       const queryValue = router.query[queryParamName];
 
       if (router.isReady && typeof queryValue === 'undefined') {
@@ -85,7 +103,7 @@ const useRoute = (): AppRoute => {
 
       return obj;
     },
-    {}
+    {} as AppRoute<Path, Query>['queryParams']
   );
 
   return {
@@ -102,8 +120,8 @@ const useRoute = (): AppRoute => {
  * @example
  * router.pathname ==='/users/[userId]' => ['userId']
  */
-const getPathParamNames = (router: NextRouter): string[] | null =>
-  router.pathname.match(/(?<=\[)[^\]]+(?=\])/g);
+const getPathParamNames = (router: NextRouter): string[] =>
+  router.pathname.match(/(?<=\[)[^\]]+(?=\])/g) ?? [];
 
 /**
  * Get the query parameter keys from NextRouter.
