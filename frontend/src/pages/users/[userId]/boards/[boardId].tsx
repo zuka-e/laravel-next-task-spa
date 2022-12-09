@@ -42,13 +42,13 @@ const TaskBoard = () => {
   const { pathParams } = useRoute();
   const dispatch = useAppDispatch();
   const board = useDeepEqualSelector(
-    (state) => state.boards.docs[pathParams.boardId.toString()]
+    (state) => state.boards.docs[pathParams.boardId]
   );
 
   useEffect(() => {
     const request: FetchTaskBoardRequest = {
-      userId: pathParams.userId.toString(),
-      boardId: pathParams.boardId.toString(),
+      userId: pathParams.userId,
+      boardId: pathParams.boardId,
     };
     dispatch(fetchTaskBoard(request));
   }, [dispatch, pathParams.userId, pathParams.boardId]);

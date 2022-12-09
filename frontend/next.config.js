@@ -18,7 +18,12 @@ const removeImports = require('next-remove-imports')();
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
-  // https://nextjs.org/docs/api-reference/next.config.js/react-strict-mode
+  // cf. https://nextjs.org/docs/api-reference/next.config.js/react-strict-mode
+  // Note:
+  // Sometimes application behaviors are different in dev and prod.
+  // cf. https://beta.reactjs.org/learn/synchronizing-with-effects#how-to-write-an-effect#how-to-handle-the-effect-firing-twice-in-development
+  // To confirm the behavior, you may use `next build && next start`
+  // or set `NextConfig.reactStrictMode` to`false`.
   reactStrictMode: true,
 };
 

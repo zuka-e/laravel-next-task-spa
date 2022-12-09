@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { Container } from '@mui/material';
 
 import { fetchAuthUser } from 'store/thunks/auth';
-import { isReady } from 'utils/auth';
+import { isReady, isSignedIn } from 'utils/auth';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
 import { BaseLayout, Loading } from 'layouts';
 import { LinkButton } from 'templates';
@@ -13,8 +13,7 @@ import { Hero, Features } from 'components/home/LandingPage';
 
 const Home = () => {
   const router = useRouter();
-  const signedIn = useAppSelector((state) => state.auth.signedIn);
-  const userId = useAppSelector((state) => state.auth.user?.id);
+  const user = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -22,11 +21,16 @@ const Home = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    signedIn && router.replace(`users/${userId}/boards`);
-  }, [router, signedIn, userId]);
+    // Right after `fetchAuthUser.rejected` is dispatched in `useEffect` cleanup,
+    // (cf. `pages/419.tsx`),
+    // the state using `useSelector` won't be updated,
+    // while that using `store.getState()` will be updated.
+    // That's why `isSignedIn` is used instead of `useSelector`.
+    if (isSignedIn() && user) router.replace(`users/${user.id}/boards`);
+  }, [router, user]);
 
   // Until initialized or the redirect completed.
-  if (!isReady() || signedIn) return <Loading open={true} />;
+  if (!isReady() || isSignedIn()) return <Loading open={true} />;
 
   return (
     <>

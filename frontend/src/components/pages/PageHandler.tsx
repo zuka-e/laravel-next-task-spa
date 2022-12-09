@@ -13,7 +13,7 @@ const isHttpError = (httpStatus: number) => {
 };
 
 const isRenderableError = (httpStatus: number) => {
-  const excludedStatuses = [401];
+  const excludedStatuses = [401, 422];
   return isHttpError(httpStatus) && !excludedStatuses.includes(httpStatus);
 };
 
