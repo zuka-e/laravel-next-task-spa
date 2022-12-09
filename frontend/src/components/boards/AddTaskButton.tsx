@@ -6,11 +6,11 @@ import { Add as AddIcon } from '@mui/icons-material';
 import { FormAction } from 'store/slices/taskBoardSlice';
 import { TitleForm } from '.';
 
-type ButtonToAddTaskProps = FormAction & {
+type AddTaskButtonProps = FormAction & {
   transparent?: boolean;
 };
 
-const ButtonToAddTask = (props: ButtonToAddTaskProps) => {
+const AddTaskButton = (props: AddTaskButtonProps) => {
   const { transparent, ...formActionType } = props;
   const [isEditing, setIsEditing] = useState(false);
 
@@ -55,4 +55,4 @@ const ButtonToAddTask = (props: ButtonToAddTaskProps) => {
   );
 };
 
-export default ButtonToAddTask;
+export default AddTaskButton;

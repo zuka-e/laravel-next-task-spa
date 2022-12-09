@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from 'utils/hooks';
 import { moveCard } from 'store/slices';
 import { updateTaskCardRelationships } from 'store/thunks/cards';
 import { LabeledSelect } from 'templates';
-import { ButtonToAddTask } from '..';
+import { AddTaskButton } from '..';
 import { TaskCard } from '../TaskCard';
 import { ListCardHeader } from '.';
 
@@ -31,7 +31,7 @@ const TaskList = (props: TaskListProps) => {
   const { list, listIndex } = props;
   const selectedId = useAppSelector((state) => state.boards.infoBox.data?.id);
   const dispatch = useAppDispatch();
-  const [filterValue, setfilterValue] = useState<FilterName>(cardFilter.ALL);
+  const [filterValue, setFilterValue] = useState<FilterName>(cardFilter.ALL);
 
   /** リスト間のカードの移動を司る */
   const [, drop] = useDrop({
@@ -82,7 +82,7 @@ const TaskList = (props: TaskListProps) => {
   });
 
   const handleChange: SelectProps['onChange'] = (event) => {
-    setfilterValue(event.target.value as FilterName); // unknown型から変換
+    setFilterValue(event.target.value as FilterName); // unknown型から変換
   };
 
   return (
@@ -127,7 +127,7 @@ const TaskList = (props: TaskListProps) => {
       </div>
 
       <CardActions>
-        <ButtonToAddTask method="POST" model="card" parent={list} transparent />
+        <AddTaskButton method="POST" model="card" parent={list} transparent />
       </CardActions>
     </Card>
   );

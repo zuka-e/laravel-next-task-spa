@@ -15,7 +15,7 @@ import {
 } from 'utils/hooks';
 import { BaseLayout, StandbyScreen } from 'layouts';
 import { Link } from 'templates';
-import { ButtonToAddTask } from 'components/boards';
+import { AddTaskButton } from 'components/boards';
 import { BoardCardHeader } from 'components/boards/TaskBoard';
 import type { AuthPage } from 'routes';
 
@@ -97,7 +97,7 @@ const TaskBoardIndex = () => {
               </Grid>
             ))}
             <Grid item md={4} sm={6} xs={12}>
-              <ButtonToAddTask method="POST" model="board" />
+              <AddTaskButton method="POST" model="board" />
             </Grid>
           </Grid>
         </Container>
