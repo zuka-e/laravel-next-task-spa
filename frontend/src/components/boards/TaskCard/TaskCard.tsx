@@ -6,7 +6,6 @@ import { Card, Typography } from '@mui/material';
 import * as Model from 'models';
 import { draggableItem, DragItem } from 'utils/dnd';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
-import { activateEventAttr as activateInfoBoxEventAttr } from 'utils/infoBox';
 import { moveCard, openInfoBox } from 'store/slices/taskBoardSlice';
 
 type TaskCardProps = {
@@ -69,8 +68,7 @@ const TaskCard = (props: TaskCardProps) => {
   const isSelected = () => card.id === selectedId;
 
   const handleClick = () => {
-    if (isSelected()) activateInfoBoxEventAttr('shown');
-    else dispatch(openInfoBox({ model: 'card', data: card }));
+    dispatch(openInfoBox({ model: 'card', data: card }));
   };
 
   return (

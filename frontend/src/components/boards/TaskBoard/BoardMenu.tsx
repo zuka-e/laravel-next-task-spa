@@ -8,8 +8,7 @@ import {
 } from '@mui/icons-material';
 
 import { TaskBoard } from 'models';
-import { useAppDispatch, useAppSelector, useRoute } from 'utils/hooks';
-import { activateEventAttr } from 'utils/infoBox';
+import { useAppDispatch, useRoute } from 'utils/hooks';
 import { openInfoBox } from 'store/slices/taskBoardSlice';
 import { PopoverControl, DeleteTaskDialog } from 'templates';
 import { SortSelect } from '..';
@@ -27,13 +26,10 @@ type BoardMenuProps = {
 const BoardMenu = (props: BoardMenuProps) => {
   const { board } = props;
   const { pathParams } = useRoute();
-  const selectedId = useAppSelector((state) => state.boards.infoBox.data?.id);
   const dispatch = useAppDispatch();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   const handleClick = (key: keyof typeof menuItem) => () => {
-    if (board.id === selectedId) activateEventAttr('shown');
-
     switch (key) {
       case 'info':
         dispatch(openInfoBox({ model: 'board', data: board }));
