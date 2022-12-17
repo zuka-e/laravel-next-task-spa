@@ -101,64 +101,66 @@ const ResetPassword = () => {
       <Head>
         <title>Reset Password</title>
       </Head>
-      <FormLayout title={'Reset Password'} message={message}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id={formData.password.id}
-            label={formData.password.label}
-            type={visiblePassword ? 'text' : 'password'}
-            autoComplete={formData.password.id}
-            {...register('password')}
-            helperText={errors?.password?.message || '8-20 characters'}
-            error={!!errors?.password}
-          />
-          <TextField
-            variant="outlined"
-            // margin='normal'
-            required
-            fullWidth
-            id={formData.password_confirmation.id}
-            label={formData.password_confirmation.label}
-            type={visiblePassword ? 'text' : 'password'}
-            autoComplete={formData.password_confirmation.id}
-            {...register('password_confirmation')}
-            helperText={
-              errors?.password_confirmation?.message || 'Retype password'
-            }
-            error={!!errors?.password_confirmation}
-          />
-          <FormControlLabel
-            label="Show Password"
-            className="mx-0 mb-4 block w-fit text-gray-600"
-            control={
-              <Checkbox
-                onChange={togglePasswordVisibility}
-                color="primary"
-                size="small"
-              />
-            }
-          />
-          <div className="my-8">
-            <SubmitButton fullWidth>{'Reset Password'}</SubmitButton>
-          </div>
-          <Divider className="my-4" />
-          <Grid container justifyContent="flex-end">
-            <Grid item>
-              <Button
-                color="info"
-                variant="text"
-                size="small"
-                onClick={() => router.push('/')}
-              >
-                {'Cancel'}
-              </Button>
-            </Grid>
+      <FormLayout
+        title={'Reset Password'}
+        message={message}
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          id={formData.password.id}
+          label={formData.password.label}
+          type={visiblePassword ? 'text' : 'password'}
+          autoComplete={formData.password.id}
+          {...register('password')}
+          helperText={errors?.password?.message || '8-20 characters'}
+          error={!!errors?.password}
+        />
+        <TextField
+          variant="outlined"
+          // margin='normal'
+          required
+          fullWidth
+          id={formData.password_confirmation.id}
+          label={formData.password_confirmation.label}
+          type={visiblePassword ? 'text' : 'password'}
+          autoComplete={formData.password_confirmation.id}
+          {...register('password_confirmation')}
+          helperText={
+            errors?.password_confirmation?.message || 'Retype password'
+          }
+          error={!!errors?.password_confirmation}
+        />
+        <FormControlLabel
+          label="Show Password"
+          className="mx-0 mb-4 block w-fit text-gray-600"
+          control={
+            <Checkbox
+              onChange={togglePasswordVisibility}
+              color="primary"
+              size="small"
+            />
+          }
+        />
+        <div className="my-8">
+          <SubmitButton fullWidth>{'Reset Password'}</SubmitButton>
+        </div>
+        <Divider className="my-4" />
+        <Grid container justifyContent="flex-end">
+          <Grid item>
+            <Button
+              color="info"
+              variant="text"
+              size="small"
+              onClick={() => router.push('/')}
+            >
+              {'Cancel'}
+            </Button>
           </Grid>
-        </form>
+        </Grid>
       </FormLayout>
     </>
   );

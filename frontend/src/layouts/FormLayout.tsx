@@ -15,10 +15,11 @@ type FormLayoutProps = {
   children: React.ReactNode;
   title: string;
   message?: string;
+  onSubmit: React.FormEventHandler<HTMLFormElement>;
 };
 
 const FormLayout = (props: FormLayoutProps) => {
-  const { children, title, message } = props;
+  const { children, title, onSubmit, message } = props;
 
   return (
     <>
@@ -43,7 +44,9 @@ const FormLayout = (props: FormLayoutProps) => {
             <Typography component="h1" variant="h5" gutterBottom>
               {title}
             </Typography>
-            <div className="w-full">{children}</div>
+            <form onSubmit={onSubmit} className="w-full">
+              {children}
+            </form>
           </Grid>
         </Card>
       </Container>

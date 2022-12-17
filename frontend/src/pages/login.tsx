@@ -89,77 +89,79 @@ const SignIn = () => {
       <Head>
         <title>Sign In</title>
       </Head>
-      <FormLayout title={`Sign in to ${APP_NAME}`} message={message}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id={formData.email.id}
-            label={formData.email.label}
-            autoComplete={formData.email.id}
-            {...register('email')}
-            helperText={errors?.email?.message}
-            error={!!errors?.email}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id={formData.password.id}
-            label={formData.password.label}
-            type={visiblePassword ? 'text' : 'password'}
-            autoComplete={formData.password.id}
-            {...register('password')}
-            helperText={errors?.password?.message || '8-20 characters'}
-            error={!!errors?.password}
-          />
-          <FormControlLabel
-            label="Show Password"
-            className="mx-0 mb-4 block w-fit text-gray-600"
-            control={
-              <Checkbox
-                onChange={togglePasswordVisibility}
-                color="primary"
-                size="small"
-              />
-            }
-          />
-          <FormControlLabel
-            id={formData.remember.id}
-            label={formData.remember.label}
-            control={
-              <Checkbox {...register('remember')} value="on" color="primary" />
-            }
-          />
-          <div className="my-8">
-            <SubmitButton fullWidth>{'Sign In'}</SubmitButton>
-          </div>
-          <Button
-            color="info"
-            variant="text"
-            size="small"
-            onClick={() => router.push('/forgot-password')}
-          >
-            {'Forgot password?'}
-          </Button>
-          <Divider className="my-4" />
-          <Grid container justifyContent="flex-end">
-            <Grid item>
-              {`New to ${APP_NAME}? `}
-              <Button
-                color="info"
-                variant="text"
-                size="small"
-                onClick={() => router.push('/register')}
-              >
-                {'Create an account'}
-              </Button>
-            </Grid>
+      <FormLayout
+        title={`Sign in to ${APP_NAME}`}
+        message={message}
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          id={formData.email.id}
+          label={formData.email.label}
+          autoComplete={formData.email.id}
+          {...register('email')}
+          helperText={errors?.email?.message}
+          error={!!errors?.email}
+        />
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          id={formData.password.id}
+          label={formData.password.label}
+          type={visiblePassword ? 'text' : 'password'}
+          autoComplete={formData.password.id}
+          {...register('password')}
+          helperText={errors?.password?.message || '8-20 characters'}
+          error={!!errors?.password}
+        />
+        <FormControlLabel
+          label="Show Password"
+          className="mx-0 mb-4 block w-fit text-gray-600"
+          control={
+            <Checkbox
+              onChange={togglePasswordVisibility}
+              color="primary"
+              size="small"
+            />
+          }
+        />
+        <FormControlLabel
+          id={formData.remember.id}
+          label={formData.remember.label}
+          control={
+            <Checkbox {...register('remember')} value="on" color="primary" />
+          }
+        />
+        <div className="my-8">
+          <SubmitButton fullWidth>{'Sign In'}</SubmitButton>
+        </div>
+        <Button
+          color="info"
+          variant="text"
+          size="small"
+          onClick={() => router.push('/forgot-password')}
+        >
+          {'Forgot password?'}
+        </Button>
+        <Divider className="my-4" />
+        <Grid container justifyContent="flex-end">
+          <Grid item>
+            {`New to ${APP_NAME}? `}
+            <Button
+              color="info"
+              variant="text"
+              size="small"
+              onClick={() => router.push('/register')}
+            >
+              {'Create an account'}
+            </Button>
           </Grid>
-        </form>
+        </Grid>
       </FormLayout>
     </>
   );

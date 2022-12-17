@@ -61,38 +61,40 @@ const ForgotPassword = () => {
       <Head>
         <title>Forgot Password</title>
       </Head>
-      <FormLayout title={'Forgot Password?'} message={message}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id={formData.email.id}
-            label={formData.email.label}
-            autoComplete={formData.email.id}
-            {...register('email')}
-            helperText={errors?.email?.message}
-            error={!!errors?.email}
-          />
-          <div className="my-8">
-            <SubmitButton fullWidth>{'Send password reset email'}</SubmitButton>
-          </div>
-          <Divider className="my-4" />
-          <Grid container justifyContent="flex-end">
-            <Grid item>
-              {'Back to'}
-              <Button
-                color="info"
-                variant="text"
-                size="small"
-                onClick={() => router.push('/login')}
-              >
-                {'Sign in'}
-              </Button>
-            </Grid>
+      <FormLayout
+        title={'Forgot Password?'}
+        message={message}
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          id={formData.email.id}
+          label={formData.email.label}
+          autoComplete={formData.email.id}
+          {...register('email')}
+          helperText={errors?.email?.message}
+          error={!!errors?.email}
+        />
+        <div className="my-8">
+          <SubmitButton fullWidth>{'Send password reset email'}</SubmitButton>
+        </div>
+        <Divider className="my-4" />
+        <Grid container justifyContent="flex-end">
+          <Grid item>
+            {'Back to'}
+            <Button
+              color="info"
+              variant="text"
+              size="small"
+              onClick={() => router.push('/login')}
+            >
+              {'Sign in'}
+            </Button>
           </Grid>
-        </form>
+        </Grid>
       </FormLayout>
     </>
   );
