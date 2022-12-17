@@ -14,7 +14,7 @@ import {
 } from 'store/thunks/boards';
 import { BaseLayout, StandbyScreen } from 'layouts';
 import { PopoverControl } from 'templates';
-import { ButtonToAddTask, EditableTitle, SearchField } from 'components/boards';
+import { AddTaskButton, EditableTitle, SearchField } from 'components/boards';
 import { BoardMenu } from 'components/boards/TaskBoard';
 import { TaskList } from 'components/boards/TaskList';
 import { InfoBox } from 'components/boards/InfoBox';
@@ -120,7 +120,7 @@ const TaskBoard = () => {
                 </Grid>
               ))}
               <Grid item>
-                <ButtonToAddTask method="POST" model="list" parent={board} />
+                <AddTaskButton method="POST" model="list" parent={board} />
               </Grid>
             </Grid>
             <InfoBox className="max-md:flex-shrink-0" />
