@@ -96,77 +96,79 @@ const SignUp = () => {
       <Head>
         <title>Registration</title>
       </Head>
-      <FormLayout title={'Create an account'} message={message}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id={formData.email.id}
-            label={formData.email.label}
-            autoComplete={formData.email.id}
-            {...register('email')}
-            helperText={errors?.email?.message}
-            error={!!errors?.email}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id={formData.password.id}
-            label={formData.password.label}
-            type={visiblePassword ? 'text' : 'password'}
-            autoComplete={formData.password.id}
-            {...register('password')}
-            helperText={errors?.password?.message || '8-20 characters'}
-            error={!!errors?.password}
-          />
-          <TextField
-            variant="outlined"
-            // margin='normal'
-            required
-            fullWidth
-            id={formData.password_confirmation.id}
-            label={formData.password_confirmation.label}
-            type={visiblePassword ? 'text' : 'password'}
-            autoComplete={formData.password_confirmation.id}
-            {...register('password_confirmation')}
-            helperText={
-              errors?.password_confirmation?.message || 'Retype password'
-            }
-            error={!!errors?.password_confirmation}
-          />
-          <FormControlLabel
-            label="Show Password"
-            className="mx-0 mb-4 block w-fit text-gray-600"
-            control={
-              <Checkbox
-                onChange={togglePasswordVisibility}
-                color="primary"
-                size="small"
-              />
-            }
-          />
-          <div className="my-8">
-            <SubmitButton fullWidth>{'Create an account'}</SubmitButton>
-          </div>
-          <Divider className="my-4" />
-          <Grid container justifyContent="flex-end">
-            <Grid item>
-              {'Already have an account? '}
-              <Button
-                color="info"
-                variant="text"
-                size="small"
-                onClick={() => router.push('/login')}
-              >
-                {'Sign in'}
-              </Button>
-            </Grid>
+      <FormLayout
+        title={'Create an account'}
+        message={message}
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          id={formData.email.id}
+          label={formData.email.label}
+          autoComplete={formData.email.id}
+          {...register('email')}
+          helperText={errors?.email?.message}
+          error={!!errors?.email}
+        />
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          id={formData.password.id}
+          label={formData.password.label}
+          type={visiblePassword ? 'text' : 'password'}
+          autoComplete={formData.password.id}
+          {...register('password')}
+          helperText={errors?.password?.message || '8-20 characters'}
+          error={!!errors?.password}
+        />
+        <TextField
+          variant="outlined"
+          // margin='normal'
+          required
+          fullWidth
+          id={formData.password_confirmation.id}
+          label={formData.password_confirmation.label}
+          type={visiblePassword ? 'text' : 'password'}
+          autoComplete={formData.password_confirmation.id}
+          {...register('password_confirmation')}
+          helperText={
+            errors?.password_confirmation?.message || 'Retype password'
+          }
+          error={!!errors?.password_confirmation}
+        />
+        <FormControlLabel
+          label="Show Password"
+          className="mx-0 mb-4 block w-fit text-gray-600"
+          control={
+            <Checkbox
+              onChange={togglePasswordVisibility}
+              color="primary"
+              size="small"
+            />
+          }
+        />
+        <div className="my-8">
+          <SubmitButton fullWidth>{'Create an account'}</SubmitButton>
+        </div>
+        <Divider className="my-4" />
+        <Grid container justifyContent="flex-end">
+          <Grid item>
+            {'Already have an account? '}
+            <Button
+              color="info"
+              variant="text"
+              size="small"
+              onClick={() => router.push('/login')}
+            >
+              {'Sign in'}
+            </Button>
           </Grid>
-        </form>
+        </Grid>
       </FormLayout>
     </>
   );
