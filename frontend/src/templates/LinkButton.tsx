@@ -1,12 +1,10 @@
-import { Button, ButtonProps, ButtonTypeMap } from '@mui/material';
+import { Button } from '@mui/material';
+import type { ButtonProps } from '@mui/material';
 
 import { NextLinkComposed } from 'templates/Link';
 
-type LinkButtonProps = {
-  to: string;
-} & ButtonProps<
-  ButtonTypeMap<Record<string, unknown>, 'a'>['defaultComponent']
->;
+type LinkButtonProps = ButtonProps<'a'> &
+  Parameters<typeof NextLinkComposed>[number];
 
 const LinkButton = (props: LinkButtonProps) => {
   return (
