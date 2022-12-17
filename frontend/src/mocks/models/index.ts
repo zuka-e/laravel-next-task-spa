@@ -160,7 +160,7 @@ const whereIn = <T extends keyof DB>(
  * 指定された`Collection`の`Document`を更新
  */
 const update = <T extends keyof DB>(model: T, doc: Doc<T>) => {
-  const updated = { ...doc, updatedAt: new Date() };
+  const updated = { ...doc, updatedAt: new Date().toISOString() };
   const newState = { ...database[model], [doc.id]: updated };
 
   database[model] = newState;
