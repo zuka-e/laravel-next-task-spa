@@ -6,6 +6,7 @@ import '@testing-library/jest-dom';
 
 import { server } from 'mocks/api/server';
 
+import 'mocks/globals';
 import 'mocks/data';
 
 beforeAll(() => {

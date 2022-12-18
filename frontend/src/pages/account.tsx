@@ -68,7 +68,11 @@ const Account = () => {
                 <CardContent>
                   <DeleteAccountDialog
                     trigger={
-                      <Button disabled={isGuest()} color="error">
+                      <Button
+                        disabled={isGuest()}
+                        variant="contained"
+                        color="error"
+                      >
                         アカウントを削除
                       </Button>
                     }

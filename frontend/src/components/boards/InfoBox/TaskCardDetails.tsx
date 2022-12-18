@@ -199,6 +199,7 @@ const TaskCardDetails = (props: TaskCardDetailsProps) => {
           onClick={handleDelete}
           startIcon={<DeleteIcon />}
           title="削除"
+          variant="contained"
           color="error"
           className="ml-auto self-end"
         >

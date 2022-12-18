@@ -92,14 +92,27 @@ const save = <T extends keyof DB>(model: T) => {
  * 指定された`Collection`の`Document`の存在有無を確認
  */
 const exists = <T extends keyof DB>(model: T) =>
-  Object.keys(database[model]).length > 0;
+  Object.keys(db.collection(model)).length > 0;
 
 /**
  * 指定された`Collection`のコピーを返却
  */
 const collection = <T extends keyof DB>(model: T) => {
-  const collectionClone = { ...database[model] };
-  return collectionClone; // 参照のみ許可 (直接データを返さない)
+  // Return a deep copy of the `Collection` rather than a shallow copy
+  // https://developer.mozilla.org/en-US/docs/Web/API/structuredClone
+  const collection = structuredClone(database[model]);
+  return collection as typeof database[T] as Collection<T>;
+  // cf. `{ ...database[model] }` is a shallow.
+  // https://developer.mozilla.org/en-US/docs/Glossary/Deep_copy
+  // https://developer.mozilla.org/en-US/docs/Glossary/Shallow_copy
+};
+
+/**
+ * 指定されたモデルの`Document`配列を返却
+ */
+const docs = <T extends keyof DB>(model: T) => {
+  const docs = Object.values(db.collection(model));
+  return docs as ReturnType<typeof collection>[T][] as Doc<T>[];
 };
 
 /**
@@ -129,10 +142,7 @@ const where = <T extends keyof DB>(
   column: keyof Doc<T>,
   value: unknown
 ) => {
-  const matchedDocs = Object.values(database[model]).filter(
-    (doc) => doc[column as keyof typeof doc] === value
-  );
-  return matchedDocs as Doc<T>[];
+  return db.docs(model).filter((doc) => doc[column] === value);
 };
 
 /**
@@ -143,17 +153,14 @@ const whereIn = <T extends keyof DB>(
   column: keyof Doc<T>,
   list: unknown[]
 ) => {
-  const matchedDocs = Object.values(database[model]).filter((doc) =>
-    list.includes(doc[column as keyof typeof doc])
-  );
-  return matchedDocs as Doc<T>[];
+  return db.docs(model).filter((doc) => list.includes(doc[column]));
 };
 
 /**
  * 指定された`Collection`の`Document`を更新
  */
 const update = <T extends keyof DB>(model: T, doc: Doc<T>) => {
-  const updated = { ...doc, updatedAt: new Date() };
+  const updated = { ...doc, updatedAt: new Date().toISOString() };
   const newState = { ...database[model], [doc.id]: updated };
 
   database[model] = newState;
@@ -168,7 +175,7 @@ const update = <T extends keyof DB>(model: T, doc: Doc<T>) => {
  * @returns 削除された`Document` | `undefined`(`docId`が存在しない場合)
  */
 const remove = <T extends keyof DB>(model: T, docId: keyof DB[T]) => {
-  const { [docId]: deleted, ...newState } = database[model];
+  const { [docId]: deleted, ...newState } = db.collection(model);
 
   database[model] = newState as Collection<T>;
   save(model);
@@ -202,7 +209,11 @@ interface Model {
   /**
    * 指定された`Collection`のコピーを返却
    */
-  collection<T extends keyof DB>(model: T): DB[T];
+  collection<T extends keyof DB>(model: T): Collection<T>;
+  /**
+   * 指定されたモデルの`Document`配列を返却
+   */
+  docs<T extends keyof DB>(model: T): Doc<T>[];
   /**
    * 指定された`Collection`に引数の`Document`を新たに作成
    *
@@ -257,6 +268,7 @@ export const db: Readonly<Model> = {
   load,
   exists,
   collection,
+  docs,
   create,
   where,
   whereIn,

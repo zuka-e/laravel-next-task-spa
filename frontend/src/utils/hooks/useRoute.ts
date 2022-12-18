@@ -131,7 +131,7 @@ const getPathParamNames = (router: NextRouter): string[] =>
  */
 const getQueryParamNames = (router: NextRouter): string[] => {
   const queryString = router.asPath.split('?')[1];
-  const queryParams = queryString.split('&') ?? [];
+  const queryParams = queryString?.split('&') ?? [];
 
   return [...new Set(queryParams.map((param) => param.split('=')[0]))];
 };

@@ -70,7 +70,13 @@ const Header = () => {
         </Drawer>
         <div className="ml-4 flex-auto">
           <Link href={'/'}>
-            <Image src={logo.src} alt={APP_NAME} width="120" height="30" />
+            <Image
+              src={logo.src}
+              alt={APP_NAME}
+              width="120"
+              height="30"
+              priority
+            />
           </Link>
         </div>
         {isSignedIn() ? <AccountMenuButton /> : <SignInLinkButton />}

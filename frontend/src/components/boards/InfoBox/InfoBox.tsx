@@ -1,18 +1,9 @@
 import { useEffect } from 'react';
 
-import { ClickAwayListener } from '@mui/material';
-import type { ClickAwayListenerProps } from '@mui/material';
-
 import theme from 'theme';
 import { TaskBoard, TaskList, TaskCard } from 'models';
-import { closeInfoBox, removeInfoBox } from 'store/slices/taskBoardSlice';
+import { removeInfoBox } from 'store/slices/taskBoardSlice';
 import { useAppDispatch, useDeepEqualSelector, usePrevious } from 'utils/hooks';
-import {
-  deactivateEventAttr,
-  isIgnoredTarget,
-  isItself,
-  hasChanged,
-} from 'utils/infoBox';
 import { TaskBoardDetails, TaskListDetails, TaskCardDetails } from '.';
 
 const InfoBox = (props: JSX.IntrinsicElements['div']) => {
@@ -67,53 +58,12 @@ const InfoBox = (props: JSX.IntrinsicElements['div']) => {
     >
       {currentState.model ? (
         <div className="absolute h-full w-full [&>*]:overflow-y-auto">
-          <Wrapper>{renderInfoBox()}</Wrapper>
+          {renderInfoBox()}
         </div>
       ) : (
         <h2 className="text-center">There is no content</h2>
       )}
     </div>
-  );
-};
-
-/**
- * 要素外のクリックで`open`状態を解除する機能を付与するためのラッパー。
- */
-const Wrapper = (props: { children: React.ReactNode }) => {
-  const dispatch = useAppDispatch();
-  const currentState = useDeepEqualSelector(
-    (state) => state.boards.infoBox.data
-  );
-  const state = {
-    current: currentState,
-    prev: usePrevious(currentState) || currentState,
-  };
-
-  /**
-   *  以下の場合`open`を解除しない
-   *
-   * - 自身のデータを表示する操作
-   * - 別のデータを表示する操作
-   * - 事前に指定された要素のクリック
-   */
-  const handleClickAway: ClickAwayListenerProps['onClickAway'] = (event) => {
-    if (isItself()) {
-      deactivateEventAttr('shown');
-      return;
-    }
-    if (hasChanged(state.current, state.prev)) {
-      state.prev = state.current;
-      return;
-    }
-    if (isIgnoredTarget(event.target as HTMLElement)) return;
-
-    dispatch(closeInfoBox());
-  };
-
-  return (
-    <ClickAwayListener mouseEvent="onMouseDown" onClickAway={handleClickAway}>
-      <div className="infoWrapper">{props.children}</div>
-    </ClickAwayListener>
   );
 };
 
