@@ -12,13 +12,27 @@ use Illuminate\Support\Facades\Auth;
 
 class TaskCardController extends Controller
 {
-    public function __construct()
+    /**
+     * `TaskCardResource` instance
+     *
+     * @var \App\Http\Resources\TaskCardResource
+     */
+    private TaskCardResource $resource;
+
+    /**
+     * @param  \App\Http\Resources\TaskCardResource  $resource
+     * @see https://laravel.com/docs/9.x/controllers#dependency-injection-and-controllers
+     * @see https://laravel.com/docs/9.x/container
+     */
+    public function __construct(TaskCardResource $resource)
     {
         // > This method will attach the appropriate can middleware definitions
         // > to the resource controller's methods.
         // > https://laravel.com/docs/9.x/authorization#authorizing-resource-controllers
         /** @see \App\Policies\TaskCardPolicy */
         $this->authorizeResource(TaskCard::class);
+
+        $this->resource = $resource;
     }
 
     /**
@@ -44,7 +58,7 @@ class TaskCardController extends Controller
         $created->user()->associate(Auth::id());
         $created->save();
 
-        return new TaskCardResource($created);
+        return $this->resource->make($created);
     }
 
     /**
@@ -68,7 +82,7 @@ class TaskCardController extends Controller
 
         $taskCard->fill($validated)->save();
 
-        return new TaskCardResource($taskCard);
+        return $this->resource->make($taskCard);
     }
 
     /**
@@ -82,6 +96,6 @@ class TaskCardController extends Controller
     {
         $taskCard->delete();
 
-        return new TaskCardResource($taskCard);
+        return $this->resource->make($taskCard);
     }
 }

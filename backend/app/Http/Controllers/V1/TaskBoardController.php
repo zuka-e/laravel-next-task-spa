@@ -11,13 +11,27 @@ use App\Models\User;
 
 class TaskBoardController extends Controller
 {
-    public function __construct()
+    /**
+     * `TaskBoardResource` instance
+     *
+     * @var \App\Http\Resources\TaskBoardResource
+     */
+    private TaskBoardResource $resource;
+
+    /**
+     * @param  \App\Http\Resources\TaskBoardResource  $resource
+     * @see https://laravel.com/docs/9.x/controllers#dependency-injection-and-controllers
+     * @see https://laravel.com/docs/9.x/container
+     */
+    public function __construct(TaskBoardResource $resource)
     {
         // > This method will attach the appropriate can middleware definitions
         // > to the resource controller's methods.
         // > https://laravel.com/docs/9.x/authorization#authorizing-resource-controllers
         /** @see \App\Policies\TaskBoardPolicy */
         $this->authorizeResource(TaskBoard::class);
+
+        $this->resource = $resource;
     }
 
     /**
@@ -31,7 +45,7 @@ class TaskBoardController extends Controller
      */
     public function index(User $user)
     {
-        return TaskBoardResource::collection(
+        return $this->resource->collection(
             $user
                 ->taskBoards()
                 ->getQuery()
@@ -62,7 +76,7 @@ class TaskBoardController extends Controller
          */
         $created = $user->taskBoards()->create($validated);
 
-        return new TaskBoardResource($created);
+        return $this->resource->make($created);
     }
 
     /**
@@ -78,7 +92,7 @@ class TaskBoardController extends Controller
      */
     public function show(User $user, TaskBoard $taskBoard)
     {
-        return new TaskBoardResource(
+        return $this->resource->make(
             $taskBoard->load([
                 // > When using this feature, you should always include
                 // > the id column and any relevant foreign key columns
@@ -109,7 +123,7 @@ class TaskBoardController extends Controller
 
         $taskBoard->fill($validated)->save();
 
-        return new TaskBoardResource($taskBoard);
+        return $this->resource->make($taskBoard);
     }
 
     /**
@@ -123,6 +137,6 @@ class TaskBoardController extends Controller
     {
         $taskBoard->delete();
 
-        return new TaskBoardResource($taskBoard);
+        return $this->resource->make($taskBoard);
     }
 }
