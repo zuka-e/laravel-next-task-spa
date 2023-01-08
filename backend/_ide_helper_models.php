@@ -15,13 +15,13 @@ namespace App\Models{
  * App\Models\TaskBoard
  *
  * @property string $id
- * @property string $user_id
+ * @property string $user_id User ID
  * @property string $title
  * @property string|null $description
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property array $list_index_map
- * @property array $card_index_map
+ * @property array|null $list_index_map Object with a List ID key and its sequence value
+ * @property array|null $card_index_map Object with a Card ID key and its sequence value
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\TaskCard[] $taskCards
  * @property-read int|null $task_cards_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\TaskList[] $taskLists
@@ -48,14 +48,14 @@ namespace App\Models{
  * App\Models\TaskCard
  *
  * @property string $id
- * @property string $user_id
+ * @property string $user_id User ID
  * @property string $title
  * @property string|null $content
  * @property \Illuminate\Support\Carbon|null $deadline
  * @property bool $done
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string $task_list_id
+ * @property string $task_list_id Task List ID
  * @property-read \App\Models\TaskList $taskList
  * @property-read \App\Models\User $user
  * @method static \Database\Factories\TaskCardFactory factory(...$parameters)
@@ -80,8 +80,8 @@ namespace App\Models{
  * App\Models\TaskList
  *
  * @property string $id
- * @property string $user_id
- * @property string $task_board_id
+ * @property string $user_id User ID
+ * @property string $task_board_id Task Board ID
  * @property string $title
  * @property string|null $description
  * @property \Illuminate\Support\Carbon|null $created_at
