@@ -118,10 +118,7 @@ class TaskBoardController extends Controller
         User $user,
         TaskBoard $taskBoard,
     ) {
-        /** @var array<string, mixed> $validated Array of only validated data */
-        $validated = $request->validated();
-
-        $taskBoard->fill($validated)->save();
+        $taskBoard->update($request->validated());
 
         return TaskBoardResource::make($taskBoard);
     }

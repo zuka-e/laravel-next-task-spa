@@ -76,7 +76,7 @@ class TaskCardController extends Controller
         isset($validated['list_id']) &&
             $taskCard->taskList()->associate($validated['list_id']);
 
-        $taskCard->fill($validated)->save();
+        $taskCard->update($validated);
 
         return TaskCardResource::make($taskCard);
     }

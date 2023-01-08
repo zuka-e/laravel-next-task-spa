@@ -67,10 +67,7 @@ class TaskListController extends Controller
         TaskBoard $taskBoard,
         TaskList $taskList,
     ) {
-        /** @var array<string, mixed> $validated Array of only validated data */
-        $validated = $request->validated();
-
-        $taskList->fill($validated)->save();
+        $taskList->update($request->validated());
 
         return TaskListResource::make($taskList);
     }
