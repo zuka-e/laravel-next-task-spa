@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\Auth;
 
 class TaskListController extends Controller
 {
+    /**
+     * @see https://laravel.com/docs/9.x/controllers#dependency-injection-and-controllers
+     * @see https://laravel.com/docs/9.x/container
+     */
     public function __construct()
     {
         // > This method will attach the appropriate can middleware definitions
@@ -31,20 +35,23 @@ class TaskListController extends Controller
     public function store(StoreTaskListRequest $request, TaskBoard $taskBoard)
     {
         /**
-         * @var array<string, mixed> $validated Array of only validated data
+         * Only validated data
+         *
+         * @var array<string, mixed> $validated
          * @see https://laravel.com/docs/9.x/validation#working-with-validated-input
          */
         $validated = $request->validated();
         /**
-         * @var \App\Models\TaskList $created Newly created `TaskList`
-         * @see https://laravel.com/docs/9.x/eloquent-relationships#the-create-method
-         * `create()` fill the model with fillable attributes and save it.
+         * Newly created `TaskList` of the `TaskBoard`
+         *
+         * @var \App\Models\TaskList $created
+         * @see https://laravel.com/docs/9.x/eloquent-relationships#updating-belongs-to-relationships
          */
         $created = $taskBoard->taskLists()->make($validated);
         $created->user()->associate(Auth::id());
         $created->save();
 
-        return new TaskListResource($created);
+        return TaskListResource::make($created);
     }
 
     /**
@@ -60,12 +67,9 @@ class TaskListController extends Controller
         TaskBoard $taskBoard,
         TaskList $taskList,
     ) {
-        /** @var array<string, mixed> $validated Array of only validated data */
-        $validated = $request->validated();
+        $taskList->update($request->validated());
 
-        $taskList->fill($validated)->save();
-
-        return new TaskListResource($taskList);
+        return TaskListResource::make($taskList);
     }
 
     /**
@@ -79,6 +83,6 @@ class TaskListController extends Controller
     {
         $taskList->delete();
 
-        return new TaskListResource($taskList);
+        return TaskListResource::make($taskList);
     }
 }

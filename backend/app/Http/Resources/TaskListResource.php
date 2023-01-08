@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Models\TaskList;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\MissingValue;
 
 /**
  * It's used to transform the model and define what data should be returned.
@@ -12,11 +13,21 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 class TaskListResource extends JsonResource
 {
-    /** @var \App\Models\TaskList */
+    /**
+     * `TaskList` resource instance when loaded.
+     *
+     * @var \App\Models\TaskList|\Illuminate\Http\Resources\MissingValue
+     * @see \Illuminate\Http\Resources\ConditionallyLoadsAttributes ::removeMissingValues
+     * @see https://laravel.com/docs/9.x/eloquent-resources#conditional-relationships
+     */
     public $resource; // Type declaration can't be used
 
-    /** @param  \App\Models\TaskList  $resource */
-    public function __construct(TaskList $resource)
+    /**
+     * Create a new resource instance.
+     *
+     * @param  \App\Models\TaskList|\Illuminate\Http\Resources\MissingValue  $resource
+     */
+    public function __construct(TaskList|MissingValue $resource)
     {
         $this->resource = $resource;
     }
@@ -25,7 +36,7 @@ class TaskListResource extends JsonResource
      * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return array
+     * @return array<string, mixed>
      */
     public function toArray($request)
     {
@@ -39,9 +50,8 @@ class TaskListResource extends JsonResource
             'id' => $taskList->id,
             'userId' => $taskList->user_id,
             'boardId' => $taskList->task_board_id,
-            'cards' => $this->when(
-                $taskList->taskCards,
-                TaskCardResource::collection($taskList->taskCards),
+            'cards' => TaskCardResource::collection(
+                $this->whenLoaded('taskCards'),
             ),
             'title' => $taskList->title,
             'description' => $taskList->description,

@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Models\TaskCard;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\MissingValue;
 
 /**
  * It's used to transform the model and define what data should be returned.
@@ -12,11 +13,19 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 class TaskCardResource extends JsonResource
 {
-    /** @var \App\Models\TaskCard */
+    /**
+     * `TaskCard` resource instance when loaded.
+     *
+     * @var \App\Models\TaskCard|\Illuminate\Http\Resources\MissingValue
+     */
     public $resource; // Type declaration can't be used
 
-    /** @param  \App\Models\TaskCard  $resource */
-    public function __construct(TaskCard $resource)
+    /**
+     * Create a new resource instance.
+     *
+     * @param  \App\Models\TaskCard|\Illuminate\Http\Resources\MissingValue  $resource
+     */
+    public function __construct(TaskCard|MissingValue $resource)
     {
         $this->resource = $resource;
     }
