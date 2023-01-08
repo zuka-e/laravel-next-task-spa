@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Models\TaskBoard;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\MissingValue;
 
 /**
  * It's used to transform the model and define what data should be returned.
@@ -12,11 +13,19 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 class TaskBoardResource extends JsonResource
 {
-    /** @var \App\Models\TaskBoard */
+    /**
+     * `TaskBoard` resource instance when loaded.
+     *
+     * @var \App\Models\TaskBoard|\Illuminate\Http\Resources\MissingValue
+     */
     public $resource; // Type declaration can't be used
 
-    /** @param  \App\Models\TaskBoard  $resource */
-    public function __construct(TaskBoard $resource)
+    /**
+     * Create a new resource instance.
+     *
+     * @param  \App\Models\TaskBoard|\Illuminate\Http\Resources\MissingValue  $resource
+     */
+    public function __construct(TaskBoard|MissingValue $resource)
     {
         $this->resource = $resource;
     }

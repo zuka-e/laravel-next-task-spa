@@ -2,33 +2,64 @@
 
 namespace App\Http\Resources;
 
+use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\MissingValue;
 
+/**
+ * It's used to transform the model and define what data should be returned.
+ *
+ * @see https://laravel.com/docs/9.x/eloquent-resources
+ */
 class UserResource extends JsonResource
 {
     /**
-     * Transform the resource into an array.
+     * `User` resource instance when loaded.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array
+     * @var \App\Models\User|\Illuminate\Http\Resources\MissingValue
+     * @see \Illuminate\Http\Resources\ConditionallyLoadsAttributes ::removeMissingValues
+     * @see https://laravel.com/docs/9.x/eloquent-resources#conditional-relationships
      */
-    public function toArray($request)
-    {
-        return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'email' => $this->email,
-            'emailVerifiedAt' => $this->email_verified_at,
-            'createdAt' => $this->created_at,
-            'updatedAt' => $this->updated_at,
-        ];
-    }
+    public $resource;
 
     /**
      * The "data" wrapper that should be applied.
      *
-     * @var string
+     * @see https://laravel.com/docs/9.x/eloquent-resources#data-wrapping
      */
-    // デフォルトのキー`data`を変更
     public static $wrap = 'user';
+
+    /**
+     * Create a new resource instance.
+     *
+     * @param  \App\Models\User|\Illuminate\Http\Resources\MissingValue  $resource
+     */
+    public function __construct(User|MissingValue $resource)
+    {
+        $this->resource = $resource;
+    }
+
+    /**
+     * Transform the resource into an array.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array<string, mixed>
+     */
+    public function toArray($request)
+    {
+        // Undefined properties can be accessed by `__get()`.
+        // (Illuminate\Http\Resources\DelegatesToResource::__get)
+        // But it's not type-safe. So access via a typed variable.
+        // e.g. `$this->resource->id` instead of `this->id`
+        $user = $this->resource;
+
+        return [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'emailVerifiedAt' => $user->email_verified_at,
+            'createdAt' => $user->created_at,
+            'updatedAt' => $user->updated_at,
+        ];
+    }
 }
