@@ -31,18 +31,24 @@ class TaskCardController extends Controller
      * @param  \App\Http\Requests\StoreTaskCardRequest  $request
      * @param  \App\Models\TaskList  $taskList
      * @return \App\Http\Resources\TaskCardResource
+     * @see \Illuminate\Http\Resources\Json\JsonResource ::toResponse
+     * @see \Illuminate\Http\Resources\Json\ResourceResponse ::toResponse
+     * @see https://laravel.com/docs/9.x/eloquent-resources#resource-responses
      */
     public function store(StoreTaskCardRequest $request, TaskList $taskList)
     {
         /**
-         * @var array<string, mixed> $validated Array of only validated data
+         * Only validated data
+         *
+         * @var array<string, mixed> $validated
          * @see https://laravel.com/docs/9.x/validation#working-with-validated-input
          */
         $validated = $request->validated();
         /**
-         * @var \App\Models\TaskCard $created Newly created `TaskCard`
-         * @see https://laravel.com/docs/9.x/eloquent-relationships#the-create-method
-         * `create()` fill the model with fillable attributes and save it.
+         * Newly created `TaskCard` of the `TaskList`
+         *
+         * @var \App\Models\TaskCard $created
+         * @see https://laravel.com/docs/9.x/eloquent-relationships#updating-belongs-to-relationships
          */
         $created = $taskList->taskCards()->make($validated);
         $created->user()->associate(Auth::id());

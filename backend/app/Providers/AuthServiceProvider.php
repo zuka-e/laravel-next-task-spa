@@ -30,6 +30,8 @@ class AuthServiceProvider extends ServiceProvider
         // 参考： `vendor/laravel/framework/src/Illuminate/Auth/Notifications/ResetPassword.php`
         /** @see https://laravel.com/docs/8.x/passwords#password-customization */
         ResetPassword::toMailUsing(function ($notifiable, string $token) {
+            /** @var \Illuminate\Foundation\Auth\User $notifiable */
+
             $email = $notifiable->getEmailForPasswordReset();
             $queryParams = '?token=' . $token . '&email=' . $email;
             $url = config('fortify.home') . '/reset-password' . $queryParams;

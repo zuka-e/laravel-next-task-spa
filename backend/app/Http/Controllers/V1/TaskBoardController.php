@@ -29,6 +29,8 @@ class TaskBoardController extends Controller
      *
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @see \Illuminate\Http\Resources\Json\ResourceCollection ::toResponse
+     * @see \Illuminate\Http\Resources\Json\PaginatedResourceResponse
      * @see https://laravel.com/docs/9.x/eloquent-resources#resource-collections
      * @see https://laravel.com/docs/9.x/eloquent-resources#pagination
      * @see https://laravel.com/docs/9.x/pagination
@@ -51,18 +53,26 @@ class TaskBoardController extends Controller
      * @param  \App\Http\Requests\StoreTaskBoardRequest  $request
      * @param  \App\Models\User  $user
      * @return \App\Http\Resources\TaskBoardResource
+     * @see \Illuminate\Http\Resources\Json\JsonResource ::toResponse
+     * @see \Illuminate\Http\Resources\Json\ResourceResponse ::toResponse
+     * @see https://laravel.com/docs/9.x/eloquent-resources#resource-responses
      */
     public function store(StoreTaskBoardRequest $request, User $user)
     {
         /**
-         * @var array<string, mixed> $validated Array of only validated data
+         * Only validated data
+         *
+         * @var array<string, mixed> $validated
          * @see https://laravel.com/docs/9.x/validation#working-with-validated-input
          */
         $validated = $request->validated();
         /**
-         * @var \App\Models\TaskBoard $created Newly created `TaskBoard` of user
+         * Newly created `TaskBoard` of the user
+         *
+         * ※`create()` fill the model with fillable attributes and save it.
+         *
+         * @var \App\Models\TaskBoard $created
          * @see https://laravel.com/docs/9.x/eloquent-relationships#the-create-method
-         * `create()` fill the model with fillable attributes and save it.
          */
         $created = $user->taskBoards()->create($validated);
 

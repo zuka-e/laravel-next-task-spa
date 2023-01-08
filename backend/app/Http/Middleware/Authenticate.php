@@ -20,7 +20,7 @@ class Authenticate extends Middleware
         // the response is always returned as JSON by `shouldReturnJson()`.
         // Therefore, no redirect will occur.
         /**
-         * @see \Illuminate\Auth\Middleware\Authenticate unautheticated
+         * @see \Illuminate\Auth\Middleware\Authenticate unauthenticated
          * @see \App\Exceptions\Handler shouldReturnJson
          */
     }
