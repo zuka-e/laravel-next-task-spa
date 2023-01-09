@@ -1,4 +1,4 @@
-import { UserDocument } from 'mocks/models';
+import { UserDocument } from '@/mocks/models';
 
 /**
  * セッション切断まで保持される認証ユーザー

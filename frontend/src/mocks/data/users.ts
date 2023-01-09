@@ -1,9 +1,9 @@
 import faker from 'faker';
 
-import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
-import { db, UserDocument } from 'mocks/models';
-import { uuid } from 'mocks/utils/uuid';
-import { digestText } from 'mocks/utils/crypto';
+import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
+import { db, UserDocument } from '@/mocks/models';
+import { uuid } from '@/mocks/utils/uuid';
+import { digestText } from '@/mocks/utils/crypto';
 
 export const guestUser: UserDocument = {
   id: uuid(),

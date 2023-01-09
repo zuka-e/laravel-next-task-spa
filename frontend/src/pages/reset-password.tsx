@@ -19,11 +19,11 @@ import {
   ResetPasswordRequest,
   resetPassword,
   signInWithEmail,
-} from 'store/thunks/auth';
-import { useAppDispatch, useRoute } from 'utils/hooks';
-import { FormLayout } from 'layouts';
-import { SubmitButton } from 'templates';
-import type { GuestPage } from 'routes';
+} from '@/store/thunks/auth';
+import { useAppDispatch, useRoute } from '@/utils/hooks';
+import { FormLayout } from '@/layouts';
+import { SubmitButton } from '@/templates';
+import type { GuestPage } from '@/routes';
 
 type FormData = ResetPasswordRequest;
 

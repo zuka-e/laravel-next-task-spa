@@ -1,11 +1,11 @@
 import { RestRequest } from 'msw';
 
-import { TaskCard } from 'models';
+import { TaskCard } from '@/models';
 import {
   CreateTaskCardRequest,
   UpdateTaskCardRequest,
-} from 'store/thunks/cards';
-import { db, TaskCardDocument } from 'mocks/models';
+} from '@/store/thunks/cards';
+import { db, TaskCardDocument } from '@/mocks/models';
 
 export const store = (req: RestRequest<CreateTaskCardRequest>) => {
   const parent = db.where('taskLists', 'id', req.params.listId)[0];

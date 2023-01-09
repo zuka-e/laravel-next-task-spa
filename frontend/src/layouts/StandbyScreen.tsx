@@ -1,4 +1,4 @@
-import { Header, Footer, Progressbar } from 'layouts';
+import { Header, Footer, Progressbar } from '@/layouts';
 
 const StandbyScreen = () => {
   return (

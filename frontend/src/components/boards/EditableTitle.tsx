@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { TextField, TextFieldProps } from '@mui/material';
 
-import { FormAction } from 'store/slices/taskBoardSlice';
+import { FormAction } from '@/store/slices/taskBoardSlice';
 import { TitleForm } from '.';
 
 type EditableTitleProps = FormAction & {

@@ -158,7 +158,7 @@ npx create-react-app frontend --template typescript
 
 CRAでは設定用のファイル`tsconfig.json`が初めから作成されています。ここに一つ追加の設定として`baseUrl`を加えておきます。  
 
-```ts :tsconfig.json
+```json :tsconfig.json
 {
   "compilerOptions": {
    ...
@@ -182,6 +182,25 @@ import Header from 'layouts/Header';
 ```
 
 このように、`import`するファイルがかなり上の階層に位置する場合にはファイルの位置判断が困難になるので、そのような場合には特に効果的です。  
+
+また、任意のパスに別名(エイリアス)を設定することもできます。例えば`src`以下のファイルを参照するには以下の指定を行います。  
+
+```json tsconfig.json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  }
+}
+```
+
+この結果、先述の`import`の例は以下のように記述可能となります。  
+
+```ts
+import Header from '@/layouts/Header';
+```
 
 ## 静的型付け
 
@@ -303,7 +322,7 @@ export default useQuery;
 クエリパラメータを取得するには`get`メソッドを利用し、もし取得できなかった場合には`null`が返却されます。`string`型として扱うなら`null`のときは空文字として扱う方法も可能です。  
 
 ```tsx
-import useQuery from 'utils/hooks/useQuery';
+import useQuery from '@/utils/hooks/useQuery';
 
 const query = useQuery();
 
@@ -466,7 +485,7 @@ export default store;
 
 ```ts :src/utils/hooks/useAppDispatch.ts
 import { useDispatch } from 'react-redux';
-import type { AppDispatch } from 'store';
+import type { AppDispatch } from '@/store';
 
 // `useDispatch`使用時、'middleware'(Redux Thunkを含む)を適用する
 export const useAppDispatch = () => useDispatch<AppDispatch>();
@@ -480,7 +499,7 @@ export default useAppDispatch;
 
 ```ts :src/utils/hooks/useAppDispatch.ts
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
-import { RootState } from 'store';
+import { RootState } from '@/store';
 
 // `useSelector`使用時、`(state: RootState)`を毎回入力する必要をなくす
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
@@ -493,12 +512,12 @@ export default useAppSelector;
 ```tsx
 // Before
 import { useSelector } from 'react-redux';
-import { RootState } from 'store';
+import { RootState } from '@/store';
 
 const { user } = useSelector((state: RootState) => state.auth);
 
 // After
-import useAppSelector from 'utils/hooks/useAppDispatch';
+import useAppSelector from '@/utils/hooks/useAppDispatch';
 
 const { user } = useAppSelector((state) => state.auth);
 ```
@@ -517,7 +536,7 @@ export * from './useAppSelector';
 これによって、先程別のファイルに作成したカスタムフックを、恰もこの`index.ts`に存在しているかのように`import`することができます。  
 
 ```tsx
-import { useAppDispatch, useAppSelector } from 'utils/hooks';
+import { useAppDispatch, useAppSelector } from '@/utils/hooks';
 ```
 
 ファイルごとに役割を分離しつつ`import`文が冗長になることを防ぐことができるので、可能な限り採用して行きたい手法です。  
@@ -955,7 +974,7 @@ React Testing Library によって、コンポーネントをレンダリング�
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { HelmetProvider } from 'react-helmet-async';
-import store from 'store';
+import store from '@/store';
 import App from 'App';
 
 render(
@@ -975,7 +994,7 @@ render(
 
 ```ts :src/mocks/utils/store/index.ts
 import { configureStore } from '@reduxjs/toolkit';
-import { rootReducer } from 'store';
+import { rootReducer } from '@/store';
 
 export let store = configureStore({ reducer: rootReducer });
 
@@ -988,7 +1007,7 @@ export const initializeStore = () =>
 用意した`store`を`import`し、再生成用の関数を`beforeEach`内部で実行することで状態を元に戻すことができます。  
 
 ```ts
-import { initializeStore, store } from 'mocks/utils/store';
+import { initializeStore, store } from '@/mocks/utils/store';
 
 describe('Thunk for a forgot password', () => {
   beforeEach(() => {
@@ -1004,7 +1023,7 @@ import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { HelmetProvider } from 'react-helmet-async';
 import { MemoryRouter } from 'react-router-dom';
-import store from 'store';
+import store from '@/store';
 import Routes from 'Routes';
 import App from 'App';
 

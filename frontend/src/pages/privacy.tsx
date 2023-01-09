@@ -1,7 +1,7 @@
 import Head from 'next/head';
 
-import { APP_NAME } from 'config/app';
-import { BaseLayout, MarkdownWithToc } from 'layouts';
+import { APP_NAME } from '@/config/app';
+import { BaseLayout, MarkdownWithToc } from '@/layouts';
 
 const Privacy = () => (
   <>

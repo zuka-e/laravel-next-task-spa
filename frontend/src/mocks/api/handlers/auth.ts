@@ -12,17 +12,17 @@ import type {
   UpdatePasswordRequest,
   ForgotPasswordRequest,
   ResetPasswordRequest,
-} from 'store/thunks/auth';
+} from '@/store/thunks/auth';
 import type { ErrorResponse } from './types';
-import { auth, db, sanitizeUser } from 'mocks/models';
+import { auth, db, sanitizeUser } from '@/mocks/models';
 import {
   createUserController,
   deleteAccountController,
   resetPasswordController,
   updatePasswordController,
   updateProfileController,
-} from 'mocks/controllers';
-import { url } from 'mocks/utils/route';
+} from '@/mocks/controllers';
+import { url } from '@/mocks/utils/route';
 import {
   XSRF_TOKEN,
   isUniqueEmail,
@@ -32,7 +32,7 @@ import {
   createSessionId,
   generateCsrfToken,
   isValidPasswordResetToken,
-} from 'mocks/utils/validation';
+} from '@/mocks/utils/validation';
 import { applyMiddleware, returnInvalidRequest } from './utils';
 
 export const handlers = [

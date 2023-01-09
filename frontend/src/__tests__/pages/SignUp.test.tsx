@@ -3,10 +3,10 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { useRouter } from 'next/router';
 import { Provider } from 'react-redux';
 
-import { initializeStore, store } from 'mocks/store';
-import { setup } from 'mocks/utils/user-events';
-import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
-import SignUp from 'pages/register';
+import { initializeStore, store } from '@/mocks/store';
+import { setup } from '@/mocks/utils/user-events';
+import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
+import SignUp from '@/pages/register';
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(() => ({

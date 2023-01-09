@@ -16,11 +16,11 @@ import {
   Folder as FolderIcon,
 } from '@mui/icons-material';
 
-import { TaskBoard } from 'models';
-import { closeInfoBox } from 'store/slices/taskBoardSlice';
-import { updateTaskBoard } from 'store/thunks/boards';
-import { useAppDispatch, useAppSelector } from 'utils/hooks';
-import { Link, MarkdownEditor } from 'templates';
+import { TaskBoard } from '@/models';
+import { closeInfoBox } from '@/store/slices/taskBoardSlice';
+import { updateTaskBoard } from '@/store/thunks/boards';
+import { useAppDispatch, useAppSelector } from '@/utils/hooks';
+import { Link, MarkdownEditor } from '@/templates';
 import { EditableTitle } from '..';
 
 type TaskBoardDetailsProps = {

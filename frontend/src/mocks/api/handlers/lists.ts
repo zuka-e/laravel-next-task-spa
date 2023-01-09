@@ -7,12 +7,12 @@ import type {
   UpdateTaskListRequest,
   UpdateTaskListResponse,
   DestroyTaskListResponse,
-} from 'store/thunks/lists';
+} from '@/store/thunks/lists';
 import type { ErrorResponse } from './types';
-import { API_ROUTE } from 'config/api';
-import { makePath } from 'utils/api';
-import { db } from 'mocks/models';
-import { taskListController } from 'mocks/controllers';
+import { API_ROUTE } from '@/config/api';
+import { makePath } from '@/utils/api';
+import { db } from '@/mocks/models';
+import { taskListController } from '@/mocks/controllers';
 import { applyMiddleware } from './utils';
 
 type TaskListParams = {

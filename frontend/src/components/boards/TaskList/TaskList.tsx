@@ -4,12 +4,12 @@ import { useDrop } from 'react-dnd';
 import { Card, CardActions, Grid, Chip } from '@mui/material';
 import type { SelectProps } from '@mui/material';
 
-import * as Model from 'models';
-import { draggableItem, DragItem } from 'utils/dnd';
-import { useAppDispatch, useAppSelector } from 'utils/hooks';
-import { moveCard } from 'store/slices';
-import { updateTaskCardRelationships } from 'store/thunks/cards';
-import { LabeledSelect } from 'templates';
+import * as Model from '@/models';
+import { draggableItem, DragItem } from '@/utils/dnd';
+import { useAppDispatch, useAppSelector } from '@/utils/hooks';
+import { moveCard } from '@/store/slices';
+import { updateTaskCardRelationships } from '@/store/thunks/cards';
+import { LabeledSelect } from '@/templates';
 import { AddTaskButton } from '..';
 import { TaskCard } from '../TaskCard';
 import { ListCardHeader } from '.';

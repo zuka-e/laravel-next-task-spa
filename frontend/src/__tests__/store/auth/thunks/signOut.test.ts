@@ -1,17 +1,17 @@
-import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
-import { signIn } from 'store/slices/authSlice';
+import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
+import { signIn } from '@/store/slices/authSlice';
 import {
   fetchAuthUser,
   SignInRequest,
   signInWithEmail,
   signOut,
-} from 'store/thunks/auth';
-import { initializeStore, store } from 'mocks/store';
+} from '@/store/thunks/auth';
+import { initializeStore, store } from '@/mocks/store';
 import {
   getFlashState,
   getUserState,
   isSignedIn,
-} from 'mocks/utils/store/auth';
+} from '@/mocks/utils/store/auth';
 
 describe('Thunk logging out', () => {
   beforeEach(() => {

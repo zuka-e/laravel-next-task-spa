@@ -8,12 +8,12 @@ import {
   Menu as MenuIcon,
 } from '@mui/icons-material';
 
-import { APP_NAME } from 'config/app';
-import { isSignedIn } from 'utils/auth';
-import { Link, LinkButton, PopoverControl } from 'templates';
-import { AccountMenuList } from 'components/layouts/Header';
+import { APP_NAME } from '@/config/app';
+import { isSignedIn } from '@/utils/auth';
+import { Link, LinkButton, PopoverControl } from '@/templates';
+import { AccountMenuList } from '@/components/layouts/Header';
 import Sidebar from './Sidebar';
-import logo from 'images/logo.svg';
+import logo from '@/images/logo.svg';
 
 const Header = () => {
   const [open, setOpen] = useState(false);

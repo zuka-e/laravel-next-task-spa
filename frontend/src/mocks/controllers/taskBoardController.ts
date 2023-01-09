@@ -1,12 +1,12 @@
 import { RestRequest } from 'msw';
 
-import { TaskBoard, TaskList, TaskCard } from 'models';
+import { TaskBoard, TaskList, TaskCard } from '@/models';
 import {
   CreateTaskBoardRequest,
   UpdateTaskBoardRequest,
-} from 'store/thunks/boards';
-import { db, TaskBoardDocument } from 'mocks/models';
-import { paginate } from 'mocks/utils/paginate';
+} from '@/store/thunks/boards';
+import { db, TaskBoardDocument } from '@/mocks/models';
+import { paginate } from '@/mocks/utils/paginate';
 
 export const index = (req: RestRequest) => {
   const boards = db.where(

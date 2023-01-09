@@ -1,12 +1,12 @@
-import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
-import { SignInRequest, signInWithEmail } from 'store/thunks/auth';
-import { initializeStore, store } from 'mocks/store';
+import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
+import { SignInRequest, signInWithEmail } from '@/store/thunks/auth';
+import { initializeStore, store } from '@/mocks/store';
 import {
   getFlashState,
   getUserState,
   isSignedIn,
-} from 'mocks/utils/store/auth';
-import { isInvalidRequest } from 'utils/api/errors';
+} from '@/mocks/utils/store/auth';
+import { isInvalidRequest } from '@/utils/api/errors';
 
 describe('Thunk authenticating user with email', () => {
   beforeEach(() => {

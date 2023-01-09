@@ -1,6 +1,6 @@
 import { EnhancedStore } from '@reduxjs/toolkit';
 
-import { RootState } from 'store';
+import { RootState } from '@/store';
 
 export const getUserState = (store: EnhancedStore<RootState>) =>
   store.getState().auth.user;

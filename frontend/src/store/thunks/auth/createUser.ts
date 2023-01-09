@@ -1,11 +1,11 @@
 // `createAsyncThunk` returns a standard Redux thunk action creator.
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import { GET_CSRF_TOKEN_PATH, SIGNUP_PATH } from 'config/api';
-import { User } from 'models/User';
-import { apiClient } from 'utils/api';
-import { AsyncThunkConfig } from 'store/thunks/config';
-import { makeRejectValue } from 'store/thunks/utils';
+import { GET_CSRF_TOKEN_PATH, SIGNUP_PATH } from '@/config/api';
+import { User } from '@/models/User';
+import { apiClient } from '@/utils/api';
+import { AsyncThunkConfig } from '@/store/thunks/config';
+import { makeRejectValue } from '@/store/thunks/utils';
 
 export type SignUpRequest = {
   email: string;

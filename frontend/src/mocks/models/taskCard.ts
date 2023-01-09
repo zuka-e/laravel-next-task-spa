@@ -1,4 +1,4 @@
-import { CollectionBase, DocumentBase } from 'models';
+import { CollectionBase, DocumentBase } from '@/models';
 
 export type TaskCardDocument = {
   userId: string;

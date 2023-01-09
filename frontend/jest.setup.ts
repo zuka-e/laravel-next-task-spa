@@ -4,10 +4,10 @@
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
 
-import { server } from 'mocks/api/server';
+import { server } from '@/mocks/api/server';
 
-import 'mocks/globals';
-import 'mocks/data';
+import '@/mocks/globals';
+import '@/mocks/data';
 
 beforeAll(() => {
   server.listen({ onUnhandledRequest: 'warn' }); // Enable the mocking in tests.

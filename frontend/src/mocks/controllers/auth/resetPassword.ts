@@ -1,6 +1,6 @@
-import { ResetPasswordRequest } from 'store/thunks/auth';
-import { auth, db, UserDocument } from 'mocks/models';
-import { digestText } from 'mocks/utils/crypto';
+import { ResetPasswordRequest } from '@/store/thunks/auth';
+import { auth, db, UserDocument } from '@/mocks/models';
+import { digestText } from '@/mocks/utils/crypto';
 
 export const reset = (request: ResetPasswordRequest) => {
   if (request.password !== request.password_confirmation)

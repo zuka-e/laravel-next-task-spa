@@ -1,6 +1,6 @@
 import Head from 'next/head';
 
-import { HttpErrorLayout } from 'layouts';
+import { HttpErrorLayout } from '@/layouts';
 
 const ServiceUnavailable = () => {
   const title = '503 Service Unavailable';

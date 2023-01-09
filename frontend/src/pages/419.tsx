@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-import { fetchAuthUser } from 'store/thunks/auth';
-import { useAppDispatch } from 'utils/hooks';
-import { HttpErrorLayout } from 'layouts';
+import { fetchAuthUser } from '@/store/thunks/auth';
+import { useAppDispatch } from '@/utils/hooks';
+import { HttpErrorLayout } from '@/layouts';
 
 /**
  * To test this, delete the cookie, `XSRF-TOKEN`

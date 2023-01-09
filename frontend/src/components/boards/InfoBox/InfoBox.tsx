@@ -1,9 +1,13 @@
 import { useEffect } from 'react';
 
-import theme from 'theme';
-import { TaskBoard, TaskList, TaskCard } from 'models';
-import { removeInfoBox } from 'store/slices/taskBoardSlice';
-import { useAppDispatch, useDeepEqualSelector, usePrevious } from 'utils/hooks';
+import theme from '@/theme';
+import { TaskBoard, TaskList, TaskCard } from '@/models';
+import { removeInfoBox } from '@/store/slices/taskBoardSlice';
+import {
+  useAppDispatch,
+  useDeepEqualSelector,
+  usePrevious,
+} from '@/utils/hooks';
 import { TaskBoardDetails, TaskListDetails, TaskCardDetails } from '.';
 
 const InfoBox = (props: JSX.IntrinsicElements['div']) => {

@@ -1,15 +1,19 @@
-import { GUEST_EMAIL, GUEST_NAME, GUEST_PASSWORD } from 'config/app';
-import { signIn } from 'store/slices/authSlice';
+import { GUEST_EMAIL, GUEST_NAME, GUEST_PASSWORD } from '@/config/app';
+import { signIn } from '@/store/slices/authSlice';
 import {
   SignInRequest,
   signInWithEmail,
   updateProfile,
-} from 'store/thunks/auth';
-import { isInvalidRequest } from 'utils/api/errors';
-import { initializeStore, store } from 'mocks/store';
-import { getFlashState, getUserState, isLoading } from 'mocks/utils/store/auth';
-import { CSRF_TOKEN } from 'mocks/utils/validation';
-import { guestUser, refresh, unverifiedUser } from 'mocks/data';
+} from '@/store/thunks/auth';
+import { isInvalidRequest } from '@/utils/api/errors';
+import { initializeStore, store } from '@/mocks/store';
+import {
+  getFlashState,
+  getUserState,
+  isLoading,
+} from '@/mocks/utils/store/auth';
+import { CSRF_TOKEN } from '@/mocks/utils/validation';
+import { guestUser, refresh, unverifiedUser } from '@/mocks/data';
 
 describe('Thunk updating the user profile', () => {
   const signInRequest: SignInRequest = {

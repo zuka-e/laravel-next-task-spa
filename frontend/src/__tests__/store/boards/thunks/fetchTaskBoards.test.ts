@@ -1,12 +1,12 @@
-import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
-import { signIn } from 'store/slices/authSlice';
-import { SignInRequest, signInWithEmail } from 'store/thunks/auth';
-import { fetchTaskBoards } from 'store/thunks/boards';
-import { initializeStore, store } from 'mocks/store';
-import { getUserState, isSignedIn } from 'mocks/utils/store/auth';
-import { isLoading } from 'mocks/utils/store/boards';
-import { CSRF_TOKEN } from 'mocks/utils/validation';
-import { guestUser, otherUser, unverifiedUser } from 'mocks/data';
+import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
+import { signIn } from '@/store/slices/authSlice';
+import { SignInRequest, signInWithEmail } from '@/store/thunks/auth';
+import { fetchTaskBoards } from '@/store/thunks/boards';
+import { initializeStore, store } from '@/mocks/store';
+import { getUserState, isSignedIn } from '@/mocks/utils/store/auth';
+import { isLoading } from '@/mocks/utils/store/boards';
+import { CSRF_TOKEN } from '@/mocks/utils/validation';
+import { guestUser, otherUser, unverifiedUser } from '@/mocks/data';
 
 describe('Thunk fetching the index of task boards', () => {
   const signInRequest: SignInRequest = {

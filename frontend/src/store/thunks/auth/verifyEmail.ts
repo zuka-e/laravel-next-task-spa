@@ -1,9 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import type { AsyncThunkConfig } from 'store/thunks/config';
-import type { User } from 'models/User';
-import { apiClient } from 'utils/api';
-import { makeRejectValue } from 'store/thunks/utils';
+import type { AsyncThunkConfig } from '@/store/thunks/config';
+import type { User } from '@/models/User';
+import { apiClient } from '@/utils/api';
+import { makeRejectValue } from '@/store/thunks/utils';
 
 export type VerifyEmailRequest = { url: string };
 export type VerifyEmailResponse = { user: User };

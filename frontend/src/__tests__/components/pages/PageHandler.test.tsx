@@ -3,9 +3,9 @@ import { act, render, screen } from '@testing-library/react';
 import { useRouter } from 'next/router';
 import { Provider } from 'react-redux';
 
-import store from 'mocks/store';
-import { PageHandler } from 'components/pages';
-import { setHttpStatus } from 'store/slices';
+import store from '@/mocks/store';
+import { PageHandler } from '@/components/pages';
+import { setHttpStatus } from '@/store/slices';
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),

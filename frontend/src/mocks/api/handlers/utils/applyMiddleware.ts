@@ -1,13 +1,13 @@
 import { compose, context, RestRequest } from 'msw';
 
-import type { User } from 'models/User';
-import type { ErrorResponse } from 'mocks/api/handlers/types';
-import { auth } from 'mocks/models';
+import type { User } from '@/models/User';
+import type { ErrorResponse } from '@/mocks/api/handlers/types';
+import { auth } from '@/mocks/models';
 import {
   X_XSRF_TOKEN,
   hasValidToken,
   getUserFromSession,
-} from 'mocks/utils/validation';
+} from '@/mocks/utils/validation';
 
 type Middleware =
   | 'authenticate'

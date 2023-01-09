@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 
 import { Container, Typography, Button } from '@mui/material';
 
-import { BaseLayout } from 'layouts';
+import { BaseLayout } from '@/layouts';
 
 type HttpErrorLayoutProps = {
   title: string;

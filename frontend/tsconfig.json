@@ -17,7 +17,13 @@
     "downlevelIteration": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "baseUrl": "src"
+    "baseUrl": ".",
+    // > Next.js supports "paths" and "baseUrl" since Next.js 9.4.
+    // > https://nextjs.org/docs/advanced-features/module-path-aliases
+    // ※ Module resolution generally depends on compiler.
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

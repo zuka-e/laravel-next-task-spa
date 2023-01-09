@@ -1,9 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import { TaskCard } from 'models';
-import { apiClient, makePath } from 'utils/api';
-import { AsyncThunkConfig } from 'store/thunks/config';
-import { makeRejectValue } from 'store/thunks/utils';
+import { TaskCard } from '@/models';
+import { apiClient, makePath } from '@/utils/api';
+import { AsyncThunkConfig } from '@/store/thunks/config';
+import { makeRejectValue } from '@/store/thunks/utils';
 
 export type CreateTaskCardResponse = {
   data: TaskCard;

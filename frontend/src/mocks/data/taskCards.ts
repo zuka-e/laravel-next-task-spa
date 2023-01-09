@@ -1,7 +1,7 @@
 import faker from 'faker';
 
-import { Doc, db, TaskCardDocument } from 'mocks/models';
-import { uuid } from 'mocks/utils/uuid';
+import { Doc, db, TaskCardDocument } from '@/mocks/models';
+import { uuid } from '@/mocks/utils/uuid';
 import { guestUser, otherUser } from './users';
 import { listOfGuestUser, listOfOtherUser } from './taskLists';
 

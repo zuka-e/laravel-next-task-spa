@@ -1,6 +1,6 @@
 import { deepStrictEqual } from 'assert';
 
-import { RootState } from 'store';
+import { RootState } from '@/store';
 import { useAppSelector } from '.';
 
 /**

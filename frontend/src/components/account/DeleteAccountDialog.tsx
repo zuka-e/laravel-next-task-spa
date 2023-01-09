@@ -9,8 +9,8 @@ import {
   Button,
 } from '@mui/material';
 
-import { deleteAccount } from 'store/thunks/auth';
-import { useAppDispatch } from 'utils/hooks';
+import { deleteAccount } from '@/store/thunks/auth';
+import { useAppDispatch } from '@/utils/hooks';
 
 type DeleteAccountDialogProps = {
   trigger: JSX.Element;

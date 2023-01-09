@@ -1,7 +1,7 @@
 import type { CurriedGetDefaultMiddleware } from '@reduxjs/toolkit/dist/getDefaultMiddleware';
 import { configureStore } from '@reduxjs/toolkit';
 
-import { rootReducer } from 'store';
+import { rootReducer } from '@/store';
 
 const options = {
   reducer: rootReducer,

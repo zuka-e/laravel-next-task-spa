@@ -1,7 +1,7 @@
 import faker from 'faker';
 
-import { Doc, db, TaskBoardDocument } from 'mocks/models';
-import { uuid } from 'mocks/utils/uuid';
+import { Doc, db, TaskBoardDocument } from '@/mocks/models';
+import { uuid } from '@/mocks/utils/uuid';
 import { guestUser, otherUser, unverifiedUser } from './users';
 
 export const boardOfGuestUser: TaskBoardDocument = {

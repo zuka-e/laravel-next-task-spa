@@ -1,5 +1,5 @@
-import type { CollectionBase, DocumentBase } from 'models';
-import type { IndexMap } from 'utils/dnd';
+import type { CollectionBase, DocumentBase } from '@/models';
+import type { IndexMap } from '@/utils/dnd';
 
 export type TaskBoard = {
   userId: string;

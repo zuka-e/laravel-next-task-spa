@@ -1,11 +1,11 @@
 import { RestRequest } from 'msw';
 
-import { TaskList } from 'models';
+import { TaskList } from '@/models';
 import {
   CreateTaskListRequest,
   UpdateTaskListRequest,
-} from 'store/thunks/lists';
-import { db, TaskListDocument } from 'mocks/models';
+} from '@/store/thunks/lists';
+import { db, TaskListDocument } from '@/mocks/models';
 
 export const store = (req: RestRequest<CreateTaskListRequest>) => {
   const newList = db.create('taskLists', {

@@ -8,8 +8,8 @@ import {
   CardContent,
 } from '@mui/material';
 
-import { useAppDispatch, useDeepEqualSelector, useRoute } from 'utils/hooks';
-import { openInfoBox } from 'store/slices';
+import { useAppDispatch, useDeepEqualSelector, useRoute } from '@/utils/hooks';
+import { openInfoBox } from '@/store/slices';
 
 type SearchResultProps = {
   input: string;

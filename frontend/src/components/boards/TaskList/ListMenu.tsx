@@ -7,10 +7,10 @@ import {
   Delete as DeleteIcon,
 } from '@mui/icons-material';
 
-import { TaskList } from 'models';
-import { useAppDispatch } from 'utils/hooks';
-import { openInfoBox } from 'store/slices/taskBoardSlice';
-import { DeleteTaskDialog, PopoverControl } from 'templates';
+import { TaskList } from '@/models';
+import { useAppDispatch } from '@/utils/hooks';
+import { openInfoBox } from '@/store/slices/taskBoardSlice';
+import { DeleteTaskDialog, PopoverControl } from '@/templates';
 import { SortSelect } from '..';
 
 const menuItem = {

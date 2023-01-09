@@ -11,12 +11,12 @@ import type {
   FetchTaskBoardsResponse,
   UpdateTaskBoardRequest,
   UpdateTaskBoardResponse,
-} from 'store/thunks/boards';
+} from '@/store/thunks/boards';
 import type { ErrorResponse } from './types';
-import { API_ROUTE } from 'config/api';
-import { makePath } from 'utils/api';
-import { db } from 'mocks/models';
-import { taskBoardController } from 'mocks/controllers';
+import { API_ROUTE } from '@/config/api';
+import { makePath } from '@/utils/api';
+import { db } from '@/mocks/models';
+import { taskBoardController } from '@/mocks/controllers';
 import { applyMiddleware } from './utils';
 
 type TaskBoardParams = {

@@ -1,8 +1,8 @@
-import { ResetPasswordRequest, SignInRequest } from 'store/thunks/auth';
-import { generateRandomString } from 'utils/generator';
-import { db, auth } from 'mocks/models';
+import { ResetPasswordRequest, SignInRequest } from '@/store/thunks/auth';
+import { generateRandomString } from '@/utils/generator';
+import { db, auth } from '@/mocks/models';
 import { encrypt, decrypt, digestText } from './crypto';
-import { GUEST_EMAIL } from 'config/app';
+import { GUEST_EMAIL } from '@/config/app';
 
 export const CSRF_TOKEN = 'csrf-token'; // session
 export const XSRF_TOKEN = 'XSRF-TOKEN'; // cookie

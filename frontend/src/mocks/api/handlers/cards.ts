@@ -7,12 +7,12 @@ import type {
   UpdateTaskCardRequest,
   UpdateTaskCardResponse,
   DestroyTaskCardResponse,
-} from 'store/thunks/cards';
+} from '@/store/thunks/cards';
 import type { ErrorResponse } from './types';
-import { API_ROUTE } from 'config/api';
-import { makePath } from 'utils/api';
-import { db } from 'mocks/models';
-import { taskCardController } from 'mocks/controllers';
+import { API_ROUTE } from '@/config/api';
+import { makePath } from '@/utils/api';
+import { db } from '@/mocks/models';
+import { taskCardController } from '@/mocks/controllers';
 import { applyMiddleware } from './utils';
 
 type TaskCardParams = {

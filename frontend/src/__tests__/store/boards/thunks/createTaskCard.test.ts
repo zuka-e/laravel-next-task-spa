@@ -1,19 +1,19 @@
-import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
-import { signIn } from 'store/slices/authSlice';
-import { SignInRequest, signInWithEmail } from 'store/thunks/auth';
-import { createTaskCard, CreateTaskCardRequest } from 'store/thunks/cards';
-import { fetchTaskBoard } from 'store/thunks/boards';
-import { generateRandomString } from 'utils/generator';
-import { initializeStore, store } from 'mocks/store';
-import { getUserState, isSignedIn } from 'mocks/utils/store/auth';
-import { isLoading } from 'mocks/utils/store/boards';
-import { CSRF_TOKEN } from 'mocks/utils/validation';
+import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
+import { signIn } from '@/store/slices/authSlice';
+import { SignInRequest, signInWithEmail } from '@/store/thunks/auth';
+import { createTaskCard, CreateTaskCardRequest } from '@/store/thunks/cards';
+import { fetchTaskBoard } from '@/store/thunks/boards';
+import { generateRandomString } from '@/utils/generator';
+import { initializeStore, store } from '@/mocks/store';
+import { getUserState, isSignedIn } from '@/mocks/utils/store/auth';
+import { isLoading } from '@/mocks/utils/store/boards';
+import { CSRF_TOKEN } from '@/mocks/utils/validation';
 import {
   boardOfGuestUser,
   guestUser,
   listOfGuestUser,
   unverifiedUser,
-} from 'mocks/data';
+} from '@/mocks/data';
 
 describe('Thunk creating a new task card', () => {
   const signInRequest: SignInRequest = {

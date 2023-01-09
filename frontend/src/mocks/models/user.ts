@@ -1,4 +1,4 @@
-import { User } from 'models/User';
+import { User } from '@/models/User';
 import { CollectionBase, DocumentBase } from '.';
 
 export interface UserDocument extends DocumentBase {

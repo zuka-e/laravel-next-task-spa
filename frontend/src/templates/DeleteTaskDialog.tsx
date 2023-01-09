@@ -7,11 +7,11 @@ import {
   Button,
 } from '@mui/material';
 
-import { DeleteAction } from 'store/slices';
-import { useAppDispatch } from 'utils/hooks';
-import { destroyTaskBoard } from 'store/thunks/boards';
-import { destroyTaskList } from 'store/thunks/lists';
-import { destroyTaskCard } from 'store/thunks/cards';
+import { DeleteAction } from '@/store/slices';
+import { useAppDispatch } from '@/utils/hooks';
+import { destroyTaskBoard } from '@/store/thunks/boards';
+import { destroyTaskList } from '@/store/thunks/lists';
+import { destroyTaskCard } from '@/store/thunks/cards';
 
 type DeleteTaskDialogProps = DeleteAction & {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;

@@ -3,10 +3,10 @@ import { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { Card, Typography } from '@mui/material';
 
-import * as Model from 'models';
-import { draggableItem, DragItem } from 'utils/dnd';
-import { useAppDispatch, useAppSelector } from 'utils/hooks';
-import { moveCard, openInfoBox } from 'store/slices/taskBoardSlice';
+import * as Model from '@/models';
+import { draggableItem, DragItem } from '@/utils/dnd';
+import { useAppDispatch, useAppSelector } from '@/utils/hooks';
+import { moveCard, openInfoBox } from '@/store/slices/taskBoardSlice';
 
 type TaskCardProps = {
   card: Model.TaskCard;

@@ -1,6 +1,6 @@
-import { UpdatePasswordRequest } from 'store/thunks/auth';
-import { db, UserDocument } from 'mocks/models';
-import { digestText } from 'mocks/utils/crypto';
+import { UpdatePasswordRequest } from '@/store/thunks/auth';
+import { db, UserDocument } from '@/mocks/models';
+import { digestText } from '@/mocks/utils/crypto';
 
 type UpdatePasswordProps = {
   currentUser: UserDocument;

@@ -3,10 +3,10 @@ import {
   removeEmailVerificationPage,
   setFlash,
   signIn,
-} from 'store/slices/authSlice';
-import { createUser, SignUpRequest } from 'store/thunks/auth';
-import { generateRandomString, makeEmail } from 'utils/generator';
-import { initializeStore, store } from 'mocks/store';
+} from '@/store/slices/authSlice';
+import { createUser, SignUpRequest } from '@/store/thunks/auth';
+import { generateRandomString, makeEmail } from '@/utils/generator';
+import { initializeStore, store } from '@/mocks/store';
 
 describe('authSlice reducers', () => {
   beforeEach(() => {

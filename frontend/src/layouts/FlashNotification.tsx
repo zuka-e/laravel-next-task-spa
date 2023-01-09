@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { Snackbar, Alert } from '@mui/material';
 
-import { useDeepEqualSelector } from 'utils/hooks';
+import { useDeepEqualSelector } from '@/utils/hooks';
 
 const FlashNotification = () => {
   const [open, setOpen] = useState(false);

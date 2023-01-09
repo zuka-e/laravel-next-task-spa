@@ -1,20 +1,20 @@
-import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
-import { signIn } from 'store/slices/authSlice';
+import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
+import { signIn } from '@/store/slices/authSlice';
 import {
   sendEmailVerificationLink,
   SignInRequest,
   signInWithEmail,
-} from 'store/thunks/auth';
-import { unverifiedUser } from 'mocks/data/users';
-import { initializeStore, store } from 'mocks/store';
+} from '@/store/thunks/auth';
+import { unverifiedUser } from '@/mocks/data/users';
+import { initializeStore, store } from '@/mocks/store';
 import {
   getFlashState,
   getUserState,
   isLoading,
   isAfterRegistration,
   isSignedIn,
-} from 'mocks/utils/store/auth';
-import { CSRF_TOKEN } from 'mocks/utils/validation';
+} from '@/mocks/utils/store/auth';
+import { CSRF_TOKEN } from '@/mocks/utils/validation';
 
 describe('Thunk requesting the Email verification link', () => {
   beforeEach(() => {

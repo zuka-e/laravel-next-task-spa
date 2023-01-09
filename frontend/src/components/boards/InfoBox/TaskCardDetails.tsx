@@ -22,18 +22,18 @@ import {
   Delete as DeleteIcon,
 } from '@mui/icons-material';
 
-import { TaskCard } from 'models';
-import { useAppDispatch, useDeepEqualSelector, useRoute } from 'utils/hooks';
-import { closeInfoBox } from 'store/slices/taskBoardSlice';
-import { updateTaskCard } from 'store/thunks/cards';
+import { TaskCard } from '@/models';
+import { useAppDispatch, useDeepEqualSelector, useRoute } from '@/utils/hooks';
+import { closeInfoBox } from '@/store/slices/taskBoardSlice';
+import { updateTaskCard } from '@/store/thunks/cards';
 import {
   DatetimeInput,
   DeleteTaskDialog,
   Link,
   MarkdownEditor,
-} from 'templates';
+} from '@/templates';
 import { EditableTitle } from '..';
-import type { DatetimeInputProps } from 'templates/DatetimeInput';
+import type { DatetimeInputProps } from '@/templates/DatetimeInput';
 
 type TaskCardDetailsProps = {
   card: TaskCard;

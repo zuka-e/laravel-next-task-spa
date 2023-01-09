@@ -1,4 +1,4 @@
-import { uuid } from 'mocks/utils/uuid';
+import { uuid } from '@/mocks/utils/uuid';
 import { TaskBoardsCollection } from './taskBoard';
 import { TaskCardsCollection } from './taskCard';
 import { TaskListsCollection } from './taskList';

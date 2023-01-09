@@ -1,4 +1,4 @@
-import { auth, db, UserDocument } from 'mocks/models';
+import { auth, db, UserDocument } from '@/mocks/models';
 
 export const remove = (currentUser: UserDocument) => {
   if (!db.remove('users', currentUser.id))

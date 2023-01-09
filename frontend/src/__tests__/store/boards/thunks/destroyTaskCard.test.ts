@@ -1,13 +1,13 @@
-import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
-import { signIn } from 'store/slices/authSlice';
-import { SignInRequest, signInWithEmail } from 'store/thunks/auth';
-import { fetchTaskBoard } from 'store/thunks/boards';
-import { destroyTaskCard } from 'store/thunks/cards';
-import { initializeStore, store } from 'mocks/store';
-import { getUserState, isSignedIn } from 'mocks/utils/store/auth';
-import { isLoading } from 'mocks/utils/store/boards';
-import { uuid } from 'mocks/utils/uuid';
-import { CSRF_TOKEN } from 'mocks/utils/validation';
+import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
+import { signIn } from '@/store/slices/authSlice';
+import { SignInRequest, signInWithEmail } from '@/store/thunks/auth';
+import { fetchTaskBoard } from '@/store/thunks/boards';
+import { destroyTaskCard } from '@/store/thunks/cards';
+import { initializeStore, store } from '@/mocks/store';
+import { getUserState, isSignedIn } from '@/mocks/utils/store/auth';
+import { isLoading } from '@/mocks/utils/store/boards';
+import { uuid } from '@/mocks/utils/uuid';
+import { CSRF_TOKEN } from '@/mocks/utils/validation';
 import {
   guestUser,
   unverifiedUser,
@@ -16,7 +16,7 @@ import {
   cardOfOtherUser,
   listOfGuestUser,
   listOfOtherUser,
-} from 'mocks/data';
+} from '@/mocks/data';
 
 describe('Thunk deleting a task card', () => {
   const signInRequest: SignInRequest = {

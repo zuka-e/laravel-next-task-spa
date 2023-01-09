@@ -1,8 +1,8 @@
 import faker from 'faker';
 
-import { TaskBoard, TaskList, TaskCard } from 'models';
-import { initializeStore, store } from 'mocks/store';
-import { guestUser } from 'mocks/data';
+import { TaskBoard, TaskList, TaskCard } from '@/models';
+import { initializeStore, store } from '@/mocks/store';
+import { guestUser } from '@/mocks/data';
 
 describe('taskBoardSlice reducers', () => {
   beforeEach(() => {
@@ -60,7 +60,7 @@ describe('taskBoardSlice reducers', () => {
     } as const;
 
     it('should add a new infoBox whose type is board', async () => {
-      const { openInfoBox } = await import('store/slices/taskBoardSlice');
+      const { openInfoBox } = await import('@/store/slices/taskBoardSlice');
 
       expect(store.getState().boards.infoBox).toEqual({});
       store.dispatch(openInfoBox({ model: 'board', data: taskBoard }));
@@ -68,7 +68,7 @@ describe('taskBoardSlice reducers', () => {
     });
 
     it('should add a new infoBox whose type is list', async () => {
-      const { openInfoBox } = await import('store/slices/taskBoardSlice');
+      const { openInfoBox } = await import('@/store/slices/taskBoardSlice');
 
       expect(store.getState().boards.infoBox).toEqual({});
       store.dispatch(openInfoBox({ model: 'list', data: taskList }));
@@ -76,7 +76,7 @@ describe('taskBoardSlice reducers', () => {
     });
 
     it('should add a new infoBox whose type is card', async () => {
-      const { openInfoBox } = await import('store/slices/taskBoardSlice');
+      const { openInfoBox } = await import('@/store/slices/taskBoardSlice');
 
       expect(store.getState().boards.infoBox).toEqual({});
       store.dispatch(openInfoBox({ model: 'card', data: taskCard }));
@@ -84,7 +84,7 @@ describe('taskBoardSlice reducers', () => {
     });
 
     it('should update if the state is already set', async () => {
-      const { openInfoBox } = await import('store/slices/taskBoardSlice');
+      const { openInfoBox } = await import('@/store/slices/taskBoardSlice');
 
       store.dispatch(openInfoBox({ model: 'board', data: taskBoard }));
       expect(store.getState().boards.infoBox).toEqual(expected.board);
@@ -109,7 +109,7 @@ describe('taskBoardSlice reducers', () => {
     } as const;
 
     it('should be run even if the state is initial state', async () => {
-      const { closeInfoBox } = await import('store/slices/taskBoardSlice');
+      const { closeInfoBox } = await import('@/store/slices/taskBoardSlice');
 
       expect(store.getState().boards.infoBox).toEqual({});
       store.dispatch(closeInfoBox());
@@ -117,7 +117,7 @@ describe('taskBoardSlice reducers', () => {
     });
 
     it('should be run even if a infoBox is closed', async () => {
-      const { closeInfoBox } = await import('store/slices/taskBoardSlice');
+      const { closeInfoBox } = await import('@/store/slices/taskBoardSlice');
 
       store.dispatch(closeInfoBox());
       expect(store.getState().boards.infoBox).toEqual({ open: false });
@@ -128,7 +128,7 @@ describe('taskBoardSlice reducers', () => {
 
     it('should be closed but maintain data if a infoBox is open', async () => {
       const { openInfoBox, closeInfoBox } = await import(
-        'store/slices/taskBoardSlice'
+        '@/store/slices/taskBoardSlice'
       );
 
       store.dispatch(openInfoBox(openInfoBoxAction));
@@ -151,7 +151,7 @@ describe('taskBoardSlice reducers', () => {
     } as const;
 
     it('should be run even if the state is initial state', async () => {
-      const { removeInfoBox } = await import('store/slices/taskBoardSlice');
+      const { removeInfoBox } = await import('@/store/slices/taskBoardSlice');
 
       expect(store.getState().boards.infoBox).toEqual({});
       store.dispatch(removeInfoBox());
@@ -160,7 +160,7 @@ describe('taskBoardSlice reducers', () => {
 
     it('should be run if a infoBox is closed', async () => {
       const { closeInfoBox, removeInfoBox } = await import(
-        'store/slices/taskBoardSlice'
+        '@/store/slices/taskBoardSlice'
       );
 
       store.dispatch(closeInfoBox());
@@ -172,7 +172,7 @@ describe('taskBoardSlice reducers', () => {
 
     it('should initialize the state if a infoBox is open', async () => {
       const { openInfoBox, removeInfoBox } = await import(
-        'store/slices/taskBoardSlice'
+        '@/store/slices/taskBoardSlice'
       );
 
       store.dispatch(openInfoBox(openInfoBoxAction));

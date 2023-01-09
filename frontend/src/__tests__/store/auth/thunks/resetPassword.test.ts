@@ -1,14 +1,14 @@
-import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
+import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
 import {
   resetPassword,
   ResetPasswordRequest,
   SignInRequest,
   signInWithEmail,
-} from 'store/thunks/auth';
-import { isInvalidRequest } from 'utils/api/errors';
-import { initializeStore, store } from 'mocks/store';
-import { getFlashState, isLoading, isSignedIn } from 'mocks/utils/store/auth';
-import { validPasswordResetTokenOf } from 'mocks/utils/validation';
+} from '@/store/thunks/auth';
+import { isInvalidRequest } from '@/utils/api/errors';
+import { initializeStore, store } from '@/mocks/store';
+import { getFlashState, isLoading, isSignedIn } from '@/mocks/utils/store/auth';
+import { validPasswordResetTokenOf } from '@/mocks/utils/validation';
 
 describe('Thunk for resetting the password', () => {
   const ownEmail = GUEST_EMAIL;

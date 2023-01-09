@@ -1,9 +1,9 @@
 import { Container, Card, Grid, Avatar, Typography } from '@mui/material';
 
-import { APP_NAME } from 'config/app';
-import { AlertMessage } from 'templates';
-import Link, { NextLinkComposed } from 'templates/Link';
-import logo from 'images/logo_short.svg';
+import { APP_NAME } from '@/config/app';
+import { AlertMessage } from '@/templates';
+import Link, { NextLinkComposed } from '@/templates/Link';
+import logo from '@/images/logo_short.svg';
 
 const Copyright = () => (
   <Typography variant="body2" color="textSecondary" align="center">

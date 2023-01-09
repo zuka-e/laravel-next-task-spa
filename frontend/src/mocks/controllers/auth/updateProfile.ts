@@ -1,5 +1,8 @@
-import { UpdateProfileRequest, UpdateProfileResponse } from 'store/thunks/auth';
-import { db, UserDocument } from 'mocks/models';
+import {
+  UpdateProfileRequest,
+  UpdateProfileResponse,
+} from '@/store/thunks/auth';
+import { db, UserDocument } from '@/mocks/models';
 
 type UpdateProfileProps = {
   currentUser: UserDocument;

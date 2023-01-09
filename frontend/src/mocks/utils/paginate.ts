@@ -1,7 +1,7 @@
 import { RestRequest } from 'msw';
 
-import { DocumentBase } from 'mocks/models';
-import { PaginationResponse } from 'utils/api';
+import { DocumentBase } from '@/mocks/models';
+import { PaginationResponse } from '@/utils/api';
 
 type PaginateProps<T> = {
   req: RestRequest;

@@ -1,20 +1,20 @@
-import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
-import { signIn } from 'store/slices/authSlice';
+import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
+import { signIn } from '@/store/slices/authSlice';
 import {
   deleteAccount,
   fetchAuthUser,
   SignInRequest,
   signInWithEmail,
-} from 'store/thunks/auth';
-import { initializeStore, store } from 'mocks/store';
+} from '@/store/thunks/auth';
+import { initializeStore, store } from '@/mocks/store';
 import {
   getFlashState,
   getUserState,
   isLoading,
   isSignedIn,
-} from 'mocks/utils/store/auth';
-import { CSRF_TOKEN } from 'mocks/utils/validation';
-import { refresh } from 'mocks/data';
+} from '@/mocks/utils/store/auth';
+import { CSRF_TOKEN } from '@/mocks/utils/validation';
+import { refresh } from '@/mocks/data';
 
 describe('Thunk for an account delete', () => {
   const signInRequest: SignInRequest = {

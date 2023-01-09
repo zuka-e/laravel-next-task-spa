@@ -1,6 +1,6 @@
 import type { AppProps } from 'next/app';
 
-import { AuthRoute, GuestRoute } from 'routes';
+import { AuthRoute, GuestRoute } from '@/routes';
 
 const Route = (
   props: Pick<AppProps<Record<string, unknown>>, 'Component' | 'pageProps'>

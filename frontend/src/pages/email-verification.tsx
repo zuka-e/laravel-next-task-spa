@@ -5,13 +5,13 @@ import type { GetStaticProps } from 'next';
 
 import { Container, Card, Grid, Typography, Button } from '@mui/material';
 
-import { removeEmailVerificationPage } from 'store/slices/authSlice';
-import { sendEmailVerificationLink } from 'store/thunks/auth';
-import { useAppDispatch, useAppSelector } from 'utils/hooks';
-import { isAfterRegistration, isVerified } from 'utils/auth';
-import { BaseLayout } from 'layouts';
-import { AlertMessage } from 'templates';
-import type { AuthPage } from 'routes';
+import { removeEmailVerificationPage } from '@/store/slices/authSlice';
+import { sendEmailVerificationLink } from '@/store/thunks/auth';
+import { useAppDispatch, useAppSelector } from '@/utils/hooks';
+import { isAfterRegistration, isVerified } from '@/utils/auth';
+import { BaseLayout } from '@/layouts';
+import { AlertMessage } from '@/templates';
+import type { AuthPage } from '@/routes';
 
 type EmailVerificationProps = AuthPage;
 

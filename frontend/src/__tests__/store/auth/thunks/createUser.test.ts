@@ -1,14 +1,14 @@
-import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
-import { createUser, SignUpRequest } from 'store/thunks/auth';
-import { isInvalidRequest } from 'utils/api/errors';
-import { makeEmail } from 'utils/generator';
-import { initializeStore, store } from 'mocks/store';
+import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
+import { createUser, SignUpRequest } from '@/store/thunks/auth';
+import { isInvalidRequest } from '@/utils/api/errors';
+import { makeEmail } from '@/utils/generator';
+import { initializeStore, store } from '@/mocks/store';
 import {
   getFlashState,
   getUserState,
   isAfterRegistration,
   isSignedIn,
-} from 'mocks/utils/store/auth';
+} from '@/mocks/utils/store/auth';
 
 describe('Thunk for an user registration', () => {
   beforeEach(() => {

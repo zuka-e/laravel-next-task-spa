@@ -1,17 +1,17 @@
-import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
-import { signIn } from 'store/slices/authSlice';
-import { SignInRequest, signInWithEmail } from 'store/thunks/auth';
+import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
+import { signIn } from '@/store/slices/authSlice';
+import { SignInRequest, signInWithEmail } from '@/store/thunks/auth';
 import {
   fetchTaskBoards,
   destroyTaskBoard,
   DestroyTaskBoardRequest,
-} from 'store/thunks/boards';
-import { initializeStore, store } from 'mocks/store';
-import { getUserState, isSignedIn } from 'mocks/utils/store/auth';
-import { isLoading } from 'mocks/utils/store/boards';
-import { uuid } from 'mocks/utils/uuid';
-import { CSRF_TOKEN } from 'mocks/utils/validation';
-import { boardOfGuestUser, guestUser, unverifiedUser } from 'mocks/data';
+} from '@/store/thunks/boards';
+import { initializeStore, store } from '@/mocks/store';
+import { getUserState, isSignedIn } from '@/mocks/utils/store/auth';
+import { isLoading } from '@/mocks/utils/store/boards';
+import { uuid } from '@/mocks/utils/uuid';
+import { CSRF_TOKEN } from '@/mocks/utils/validation';
+import { boardOfGuestUser, guestUser, unverifiedUser } from '@/mocks/data';
 
 describe('Thunk for destroying a task board', () => {
   const signInRequest: SignInRequest = {

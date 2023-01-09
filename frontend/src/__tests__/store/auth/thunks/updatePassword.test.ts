@@ -1,16 +1,16 @@
-import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
-import { signIn } from 'store/slices/authSlice';
+import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
+import { signIn } from '@/store/slices/authSlice';
 import {
   SignInRequest,
   signInWithEmail,
   updatePassword,
   UpdatePasswordRequest,
-} from 'store/thunks/auth';
-import { isInvalidRequest } from 'utils/api/errors';
-import { initializeStore, store } from 'mocks/store';
-import { getFlashState, isLoading } from 'mocks/utils/store/auth';
-import { CSRF_TOKEN } from 'mocks/utils/validation';
-import { refresh } from 'mocks/data';
+} from '@/store/thunks/auth';
+import { isInvalidRequest } from '@/utils/api/errors';
+import { initializeStore, store } from '@/mocks/store';
+import { getFlashState, isLoading } from '@/mocks/utils/store/auth';
+import { CSRF_TOKEN } from '@/mocks/utils/validation';
+import { refresh } from '@/mocks/data';
 
 describe('Thunk updating the user password', () => {
   const signInRequest: SignInRequest = {

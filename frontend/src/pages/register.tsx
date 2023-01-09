@@ -15,11 +15,11 @@ import {
   Checkbox,
 } from '@mui/material';
 
-import { SignUpRequest, createUser } from 'store/thunks/auth';
-import { useAppDispatch } from 'utils/hooks';
-import { FormLayout } from 'layouts';
-import { SubmitButton } from 'templates';
-import type { GuestPage } from 'routes';
+import { SignUpRequest, createUser } from '@/store/thunks/auth';
+import { useAppDispatch } from '@/utils/hooks';
+import { FormLayout } from '@/layouts';
+import { SubmitButton } from '@/templates';
+import type { GuestPage } from '@/routes';
 
 // Input items
 type FormData = SignUpRequest;

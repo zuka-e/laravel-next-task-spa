@@ -1,9 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import { TaskCard } from 'models';
-import { apiClient, makePath } from 'utils/api';
-import { AsyncThunkConfig } from 'store/thunks/config';
-import { makeRejectValue } from 'store/thunks/utils';
+import { TaskCard } from '@/models';
+import { apiClient, makePath } from '@/utils/api';
+import { AsyncThunkConfig } from '@/store/thunks/config';
+import { makeRejectValue } from '@/store/thunks/utils';
 
 export type DestroyTaskCardResponse = {
   data: TaskCard;
@@ -16,7 +16,7 @@ export const destroyTaskCard = createAsyncThunk<
   DestroyTaskCardArg,
   AsyncThunkConfig
 >('cards/destroyTaskCard', async (payload, thunkApi) => {
-  const { setFlash } = await import('store/slices/authSlice');
+  const { setFlash } = await import('@/store/slices/authSlice');
 
   const { id, listId } = payload;
   const path = makePath(['task-lists', listId], ['task-cards', id]);
