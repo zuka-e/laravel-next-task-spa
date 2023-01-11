@@ -21,10 +21,12 @@ const customJestConfig = {
   testEnvironment: 'jest-environment-jsdom',
   rootDir: '.',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
-  roots: ['<rootDir>/src/'],
+  roots: ['<rootDir>/test/'],
+  coveragePathIgnorePatterns: ['<rootDir>/test/'],
   modulePaths: ['<rootDir>'], // cf. `tsconfig.json:baseUrl`
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^@test/(.*)$': '<rootDir>/test/$1',
   },
   transformIgnorePatterns: ['node_modules/(?!react-markdown)/'],
 };

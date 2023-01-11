@@ -26,8 +26,8 @@ import '@/config/dayjs';
 if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
   // With `import` instead of `require`, API requests start before MSW enabled,
   // probably because "import(...)" is async. ("await import" have the same result)
-  require('@/mocks/data');
-  require('@/mocks/api');
+  require('@test/data');
+  require('@test/api/servers');
 }
 
 const App = ({ Component, pageProps }: AppProps) => {

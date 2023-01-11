@@ -99,28 +99,26 @@ Reactは初期生成ディレクトリがほぼ存在せず、作成したファ
 そこで、アトミックデザインの考え方や他のリポジトリの構成を参考にしつつ、ここでは以下のような構成を採ります。これは暫定的なもので、何か不都合が発生した場合や改善点を発見した際には適宜構成の変更を行う予定です。  
 
 ```bash
-src/
-├── __tests__/ # テスト実行ファイル
-├── components/ # ページの構成要素
-├── config/ # 環境変数関連
-├── images/ # ロゴなど (ユーザー用は別)
-├── layouts/ # ページ全体に係る部品
-├── mocks/ # テスト環境構築関連
-├── models/ # データ型定義
-├── pages/ # ページ(URI)単位
-├── store/ # Redux関連
-│   ├── slices/ # Redux Action など
-│   ├── thunks/ # Async Thunk (APIリクエスト)
-├── templates/ # 複数ページで再利用可能なコンポーネント
-├── theme/ # CSS (Material-UI テーマ)
-├── utils/ # 複数ファイルで共用する関数や定数
-│   ├── hooks/ # カスタムフック
-├── App.tsx # アプリ全体に適用する処理など
-├── Routes.tsx # ルーティング
-├── index.tsx # ライブラリの設定など
-├── react-app-env.d.ts
-├── reportWebVitals.ts
-└── setupTests.ts
+.
+├── src/
+│   ├── components/ # ページの構成要素
+│   ├── config/ # 環境変数関連
+│   ├── images/ # ロゴなど (ユーザー用は別)
+│   ├── layouts/ # ページ全体に係る部品
+│   ├── models/ # データ型定義
+│   ├── pages/ # ページ(URI)単位
+│   ├── routes/ # ルーティング関連
+│   ├── store/ # Redux関連
+│   │   ├── slices/ # Redux Action など
+│   │   └── thunks/ # Async Thunk (APIリクエスト)
+│   ├── styles/ # CSS
+│   ├── templates/ # 複数ページで再利用可能なコンポーネント
+│   ├── theme/ # UIライブラリテーマ
+│   └── utils/ # 複数ファイルで共用する関数や定数
+│       └── hooks/ # カスタムフック
+├── test # テスト関連
+│   ├── __tests__/ # テスト実行ファイル
+│   └── ... # テスト環境構築関連
 ```
 
 その他、新規ディレクトリ名の決定を行うにあたり参考になったのがVSCode拡張の[Material Icon Theme](https://github.com/PKief/vscode-material-icon-theme)です。これはファイルやディレクトリにその名前に応じてアイコンを表示してくれるツールで、エディターのファイルエクスプローラーの見通しが良くする効果があります。  
@@ -992,7 +990,7 @@ render(
 
 例えば**Redux Store**をリセットするには、テスト毎に`configureStore`から再度生成することが一つの解決策です。  
 
-```ts :src/mocks/utils/store/index.ts
+```ts :test/utils/store/index.ts
 import { configureStore } from '@reduxjs/toolkit';
 import { rootReducer } from '@/store';
 
@@ -1002,12 +1000,12 @@ export const initializeStore = () =>
   (store = configureStore({ reducer: rootReducer }));
 ```
 
-上記のようにテスト用の`store`を新たに作成しておきます。尚、このようなテスト環境のためのファイルは`__test__`ではなく、別のディレクトリ  (ここでは`mocks`) に配置します。  
+上記のようにテスト用の`store`を新たに作成しておきます。尚、このようなテスト環境のためのファイルは`__test__`ではなく、別のディレクトリに配置します。  
 
 用意した`store`を`import`し、再生成用の関数を`beforeEach`内部で実行することで状態を元に戻すことができます。  
 
 ```ts
-import { initializeStore, store } from '@/mocks/utils/store';
+import { initializeStore, store } from '@test/utils/store';
 
 describe('Thunk for a forgot password', () => {
   beforeEach(() => {
@@ -1068,9 +1066,9 @@ Jestにはモックの機能も付随しているので、これによってもA
 yarn add msw --dev
 ```
 
-次に、処理するリクエストとそれに対するレスポンスの定義を`src/mocks/handlers.ts`に記述します。  
+次に、処理するリクエストとそれに対するレスポンスの定義を`test/api/handlers/index.ts`に記述します。  
 
-```ts :src/mocks/handlers.ts
+```ts :test/api/handlers/index.ts
 import { rest } from 'msw'
 
 export const handlers = [
@@ -1088,7 +1086,7 @@ export const handlers = [
 >
 > [https://mswjs.io/docs/getting-started/mocks/rest-api#response-resolver](https://mswjs.io/docs/getting-started/mocks/rest-api#response-resolver)
 
-```ts :src/mocks/handlers.ts
+```ts :test/api/handlers/index.ts
 import { rest } from 'msw'
 
 export const handlers = [
@@ -1124,9 +1122,9 @@ export const handlers = [
 npx msw init public/ --save
 ```
 
-次に、`src/mocks/browser.ts`を作成し、`handler`から`worker`を構成します。  
+次に、`test/api/servers/browser.ts`を作成し、`handler`から`worker`を構成します。  
 
-```ts :src/mocks/browser.ts
+```ts :test/api/servers/browser.ts
 import { setupWorker } from 'msw';
 import { handlers } from './handlers';
 
@@ -1143,7 +1141,7 @@ import ReactDOM from 'react-dom';
 
 // 開発環境 ('development')の場合に'Service Worker'を起動
 if (process.env.NODE_ENV === 'development') {
-  const { worker } = require('./mocks/browser');
+  const { worker } = require('@test/api/servers/browser');
   worker.start();
 }
 
@@ -1159,9 +1157,9 @@ ReactDOM.render(
 
 ##### Node環境
 
-Node環境 (Jest実行時の環境) の場合はモックサーバーを起動します。`src/mocks/server.ts`を作成し、`handler`から`server`を構成します。  
+Node環境 (Jest実行時の環境) の場合はモックサーバーを起動します。`test/api/servers/server.ts`を作成し、`handler`から`server`を構成します。  
 
-```ts :src/mocks/server.ts
+```ts :test/api/servers/server.ts
 import { setupServer } from 'msw/node';
 import { handlers } from './handlers';
 
@@ -1173,7 +1171,7 @@ export const server = setupServer(...handlers);
 
 ```ts :src/setupTest.ts
 ...
-import { server } from './mocks/server';
+import { server } from '@test/api/servers/server';
 
 beforeAll(() => {
   // Enable the mocking in tests.

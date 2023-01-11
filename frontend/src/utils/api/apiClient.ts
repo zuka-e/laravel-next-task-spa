@@ -58,7 +58,7 @@ export const apiClient = (options?: ApiClientOption) => {
     async (error) => {
       const { default: store } =
         process.env.NODE_ENV === 'test'
-          ? await import('@/mocks/store')
+          ? await import('@test/store')
           : await import('@/store');
 
       if (axios.isAxiosError(error) && error.response) {

@@ -22,9 +22,10 @@
     // > https://nextjs.org/docs/advanced-features/module-path-aliases
     // ※ Module resolution generally depends on compiler.
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@test/*": ["test/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "test"]
 }
