@@ -2,6 +2,9 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "^18.1.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -33,7 +36,7 @@
     "@types/faker": "^5.5.7",
     "@types/jest": "^29.0.3",
     "@types/markdown-to-jsx": "^6.11.3",
-    "@types/node": "^12.0.0",
+    "@types/node": "^18.1.0",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
     "@typescript-eslint/eslint-plugin": "^5.30.7",
