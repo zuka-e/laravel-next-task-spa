@@ -4,12 +4,12 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-import store from 'store';
-import { clearHttpStatus, setFlash } from 'store/slices';
-import { fetchAuthUser } from 'store/thunks/auth';
-import { isReady } from 'utils/auth';
-import { useAppDispatch, useAppSelector } from 'utils/hooks';
-import { Loading } from 'layouts';
+import store from '@/store';
+import { clearHttpStatus, setFlash } from '@/store/slices';
+import { fetchAuthUser } from '@/store/thunks/auth';
+import { isReady } from '@/utils/auth';
+import { useAppDispatch, useAppSelector } from '@/utils/hooks';
+import { Loading } from '@/layouts';
 
 export type AuthPage = {
   auth: true;

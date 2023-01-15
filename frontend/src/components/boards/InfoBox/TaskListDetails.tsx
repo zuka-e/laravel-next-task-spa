@@ -17,11 +17,11 @@ import {
   FolderOpen as FolderOpenIcon,
 } from '@mui/icons-material';
 
-import { TaskList } from 'models';
-import { closeInfoBox } from 'store/slices/taskBoardSlice';
-import { updateTaskList } from 'store/thunks/lists';
-import { useAppDispatch, useAppSelector, useRoute } from 'utils/hooks';
-import { Link, MarkdownEditor } from 'templates';
+import { TaskList } from '@/models';
+import { closeInfoBox } from '@/store/slices/taskBoardSlice';
+import { updateTaskList } from '@/store/thunks/lists';
+import { useAppDispatch, useAppSelector, useRoute } from '@/utils/hooks';
+import { Link, MarkdownEditor } from '@/templates';
 import { EditableTitle } from '..';
 
 type TaskListDetailsProps = {

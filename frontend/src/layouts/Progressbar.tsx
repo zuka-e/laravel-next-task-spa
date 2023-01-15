@@ -1,6 +1,6 @@
 import { LinearProgress, LinearProgressProps } from '@mui/material';
 
-import { useAppSelector } from 'utils/hooks';
+import { useAppSelector } from '@/utils/hooks';
 
 const Progressbar = ({ className, ...props }: LinearProgressProps) => {
   const loading = useAppSelector(

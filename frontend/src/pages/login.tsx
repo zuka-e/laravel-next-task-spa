@@ -15,12 +15,12 @@ import {
   Grid,
 } from '@mui/material';
 
-import { APP_NAME } from 'config/app';
-import { SignInRequest, signInWithEmail } from 'store/thunks/auth';
-import { useAppDispatch } from 'utils/hooks';
-import { FormLayout } from 'layouts';
-import { SubmitButton } from 'templates';
-import type { GuestPage } from 'routes';
+import { APP_NAME } from '@/config/app';
+import { SignInRequest, signInWithEmail } from '@/store/thunks/auth';
+import { useAppDispatch } from '@/utils/hooks';
+import { FormLayout } from '@/layouts';
+import { SubmitButton } from '@/templates';
+import type { GuestPage } from '@/routes';
 
 type FormData = SignInRequest;
 

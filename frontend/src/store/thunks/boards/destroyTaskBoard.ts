@@ -1,9 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import { TaskBoard } from 'models';
-import { apiClient, makePath } from 'utils/api';
-import { AsyncThunkConfig } from 'store/thunks/config';
-import { makeRejectValue } from 'store/thunks/utils';
+import { TaskBoard } from '@/models';
+import { apiClient, makePath } from '@/utils/api';
+import { AsyncThunkConfig } from '@/store/thunks/config';
+import { makeRejectValue } from '@/store/thunks/utils';
 
 export type DestroyTaskBoardResponse = {
   data: TaskBoard;
@@ -16,7 +16,7 @@ export const destroyTaskBoard = createAsyncThunk<
   DestroyTaskBoardRequest,
   AsyncThunkConfig
 >('boards/destroyTaskBoard', async (payload, thunkApi) => {
-  const { setFlash } = await import('store/slices/authSlice');
+  const { setFlash } = await import('@/store/slices/authSlice');
 
   const userId = String(thunkApi.getState().auth.user?.id);
   const path = makePath(['users', userId], ['task-boards', payload.id]);

@@ -2,8 +2,8 @@ import {
   isHttpException,
   isInvalidRequest,
   makeErrorMessageFrom,
-} from 'utils/api/errors';
-import { RejectValue } from 'store/thunks/config';
+} from '@/utils/api/errors';
+import { RejectValue } from '@/store/thunks/config';
 
 export const makeRejectValue = (error: unknown): RejectValue => {
   if (isInvalidRequest(error))

@@ -1,9 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import { SIGNUP_PATH } from 'config/api';
-import { apiClient } from 'utils/api';
-import { AsyncThunkConfig } from 'store/thunks/config';
-import { makeRejectValue } from 'store/thunks/utils';
+import { SIGNUP_PATH } from '@/config/api';
+import { apiClient } from '@/utils/api';
+import { AsyncThunkConfig } from '@/store/thunks/config';
+import { makeRejectValue } from '@/store/thunks/utils';
 
 type DeleteAccountResponse = void;
 type DeleteAccountRequest = void;

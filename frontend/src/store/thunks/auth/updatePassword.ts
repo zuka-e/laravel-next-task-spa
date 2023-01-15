@@ -1,9 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import { UPDATE_PASSWORD_PATH } from 'config/api';
-import { apiClient } from 'utils/api';
-import { AsyncThunkConfig } from 'store/thunks/config';
-import { makeRejectValue } from 'store/thunks/utils';
+import { UPDATE_PASSWORD_PATH } from '@/config/api';
+import { apiClient } from '@/utils/api';
+import { AsyncThunkConfig } from '@/store/thunks/config';
+import { makeRejectValue } from '@/store/thunks/utils';
 
 export type UpdatePasswordRequest = {
   current_password: string;

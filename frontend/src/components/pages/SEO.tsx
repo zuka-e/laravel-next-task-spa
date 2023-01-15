@@ -2,7 +2,7 @@
 
 import Head from 'next/head';
 
-import { APP_URL, APP_NAME } from 'config/app';
+import { APP_URL, APP_NAME } from '@/config/app';
 
 const SEO = (props: { title: string; description: string }) => {
   const { title, description } = props;

@@ -1,12 +1,12 @@
 // cf. file://./AuthRoute.tsx
 
-import { Loading } from 'layouts';
+import { Loading } from '@/layouts';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
-import { fetchAuthUser } from 'store/thunks/auth';
-import { isAfterRegistration, isReady } from 'utils/auth';
-import { useAppDispatch, useAppSelector } from 'utils/hooks';
+import { fetchAuthUser } from '@/store/thunks/auth';
+import { isAfterRegistration, isReady } from '@/utils/auth';
+import { useAppDispatch, useAppSelector } from '@/utils/hooks';
 
 export type GuestPage = {
   guest: true;

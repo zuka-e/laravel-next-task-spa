@@ -2,8 +2,8 @@ import dayjs from 'dayjs';
 import { CardHeader, Typography, Tooltip, IconButton } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 
-import { TaskBoard } from 'models';
-import { PopoverControl } from 'templates';
+import { TaskBoard } from '@/models';
+import { PopoverControl } from '@/templates';
 import { EditableTitle } from '..';
 import { BoardMenu } from '.';
 

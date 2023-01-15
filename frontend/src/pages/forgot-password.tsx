@@ -8,11 +8,11 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Button, TextField, Divider, Grid } from '@mui/material';
 
-import { ForgotPasswordRequest, forgotPassword } from 'store/thunks/auth';
-import { useAppDispatch } from 'utils/hooks';
-import { FormLayout } from 'layouts';
-import { SubmitButton } from 'templates';
-import type { GuestPage } from 'routes';
+import { ForgotPasswordRequest, forgotPassword } from '@/store/thunks/auth';
+import { useAppDispatch } from '@/utils/hooks';
+import { FormLayout } from '@/layouts';
+import { SubmitButton } from '@/templates';
+import type { GuestPage } from '@/routes';
 
 type FormData = ForgotPasswordRequest;
 

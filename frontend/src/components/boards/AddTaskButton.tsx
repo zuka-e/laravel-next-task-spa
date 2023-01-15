@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { ClickAwayListener, Card, CardActions, Button } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 
-import { FormAction } from 'store/slices/taskBoardSlice';
+import { FormAction } from '@/store/slices/taskBoardSlice';
 import { TitleForm } from '.';
 
 type AddTaskButtonProps = FormAction & {

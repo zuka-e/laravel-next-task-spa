@@ -5,10 +5,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Checkbox, FormControlLabel, Grid, TextField } from '@mui/material';
 
-import { UpdatePasswordRequest, updatePassword } from 'store/thunks/auth';
-import { useAppDispatch } from 'utils/hooks';
-import { isGuest } from 'utils/auth';
-import { AlertMessage, SubmitButton } from 'templates';
+import { UpdatePasswordRequest, updatePassword } from '@/store/thunks/auth';
+import { useAppDispatch } from '@/utils/hooks';
+import { isGuest } from '@/utils/auth';
+import { AlertMessage, SubmitButton } from '@/templates';
 
 type FormData = UpdatePasswordRequest;
 

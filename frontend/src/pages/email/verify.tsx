@@ -3,10 +3,10 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticProps } from 'next';
 
-import { useAppDispatch, useRoute } from 'utils/hooks';
-import { verifyEmail } from 'store/thunks/auth';
-import { BaseLayout } from 'layouts';
-import type { AuthPage } from 'routes';
+import { useAppDispatch, useRoute } from '@/utils/hooks';
+import { verifyEmail } from '@/store/thunks/auth';
+import { BaseLayout } from '@/layouts';
+import type { AuthPage } from '@/routes';
 
 type VerifyEmailProps = AuthPage;
 

@@ -1,14 +1,14 @@
 // cf. https://nextjs.org/docs/advanced-features/custom-error-page
 
 import Error from 'next/error';
-import BadRequest from 'pages/400';
+import BadRequest from '@/pages/400';
 
-import Forbidden from 'pages/403';
-import NotFound from 'pages/404';
-import PageExpired from 'pages/419';
-import TooManyRequests from 'pages/429';
-import InternalServerError from 'pages/500';
-import ServiceUnavailable from 'pages/503';
+import Forbidden from '@/pages/403';
+import NotFound from '@/pages/404';
+import PageExpired from '@/pages/419';
+import TooManyRequests from '@/pages/429';
+import InternalServerError from '@/pages/500';
+import ServiceUnavailable from '@/pages/503';
 
 type ErrorHandlerProps = {
   httpStatus: number;

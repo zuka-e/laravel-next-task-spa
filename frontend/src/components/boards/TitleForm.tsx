@@ -6,14 +6,14 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { TextField, TextFieldProps, ClickAwayListener } from '@mui/material';
 
-import type { FormAction } from 'store/slices/taskBoardSlice';
-import type { AsyncThunkConfig } from 'store/thunks/config';
-import theme from 'theme';
-import { useAppDispatch } from 'utils/hooks';
-import { createTaskBoard, updateTaskBoard } from 'store/thunks/boards';
-import { createTaskList, updateTaskList } from 'store/thunks/lists';
-import { createTaskCard, updateTaskCard } from 'store/thunks/cards';
-import { setFlash } from 'store/slices';
+import type { FormAction } from '@/store/slices/taskBoardSlice';
+import type { AsyncThunkConfig } from '@/store/thunks/config';
+import theme from '@/theme';
+import { useAppDispatch } from '@/utils/hooks';
+import { createTaskBoard, updateTaskBoard } from '@/store/thunks/boards';
+import { createTaskList, updateTaskList } from '@/store/thunks/lists';
+import { createTaskCard, updateTaskCard } from '@/store/thunks/cards';
+import { setFlash } from '@/store/slices';
 
 type FormData = {
   title: string;

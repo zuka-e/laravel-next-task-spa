@@ -14,20 +14,20 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import CssBaseline from '@mui/material/CssBaseline';
 
-import { APP_NAME } from 'config/app';
-import store from 'store';
-import theme from 'theme';
-import { FlashNotification, Loading } from 'layouts';
-import { PageHandler } from 'components/pages';
+import { APP_NAME } from '@/config/app';
+import store from '@/store';
+import theme from '@/theme';
+import { FlashNotification, Loading } from '@/layouts';
+import { PageHandler } from '@/components/pages';
 
-import 'styles/globals.css';
-import 'config/dayjs';
+import '@/styles/globals.css';
+import '@/config/dayjs';
 
 if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
   // With `import` instead of `require`, API requests start before MSW enabled,
   // probably because "import(...)" is async. ("await import" have the same result)
-  require('mocks/data');
-  require('mocks/api');
+  require('@test/data');
+  require('@test/api/servers');
 }
 
 const App = ({ Component, pageProps }: AppProps) => {

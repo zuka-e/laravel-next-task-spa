@@ -5,10 +5,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Grid, TextField } from '@mui/material';
 
-import { UpdateProfileRequest, updateProfile } from 'store/thunks/auth';
-import { useAppDispatch, useAppSelector } from 'utils/hooks';
-import { isGuest } from 'utils/auth';
-import { AlertMessage, SubmitButton } from 'templates';
+import { UpdateProfileRequest, updateProfile } from '@/store/thunks/auth';
+import { useAppDispatch, useAppSelector } from '@/utils/hooks';
+import { isGuest } from '@/utils/auth';
+import { AlertMessage, SubmitButton } from '@/templates';
 
 type FormData = UpdateProfileRequest;
 

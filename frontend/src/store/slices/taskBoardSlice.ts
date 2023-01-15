@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { TaskBoard, TaskBoardsCollection, TaskCard, TaskList } from 'models';
-import { compare, SortOperation } from 'utils/sort';
-import { makeDocsWithIndex } from 'utils/dnd';
+import { TaskBoard, TaskBoardsCollection, TaskCard, TaskList } from '@/models';
+import { compare, SortOperation } from '@/utils/sort';
+import { makeDocsWithIndex } from '@/utils/dnd';
 import {
   FetchTaskBoardsResponse,
   fetchTaskBoards,
@@ -10,18 +10,18 @@ import {
   createTaskBoard,
   updateTaskBoard,
   destroyTaskBoard,
-} from 'store/thunks/boards';
+} from '@/store/thunks/boards';
 import {
   createTaskList,
   updateTaskList,
   destroyTaskList,
-} from 'store/thunks/lists';
+} from '@/store/thunks/lists';
 import {
   createTaskCard,
   updateTaskCard,
   destroyTaskCard,
-} from 'store/thunks/cards';
-import { updateTaskCardRelationships } from 'store/thunks/cards/updateTaskCardRelationships';
+} from '@/store/thunks/cards';
+import { updateTaskCardRelationships } from '@/store/thunks/cards/updateTaskCardRelationships';
 
 export type FormAction =
   | { method: 'POST'; model: 'board' }

@@ -6,18 +6,18 @@ import type { GetStaticPaths, GetStaticProps } from 'next';
 import { Container, Grid, Card, Divider, Typography } from '@mui/material';
 import { Pagination } from '@mui/material';
 
-import { fetchTaskBoards } from 'store/thunks/boards';
+import { fetchTaskBoards } from '@/store/thunks/boards';
 import {
   useAppDispatch,
   useAppSelector,
   useDeepEqualSelector,
   useRoute,
-} from 'utils/hooks';
-import { BaseLayout, StandbyScreen } from 'layouts';
-import { Link } from 'templates';
-import { AddTaskButton } from 'components/boards';
-import { BoardCardHeader } from 'components/boards/TaskBoard';
-import type { AuthPage } from 'routes';
+} from '@/utils/hooks';
+import { BaseLayout, StandbyScreen } from '@/layouts';
+import { Link } from '@/templates';
+import { AddTaskButton } from '@/components/boards';
+import { BoardCardHeader } from '@/components/boards/TaskBoard';
+import type { AuthPage } from '@/routes';
 
 type TaskBoardIndexProps = AuthPage;
 

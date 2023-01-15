@@ -5,20 +5,20 @@ import type { GetStaticPaths, GetStaticProps } from 'next';
 import { Container, Grid, Divider, IconButton } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 
-import { makeIndexMap } from 'utils/dnd';
-import { useAppDispatch, useDeepEqualSelector, useRoute } from 'utils/hooks';
+import { makeIndexMap } from '@/utils/dnd';
+import { useAppDispatch, useDeepEqualSelector, useRoute } from '@/utils/hooks';
 import {
   FetchTaskBoardRequest,
   fetchTaskBoard,
   updateTaskBoard,
-} from 'store/thunks/boards';
-import { BaseLayout, StandbyScreen } from 'layouts';
-import { PopoverControl } from 'templates';
-import { AddTaskButton, EditableTitle, SearchField } from 'components/boards';
-import { BoardMenu } from 'components/boards/TaskBoard';
-import { TaskList } from 'components/boards/TaskList';
-import { InfoBox } from 'components/boards/InfoBox';
-import type { AuthPage } from 'routes';
+} from '@/store/thunks/boards';
+import { BaseLayout, StandbyScreen } from '@/layouts';
+import { PopoverControl } from '@/templates';
+import { AddTaskButton, EditableTitle, SearchField } from '@/components/boards';
+import { BoardMenu } from '@/components/boards/TaskBoard';
+import { TaskList } from '@/components/boards/TaskList';
+import { InfoBox } from '@/components/boards/InfoBox';
+import type { AuthPage } from '@/routes';
 
 type TaskBoardProps = AuthPage;
 

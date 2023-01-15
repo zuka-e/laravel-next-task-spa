@@ -1,7 +1,7 @@
 import { Grid, Typography } from '@mui/material';
 
-import { APP_NAME } from 'config/app';
-import { Link } from 'templates';
+import { APP_NAME } from '@/config/app';
+import { Link } from '@/templates';
 
 const Copyright = () => (
   <Typography variant="body2" className="text-inherit">

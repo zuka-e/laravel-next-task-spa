@@ -3,10 +3,10 @@ import { useState } from 'react';
 import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { Check as CheckIcon } from '@mui/icons-material';
 
-import { DocumentBase, TaskCard, TaskList } from 'models';
-import { SortOperation } from 'utils/sort';
-import { useAppDispatch } from 'utils/hooks';
-import { sortCard, sortList } from 'store/slices/taskBoardSlice';
+import { DocumentBase, TaskCard, TaskList } from '@/models';
+import { SortOperation } from '@/utils/sort';
+import { useAppDispatch } from '@/utils/hooks';
+import { sortCard, sortList } from '@/store/slices/taskBoardSlice';
 
 const options = {
   createdAtAsc: '作成日時 (昇順)',

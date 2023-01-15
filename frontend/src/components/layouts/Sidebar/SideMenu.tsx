@@ -10,10 +10,10 @@ import {
   AccountCircle as AccountCircleIcon,
 } from '@mui/icons-material';
 
-import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
-import { makeEmail } from 'utils/generator';
-import { useAppSelector, useAppDispatch } from 'utils/hooks';
-import { createUser, signInWithEmail, signOut } from 'store/thunks/auth';
+import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
+import { makeEmail } from '@/utils/generator';
+import { useAppSelector, useAppDispatch } from '@/utils/hooks';
+import { createUser, signInWithEmail, signOut } from '@/store/thunks/auth';
 
 const SideMenu = () => {
   const router = useRouter();

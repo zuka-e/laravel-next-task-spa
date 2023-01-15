@@ -6,8 +6,8 @@ import {
   ExitToApp as ExitToAppIcon,
 } from '@mui/icons-material';
 
-import { signOut } from 'store/thunks/auth';
-import { useAppDispatch, useAppSelector } from 'utils/hooks';
+import { signOut } from '@/store/thunks/auth';
+import { useAppDispatch, useAppSelector } from '@/utils/hooks';
 
 const AccountMenuList = () => {
   const router = useRouter();

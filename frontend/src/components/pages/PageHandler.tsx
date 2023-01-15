@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import type { AppProps } from 'next/app';
 
-import store from 'store';
-import { clearHttpStatus } from 'store/slices';
-import { useAppDispatch, useAppSelector } from 'utils/hooks';
-import { Route } from 'routes';
-import { ErrorHandler } from 'components/errors';
+import store from '@/store';
+import { clearHttpStatus } from '@/store/slices';
+import { useAppDispatch, useAppSelector } from '@/utils/hooks';
+import { Route } from '@/routes';
+import { ErrorHandler } from '@/components/errors';
 import { useRouter } from 'next/router';
 
 const isHttpError = (httpStatus: number) => {

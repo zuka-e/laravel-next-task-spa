@@ -10,8 +10,8 @@ import { CardActions } from '@mui/material';
 import type { MDEditorProps, PreviewType } from '@uiw/react-md-editor';
 import type { MarkdownPreviewProps } from '@uiw/react-markdown-preview';
 
-import { mdCommands } from 'config/mdEditor';
-import { SubmitButton } from 'templates';
+import { mdCommands } from '@/config/mdEditor';
+import { SubmitButton } from '@/templates';
 
 // cf. https://github.com/uiwjs/react-md-editor/issues/52
 import '@uiw/react-md-editor/markdown-editor.css';

@@ -1,5 +1,5 @@
-import store from 'store';
-import { GUEST_EMAIL } from 'config/app';
+import store from '@/store';
+import { GUEST_EMAIL } from '@/config/app';
 
 export const isReady = () => store.getState().auth.signedIn !== undefined;
 

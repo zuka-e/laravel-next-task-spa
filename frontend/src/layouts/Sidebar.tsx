@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';
 
-import { SideMenu } from 'components/layouts/Sidebar';
+import { SideMenu } from '@/components/layouts/Sidebar';
 
 type SidebarProps = {
   toggleDrawer: (

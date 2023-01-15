@@ -1,4 +1,4 @@
-import { DocumentBase } from 'models';
+import { DocumentBase } from '@/models';
 
 export const draggableItem = {
   card: 'card',

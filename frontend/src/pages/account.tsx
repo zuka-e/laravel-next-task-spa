@@ -10,15 +10,15 @@ import {
   Container,
 } from '@mui/material';
 
-import { isGuest } from 'utils/auth';
-import { BaseLayout } from 'layouts';
+import { isGuest } from '@/utils/auth';
+import { BaseLayout } from '@/layouts';
 import {
   UserProfile,
   Password,
   UserStatus,
   DeleteAccountDialog,
-} from 'components/account';
-import type { AuthPage } from 'routes';
+} from '@/components/account';
+import type { AuthPage } from '@/routes';
 
 type AccountProps = AuthPage;
 

@@ -14,12 +14,12 @@ import {
   Menu as MenuIcon,
 } from '@mui/icons-material';
 
-import { GUEST_EMAIL, GUEST_NAME, GUEST_PASSWORD } from 'config/app';
-import { createUser, signInWithEmail } from 'store/thunks/auth';
-import { useAppDispatch } from 'utils/hooks';
-import { makeEmail } from 'utils/generator';
-import { LinkButton, PopoverControl } from 'templates';
-import hero from 'images/hero.svg';
+import { GUEST_EMAIL, GUEST_NAME, GUEST_PASSWORD } from '@/config/app';
+import { createUser, signInWithEmail } from '@/store/thunks/auth';
+import { useAppDispatch } from '@/utils/hooks';
+import { makeEmail } from '@/utils/generator';
+import { LinkButton, PopoverControl } from '@/templates';
+import hero from '@/images/hero.svg';
 
 const Hero = () => {
   const dispatch = useAppDispatch();

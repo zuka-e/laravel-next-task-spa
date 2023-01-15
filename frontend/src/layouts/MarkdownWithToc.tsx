@@ -1,6 +1,6 @@
 import { Container, Grid } from '@mui/material';
 
-import { Link, Markdown } from 'templates';
+import { Link, Markdown } from '@/templates';
 
 type MarkdownWithTocProps = {
   children: Parameters<typeof Markdown>[0]['children'];

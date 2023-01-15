@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-import { API_HOST, API_ROUTE } from 'config/api';
-import { DocumentBase } from 'models';
-import { setHttpStatus } from 'store/slices/appSlice';
+import { API_HOST, API_ROUTE } from '@/config/api';
+import { DocumentBase } from '@/models';
+import { setHttpStatus } from '@/store/slices/appSlice';
 
 /**
  * Laravelからデータの配列と共にページネーションに関する情報及びリンクをリクエストする際のレスポンスタイプ
@@ -58,8 +58,8 @@ export const apiClient = (options?: ApiClientOption) => {
     async (error) => {
       const { default: store } =
         process.env.NODE_ENV === 'test'
-          ? await import('mocks/store')
-          : await import('store');
+          ? await import('@test/store')
+          : await import('@/store');
 
       if (axios.isAxiosError(error) && error.response) {
         store.dispatch(setHttpStatus(error.response.status));

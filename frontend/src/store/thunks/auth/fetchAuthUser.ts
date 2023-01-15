@@ -1,10 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import { USER_INFO_PATH } from 'config/api';
-import { User } from 'models/User';
-import { apiClient } from 'utils/api';
-import { AsyncThunkConfig } from 'store/thunks/config';
-import { makeRejectValue } from 'store/thunks/utils';
+import { USER_INFO_PATH } from '@/config/api';
+import { User } from '@/models/User';
+import { apiClient } from '@/utils/api';
+import { AsyncThunkConfig } from '@/store/thunks/config';
+import { makeRejectValue } from '@/store/thunks/utils';
 
 export type FetchAuthUserResponse = {
   user: User;

@@ -9,10 +9,11 @@
  * Read more: https://nextjs.org/docs/messages/css-npm
  * Location: node_modules/@uiw/react-markdown-preview/esm/index.js
  * ```
+ * @type {typeof import('next-remove-imports').default}
  * @see https://github.com/uiwjs/react-md-editor/issues/52
  * @see https://github.com/uiwjs/next-remove-imports
  */
-const removeImports = require('next-remove-imports')();
+const removeImports = require('next-remove-imports');
 
 /**
  * @type {import('next').NextConfig}
@@ -27,4 +28,4 @@ const nextConfig = {
   reactStrictMode: true,
 };
 
-module.exports = { ...removeImports(), ...nextConfig };
+module.exports = { ...removeImports()(), ...nextConfig };

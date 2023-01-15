@@ -3,13 +3,13 @@ import { useRouter } from 'next/router';
 
 import { Container } from '@mui/material';
 
-import { fetchAuthUser } from 'store/thunks/auth';
-import { isReady, isSignedIn } from 'utils/auth';
-import { useAppDispatch, useAppSelector } from 'utils/hooks';
-import { BaseLayout, Loading } from 'layouts';
-import { LinkButton } from 'templates';
-import { SEO } from 'components/pages';
-import { Hero, Features } from 'components/home/LandingPage';
+import { fetchAuthUser } from '@/store/thunks/auth';
+import { isReady, isSignedIn } from '@/utils/auth';
+import { useAppDispatch, useAppSelector } from '@/utils/hooks';
+import { BaseLayout, Loading } from '@/layouts';
+import { LinkButton } from '@/templates';
+import { SEO } from '@/components/pages';
+import { Hero, Features } from '@/components/home/LandingPage';
 
 const Home = () => {
   const router = useRouter();

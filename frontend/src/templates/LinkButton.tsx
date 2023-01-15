@@ -1,7 +1,7 @@
 import { Button } from '@mui/material';
 import type { ButtonProps } from '@mui/material';
 
-import { NextLinkComposed } from 'templates/Link';
+import { NextLinkComposed } from '@/templates/Link';
 
 type LinkButtonProps = ButtonProps<'a'> &
   Parameters<typeof NextLinkComposed>[number];

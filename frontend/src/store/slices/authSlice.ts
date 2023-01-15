@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { AlertColor } from '@mui/material';
 
-import { User } from 'models/User';
+import { User } from '@/models/User';
 import {
   createUser,
   fetchAuthUser,
@@ -14,7 +14,7 @@ import {
   resetPassword,
   signOut,
   deleteAccount,
-} from 'store/thunks/auth';
+} from '@/store/thunks/auth';
 
 export type FlashNotificationProps = {
   type: AlertColor;

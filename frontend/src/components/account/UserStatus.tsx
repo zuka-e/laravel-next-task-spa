@@ -1,10 +1,10 @@
 import dayjs from 'dayjs';
 import { Button, Grid, Typography } from '@mui/material';
 
-import { sendEmailVerificationLink } from 'store/thunks/auth';
-import { useAppSelector, useAppDispatch } from 'utils/hooks';
-import { isVerified } from 'utils/auth';
-import { AlertMessage } from 'templates';
+import { sendEmailVerificationLink } from '@/store/thunks/auth';
+import { useAppSelector, useAppDispatch } from '@/utils/hooks';
+import { isVerified } from '@/utils/auth';
+import { AlertMessage } from '@/templates';
 
 const UserStatus = () => {
   const createdAt = useAppSelector((state) => state.auth.user?.createdAt);
