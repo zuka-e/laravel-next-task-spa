@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * `Auth::check()` etc. => \Illuminate\Auth\AuthManager::__call
+ *
+ * @see \Illuminate\Auth\AuthManager
+ *
+ * => `$this->guard()`
+ * @see \Illuminate\Auth\SessionGuard
+ * @see \Illuminate\Auth\TokenGuard
+ */
+
 return [
     /*
     |--------------------------------------------------------------------------
