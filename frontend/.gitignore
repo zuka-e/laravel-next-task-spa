@@ -27,3 +27,8 @@ yarn-error.log*
 # > and should be ignored by version control.
 # >> https://nextjs.org/docs/basic-features/typescript
 next-env.d.ts
+
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/
