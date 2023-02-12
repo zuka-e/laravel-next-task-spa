@@ -1,0 +1,58 @@
+# cf. https://playwright.dev/docs/ci-intro
+# cf. https://vercel.com/guides/how-can-i-run-end-to-end-tests-after-my-vercel-preview-deployment
+#     https://docs.github.com/ja/webhooks-and-events/webhooks/webhook-events-and-payloads#deployment_status
+
+name: Playwright Tests
+
+on:
+  deployment_status:
+
+jobs:
+  e2e:
+    name: End-to-End Test
+    if: github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache Node.js modules
+        id: yarn-cache
+        uses: actions/cache@v3
+        with:
+          path: ./frontend/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install dependencies
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn --frozen-lockfile
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run tests
+        run: yarn test:e2e
+        env:
+          APP_URL: ${{ github.event.deployment_status.target_url }}
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
