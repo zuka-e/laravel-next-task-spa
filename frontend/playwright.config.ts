@@ -86,11 +86,11 @@ export default defineConfig({
   // outputDir: 'test-results/',
 
   /* Run your local dev server before starting the tests */
-  webServer: process.env.APP_URL
-    ? undefined
-    : {
-        command: 'yarn dev',
-        port: PORT,
-        reuseExistingServer: !process.env.CI,
-      },
+  // webServer: process.env.APP_URL
+  //   ? undefined
+  //   : {
+  //       command: 'yarn dev',
+  //       port: PORT,
+  //       reuseExistingServer: !process.env.CI,
+  //     },
 });
