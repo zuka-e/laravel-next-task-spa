@@ -21,7 +21,7 @@ const customJestConfig = {
   testEnvironment: 'jest-environment-jsdom',
   rootDir: '.',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
-  roots: ['<rootDir>/test/'],
+  roots: ['<rootDir>/test/__tests__'],
   coveragePathIgnorePatterns: ['<rootDir>/test/'],
   modulePaths: ['<rootDir>'], // cf. `tsconfig.json:baseUrl`
   moduleNameMapper: {
