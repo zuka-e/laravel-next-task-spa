@@ -1,6 +1,8 @@
 import { test, expect, type Page } from '@playwright/test';
 import faker from 'faker';
 
+import { assertScreenshot } from './utils';
+
 test.beforeEach(async ({ page }) => {
   await page.goto('/register');
 });
@@ -18,6 +20,8 @@ const submitWithInput = async (
 };
 
 test.describe('Registration form', () => {
+  assertScreenshot();
+
   test('can register', async ({ page }) => {
     await submitWithInput(
       page,
