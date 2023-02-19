@@ -12,6 +12,7 @@
     "lint": "next lint",
     "test": "jest --watch",
     "test:ci": "jest --ci",
+    "test:e2e": "playwright test",
     "prettier-fix": "prettier --write .",
     "prepare": "cd .. && husky install frontend/.husky"
   },
@@ -28,6 +29,7 @@
     "@mui/lab": "^5.0.0-alpha.102",
     "@mui/material": "^5.10.8",
     "@mui/x-date-pickers": "^5.0.4",
+    "@playwright/test": "^1.30.0",
     "@reduxjs/toolkit": "^1.8.6",
     "@tailwindcss/line-clamp": "^0.4.2",
     "@testing-library/jest-dom": "^5.16.5",

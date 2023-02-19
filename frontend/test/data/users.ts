@@ -45,7 +45,7 @@ const runSeeder = (props: { count: number }) => {
   [...Array(props.count)].forEach(() => {
     db.create('users', {
       name: `${faker.name.firstName()} ${faker.name.lastName()}`,
-      email: faker.internet.email(),
+      email: faker.internet.exampleEmail(),
       emailVerifiedAt: faker.date.recent().toISOString(),
       password: digestText(GUEST_PASSWORD),
       createdAt: faker.date.past().toISOString(),

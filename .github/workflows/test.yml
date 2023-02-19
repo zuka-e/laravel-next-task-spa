@@ -79,4 +79,5 @@ jobs:
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn --frozen-lockfile
 
-      - run: yarn test:ci
+      - name: Run unit & integration tests
+        run: yarn test:ci
