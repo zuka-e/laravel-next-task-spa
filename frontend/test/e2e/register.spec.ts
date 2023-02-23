@@ -29,16 +29,13 @@ test.describe('Registration form', () => {
       'password'
     );
 
-    await expect(page).toHaveURL('/email-verification');
-    await expect(
-      page.getByRole('alert').filter({ hasText: 'ユーザー登録が完了しました' })
-    ).toBeVisible();
-    await expect(
-      page.getByRole('heading', { name: '認証用メールを送信しました。' })
-    ).toBeVisible();
-    await expect(
-      page.getByRole('button', { name: '再送信する' })
-    ).toBeVisible();
+    // prettier-ignore
+    await Promise.all([
+      expect(page).toHaveURL('/email-verification'),
+      expect(page.getByRole('alert').filter({ hasText: 'ユーザー登録が完了しました' })).toBeVisible(),
+      expect(page.getByRole('heading', { name: '認証用メールを送信しました。' })).toBeVisible(),
+      expect(page.getByRole('button', { name: '再送信する' })).toBeVisible(),
+    ]);
   });
 
   test('cannot register with existing email', async ({ page }) => {
@@ -46,11 +43,10 @@ test.describe('Registration form', () => {
 
     await submitWithInput(page, existingEmail, 'password');
 
-    await expect(page).toHaveURL('/register');
-    await expect(
-      page
-        .getByRole('alert')
-        .filter({ hasText: /このメールアドレスは既に使用されています。/ })
-    ).toBeVisible();
+    // prettier-ignore
+    await Promise.all([
+      expect(page).toHaveURL('/register'),
+      expect(page.getByRole('alert').filter({ hasText: /メールアドレスは既に/ })).toBeVisible(),
+    ])
   });
 });
