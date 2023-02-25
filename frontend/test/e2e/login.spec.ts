@@ -88,6 +88,16 @@ test.describe('Login form', () => {
 });
 
 test.describe('links', () => {
+  test('has link to the terms page', async ({ page }) => {
+    await page.getByRole('link', { name: 'Terms' }).click();
+    await expect(await page.waitForEvent('popup')).toHaveURL('/terms');
+  });
+
+  test('has link to the privacy page', async ({ page }) => {
+    await page.getByRole('link', { name: 'Privacy' }).click();
+    await expect(await page.waitForEvent('popup')).toHaveURL('/privacy');
+  });
+
   test('has link to the forgot-password page', async ({ page }) => {
     await page.getByRole('button', { name: 'Forgot password?' }).click();
     await expect(page).toHaveURL('/forgot-password');
