@@ -14,18 +14,19 @@
         "fakerphp/faker": "^1.9.1",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/fortify": "^1.7",
-        "laravel/framework": "^9.0",
-        "laravel/sanctum": "^2.9",
-        "laravel/telescope": "^4.4",
+        "laravel/framework": "^10.0",
+        "laravel/sanctum": "^3.2",
+        "laravel/telescope": "^4.14",
         "laravel/tinker": "^2.5"
     },
     "require-dev": {
-        "barryvdh/laravel-ide-helper": "^2.10",
-        "spatie/laravel-ignition": "^1.0",
+        "barryvdh/laravel-ide-helper": "^2.13",
+        "doctrine/dbal": "^3.0",
+        "spatie/laravel-ignition": "^2.0",
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.2",
-        "nunomaduro/collision": "^6.1",
-        "phpunit/phpunit": "^9.3.3"
+        "nunomaduro/collision": "^7.0",
+        "phpunit/phpunit": "^10.0"
     },
     "config": {
         "optimize-autoloader": true,
@@ -49,7 +50,7 @@
             "Tests\\": "tests/"
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "scripts": {
         "post-autoload-dump": [
