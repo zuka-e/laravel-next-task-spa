@@ -12,7 +12,6 @@
         "bref/bref": "^1.2",
         "bref/laravel-bridge": "^1.1",
         "fakerphp/faker": "^1.9.1",
-        "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/fortify": "^1.7",
         "laravel/framework": "^9.0",
