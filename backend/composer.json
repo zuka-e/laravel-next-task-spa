@@ -21,7 +21,6 @@
         "laravel/tinker": "^2.5"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.5",
         "barryvdh/laravel-ide-helper": "^2.10",
         "spatie/laravel-ignition": "^1.0",
         "laravel/sail": "^1.0.1",
