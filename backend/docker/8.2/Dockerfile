@@ -2,11 +2,13 @@ FROM ubuntu:22.04
 
 LABEL maintainer="Taylor Otwell"
 
+ARG WORKDIR
 ARG WWWGROUP
+ARG USERNAME=sail
 ARG NODE_VERSION=18
 ARG POSTGRES_VERSION=14
 
-WORKDIR /var/www/html
+WORKDIR ${WORKDIR}
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TZ=UTC
@@ -36,6 +38,7 @@ RUN apt-get update \
     && curl -sS https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor | tee /etc/apt/keyrings/pgdg.gpg >/dev/null \
     && echo "deb [signed-by=/etc/apt/keyrings/pgdg.gpg] http://apt.postgresql.org/pub/repos/apt jammy-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
     && apt-get update \
+    && apt-get install -y vim \
     && apt-get install -y yarn \
     && apt-get install -y mysql-client \
     && apt-get install -y postgresql-client-$POSTGRES_VERSION \
@@ -45,8 +48,12 @@ RUN apt-get update \
 
 RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.2
 
-RUN groupadd --force -g $WWWGROUP sail
-RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 sail
+RUN groupadd --force -g $WWWGROUP ${USERNAME}
+RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 ${USERNAME}
+
+# https://code.visualstudio.com/remote/advancedcontainers/avoid-extension-reinstalls
+RUN mkdir -p /home/${USERNAME}/.vscode-server/extensions \
+    && chown -R ${USERNAME} /home/${USERNAME}/.vscode-server
 
 COPY start-container /usr/local/bin/start-container
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf

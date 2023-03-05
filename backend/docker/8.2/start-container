@@ -10,8 +10,13 @@ fi
 
 chmod -R ugo+rw /.composer
 
+# The relative path to `working_dir` in `docker-compose.yml` is used,
+# but an absolute path, ${PROJECT_DIR}/${BACKEND_DIR}/, can also be used.
+mkdir -p node_modules vendor \
+    && chown -R sail:sail node_modules vendor
+
 if [ $# -gt 0 ]; then
     exec gosu $WWWUSER "$@"
 else
-    exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+    /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
 fi
