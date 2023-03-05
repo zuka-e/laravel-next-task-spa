@@ -7,7 +7,7 @@ use Illuminate\Support\Arr;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Throwable;
 
-/** @see https://laravel.com/docs/9.x/errors */
+/** @see https://laravel.com/docs/errors */
 class Handler extends ExceptionHandler
 {
     /**

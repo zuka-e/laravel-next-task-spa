@@ -14,7 +14,7 @@ Route::middleware('auth:sanctum')->group(function () {
     |--------------------------------------------------------------------------
     | Tasks
     |--------------------------------------------------------------------------
-    | https://laravel.com/docs/9.x/controllers#restful-scoping-resource-routes
+    | https://laravel.com/docs/controllers#restful-scoping-resource-routes
     */
 
     Route::apiResource('users.task-boards', TaskBoardController::class)

@@ -9,7 +9,7 @@ use Illuminate\Http\Resources\MissingValue;
 /**
  * It's used to transform the model and define what data should be returned.
  *
- * @see https://laravel.com/docs/9.x/eloquent-resources
+ * @see https://laravel.com/docs/eloquent-resources
  */
 class TaskBoardResource extends JsonResource
 {

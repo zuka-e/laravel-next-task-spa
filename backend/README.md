@@ -57,7 +57,7 @@
 Laravel Sailにデフォルトで用意されている環境はカスタマイズすることも可能ですが、今回は特に変更を行っておらず、構築した環境は以下のようなものです。  
 
 - [Docker for Mac](https://docs.docker.com/desktop/mac/release-notes/) (3.6.0)
-- [Laravel Sail](https://laravel.com/docs/8.x/sail) (1.4.7)
+- [Laravel Sail](https://laravel.com/docs/sail) (1.4.7)
   - PHP (8.0.5)
   - [Laravel](https://laravel.com/) (8.32.1)
   - [MySQL](https://www.mysql.com/) (8.0.23) - RDB
@@ -76,9 +76,9 @@ Laravel Sailにデフォルトで用意されている環境はカスタマイ�
 - [Redis](https://redis.io/) (6.0.10) - キャッシュ、セッションストア (開発環境)
 - [MailHog](https://github.com/mailhog/MailHog) - メール送受信 (開発環境)
 - [PHPUnit](https://phpunit.de/) (9.5.2) - テスト
-- [Telescope](https://laravel.com/docs/8.x/telescope) (4.4.6) - デバッガー
-- [Sanctum](https://laravel.com/docs/8.x/sanctum) (2.9.3) - SPA認証 (セッション、CSRF & XSS 防衛)
-- [Fortify](https://laravel.com/docs/8.x/fortify) (1.7.8) - 認証用バックエンド (ルーティング、コントローラー etc)
+- [Telescope](https://laravel.com/docs/telescope) (4.4.6) - デバッガー
+- [Sanctum](https://laravel.com/docs/sanctum) (2.9.3) - SPA認証 (セッション、CSRF & XSS 防衛)
+- [Fortify](https://laravel.com/docs/fortify) (1.7.8) - 認証用バックエンド (ルーティング、コントローラー etc)
 - [Bref](https://bref.sh/) (1.2.10) - PHP用Lambdaデプロイツール
 - [Serverless](https://www.serverless.com/) (2.53.1) - サーバレスアプリケーション構成管理
 - [AWS SDK for PHP](https://aws.amazon.com/sdk-for-php/) (3.188.0) - AWS連携
@@ -89,7 +89,7 @@ Laravel Sailにデフォルトで用意されている環境はカスタマイ�
 
 ## Laravel Sail
 
-簡単に環境構築を行うためには、**Laravel Sail**と呼ばれるものを使用します。これは[公式サイトで紹介されている](https://laravel.com/docs/8.x/installation#your-first-laravel-project)パッケージの一つです。前提としてDockerを使った構築方法になっているので、事前にDockerが利用できる環境が必要です。macOSであれば、Homebrewを利用したインストールが簡単です。  
+簡単に環境構築を行うためには、**Laravel Sail**と呼ばれるものを使用します。これは[公式サイトで紹介されている](https://laravel.com/docs/installation#your-first-laravel-project)パッケージの一つです。前提としてDockerを使った構築方法になっているので、事前にDockerが利用できる環境が必要です。macOSであれば、Homebrewを利用したインストールが簡単です。  
 
 ```bash
 brew install --cask Docker # インストール
@@ -134,11 +134,11 @@ curl -s "https://laravel.build/example-app?with=mysql,redis" | bash
 
 このように、Laravel Sailを利用することによって、簡単にDocker環境でLaravelを利用した開発を始めることができるようになりました。  
 
-> 参考： [Installation - Laravel # Choosing Your Sail Services](https://laravel.com/docs/8.x/installation#choosing-your-sail-services)  
+> 参考： [Installation - Laravel # Choosing Your Sail Services](https://laravel.com/docs/installation#choosing-your-sail-services)  
 
 ### `sail`コマンド
 
-上で使用している`./vendor/bin/sail`は、Laravel Sail によって利用することができるようになったコマンドで、`docker-compose`コマンドと同様の利用法が可能ですが、さらに`./vendor/bin/sail mysql`や`./vendor/bin/sail bash`など、短縮コマンドも用意されており幅広い使い方が可能です。頻繁に利用するので入力の手間を省くため[公式と同じように](https://laravel.com/docs/8.x/sail#configuring-a-bash-alias)エイリアスを設定しておきます。  
+上で使用している`./vendor/bin/sail`は、Laravel Sail によって利用することができるようになったコマンドで、`docker-compose`コマンドと同様の利用法が可能ですが、さらに`./vendor/bin/sail mysql`や`./vendor/bin/sail bash`など、短縮コマンドも用意されており幅広い使い方が可能です。頻繁に利用するので入力の手間を省くため[公式と同じように](https://laravel.com/docs/sail#configuring-a-bash-alias)エイリアスを設定しておきます。  
 
 ```bash
 alias sail='bash vendor/bin/sail' # ~/.bashrc などに追記する
@@ -156,11 +156,11 @@ Laravelを利用する環境は概ね完了したので、次に設定の変更�
 
 ## Telescope
 
-[Telescope](https://laravel.com/docs/8.x/telescope)とは、Laravel公式サイトでパッケージとして紹介されているデバッガーです。 これによってリクエストのあらゆる情報が記録され、それをブラウザで確認することができます。取得される情報はヘッダーやセッションの他クエリやキャッシュまで非常に広範囲にわたります。  
+[Telescope](https://laravel.com/docs/telescope)とは、Laravel公式サイトでパッケージとして紹介されているデバッガーです。 これによってリクエストのあらゆる情報が記録され、それをブラウザで確認することができます。取得される情報はヘッダーやセッションの他クエリやキャッシュまで非常に広範囲にわたります。  
 
 > Telescope provides insight into the requests coming into your application, exceptions, log entries, database queries, queued jobs, mail, notifications, cache operations, scheduled tasks, variable dumps, and more.  
 >
-> [Laravel Telescope - Laravel # Introduction](https://laravel.com/docs/8.x/telescope#introduction)  
+> [Laravel Telescope - Laravel # Introduction](https://laravel.com/docs/telescope#introduction)  
 
 インストールは以下のコマンドによって行います。  
 
@@ -192,7 +192,7 @@ return [
 
 上記の`faker_locale`とは、テストデータ生成用の[Faker](https://github.com/FakerPHP/Faker)を利用する際の設定です。ただし、この設定を行ったとしても多くは日本語を利用できません。これはデータが用意されていないためです。
 
-> 参考： [Installation - Laravel # Initial Configuration](https://laravel.com/docs/8.x/installation#initial-configuration)  
+> 参考： [Installation - Laravel # Initial Configuration](https://laravel.com/docs/installation#initial-configuration)  
 
 ## リソース
 
@@ -234,9 +234,9 @@ public function up()
 次に、`title`や`content`などの型を指定して作成するタスクに必要なカラムの設定を行っています。このとき要件によって、null許容やデフォルト値も設定します。  
 
 > 参考：  
-> [Database: Migrations - Laravel # Foreign Key Constraints](https://laravel.com/docs/8.x/migrations#foreign-key-constraints)  
-> [Database: Migrations - Laravel # Available Column Types](https://laravel.com/docs/8.x/migrations#available-column-types)  
-> [Database: Migrations - Laravel # Column Modifiers](https://laravel.com/docs/8.x/migrations#column-modifiers)  
+> [Database: Migrations - Laravel # Foreign Key Constraints](https://laravel.com/docs/migrations#foreign-key-constraints)  
+> [Database: Migrations - Laravel # Available Column Types](https://laravel.com/docs/migrations#available-column-types)  
+> [Database: Migrations - Laravel # Column Modifiers](https://laravel.com/docs/migrations#column-modifiers)  
 
 ### モデル
 
@@ -285,7 +285,7 @@ $task_cards = App\Models\User::find(1)->task_cards;
 $user = App\Models\TaskCard::find(1)->user;
 ```
 
-> 参考： [Eloquent: Relationships - Laravel](https://laravel.com/docs/8.x/eloquent-relationships)  
+> 参考： [Eloquent: Relationships - Laravel](https://laravel.com/docs/eloquent-relationships)  
 
 データをブラウザに返却する際、必ずしも全てのカラムが必要ではなく、寧ろ`password`などのように秘匿した方が好ましいものもあります。そのような場合はモデルの`$hidden`プロパティにカラム名を追加します。  
 
@@ -303,7 +303,7 @@ protected $casts = [
 ];
 ```
 
-> 参考： [Eloquent: Mutators & Casting - Laravel # Attribute Casting](https://laravel.com/docs/8.x/eloquent-mutators#attribute-casting)  
+> 参考： [Eloquent: Mutators & Casting - Laravel # Attribute Casting](https://laravel.com/docs/eloquent-mutators#attribute-casting)  
 
 ### Seeder/Factory
 
@@ -360,8 +360,8 @@ sail artisan db:seed
 このように、リレーションのあるデータでも簡潔なコードで即座に大量のデータを生成できることが確認できました。  
 
 > 参考：  
-> [Database Testing - Laravel # Defining Model Factories](https://laravel.com/docs/8.x/database-testing#defining-model-factories)  
-> [Database: Seeding - Laravel](https://laravel.com/docs/8.x/seeding)  
+> [Database Testing - Laravel # Defining Model Factories](https://laravel.com/docs/database-testing#defining-model-factories)  
+> [Database: Seeding - Laravel](https://laravel.com/docs/seeding)  
 
 ### ルーティング
 
@@ -388,7 +388,7 @@ Route::group([
 これは、Laravel 8における変更点の一つで、以前はアプリケーション側で用意されていました。ただし従来の方法で`namespace`を指定することも可能です。  
 
 > 参考：
-> [Release Notes - Laravel # Routing Namespace Updates](https://laravel.com/docs/8.x/releases#routing-namespace-updates)  
+> [Release Notes - Laravel # Routing Namespace Updates](https://laravel.com/docs/releases#routing-namespace-updates)  
 
 `prefix`には`v1`としていますが、これはバージョンを表しておりAPI開発の際に一般的にこのように表記が利用されるようです。  
 
@@ -408,7 +408,7 @@ Route::group([
 
 結局、ルート定義としては、`api/v1/users/{user}/task_cards`にGETメソッドでアクセスしたとき`TaskCardController`の`index`アクションを実行するというものになりました。  
 
-> 参考： [Controllers - Laravel # Resource Controllers](https://laravel.com/docs/8.x/controllers#api-resource-routes)  
+> 参考： [Controllers - Laravel # Resource Controllers](https://laravel.com/docs/controllers#api-resource-routes)  
 
 `routes`ディレクトリには、`web.php`もありこちらにルーティングを設定することもできますが、今回はAPIとして利用するため、`api.php`の方に記述します。  
 
@@ -434,7 +434,7 @@ public function boot()
 }
 ```
 
-> 参考： [Routing - Laravel](https://laravel.com/docs/8.x/routing)  
+> 参考： [Routing - Laravel](https://laravel.com/docs/routing)  
 
 ### ミドルウェア
 
@@ -463,7 +463,7 @@ protected $middlewareGroups = [
 
 このように、`web`と`api`では属しているミドルウェアが異なるため、それぞれが割り当てられている`web.php`と`api.php`では適用されるミドルウェアに違いがあります。  
 
-> 参考： [Middleware - Laravel](https://laravel.com/docs/8.x/middleware)  
+> 参考： [Middleware - Laravel](https://laravel.com/docs/middleware)  
 
 ### コントローラー
 
@@ -489,14 +489,14 @@ class TaskCardController extends Controller
 上の処理で、`$user`が持つ`task_cards`レコードを全て取得し、JSON形式として返却します。  
 変数`$user`には、`users`テーブルから`id`で検索されたデータが自動的に入ります。引数に型ヒント (ここでは`$user`前の`User`) を行うことで実現するこの手法を、依存性注入 (DI) と呼びます。  
 
-> 参考： [Controllers - Laravel # Dependency Injection & Controllers](https://laravel.com/docs/8.x/controllers#dependency-injection-and-controllers)  
+> 参考： [Controllers - Laravel # Dependency Injection & Controllers](https://laravel.com/docs/controllers#dependency-injection-and-controllers)  
 
 次に利用している`taskCards`メソッドは、先述の[リレーション (Model)](#リレーション-model)の項目で設定したものです。  
 そしてデータをJSONとして返却する点ですが、Laravelでは、コントローラーから返却する際には自動的にJSONに変換するため特別の操作は不要です。  
 
 > Laravel will automatically serialize your Eloquent models and collections to JSON when they are returned from routes or controllers:  
 >
-> [Eloquent: Serialization - Laravel # Serializing To JSON](https://laravel.com/docs/8.x/eloquent-serialization#serializing-to-json)  
+> [Eloquent: Serialization - Laravel # Serializing To JSON](https://laravel.com/docs/eloquent-serialization#serializing-to-json)  
 
 [Seeder & Factory](#seeder-and-factory)の項目でデータを生成していれば、[localhost/api/v1/users/1/task_cards](http://localhost/api/v1/users/1/task_cards)にアクセスすることで、`id`が`1`である`User`が持つ`TaskCard`のデータがJSON出力されていることが確認できるはずです。  
 
@@ -523,7 +523,7 @@ class TaskCardController extends Controller
 // ...
 ```
 
-> 参考：[Database: Pagination - Laravel](https://laravel.com/docs/8.x/pagination)  
+> 参考：[Database: Pagination - Laravel](https://laravel.com/docs/pagination)  
 
 ### テスト
 
@@ -535,7 +535,7 @@ Laravelにおいては、初めからテストに必要なライブラリであ�
 
 ただし注意点として、ファイルが存在しない場合は`.env`の値が用いられます。その場合データベースも同じものを使用しているので、これまでに作成したデータが削除されたり想定外のテスト結果となってしまったりすることがあります。  
 
-> 参考：[Testing: Getting Started - Laravel # Environment](https://laravel.com/docs/8.x/testing#environment)  
+> 参考：[Testing: Getting Started - Laravel # Environment](https://laravel.com/docs/testing#environment)  
 
 それでは以下のコマンドを実行して実際にテストを作成してみます。`--unit`オプションを付けない場合、`Feature`ディレクトリにファイルが生成されます。  
 
@@ -588,7 +588,7 @@ class TaskCardTest extends TestCase
 
 テストの実行には、`sail artisan test`を使用し、成功すれば`PASS`と出力されます。  
 
-> 参考： [HTTP Tests - Laravel # Scoping JSON Collection Assertions](https://laravel.com/docs/8.x/http-tests#scoping-json-collection-assertions)  
+> 参考： [HTTP Tests - Laravel # Scoping JSON Collection Assertions](https://laravel.com/docs/http-tests#scoping-json-collection-assertions)  
 
 さらにテストを活用するため、[後](#github-actions)にGitHub Actionsを導入します。  
 
@@ -811,13 +811,13 @@ jobs:
 
 ## 認証
 
-Laravelで認証機能を実装する場合、選択肢が複数存在します。特に、[Breeze](https://laravel.com/docs/8.x/starter-kits#laravel-breeze)または[Jetstream](https://jetstream.laravel.com/2.x/introduction.html)のパッケージを用いた方法では、MVCの"View"にあたるUIも内包された状態で認証機能を導入することができます。ただ今回はこれを利用せず、**Fortify**と**Sanctum**という二つのパッケージを組み合わせて認証を実装します。  
+Laravelで認証機能を実装する場合、選択肢が複数存在します。特に、[Breeze](https://laravel.com/docs/starter-kits#laravel-breeze)または[Jetstream](https://jetstream.laravel.com/2.x/introduction.html)のパッケージを用いた方法では、MVCの"View"にあたるUIも内包された状態で認証機能を導入することができます。ただ今回はこれを利用せず、**Fortify**と**Sanctum**という二つのパッケージを組み合わせて認証を実装します。  
 
 前述のパッケージを利用しない理由の一つは、"View"の部分で対応しているのが基本的にVue.jsのみであるということです。学習済みである"React"を使用してさらに理解を深めることが目的でもあるので敬遠する要因となっています。その他パッケージ化されている分カスタマイズするには複雑になることも考えられます。一方、Fortifyを利用する場合にはUIは提供されていないので自由にフロントエンドを選ぶことが可能です。  
 
 > If you are building a single-page application (SPA) that will be powered by a Laravel backend, you should use Laravel Sanctum. When using Sanctum, you will either need to manually implement your own backend authentication routes or utilize Laravel Fortify as a headless authentication backend service that provides routes and controllers for features such as registration, password reset, email verification, and more.  
 >
-> [Authentication - Laravel # Summary & Choosing Your Stack](https://laravel.com/docs/8.x/authentication#summary-choosing-your-stack)  
+> [Authentication - Laravel # Summary & Choosing Your Stack](https://laravel.com/docs/authentication#summary-choosing-your-stack)  
 
 ### Fortify
 
@@ -884,7 +884,7 @@ Fortifyを利用するための準備が整ったので次に設定を変更し�
 ```
 
 > 参考：  
-> [Laravel Fortify - Laravel](https://laravel.com/docs/8.x/fortify)  
+> [Laravel Fortify - Laravel](https://laravel.com/docs/fortify)  
 > [Laravel Fortify SPA Authentication with Laravel Sanctum without Jetstream - YouTube](https://www.youtube.com/watch?v=QYJKp1e71xs)  
 > [Getting started with Laravel Fortify and Sanctum - YouTube](https://www.youtube.com/watch?v=W7owQcBYerA)  
 > [Updates to the Laravel Fortify SPA Authentication, Improvements & Routes File Cleanup - YouTube](https://www.youtube.com/watch?v=2a2FFg40zFI)  
@@ -895,7 +895,7 @@ Sanctumはアプリケーションに認証機能を提供するパッケージ�
 
 > Laravel Sanctum is only concerned with managing API tokens and authenticating existing users using session cookies or tokens. Sanctum does not provide any routes that handle user registration, password reset, etc  
 >
-> [Laravel Fortify - Laravel # Laravel Fortify & Laravel Sanctum](https://laravel.com/docs/8.x/fortify#laravel-fortify-and-laravel-sanctum)  
+> [Laravel Fortify - Laravel # Laravel Fortify & Laravel Sanctum](https://laravel.com/docs/fortify#laravel-fortify-and-laravel-sanctum)  
 
 先述のとおり、Fortifyを利用しない場合であっても代わりのコードを用意することは可能です。一方、Sanctumが提供する機能は、`Jetstream`などのパッケージを採用する場合を除いて、API認証を行う上で基本的に必要となります。  
 
@@ -905,7 +905,7 @@ Sanctumはアプリケーションに認証機能を提供するパッケージ�
 
 > You should not use API tokens to authenticate your own first-party SPA. Instead, use Sanctum's built-in SPA authentication features.  
 >
-> [Laravel Sanctum - Laravel # API Token Authentication](https://laravel.com/docs/8.x/sanctum#api-token-authentication)  
+> [Laravel Sanctum - Laravel # API Token Authentication](https://laravel.com/docs/sanctum#api-token-authentication)  
 
 SanctumはLaravelの初期状態に含まれていないので、初めにComposerパッケージからインストールを行います。  
 
@@ -1047,9 +1047,9 @@ Cookieが有効であり、`XSRF-TOKEN`の値が`X-XSRF-TOKEN`に入っていれ
 尚、セッションの期限切れなどによって有効でなくなった場合には`401`又は`419`エラーが返されます。その場合再度ログインが必要となるので、フロントエンド側ではログインページにリダイレクトを行うなどの対応が求められます。  
 
 > 参考：  
-> [Authentication - Laravel](https://laravel.com/docs/8.x/authentication)  
-> [CSRF Protection - Laravel](https://laravel.com/docs/8.x/csrf)  
-> [Laravel Sanctum - Laravel](https://laravel.com/docs/8.x/sanctum)  
+> [Authentication - Laravel](https://laravel.com/docs/authentication)  
+> [CSRF Protection - Laravel](https://laravel.com/docs/csrf)  
+> [Laravel Sanctum - Laravel](https://laravel.com/docs/sanctum)  
 > [Using Sanctum to authenticate a React SPA | Laravel News](https://laravel-news.com/using-sanctum-to-authenticate-a-react-spa)  
 > [Laravel Sanctum SPA Tutorial - React SPA Authentication With Sanctum - YouTube](https://www.youtube.com/watch?v=uPKd3q-iaVs)  
 > [Getting started with Laravel Fortify and Sanctum - YouTube](https://www.youtube.com/watch?v=W7owQcBYerA)  
@@ -1123,7 +1123,7 @@ SESSION_DOMAIN=.domain.com
 ```
 
 > 参考：  
-> [Laravel Sanctum - Laravel # CORS & Cookies](https://laravel.com/docs/8.x/sanctum#cors-and-cookies)  
+> [Laravel Sanctum - Laravel # CORS & Cookies](https://laravel.com/docs/sanctum#cors-and-cookies)  
 > [HTTP Cookie の使用 - HTTP | MDN](https://developer.mozilla.org/ja/docs/Web/HTTP/Cookies)  
 
 以上で、Cookieを利用したSPA認証を利用することができるようになりました。  

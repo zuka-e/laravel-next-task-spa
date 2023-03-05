@@ -53,10 +53,10 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
-    // https://laravel.com/docs/9.x/helpers#method-asset
+    // https://laravel.com/docs/helpers#method-asset
     'asset_url' => env('ASSET_URL', null),
 
-    // https://laravel.com/docs/9.x/mix#custom-mix-base-urls
+    // https://laravel.com/docs/mix#custom-mix-base-urls
     'mix_url' => env('MIX_ASSET_URL', null),
 
     /*

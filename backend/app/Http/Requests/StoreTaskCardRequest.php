@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 
 /**
- * @see https://laravel.com/docs/9.x/validation#form-request-validation
+ * @see https://laravel.com/docs/validation#form-request-validation
  */
 class StoreTaskCardRequest extends FormRequest
 {

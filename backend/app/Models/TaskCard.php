@@ -16,7 +16,7 @@ class TaskCard extends Model
 
     protected $fillable = ['title', 'content', 'deadline', 'done'];
 
-    /** @see [https://laravel.com/docs/8.x/eloquent-mutators#date-casting-and-timezones */
+    /** @see [https://laravel.com/docs/eloquent-mutators#date-casting-and-timezones */
     protected $casts = [
         'deadline' => 'datetime',
         'done' => 'boolean',

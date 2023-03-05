@@ -28,7 +28,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         // 参考： `vendor/laravel/framework/src/Illuminate/Auth/Notifications/ResetPassword.php`
-        /** @see https://laravel.com/docs/8.x/passwords#password-customization */
+        /** @see https://laravel.com/docs/passwords#password-customization */
         ResetPassword::toMailUsing(function ($notifiable, string $token) {
             /** @var \Illuminate\Foundation\Auth\User $notifiable */
 

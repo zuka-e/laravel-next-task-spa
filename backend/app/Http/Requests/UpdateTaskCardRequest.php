@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 /**
- * @see https://laravel.com/docs/9.x/validation#form-request-validation
+ * @see https://laravel.com/docs/validation#form-request-validation
  */
 class UpdateTaskCardRequest extends FormRequest
 {
@@ -45,7 +45,7 @@ class UpdateTaskCardRequest extends FormRequest
     public function rules()
     {
         return [
-            // https://laravel.com/docs/9.x/validation#rule-exists
+            // https://laravel.com/docs/validation#rule-exists
             'list_id' => [
                 'uuid',
                 Rule::exists(TaskList::class, 'id')->where(function (
