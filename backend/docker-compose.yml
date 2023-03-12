@@ -1,20 +1,21 @@
-# For more information: https://laravel.com/docs/sail
-version: '3'
+# For more information: hettps://laravel.com/docs/sail
+# cf. https://docs.docker.com/compose/compose-file/#compose-file
+# cf. https://docs.docker.com/compose/compose-file/build
 services:
   laravel.test:
     build:
       context: ./docker/8.2
       dockerfile: Dockerfile
-      # ref. `Dockerfile`.`ARG`
+      # cf. `ARG` in `Dockerfile`
       args:
         WWWGROUP: '${WWWGROUP}'
         WORKDIR: '${PROJECT_DIR}'
     image: sail-8.2/app
     ports:
       - '${APP_PORT:-80}:80'
-    # ref. `start-container`, `supervisord.conf`
+    # cf. `start-container`, `supervisord.conf`
     environment:
-      LANG: 'C.UTF-8'
+      LC_ALL: 'C.UTF-8'
       WWWUSER: '${WWWUSER}'
       PROJECT_DIR: '${PROJECT_DIR}'
       BACKEND_DIR: '${BACKEND_DIR}'
