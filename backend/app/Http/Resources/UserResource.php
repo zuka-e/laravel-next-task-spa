@@ -3,22 +3,14 @@
 namespace App\Http\Resources;
 
 use App\Models\User;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\MissingValue;
 
-/**
- * It's used to transform the model and define what data should be returned.
- *
- * @see https://laravel.com/docs/eloquent-resources
- */
-class UserResource extends JsonResource
+class UserResource extends ApiResource
 {
     /**
      * `User` resource instance when loaded.
      *
      * @var \App\Models\User|\Illuminate\Http\Resources\MissingValue
-     * @see \Illuminate\Http\Resources\ConditionallyLoadsAttributes ::removeMissingValues
-     * @see https://laravel.com/docs/eloquent-resources#conditional-relationships
      */
     public $resource;
 

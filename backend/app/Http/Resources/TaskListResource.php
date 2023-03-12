@@ -3,24 +3,16 @@
 namespace App\Http\Resources;
 
 use App\Models\TaskList;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\MissingValue;
 
-/**
- * It's used to transform the model and define what data should be returned.
- *
- * @see https://laravel.com/docs/eloquent-resources
- */
-class TaskListResource extends JsonResource
+class TaskListResource extends ApiResource
 {
     /**
      * `TaskList` resource instance when loaded.
      *
      * @var \App\Models\TaskList|\Illuminate\Http\Resources\MissingValue
-     * @see \Illuminate\Http\Resources\ConditionallyLoadsAttributes ::removeMissingValues
-     * @see https://laravel.com/docs/eloquent-resources#conditional-relationships
      */
-    public $resource; // Type declaration can't be used
+    public $resource;
 
     /**
      * Create a new resource instance.

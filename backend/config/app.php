@@ -171,6 +171,7 @@ return [
         /*
          * Application Service Providers...
          */
+        App\Providers\ApiResourceServiceProvider::class,
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
         App\Providers\FortifyServiceProvider::class,
