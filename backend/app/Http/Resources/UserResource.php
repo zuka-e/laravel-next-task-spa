@@ -9,7 +9,7 @@ use Illuminate\Http\Resources\MissingValue;
 /**
  * It's used to transform the model and define what data should be returned.
  *
- * @see https://laravel.com/docs/9.x/eloquent-resources
+ * @see https://laravel.com/docs/eloquent-resources
  */
 class UserResource extends JsonResource
 {
@@ -18,14 +18,14 @@ class UserResource extends JsonResource
      *
      * @var \App\Models\User|\Illuminate\Http\Resources\MissingValue
      * @see \Illuminate\Http\Resources\ConditionallyLoadsAttributes ::removeMissingValues
-     * @see https://laravel.com/docs/9.x/eloquent-resources#conditional-relationships
+     * @see https://laravel.com/docs/eloquent-resources#conditional-relationships
      */
     public $resource;
 
     /**
      * The "data" wrapper that should be applied.
      *
-     * @see https://laravel.com/docs/9.x/eloquent-resources#data-wrapping
+     * @see https://laravel.com/docs/eloquent-resources#data-wrapping
      */
     public static $wrap = 'user';
 

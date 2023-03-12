@@ -36,7 +36,7 @@ class FortifyServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      *
      * @return void
-     * @see https://laravel.com/docs/9.x/container#binding-a-singleton
+     * @see https://laravel.com/docs/container#binding-a-singleton
      */
     public function boot()
     {
@@ -65,7 +65,7 @@ class FortifyServiceProvider extends ServiceProvider
 
         /*
         |----------------------------------------------------------------------
-        | usage: https://laravel.com/docs/9.x/routing#attaching-rate-limiters-to-routes
+        | usage: https://laravel.com/docs/routing#attaching-rate-limiters-to-routes
         | see: `vendor/laravel/fortify/routes/routes.php`
         |----------------------------------------------------------------------
         */

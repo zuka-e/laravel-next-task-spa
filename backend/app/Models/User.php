@@ -13,29 +13,29 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable;
 
-    /** @see https://laravel.com/docs/9.x/eloquent#primary-keys */
+    /** @see https://laravel.com/docs/eloquent#primary-keys */
     public $incrementing = false;
 
-    /** @see https://laravel.com/docs/9.x/eloquent#primary-keys */
+    /** @see https://laravel.com/docs/eloquent#primary-keys */
     protected $keyType = 'string';
 
-    /** @see https://laravel.com/docs/9.x/eloquent#mass-assignment */
+    /** @see https://laravel.com/docs/eloquent#mass-assignment */
     protected $fillable = ['name', 'email', 'password'];
 
-    /** @see https://laravel.com/docs/9.x/eloquent-serialization#hiding-attributes-from-json */
+    /** @see https://laravel.com/docs/eloquent-serialization#hiding-attributes-from-json */
     protected $hidden = ['password', 'remember_token'];
 
-    /** @see https://laravel.com/docs/9.x/eloquent-mutators#attribute-casting */
+    /** @see https://laravel.com/docs/eloquent-mutators#attribute-casting */
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
 
-    /** @see https://laravel.com/docs/9.x/eloquent#events-using-closures */
+    /** @see https://laravel.com/docs/eloquent#events-using-closures */
     protected static function booted()
     {
         // A default value in the migration can also be used.
         // `->default(new Expression('(UUID())'));`
-        // https://laravel.com/docs/9.x/migrations#default-expressions
+        // https://laravel.com/docs/migrations#default-expressions
         // But the created model doesn't have `id`.
         static::creating(function (self $user) {
             $user->id = (string) Str::uuid();

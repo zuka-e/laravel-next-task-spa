@@ -27,6 +27,12 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
 
+      # cf. https://github.com/shivammathur/setup-php
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+
       - name: Cache Composer packages
         id: composer-cache
         uses: actions/cache@v3

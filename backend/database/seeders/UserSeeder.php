@@ -20,7 +20,7 @@ class UserSeeder extends Seeder
     public function run()
     {
         // > Once the configuration has been cached, the .env file will not be loaded.
-        // > https://laravel.com/docs/9.x/configuration#configuration-caching
+        // > https://laravel.com/docs/configuration#configuration-caching
         //
         //`env()` returns `null`, after running `php artisan config:cache`.
         // Use `config()` instead. To remove the cache, run `php artisan config:clear`

@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 /**
- * @see https://laravel.com/docs/9.x/authorization#authorizing-resource-controllers
+ * @see https://laravel.com/docs/authorization#authorizing-resource-controllers
  */
 class TaskListPolicy
 {
@@ -27,7 +27,7 @@ class TaskListPolicy
          * is `TaskBoard`, or model binding won't work.
          *
          * @var string|object|null $taskBoard Model bound to the route
-         * @see https://laravel.com/docs/9.x/routing#implicit-binding
+         * @see https://laravel.com/docs/routing#implicit-binding
          */
         $taskBoard = request()
             ->route()

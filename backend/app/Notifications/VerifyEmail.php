@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Lang;
  * But it's a little difficult to understand why that works.
  * That is why the class is required.
  *
- * @see https://laravel.com/docs/9.x/verification#verification-email-customization
+ * @see https://laravel.com/docs/verification#verification-email-customization
  */
 class VerifyEmail extends VerifyEmailNotification
 {

@@ -21,7 +21,7 @@ class TaskBoard extends Model
         'card_index_map',
     ];
 
-    /** @see https://laravel.com/docs/8.x/eloquent-mutators#array-and-json-casting */
+    /** @see https://laravel.com/docs/eloquent-mutators#array-and-json-casting */
     protected $casts = [
         'list_index_map' => 'array',
         'card_index_map' => 'array',

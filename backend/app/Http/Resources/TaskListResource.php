@@ -9,7 +9,7 @@ use Illuminate\Http\Resources\MissingValue;
 /**
  * It's used to transform the model and define what data should be returned.
  *
- * @see https://laravel.com/docs/9.x/eloquent-resources
+ * @see https://laravel.com/docs/eloquent-resources
  */
 class TaskListResource extends JsonResource
 {
@@ -18,7 +18,7 @@ class TaskListResource extends JsonResource
      *
      * @var \App\Models\TaskList|\Illuminate\Http\Resources\MissingValue
      * @see \Illuminate\Http\Resources\ConditionallyLoadsAttributes ::removeMissingValues
-     * @see https://laravel.com/docs/9.x/eloquent-resources#conditional-relationships
+     * @see https://laravel.com/docs/eloquent-resources#conditional-relationships
      */
     public $resource; // Type declaration can't be used
 

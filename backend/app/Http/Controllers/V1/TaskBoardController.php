@@ -12,14 +12,14 @@ use App\Models\User;
 class TaskBoardController extends Controller
 {
     /**
-     * @see https://laravel.com/docs/9.x/controllers#dependency-injection-and-controllers
-     * @see https://laravel.com/docs/9.x/container
+     * @see https://laravel.com/docs/controllers#dependency-injection-and-controllers
+     * @see https://laravel.com/docs/container
      */
     public function __construct()
     {
         // > This method will attach the appropriate can middleware definitions
         // > to the resource controller's methods.
-        // > https://laravel.com/docs/9.x/authorization#authorizing-resource-controllers
+        // > https://laravel.com/docs/authorization#authorizing-resource-controllers
         /** @see \App\Policies\TaskBoardPolicy */
         $this->authorizeResource(TaskBoard::class);
     }
@@ -31,9 +31,9 @@ class TaskBoardController extends Controller
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      * @see \Illuminate\Http\Resources\Json\ResourceCollection ::toResponse
      * @see \Illuminate\Http\Resources\Json\PaginatedResourceResponse
-     * @see https://laravel.com/docs/9.x/eloquent-resources#resource-collections
-     * @see https://laravel.com/docs/9.x/eloquent-resources#pagination
-     * @see https://laravel.com/docs/9.x/pagination
+     * @see https://laravel.com/docs/eloquent-resources#resource-collections
+     * @see https://laravel.com/docs/eloquent-resources#pagination
+     * @see https://laravel.com/docs/pagination
      */
     public function index(User $user)
     {
@@ -55,7 +55,7 @@ class TaskBoardController extends Controller
      * @return \App\Http\Resources\TaskBoardResource
      * @see \Illuminate\Http\Resources\Json\JsonResource ::toResponse
      * @see \Illuminate\Http\Resources\Json\ResourceResponse ::toResponse
-     * @see https://laravel.com/docs/9.x/eloquent-resources#resource-responses
+     * @see https://laravel.com/docs/eloquent-resources#resource-responses
      */
     public function store(StoreTaskBoardRequest $request, User $user)
     {
@@ -63,7 +63,7 @@ class TaskBoardController extends Controller
          * Only validated data
          *
          * @var array<string, mixed> $validated
-         * @see https://laravel.com/docs/9.x/validation#working-with-validated-input
+         * @see https://laravel.com/docs/validation#working-with-validated-input
          */
         $validated = $request->validated();
         /**
@@ -72,7 +72,7 @@ class TaskBoardController extends Controller
          * ※`create()` fill the model with fillable attributes and save it.
          *
          * @var \App\Models\TaskBoard $created
-         * @see https://laravel.com/docs/9.x/eloquent-relationships#the-create-method
+         * @see https://laravel.com/docs/eloquent-relationships#the-create-method
          */
         $created = $user->taskBoards()->create($validated);
 
@@ -96,10 +96,10 @@ class TaskBoardController extends Controller
             $taskBoard->load([
                 // > When using this feature, you should always include
                 // > the id column and any relevant foreign key columns
-                // see: https://laravel.com/docs/9.x/eloquent-relationships#eager-loading-specific-columns
+                // see: https://laravel.com/docs/eloquent-relationships#eager-loading-specific-columns
                 'taskLists:id,user_id,task_board_id,title,description,created_at,updated_at',
                 // Nested eager loading with specific columns can be used like this.
-                // see: https://laravel.com/docs/9.x/eloquent-relationships#nested-eager-loading
+                // see: https://laravel.com/docs/eloquent-relationships#nested-eager-loading
                 'taskLists.taskCards:*',
             ]),
         );

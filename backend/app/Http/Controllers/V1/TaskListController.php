@@ -13,14 +13,14 @@ use Illuminate\Support\Facades\Auth;
 class TaskListController extends Controller
 {
     /**
-     * @see https://laravel.com/docs/9.x/controllers#dependency-injection-and-controllers
-     * @see https://laravel.com/docs/9.x/container
+     * @see https://laravel.com/docs/controllers#dependency-injection-and-controllers
+     * @see https://laravel.com/docs/container
      */
     public function __construct()
     {
         // > This method will attach the appropriate can middleware definitions
         // > to the resource controller's methods.
-        // > https://laravel.com/docs/9.x/authorization#authorizing-resource-controllers
+        // > https://laravel.com/docs/authorization#authorizing-resource-controllers
         /** @see \App\Policies\TaskListPolicy */
         $this->authorizeResource(TaskList::class);
     }
@@ -38,14 +38,14 @@ class TaskListController extends Controller
          * Only validated data
          *
          * @var array<string, mixed> $validated
-         * @see https://laravel.com/docs/9.x/validation#working-with-validated-input
+         * @see https://laravel.com/docs/validation#working-with-validated-input
          */
         $validated = $request->validated();
         /**
          * Newly created `TaskList` of the `TaskBoard`
          *
          * @var \App\Models\TaskList $created
-         * @see https://laravel.com/docs/9.x/eloquent-relationships#updating-belongs-to-relationships
+         * @see https://laravel.com/docs/eloquent-relationships#updating-belongs-to-relationships
          */
         $created = $taskBoard->taskLists()->make($validated);
         $created->user()->associate(Auth::id());

@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 /**
- * @see https://laravel.com/docs/9.x/authorization#authorizing-resource-controllers
+ * @see https://laravel.com/docs/authorization#authorizing-resource-controllers
  */
 class TaskBoardPolicy
 {
