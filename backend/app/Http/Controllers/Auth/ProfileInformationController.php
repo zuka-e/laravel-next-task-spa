@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Resources\UserResource;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use Laravel\Fortify\Http\Controllers\ProfileInformationController as Controller;
 
 /**
@@ -12,12 +12,23 @@ use Laravel\Fortify\Http\Controllers\ProfileInformationController as Controller;
 class ProfileInformationController extends Controller
 {
     /**
+     * @param \App\Http\Resources\UserResource $userResource
+     */
+    public function __construct(private UserResource $userResource)
+    {
+        //
+    }
+
+    /**
      * Display the authenticated user
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show()
+    public function show(Request $request)
     {
-        return new UserResource(Auth::user());
+        /** @var ?\App\Models\User The authenticated user if logged in */
+        $user = $request->user();
+
+        return $this->userResource->make($user);
     }
 }

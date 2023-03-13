@@ -12,10 +12,11 @@ use App\Models\User;
 class TaskBoardController extends Controller
 {
     /**
+     * @param \App\Http\Resources\TaskBoardResource $taskBoardResource
      * @see https://laravel.com/docs/controllers#dependency-injection-and-controllers
      * @see https://laravel.com/docs/container
      */
-    public function __construct()
+    public function __construct(private TaskBoardResource $taskBoardResource)
     {
         // > This method will attach the appropriate can middleware definitions
         // > to the resource controller's methods.
@@ -37,7 +38,7 @@ class TaskBoardController extends Controller
      */
     public function index(User $user)
     {
-        return TaskBoardResource::collection(
+        return $this->taskBoardResource->collection(
             $user
                 ->taskBoards()
                 ->getQuery()
@@ -76,7 +77,7 @@ class TaskBoardController extends Controller
          */
         $created = $user->taskBoards()->create($validated);
 
-        return TaskBoardResource::make($created);
+        return $this->taskBoardResource->make($created);
     }
 
     /**
@@ -92,7 +93,7 @@ class TaskBoardController extends Controller
      */
     public function show(User $user, TaskBoard $taskBoard)
     {
-        return TaskBoardResource::make(
+        return $this->taskBoardResource->make(
             $taskBoard->load([
                 // > When using this feature, you should always include
                 // > the id column and any relevant foreign key columns
@@ -120,7 +121,7 @@ class TaskBoardController extends Controller
     ) {
         $taskBoard->update($request->validated());
 
-        return TaskBoardResource::make($taskBoard);
+        return $this->taskBoardResource->make($taskBoard);
     }
 
     /**
@@ -134,6 +135,6 @@ class TaskBoardController extends Controller
     {
         $taskBoard->delete();
 
-        return TaskBoardResource::make($taskBoard);
+        return $this->taskBoardResource->make($taskBoard);
     }
 }

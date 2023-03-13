@@ -3,12 +3,18 @@
 namespace App\Http\Responses;
 
 use App\Http\Resources\UserResource;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 use Laravel\Fortify\Contracts\RegisterResponse as RegisterResponseContract;
 
 class RegisterResponse implements RegisterResponseContract
 {
+    /**
+     * @param \App\Http\Resources\UserResource $userResource
+     */
+    public function __construct(private UserResource $userResource)
+    {
+        //
+    }
+
     /**
      * Create an HTTP response that represents the object.
      *
@@ -18,9 +24,11 @@ class RegisterResponse implements RegisterResponseContract
      */
     public function toResponse($request)
     {
-        // `201`の他、Userを返却
         return $request->wantsJson()
-            ? new JsonResponse(['user' => new UserResource(Auth::user())], 201)
+            ? response()->json(
+                ['user' => $this->userResource->make($request->user())],
+                201,
+            )
             : redirect()->intended(config('fortify.home'));
     }
 }

@@ -13,10 +13,11 @@ use Illuminate\Support\Facades\Auth;
 class TaskListController extends Controller
 {
     /**
+     * @param \App\Http\Resources\TaskListResource $taskListResource
      * @see https://laravel.com/docs/controllers#dependency-injection-and-controllers
      * @see https://laravel.com/docs/container
      */
-    public function __construct()
+    public function __construct(private TaskListResource $taskListResource)
     {
         // > This method will attach the appropriate can middleware definitions
         // > to the resource controller's methods.
@@ -51,7 +52,7 @@ class TaskListController extends Controller
         $created->user()->associate(Auth::id());
         $created->save();
 
-        return TaskListResource::make($created);
+        return $this->taskListResource->make($created);
     }
 
     /**
@@ -69,7 +70,7 @@ class TaskListController extends Controller
     ) {
         $taskList->update($request->validated());
 
-        return TaskListResource::make($taskList);
+        return $this->taskListResource->make($taskList);
     }
 
     /**
@@ -83,6 +84,6 @@ class TaskListController extends Controller
     {
         $taskList->delete();
 
-        return TaskListResource::make($taskList);
+        return $this->taskListResource->make($taskList);
     }
 }

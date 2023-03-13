@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Models\TaskBoard;
 use Illuminate\Http\Resources\MissingValue;
+use Illuminate\Support\Facades\App;
 
 class TaskBoardResource extends ApiResource
 {
@@ -37,13 +38,15 @@ class TaskBoardResource extends ApiResource
         // But it's not type-safe. So access via a typed variable.
         // e.g. `$this->resource->id` instead of `this->id`
         $taskBoard = $this->resource;
+        /** @var \App\Http\Resources\TaskListResource $taskListResource */
+        $taskListResource = App::make(TaskListResource::class);
 
         return [
             'id' => $taskBoard->id,
             'userId' => $taskBoard->user_id,
             'title' => $taskBoard->title,
             'description' => $taskBoard->description,
-            'lists' => TaskListResource::collection(
+            'lists' => $taskListResource->collection(
                 $this->whenLoaded('taskLists'),
             ),
             'createdAt' => $taskBoard->created_at,
