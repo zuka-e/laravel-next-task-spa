@@ -23,6 +23,9 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
         Telescope::filter(function (IncomingEntry $entry) {
             return true;
         });
+
+        /** @see \Laravel\Telescope\Watchers\EventWatcher::shouldIgnore */
+        Telescope::recordFrameworkEvents();
     }
 
     /**
