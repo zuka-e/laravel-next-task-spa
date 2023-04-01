@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @see \Illuminate\Queue\Connectors\ConnectorInterface
+ */
 return [
     /*
     |--------------------------------------------------------------------------
@@ -63,11 +66,24 @@ return [
             'after_commit' => false,
         ],
 
+        // cf. https://laravel.com/docs/10.x/queues#redis
+        /** @see \Illuminate\Queue\Connectors\RedisConnector */
         'redis' => [
             'driver' => 'redis',
             'connection' => 'default',
+            // > Some applications may not need to ever push jobs onto multiple queues.
+            // > However useful to prioritize or segment how jobs are processed.
+            // > https://laravel.com/docs/10.x/queues#connections-vs-queues
+            // cf. https://laravel.com/docs/10.x/queues#queue-priorities
+            // ※ same as `--queue={REDIS_QUEUE}`
             'queue' => env('REDIS_QUEUE', 'default'),
+            // > The `--timeout` value should always be at least several seconds shorter
+            // > than your `retry_after` configuration value.
+            // > https://laravel.com/docs/10.x/queues#worker-timeouts
+            // cf. https://laravel.com/docs/10.x/queues#job-expiration
             'retry_after' => 90,
+            // cf. https://laravel.com/docs/10.x/queues#redis
+            // cf. https://laravel.com/docs/10.x/queues#processing-all-queued-jobs-then-exiting
             'block_for' => null,
             'after_commit' => false,
         ],
@@ -84,6 +100,7 @@ return [
     |
     */
 
+    // cf. https://laravel.com/docs/10.x/queues#storing-failed-jobs-in-dynamodb
     'failed' => [
         'driver' => env('QUEUE_FAILED_DRIVER', 'database-uuids'),
         'database' => env('DB_CONNECTION', 'mysql'),

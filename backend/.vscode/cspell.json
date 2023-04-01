@@ -5,9 +5,13 @@
   "language": "en",
   // words - list of words to be always considered correct
   "words": [
+    "backoff",
     "bref",
+    "Dispatchable",
+    "dont",
     "Dotenv",
     "Laravel",
+    "Queueable",
     "SJIS",
     "upsert"
   ]
