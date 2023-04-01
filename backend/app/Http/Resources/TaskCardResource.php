@@ -3,22 +3,16 @@
 namespace App\Http\Resources;
 
 use App\Models\TaskCard;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\MissingValue;
 
-/**
- * It's used to transform the model and define what data should be returned.
- *
- * @see https://laravel.com/docs/eloquent-resources
- */
-class TaskCardResource extends JsonResource
+class TaskCardResource extends ApiResource
 {
     /**
      * `TaskCard` resource instance when loaded.
      *
      * @var \App\Models\TaskCard|\Illuminate\Http\Resources\MissingValue
      */
-    public $resource; // Type declaration can't be used
+    public $resource;
 
     /**
      * Create a new resource instance.

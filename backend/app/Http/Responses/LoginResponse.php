@@ -3,11 +3,18 @@
 namespace App\Http\Responses;
 
 use App\Http\Resources\UserResource;
-use Illuminate\Support\Facades\Auth;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 
 class LoginResponse implements LoginResponseContract
 {
+    /**
+     * @param \App\Http\Resources\UserResource $userResource
+     */
+    public function __construct(private UserResource $userResource)
+    {
+        //
+    }
+
     /**
      * Create an HTTP response that represents the object.
      *
@@ -19,7 +26,7 @@ class LoginResponse implements LoginResponseContract
     {
         return $request->wantsJson()
             ? response()->json([
-                'user' => new UserResource(Auth::user()),
+                'user' => $this->userResource->make($request->user()),
                 'two_factor' => false,
             ])
             : redirect()->intended(config('fortify.home'));
