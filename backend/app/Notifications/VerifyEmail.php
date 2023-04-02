@@ -8,43 +8,16 @@ use Illuminate\Support\Facades\Lang;
 
 /**
  * This extends `\Illuminate\Auth\Notifications\VerifyEmail`.
- * As the document says, there is another way to customize the email verification,
- * which is implemented in `\App\Providers\AuthServiceProvider::boot()`.
- * But it's a little difficult to understand why that works.
- * That is why the class is required.
+ * According to the document, use `\App\Providers\AuthServiceProvider::boot()`
+ * to customize the email verification.
+ * But it looks a bit complicated at first. That is why this class is used.
  *
  * @see https://laravel.com/docs/verification#verification-email-customization
+ * @see https://laravel.com/docs/10.x/verification#verification-email-customization
+ * @see \Illuminate\Auth\Notifications\VerifyEmail ::toMailUsing
  */
 class VerifyEmail extends VerifyEmailNotification
 {
-    /**
-     * Build the mail representation of the notification.
-     *
-     * @param  \Illuminate\Foundation\Auth\User  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
-     */
-    public function toMail($notifiable)
-    {
-        // Because the response will always be returned as JSON
-        // by `App\Exceptions\Handler::shouldReturnJson`,
-        // the redirect to the login page is no logner works when not logged in.
-        // Therefore, that behavior should be handled in the frontend.
-        // So replace the link on the email with frontend URL (e.g. localhost:3000),
-        // while the signed URL is created from backend URL (e.g. localhost).
-        //
-        // Instead of the above way, the relative signed URL can also be used.
-        // For more infomation, see `verificationUrl()` commented out.
-
-        /** @var array<string, string> Parsed verification URL */
-        $url = parse_url($this->verificationUrl($notifiable));
-
-        /** @var string Verification URL with frontend domain */
-        $spaVericationUrl =
-            config('fortify.home') . "{$url['path']}?{$url['query']}";
-
-        return $this->buildMailMessage($spaVericationUrl);
-    }
-
     /**
      * Get the verify email notification mail message for the given URL.
      *

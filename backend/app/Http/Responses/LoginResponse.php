@@ -4,6 +4,7 @@ namespace App\Http\Responses;
 
 use App\Http\Resources\UserResource;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
+use Laravel\Fortify\Fortify;
 
 class LoginResponse implements LoginResponseContract
 {
@@ -24,6 +25,11 @@ class LoginResponse implements LoginResponseContract
      */
     public function toResponse($request)
     {
+        // Mainly for email verification.
+        if (isSameOrigin(redirect()->getIntendedUrl() ?? '', $request->url())) {
+            return redirect()->intended(Fortify::redirects('login'));
+        }
+
         return $request->wantsJson()
             ? response()->json([
                 'user' => $this->userResource->make($request->user()),

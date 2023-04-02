@@ -3,7 +3,9 @@
 namespace App\Http\Responses;
 
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Arr;
 use Laravel\Fortify\Contracts\VerifyEmailResponse as VerifyEmailResponseContract;
+use Laravel\Fortify\Fortify;
 
 class VerifyEmailResponse implements VerifyEmailResponseContract
 {
@@ -24,8 +26,17 @@ class VerifyEmailResponse implements VerifyEmailResponseContract
      */
     public function toResponse($request)
     {
-        return response()->json([
-            'user' => $this->userResource->make($request->user()),
-        ]);
+        // When the link on email is clicked,...
+        return $request->wantsJson()
+            ? // with not logged in (and then logged in).
+            response()->json([
+                'user' => $this->userResource->make($request->user()),
+            ])
+            : // with logged in.
+            redirect(
+                Fortify::redirects('email-verification') .
+                    '?' .
+                    Arr::query(['verified' => true]),
+            );
     }
 }
