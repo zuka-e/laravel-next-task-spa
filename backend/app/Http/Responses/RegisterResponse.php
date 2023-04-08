@@ -5,6 +5,11 @@ namespace App\Http\Responses;
 use App\Http\Resources\UserResource;
 use Laravel\Fortify\Contracts\RegisterResponse as RegisterResponseContract;
 
+/**
+ * @see \App\Http\Controllers\Auth\RegisteredUserController::store
+ * @see \Laravel\Fortify\Http\Responses\RegisterResponse
+ * @see \App\Providers\FortifyServiceProvider
+ */
 class RegisterResponse implements RegisterResponseContract
 {
     /**
@@ -20,15 +25,24 @@ class RegisterResponse implements RegisterResponseContract
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Symfony\Component\HttpFoundation\Response
-     * @see \Laravel\Fortify\Http\Responses\RegisterResponse
      */
     public function toResponse($request)
     {
+        $flash = [
+            'severity' => 'success',
+            'message' => __('Registration has been completed.'),
+        ];
+
         return $request->wantsJson()
             ? response()->json(
-                ['user' => $this->userResource->make($request->user())],
+                [
+                    ...$flash,
+                    'user' => $this->userResource->make($request->user()),
+                ],
                 201,
             )
-            : redirect()->intended(config('fortify.home'));
+            : redirect()
+                ->intended(config('fortify.home'))
+                ->with($flash);
     }
 }

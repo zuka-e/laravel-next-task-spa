@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Laravel\Fortify\Http\Controllers\ProfileInformationController as Controller;
 
 /**
- * It extends \Laravel\Fortify\Http\Controllers\ProfileInformationController
+ * It extends `\Laravel\Fortify\Http\Controllers\ProfileInformationController`
  */
 class ProfileInformationController extends Controller
 {

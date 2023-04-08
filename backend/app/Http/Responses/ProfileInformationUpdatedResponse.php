@@ -3,15 +3,16 @@
 namespace App\Http\Responses;
 
 use App\Http\Resources\UserResource;
-use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
+use Laravel\Fortify\Contracts\ProfileInformationUpdatedResponse as ProfileInformationUpdatedResponseContract;
 use Laravel\Fortify\Fortify;
 
 /**
- * @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::store
- * @see \Laravel\Fortify\Http\Responses\LoginResponse
+ * @see \App\Http\Controllers\Auth\ProfileInformationController::update
+ * @see \Laravel\Fortify\Http\Responses\ProfileInformationUpdatedResponse
  * @see \App\Providers\FortifyServiceProvider
  */
-class LoginResponse implements LoginResponseContract
+class ProfileInformationUpdatedResponse implements
+    ProfileInformationUpdatedResponseContract
 {
     /**
      * @param \App\Http\Resources\UserResource $userResource
@@ -31,24 +32,19 @@ class LoginResponse implements LoginResponseContract
     {
         $flash = [
             'severity' => 'success',
-            'message' => __('Logged in.'),
+            'message' => __('The :resource was updated!', [
+                'resource' => __('Profile Information'),
+            ]),
         ];
-
-        // Mainly for email verification.
-        if (isSameOrigin(redirect()->getIntendedUrl() ?? '', $request->url())) {
-            return redirect()
-                ->intended()
-                ->with($flash);
-        }
 
         return $request->wantsJson()
             ? response()->json([
                 ...$flash,
                 'user' => $this->userResource->make($request->user()),
-                'two_factor' => false,
             ])
-            : redirect()
-                ->intended(Fortify::redirects('login'))
-                ->with($flash);
+            : back()->with([
+                ...$flash,
+                'status' => Fortify::PROFILE_INFORMATION_UPDATED,
+            ]);
     }
 }
