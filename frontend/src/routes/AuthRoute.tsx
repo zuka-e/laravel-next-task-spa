@@ -4,11 +4,8 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-import store from '@/store';
-import { clearHttpStatus, setFlash } from '@/store/slices';
-import { fetchAuthUser } from '@/store/thunks/auth';
-import { isReady } from '@/utils/auth';
-import { useAppDispatch, useAppSelector } from '@/utils/hooks';
+import { useAppDispatch, useAppSelector, useAuth } from '@/utils/hooks';
+import { setFlash } from '@/store/slices';
 import { Loading } from '@/layouts';
 
 export type AuthPage = {
@@ -19,38 +16,33 @@ type AuthRouteProps = {
   children: React.ReactNode;
 };
 
+/**
+ * Redirect to the login form unless authenticated.
+ */
 const AuthRoute = ({ children }: AuthRouteProps) => {
   const router = useRouter();
   const httpStatus = useAppSelector((state) => state.app.httpStatus);
-  const signedIn = useAppSelector((state) => state.auth.signedIn);
+  const { auth, guest } = useAuth();
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!isReady()) {
-      dispatch(fetchAuthUser());
-      return;
+    if (httpStatus && [401, 419].includes(httpStatus)) {
+      sessionStorage.setItem('previousUrl', router.asPath);
+      dispatch(setFlash({ type: 'error', message: 'ログインしてください。' }));
     }
 
-    if (!signedIn) router.replace('/login');
-  }, [dispatch, signedIn, router]);
-
-  useEffect(() => {
-    if (httpStatus !== 401) return;
-
-    dispatch({ type: fetchAuthUser.rejected.type });
-    dispatch(setFlash({ type: 'error', message: 'ログインしてください。' }));
-    sessionStorage.setItem('previousUrl', router.asPath);
-  }, [dispatch, httpStatus, router.asPath]);
-
-  useEffect(() => {
-    return function cleanup() {
-      if (store.getState().app.httpStatus === 401) dispatch(clearHttpStatus());
-    };
-  }, [dispatch]);
+    if (guest) {
+      router.replace('/login');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [guest]);
 
   // Until initialized or the redirect completed.
-  if (!isReady() || !signedIn) return <Loading open={true} />;
-  else return <>{children}</>;
+  if (!auth) {
+    return <Loading open={true} />;
+  }
+
+  return <>{children}</>;
 };
 
 export default AuthRoute;

@@ -1,12 +1,11 @@
 // cf. file://./AuthRoute.tsx
 
-import { Loading } from '@/layouts';
-import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
-import { fetchAuthUser } from '@/store/thunks/auth';
-import { isAfterRegistration, isReady } from '@/utils/auth';
-import { useAppDispatch, useAppSelector } from '@/utils/hooks';
+import { useAuth } from '@/utils/hooks';
+import { isAfterRegistration } from '@/utils/auth';
+import { Loading } from '@/layouts';
 
 export type GuestPage = {
   guest: true;
@@ -16,31 +15,32 @@ type GuestRouteProps = {
   children: React.ReactNode;
 };
 
+/**
+ * Redirect if authenticated.
+ */
 const GuestRoute = ({ children }: GuestRouteProps) => {
   const router = useRouter();
-  const signedIn = useAppSelector((state) => state.auth.signedIn);
-  const dispatch = useAppDispatch();
+  const { auth, guest } = useAuth();
 
   useEffect(() => {
-    if (!isReady()) dispatch(fetchAuthUser());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (isAfterRegistration()) {
-      router.replace('/email-verification');
-      return;
+    if (auth) {
+      if (isAfterRegistration()) {
+        router.replace('/email-verification');
+      } else {
+        const previousUrl = sessionStorage.getItem('previousUrl');
+        sessionStorage.removeItem('previousUrl');
+        router.replace(previousUrl || '/');
+      }
     }
-
-    if (signedIn) {
-      const previousUrl = sessionStorage.getItem('previousUrl');
-      sessionStorage.removeItem('previousUrl');
-      router.replace(previousUrl || '/');
-    }
-  }, [router, signedIn]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth]);
 
   // Until initialized or the redirect completed.
-  if (!isReady() || signedIn) return <Loading open={true} />;
-  else return <>{children}</>;
+  if (!guest) {
+    return <Loading open={true} />;
+  }
+
+  return <>{children}</>;
 };
 
 export default GuestRoute;
