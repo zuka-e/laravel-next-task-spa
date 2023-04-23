@@ -1,8 +1,8 @@
 // cf. https://nextjs.org/docs/advanced-features/custom-error-page
 
 import Error from 'next/error';
-import BadRequest from '@/pages/400';
 
+import BadRequest from '@/pages/400';
 import Forbidden from '@/pages/403';
 import NotFound from '@/pages/404';
 import PageExpired from '@/pages/419';

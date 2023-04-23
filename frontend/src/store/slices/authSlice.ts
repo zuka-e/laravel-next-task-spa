@@ -37,6 +37,11 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState: initialAuthState,
   reducers: {
+    flushAllStates(state) {
+      // ※ It's supposed to remove all state beforehand in `rootReducer()`
+      state.signedIn = false;
+      state.user = null;
+    },
     setFlash(state, action: PayloadAction<FlashNotificationProps>) {
       const { type, message } = action.payload;
       state.flash.push({ type, message });
@@ -222,5 +227,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setFlash, removeEmailVerificationPage, signIn } =
+export const { flushAllStates, setFlash, removeEmailVerificationPage, signIn } =
   authSlice.actions;

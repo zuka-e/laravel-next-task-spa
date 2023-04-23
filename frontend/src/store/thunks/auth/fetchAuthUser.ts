@@ -16,9 +16,7 @@ export const fetchAuthUser = createAsyncThunk<
   AsyncThunkConfig
 >('auth/fetchAuthUser', async (_, thunkApi) => {
   try {
-    const response = await apiClient({ intercepted: false }).get(
-      USER_INFO_PATH
-    );
+    const response = await apiClient().get(USER_INFO_PATH);
     return response?.data;
   } catch (error) {
     return thunkApi.rejectWithValue(makeRejectValue(error));

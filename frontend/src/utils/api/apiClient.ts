@@ -3,6 +3,8 @@ import axios from 'axios';
 import { API_HOST, API_ROUTE } from '@/config/api';
 import { DocumentBase } from '@/models';
 import { setHttpStatus } from '@/store/slices/appSlice';
+import { flushAllStates } from '@/store/slices/authSlice';
+import { isSignedIn } from '@/utils/auth';
 
 /**
  * Laravelからデータの配列と共にページネーションに関する情報及びリンクをリクエストする際のレスポンスタイプ
@@ -38,20 +40,16 @@ export type PaginationResponse<T extends DocumentBase> = {
 
 type ApiClientOption = {
   apiRoute?: boolean;
-  intercepted?: boolean;
 };
 
 export const apiClient = (options?: ApiClientOption) => {
   /** @returns `true` even if the param is `undefined` (default) */
   const isNonApiRoute = () => options?.apiRoute === false;
-  const isNotIntercepted = () => options?.intercepted === false;
 
   const apiClient = axios.create({
     baseURL: isNonApiRoute() ? API_HOST : API_ROUTE,
     withCredentials: true,
   });
-
-  if (isNotIntercepted()) return apiClient;
 
   apiClient.interceptors.response.use(
     (response) => response, // response = 2xx の場合は素通り
@@ -62,6 +60,10 @@ export const apiClient = (options?: ApiClientOption) => {
           : await import('@/store');
 
       if (axios.isAxiosError(error) && error.response) {
+        if (isSignedIn() && [401, 419].includes(error.response.status)) {
+          store.dispatch(flushAllStates());
+        }
+
         store.dispatch(setHttpStatus(error.response.status));
       }
 

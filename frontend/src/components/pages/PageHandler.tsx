@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import type { AppProps } from 'next/app';
 
-import store from '@/store';
 import { clearHttpStatus } from '@/store/slices';
 import { useAppDispatch, useAppSelector } from '@/utils/hooks';
 import { Route } from '@/routes';
@@ -24,8 +23,7 @@ const PageHandler = (props: Pick<AppProps, 'Component' | 'pageProps'>) => {
 
   useEffect(() => {
     return function cleanup() {
-      // Use `store` to prevent duplicate running (cf. `useSelector`)
-      if (store.getState().app.httpStatus) dispatch(clearHttpStatus());
+      dispatch(clearHttpStatus());
     };
   }, [dispatch, router.asPath]);
 
