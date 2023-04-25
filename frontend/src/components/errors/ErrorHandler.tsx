@@ -2,6 +2,7 @@
 
 import Error from 'next/error';
 
+import { useAppSelector } from '@/utils/hooks';
 import BadRequest from '@/pages/400';
 import Forbidden from '@/pages/403';
 import NotFound from '@/pages/404';
@@ -11,10 +12,25 @@ import InternalServerError from '@/pages/500';
 import ServiceUnavailable from '@/pages/503';
 
 type ErrorHandlerProps = {
-  httpStatus: number;
+  children: React.ReactNode;
 };
 
-const ErrorHandler = ({ httpStatus }: ErrorHandlerProps) => {
+const isHttpError = (httpStatus: number): boolean => {
+  return 400 <= httpStatus && httpStatus < 600;
+};
+
+const isRenderableError = (httpStatus: number): boolean => {
+  const excluded = [401, 422];
+  return isHttpError(httpStatus) && !excluded.includes(httpStatus);
+};
+
+const ErrorHandler = ({ children }: ErrorHandlerProps) => {
+  const httpStatus = useAppSelector((state) => state.app.httpStatus);
+
+  if (!httpStatus || !isRenderableError(httpStatus)) {
+    return <>{children}</>;
+  }
+
   switch (httpStatus) {
     case 400:
       return <BadRequest />;
