@@ -28,7 +28,6 @@ const AuthRoute = ({ children }: AuthRouteProps) => {
   useEffect(() => {
     if (guest) {
       if (httpStatus && [401, 419].includes(httpStatus)) {
-        sessionStorage.setItem('previousUrl', router.asPath);
         dispatch(
           setFlash({ type: 'error', message: 'ログインしてください。' })
         );
