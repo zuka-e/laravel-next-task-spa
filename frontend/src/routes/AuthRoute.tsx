@@ -26,12 +26,14 @@ const AuthRoute = ({ children }: AuthRouteProps) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (httpStatus && [401, 419].includes(httpStatus)) {
-      sessionStorage.setItem('previousUrl', router.asPath);
-      dispatch(setFlash({ type: 'error', message: 'ログインしてください。' }));
-    }
-
     if (guest) {
+      if (httpStatus && [401, 419].includes(httpStatus)) {
+        sessionStorage.setItem('previousUrl', router.asPath);
+        dispatch(
+          setFlash({ type: 'error', message: 'ログインしてください。' })
+        );
+      }
+
       router.replace('/login');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
