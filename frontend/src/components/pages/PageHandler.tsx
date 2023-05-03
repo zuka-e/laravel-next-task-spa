@@ -13,7 +13,6 @@ const PageHandler = (props: Pick<AppProps, 'Component' | 'pageProps'>) => {
 
   useEffect(() => {
     return function cleanup() {
-      sessionStorage.setItem('previousUrl', router.asPath);
       dispatch(clearHttpStatus());
     };
   }, [dispatch, router.asPath]);
