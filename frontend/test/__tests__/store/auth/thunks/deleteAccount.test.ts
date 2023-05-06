@@ -67,7 +67,7 @@ describe('Thunk for an account delete', () => {
       expect(isSignedIn(store)).toBe(false);
       expect(getUserState(store)).toBeNull();
       expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'warning',
+        severity: 'warning',
         message: 'アカウントは削除されました',
       });
       const fetchAuthUserResponse = await store.dispatch(fetchAuthUser());

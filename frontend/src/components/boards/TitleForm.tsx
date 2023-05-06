@@ -54,7 +54,7 @@ const TitleForm = (props: FormProps) => {
     if (thunk.rejected.match(response)) {
       const errorMessage =
         response.payload?.error.message || 'Unexpected Error';
-      dispatch(setFlash({ type: 'error', message: errorMessage }));
+      dispatch(setFlash({ severity: 'error', message: errorMessage }));
     } else handleClose();
   };
 

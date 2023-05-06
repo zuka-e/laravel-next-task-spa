@@ -72,7 +72,7 @@ describe('Thunk updating the user profile', () => {
       expect(getUserState(store)?.name).toBe(newName);
       expect(getUserState(store)?.email).toBe(currentUser.email);
       expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'success',
+        severity: 'success',
         message: 'ユーザー情報を更新しました',
       });
     });
@@ -89,7 +89,7 @@ describe('Thunk updating the user profile', () => {
       expect(updateProfile.fulfilled.match(response)).toBe(true);
       expect(isLoading(store)).toBe(false);
       expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'info',
+        severity: 'info',
         message: '認証用メールを送信しました',
       });
     });

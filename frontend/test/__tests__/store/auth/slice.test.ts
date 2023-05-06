@@ -14,9 +14,12 @@ describe('authSlice reducers', () => {
   });
 
   describe('setFlash', () => {
-    const emptyNewFlash: FlashNotificationProps = { type: 'info', message: '' };
+    const emptyNewFlash: FlashNotificationProps = {
+      severity: 'info',
+      message: '',
+    };
     const hugeNewFlash: FlashNotificationProps = {
-      type: 'error',
+      severity: 'error',
       message: '!@#$%^&*()_+[]\\{}|'.repeat(100),
     };
 

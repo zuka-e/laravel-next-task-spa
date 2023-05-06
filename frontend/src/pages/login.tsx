@@ -76,7 +76,9 @@ const SignIn = () => {
 
   useEffect(() => {
     if (route.queryParams['redirect_uri']?.toString()) {
-      dispatch(setFlash({ type: 'error', message: 'ログインしてください。' }));
+      dispatch(
+        setFlash({ severity: 'error', message: 'ログインしてください。' })
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

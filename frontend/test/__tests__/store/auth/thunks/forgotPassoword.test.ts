@@ -37,7 +37,7 @@ describe('Thunk for a forgot password', () => {
 
       expect(isLoading(store)).toBe(false);
       expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'success',
+        severity: 'success',
         message: 'パスワード再設定用のメールを送信しました',
       });
     });

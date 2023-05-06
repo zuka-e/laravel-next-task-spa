@@ -17,7 +17,7 @@ import {
 } from '@/store/thunks/auth';
 
 export type FlashNotificationProps = {
-  type: AlertColor;
+  severity: AlertColor;
   message: string;
 };
 
@@ -43,8 +43,7 @@ export const authSlice = createSlice({
       state.user = null;
     },
     setFlash(state, action: PayloadAction<FlashNotificationProps>) {
-      const { type, message } = action.payload;
-      state.flash.push({ type, message });
+      state.flash.push({ ...action.payload });
     },
     removeEmailVerificationPage(state) {
       state.afterRegistration = false;
@@ -63,7 +62,7 @@ export const authSlice = createSlice({
       state.signedIn = true;
       state.loading = false;
       state.flash.push({
-        type: 'success',
+        severity: 'success',
         message: 'ユーザー登録が完了しました',
       });
     });
@@ -91,13 +90,13 @@ export const authSlice = createSlice({
       state.loading = false;
       if (action.payload === 202) {
         state.flash.push({
-          type: 'success',
+          severity: 'success',
           message: '認証用メールを送信しました',
         });
       } else if (action.payload === 204) {
         state.afterRegistration = false;
         state.flash.push({
-          type: 'error',
+          severity: 'error',
           message: '既に認証済みです',
         });
       }
@@ -111,11 +110,11 @@ export const authSlice = createSlice({
     builder.addCase(verifyEmail.fulfilled, (state, action) => {
       state.loading = false;
       state.user = action.payload.user;
-      state.flash.push({ type: 'success', message: '認証に成功しました' });
+      state.flash.push({ severity: 'success', message: '認証に成功しました' });
     });
     builder.addCase(verifyEmail.rejected, (state) => {
       state.loading = false;
-      state.flash.push({ type: 'error', message: '認証に失敗しました' });
+      state.flash.push({ severity: 'error', message: '認証に失敗しました' });
     });
     builder.addCase(signInWithEmail.pending, (state, _action) => {
       state.loading = true;
@@ -124,7 +123,7 @@ export const authSlice = createSlice({
       state.user = action.payload.user;
       state.signedIn = true;
       state.loading = false;
-      state.flash.push({ type: 'info', message: 'ログインしました' });
+      state.flash.push({ severity: 'info', message: 'ログインしました' });
     });
     builder.addCase(signInWithEmail.rejected, (state, _action) => {
       state.signedIn = false;
@@ -143,13 +142,13 @@ export const authSlice = createSlice({
         state.user.email = action.payload.email;
         state.user.emailVerifiedAt = null;
         state.flash.push({
-          type: 'info',
+          severity: 'info',
           message: '認証用メールを送信しました',
         });
       } else {
         state.user.email = action.payload.email;
         state.flash.push({
-          type: 'success',
+          severity: 'success',
           message: 'ユーザー情報を更新しました',
         });
       }
@@ -162,7 +161,7 @@ export const authSlice = createSlice({
     });
     builder.addCase(updatePassword.fulfilled, (state, _action) => {
       state.flash.push({
-        type: 'success',
+        severity: 'success',
         message: 'パスワードを変更しました',
       });
       state.loading = false;
@@ -176,7 +175,7 @@ export const authSlice = createSlice({
     builder.addCase(forgotPassword.fulfilled, (state, _action) => {
       state.loading = false;
       state.flash.push({
-        type: 'success',
+        severity: 'success',
         message: 'パスワード再設定用のメールを送信しました',
       });
     });
@@ -189,7 +188,7 @@ export const authSlice = createSlice({
     builder.addCase(resetPassword.fulfilled, (state, _action) => {
       state.loading = false;
       state.flash.push({
-        type: 'success',
+        severity: 'success',
         message: 'パスワードを再設定しました',
       });
     });
@@ -203,7 +202,7 @@ export const authSlice = createSlice({
       state.user = null;
       state.signedIn = false;
       state.loading = false;
-      state.flash.push({ type: 'success', message: 'ログアウトしました' });
+      state.flash.push({ severity: 'success', message: 'ログアウトしました' });
     });
     builder.addCase(signOut.rejected, (state, _action) => {
       state.signedIn = false;
@@ -217,7 +216,7 @@ export const authSlice = createSlice({
       state.signedIn = false;
       state.loading = false;
       state.flash.push({
-        type: 'warning',
+        severity: 'warning',
         message: 'アカウントは削除されました',
       });
     });

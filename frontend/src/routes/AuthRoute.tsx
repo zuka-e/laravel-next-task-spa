@@ -29,7 +29,7 @@ const AuthRoute = ({ children }: AuthRouteProps) => {
     if (guest) {
       if (httpStatus && [401, 419].includes(httpStatus)) {
         dispatch(
-          setFlash({ type: 'error', message: 'ログインしてください。' })
+          setFlash({ severity: 'error', message: 'ログインしてください。' })
         );
       }
 

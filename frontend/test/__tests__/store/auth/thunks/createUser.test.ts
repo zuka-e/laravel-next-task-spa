@@ -53,7 +53,7 @@ describe('Thunk for an user registration', () => {
       expect(isAfterRegistration(store)).toBe(true);
       expect(isSignedIn(store)).toBe(true);
       expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'success',
+        severity: 'success',
         message: 'ユーザー登録が完了しました',
       });
     });

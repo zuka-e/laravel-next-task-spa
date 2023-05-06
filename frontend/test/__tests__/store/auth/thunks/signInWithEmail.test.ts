@@ -46,7 +46,7 @@ describe('Thunk authenticating user with email', () => {
       expect(response.payload?.user).toEqual(getUserState(store));
       expect(isSignedIn(store)).toBe(true);
       expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'info',
+        severity: 'info',
         message: 'ログインしました',
       });
     });

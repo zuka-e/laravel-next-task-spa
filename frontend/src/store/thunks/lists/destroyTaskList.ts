@@ -24,7 +24,7 @@ export const destroyTaskList = createAsyncThunk<
 
     thunkApi.dispatch(
       setFlash({
-        type: 'warning',
+        severity: 'warning',
         message: `${response.data.data.title} は削除されました`,
       })
     );

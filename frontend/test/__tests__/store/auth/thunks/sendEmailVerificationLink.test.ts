@@ -67,7 +67,7 @@ describe('Thunk requesting the Email verification link', () => {
       expect(isLoading(store)).toBe(false);
       expect(isAfterRegistration(store)).toBe(false);
       expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'error',
+        severity: 'error',
         message: '既に認証済みです',
       });
     });
@@ -85,7 +85,7 @@ describe('Thunk requesting the Email verification link', () => {
 
       expect(isLoading(store)).toBe(false);
       expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'success',
+        severity: 'success',
         message: '認証用メールを送信しました',
       });
     });

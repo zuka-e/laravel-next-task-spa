@@ -31,7 +31,7 @@ const FlashNotification = () => {
       onClose={handleClose}
       aria-label="flash"
     >
-      <Alert onClose={handleClose} severity={lastFlash.type} elevation={12}>
+      <Alert onClose={handleClose} severity={lastFlash.severity} elevation={12}>
         {lastFlash.message}
       </Alert>
     </Snackbar>

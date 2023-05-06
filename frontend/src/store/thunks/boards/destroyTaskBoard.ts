@@ -25,7 +25,7 @@ export const destroyTaskBoard = createAsyncThunk<
     const response = await apiClient().delete(path);
     thunkApi.dispatch(
       setFlash({
-        type: 'warning',
+        severity: 'warning',
         message: `${payload.title}は削除されました`,
       })
     );
