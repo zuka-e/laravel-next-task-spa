@@ -75,7 +75,10 @@ const SignIn = () => {
   } = useForm<FormData>({ mode: 'onBlur', resolver: yupResolver(schema) });
 
   useEffect(() => {
-    if (route.queryParams['redirect_uri']?.toString()) {
+    const redirectUri = route.queryParams['redirect_uri']?.toString();
+
+    if (redirectUri) {
+      sessionStorage.setItem('redirectUri', redirectUri);
       dispatch(
         setFlash({ severity: 'error', message: 'ログインしてください。' })
       );

@@ -108,13 +108,17 @@ export const authSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(verifyEmail.fulfilled, (state, action) => {
+      const { user, ...flash } = action.payload;
       state.loading = false;
-      state.user = action.payload.user;
-      state.flash.push({ severity: 'success', message: '認証に成功しました' });
+      state.user = user;
+      state.flash.push({ ...flash });
     });
-    builder.addCase(verifyEmail.rejected, (state) => {
+    builder.addCase(verifyEmail.rejected, (state, action) => {
       state.loading = false;
-      state.flash.push({ severity: 'error', message: '認証に失敗しました' });
+      state.flash.push({
+        severity: 'error',
+        message: action.payload?.error.message || 'Unexpected Error.',
+      });
     });
     builder.addCase(signInWithEmail.pending, (state, _action) => {
       state.loading = true;
