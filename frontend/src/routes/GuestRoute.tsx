@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 import { useAuth } from '@/utils/hooks';
-import { isAfterRegistration } from '@/utils/auth';
 import { Loading } from '@/layouts';
 
 export type GuestPage = {
@@ -24,13 +23,9 @@ const GuestRoute = ({ children }: GuestRouteProps) => {
 
   useEffect(() => {
     if (auth) {
-      if (isAfterRegistration()) {
-        router.replace('/email-verification');
-      } else {
-        const previousUrl = sessionStorage.getItem('previousUrl');
-        sessionStorage.removeItem('previousUrl');
-        router.replace(previousUrl || '/');
-      }
+      const previousUrl = sessionStorage.getItem('previousUrl');
+      sessionStorage.removeItem('previousUrl');
+      router.replace(previousUrl || '/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth]);

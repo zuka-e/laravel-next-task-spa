@@ -3,8 +3,10 @@ import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 
 import { verifyEmail } from '@/store/thunks/auth';
-import { useAppDispatch, useRoute } from '@/utils/hooks';
+import { useAppDispatch, useAppSelector, useRoute } from '@/utils/hooks';
 import { AuthRoute, GuestRoute } from '@/routes';
+import { clearIntendedUrl } from '@/store/slices';
+import { Loading } from '@/layouts';
 
 const Route = (
   props: Pick<AppProps<Record<string, unknown>>, 'Component' | 'pageProps'>
@@ -12,10 +14,16 @@ const Route = (
   const { Component, pageProps } = props;
   const router = useRouter();
   const route = useRoute();
+  const intendedUrl = useAppSelector((state) => state.app.intendedUrl);
   const dispatch = useAppDispatch();
 
   useEffect((): void => {
     (async (): Promise<void> => {
+      if (intendedUrl) {
+        await router.push(intendedUrl);
+        return;
+      }
+
       if (route.queryParams['verified']?.toString()) {
         await router.replace('/email-verification');
         return;
@@ -34,9 +42,15 @@ const Route = (
 
   useEffect((): (() => void) => {
     return function cleanup(): void {
+      dispatch(clearIntendedUrl());
       sessionStorage.setItem('previousUrl', router.asPath);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.asPath]);
+
+  if (intendedUrl) {
+    return <Loading open={true} />;
+  }
 
   return (
     <>

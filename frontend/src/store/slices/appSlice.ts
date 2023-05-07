@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type AppState = {
   httpStatus?: number;
+  intendedUrl?: string;
 };
 
 const initialState: Partial<AppState> = {};
@@ -16,7 +17,18 @@ export const appSlice = createSlice({
     clearHttpStatus(state) {
       state.httpStatus = undefined;
     },
+    setIntendedUrl(state, action: PayloadAction<AppState['intendedUrl']>) {
+      state.intendedUrl = action.payload;
+    },
+    clearIntendedUrl(state) {
+      state.intendedUrl = undefined;
+    },
   },
 });
 
-export const { setHttpStatus, clearHttpStatus } = appSlice.actions;
+export const {
+  setHttpStatus,
+  clearHttpStatus,
+  setIntendedUrl,
+  clearIntendedUrl,
+} = appSlice.actions;

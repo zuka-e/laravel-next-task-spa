@@ -23,7 +23,6 @@ export type FlashNotificationProps = {
 
 export type AuthState = {
   user: User | null;
-  afterRegistration: boolean;
   signedIn: boolean;
   loading: boolean;
   flash: FlashNotificationProps[];
@@ -45,9 +44,6 @@ export const authSlice = createSlice({
     setFlash(state, action: PayloadAction<FlashNotificationProps>) {
       state.flash.push({ ...action.payload });
     },
-    removeEmailVerificationPage(state) {
-      state.afterRegistration = false;
-    },
     signIn(state) {
       state.signedIn = true;
     },
@@ -58,7 +54,6 @@ export const authSlice = createSlice({
     });
     builder.addCase(createUser.fulfilled, (state, action) => {
       state.user = action.payload.user;
-      state.afterRegistration = true;
       state.signedIn = true;
       state.loading = false;
       state.flash.push({
@@ -94,7 +89,6 @@ export const authSlice = createSlice({
           message: '認証用メールを送信しました',
         });
       } else if (action.payload === 204) {
-        state.afterRegistration = false;
         state.flash.push({
           severity: 'error',
           message: '既に認証済みです',
@@ -230,5 +224,4 @@ export const authSlice = createSlice({
   },
 });
 
-export const { flushAllStates, setFlash, removeEmailVerificationPage, signIn } =
-  authSlice.actions;
+export const { flushAllStates, setFlash, signIn } = authSlice.actions;

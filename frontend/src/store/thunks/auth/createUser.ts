@@ -6,6 +6,7 @@ import { User } from '@/models/User';
 import { apiClient } from '@/utils/api';
 import { AsyncThunkConfig } from '@/store/thunks/config';
 import { makeRejectValue } from '@/store/thunks/utils';
+import { setIntendedUrl } from '@/store/slices';
 
 export type SignUpRequest = {
   email: string;
@@ -29,6 +30,9 @@ export const createUser = createAsyncThunk<
       { name: payload.email, ...payload },
       { validateStatus: (status) => status === 201 } // `201`以外 error
     );
+
+    thunkApi.dispatch(setIntendedUrl('/email-verification'));
+
     return response?.data as SignUpResponse;
   } catch (error) {
     // `Slice`の`extraReducers`の`rejected`を呼び出す

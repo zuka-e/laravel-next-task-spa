@@ -6,7 +6,6 @@ import { initializeStore, store } from '@test/store';
 import {
   getFlashState,
   getUserState,
-  isAfterRegistration,
   isSignedIn,
 } from '@test/utils/store/auth';
 
@@ -36,7 +35,6 @@ describe('Thunk for an user registration', () => {
   describe('Fulfilled', () => {
     it('should create a new user', async () => {
       expect(getUserState(store)).toBeUndefined();
-      expect(isAfterRegistration(store)).toBeUndefined();
       expect(isSignedIn(store)).toBeUndefined();
 
       const newUser: SignUpRequest = {
@@ -50,7 +48,6 @@ describe('Thunk for an user registration', () => {
       if (!createUser.fulfilled.match(response)) return; // 以下`fulfilled`
       expect(response.payload.user.name).toBe(newUser.email);
       expect(getUserState(store)?.name).toBe(newUser.email);
-      expect(isAfterRegistration(store)).toBe(true);
       expect(isSignedIn(store)).toBe(true);
       expect(getFlashState(store).slice(-1)[0]).toEqual({
         severity: 'success',

@@ -5,9 +5,6 @@ import { RootState } from '@/store';
 export const getUserState = (store: EnhancedStore<RootState>) =>
   store.getState().auth.user;
 
-export const isAfterRegistration = (store: EnhancedStore<RootState>) =>
-  store.getState().auth.afterRegistration;
-
 export const isSignedIn = (store: EnhancedStore<RootState>) =>
   store.getState().auth.signedIn;
 
