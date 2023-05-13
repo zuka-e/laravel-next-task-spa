@@ -1,16 +1,33 @@
+// cf. https://mui.com/material-ui/react-snackbar/#consecutive-snackbars
+
 import { useEffect, useState } from 'react';
 
 import { Snackbar, Alert } from '@mui/material';
 
-import { useDeepEqualSelector } from '@/utils/hooks';
+import { shiftFlash } from '@/store/slices';
+import { useAppDispatch, useDeepEqualSelector } from '@/utils/hooks';
 
 const FlashNotification = () => {
+  const flashes = useDeepEqualSelector((state) => state.auth.flash);
   const [open, setOpen] = useState(false);
-  const flash = useDeepEqualSelector((state) => state.auth.flash);
-  const lastFlash = flash.slice(-1)[0];
+  const [currentFlash, setCurrentFlash] = useState<
+    typeof flashes[0] | undefined
+  >();
+  const dispatch = useAppDispatch();
 
-  // `flash`(store) の変更を監視
-  useEffect(() => setOpen(true), [flash]);
+  useEffect(() => {
+    const newFlash = flashes.at(-1);
+
+    if (newFlash && !currentFlash) {
+      // Set a new snack when we don't have an active one
+      setCurrentFlash({ ...newFlash });
+      dispatch(shiftFlash());
+      setOpen(true);
+    } else if (newFlash && currentFlash && open) {
+      // Close an active snack when a new one is added
+      setOpen(false);
+    }
+  }, [flashes, currentFlash, open, dispatch]);
 
   const handleClose = (
     _event?: React.SyntheticEvent | Event,
@@ -20,19 +37,29 @@ const FlashNotification = () => {
     else setOpen(false);
   };
 
-  // `flash`が初期値の場合表示しない
-  if (flash.length === 0) return <></>;
+  const handleExited = () => {
+    setCurrentFlash(undefined);
+  };
+
+  if (!currentFlash?.message) {
+    return <></>;
+  }
 
   return (
     <Snackbar
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       open={open}
       autoHideDuration={5000}
       onClose={handleClose}
-      aria-label="flash"
+      TransitionProps={{ onExited: handleExited }}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      aria-label="flashes"
     >
-      <Alert onClose={handleClose} severity={lastFlash.severity} elevation={12}>
-        {lastFlash.message}
+      <Alert
+        onClose={handleClose}
+        severity={currentFlash.severity}
+        elevation={12}
+      >
+        {currentFlash.message}
       </Alert>
     </Snackbar>
   );

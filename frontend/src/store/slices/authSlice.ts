@@ -35,6 +35,7 @@ export const initialAuthState = {
 export const authSlice = createSlice({
   name: 'auth',
   initialState: initialAuthState,
+  // cf. https://redux-toolkit.js.org/usage/immer-reducers
   reducers: {
     flushAllStates(state) {
       // ※ It's supposed to remove all state beforehand in `rootReducer()`
@@ -43,6 +44,10 @@ export const authSlice = createSlice({
     },
     setFlash(state, action: PayloadAction<FlashNotificationProps>) {
       state.flash.push({ ...action.payload });
+    },
+    /** Remove the first element of the flashes */
+    shiftFlash(state): void {
+      state.flash = state.flash.filter((_, i) => i !== 0);
     },
     signIn(state) {
       state.signedIn = true;
@@ -224,4 +229,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { flushAllStates, setFlash, signIn } = authSlice.actions;
+export const { flushAllStates, setFlash, shiftFlash, signIn } =
+  authSlice.actions;
