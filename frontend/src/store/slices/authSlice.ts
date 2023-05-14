@@ -177,12 +177,9 @@ export const authSlice = createSlice({
     builder.addCase(forgotPassword.pending, (state, _action) => {
       state.loading = true;
     });
-    builder.addCase(forgotPassword.fulfilled, (state, _action) => {
+    builder.addCase(forgotPassword.fulfilled, (state, action) => {
       state.loading = false;
-      state.flashes.push({
-        severity: 'success',
-        message: 'パスワード再設定用のメールを送信しました',
-      });
+      state.flashes = [...state.flashes, { ...action.payload }];
     });
     builder.addCase(forgotPassword.rejected, (state, _action) => {
       state.loading = false;
