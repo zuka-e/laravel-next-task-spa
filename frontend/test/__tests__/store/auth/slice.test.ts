@@ -1,6 +1,6 @@
 import {
   FlashNotificationProps,
-  setFlash,
+  pushFlash,
   signIn,
 } from '@/store/slices/authSlice';
 import { initializeStore, store } from '@test/store';
@@ -10,7 +10,7 @@ describe('authSlice reducers', () => {
     initializeStore();
   });
 
-  describe('setFlash', () => {
+  describe('pushFlash', () => {
     const emptyNewFlash: FlashNotificationProps = {
       severity: 'info',
       message: '',
@@ -20,19 +20,19 @@ describe('authSlice reducers', () => {
       message: '!@#$%^&*()_+[]\\{}|'.repeat(100),
     };
 
-    const getFlashState = () => store.getState().auth.flash;
+    const getFlashState = () => store.getState().auth.flashes;
 
-    it('should added a new flash to a`flash`state, once', () => {
+    it('should added a new flashes to a`flashes`state, once', () => {
       expect(getFlashState()).toEqual([]);
-      store.dispatch(setFlash(emptyNewFlash));
+      store.dispatch(pushFlash(emptyNewFlash));
       expect(getFlashState()).toEqual([emptyNewFlash]);
     });
 
-    it('should added new flashes to a`flash`state, more than once', () => {
+    it('should added new flashes to a`flashes`state, more than once', () => {
       expect(getFlashState()).toEqual([]);
-      store.dispatch(setFlash(hugeNewFlash));
+      store.dispatch(pushFlash(hugeNewFlash));
       expect(getFlashState()).toEqual([hugeNewFlash]);
-      store.dispatch(setFlash(emptyNewFlash));
+      store.dispatch(pushFlash(emptyNewFlash));
       expect(getFlashState()).toEqual([hugeNewFlash, emptyNewFlash]);
     });
   });

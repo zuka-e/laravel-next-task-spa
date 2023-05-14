@@ -8,7 +8,7 @@ import { shiftFlash } from '@/store/slices';
 import { useAppDispatch, useDeepEqualSelector } from '@/utils/hooks';
 
 const FlashNotification = () => {
-  const flashes = useDeepEqualSelector((state) => state.auth.flash);
+  const flashes = useDeepEqualSelector((state) => state.auth.flashes);
   const [open, setOpen] = useState(false);
   const [currentFlash, setCurrentFlash] = useState<
     typeof flashes[0] | undefined

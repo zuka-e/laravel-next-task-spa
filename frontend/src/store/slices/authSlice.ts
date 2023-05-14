@@ -25,11 +25,11 @@ export type AuthState = {
   user: User | null;
   signedIn: boolean;
   loading: boolean;
-  flash: FlashNotificationProps[];
+  flashes: FlashNotificationProps[];
 };
 
 export const initialAuthState = {
-  flash: [] as AuthState['flash'],
+  flashes: [] as AuthState['flashes'],
 } as AuthState;
 
 export const authSlice = createSlice({
@@ -42,12 +42,13 @@ export const authSlice = createSlice({
       state.signedIn = false;
       state.user = null;
     },
-    setFlash(state, action: PayloadAction<FlashNotificationProps>) {
-      state.flash.push({ ...action.payload });
+    /** Add new flash */
+    pushFlash(state, action: PayloadAction<FlashNotificationProps>) {
+      state.flashes = [...state.flashes, { ...action.payload }];
     },
     /** Remove the first element of the flashes */
     shiftFlash(state): void {
-      state.flash = state.flash.filter((_, i) => i !== 0);
+      state.flashes = state.flashes.filter((_, i) => i !== 0);
     },
     signIn(state) {
       state.signedIn = true;
@@ -61,7 +62,7 @@ export const authSlice = createSlice({
       state.user = action.payload.user;
       state.signedIn = true;
       state.loading = false;
-      state.flash.push({
+      state.flashes.push({
         severity: 'success',
         message: 'ユーザー登録が完了しました',
       });
@@ -89,12 +90,12 @@ export const authSlice = createSlice({
     builder.addCase(sendEmailVerificationLink.fulfilled, (state, action) => {
       state.loading = false;
       if (action.payload === 202) {
-        state.flash.push({
+        state.flashes.push({
           severity: 'success',
           message: '認証用メールを送信しました',
         });
       } else if (action.payload === 204) {
-        state.flash.push({
+        state.flashes.push({
           severity: 'error',
           message: '既に認証済みです',
         });
@@ -108,13 +109,14 @@ export const authSlice = createSlice({
     });
     builder.addCase(verifyEmail.fulfilled, (state, action) => {
       const { user, ...flash } = action.payload;
+
       state.loading = false;
       state.user = user;
-      state.flash.push({ ...flash });
+      state.flashes.push({ ...flash });
     });
     builder.addCase(verifyEmail.rejected, (state, action) => {
       state.loading = false;
-      state.flash.push({
+      state.flashes.push({
         severity: 'error',
         message: action.payload?.error.message || 'Unexpected Error.',
       });
@@ -126,7 +128,7 @@ export const authSlice = createSlice({
       state.user = action.payload.user;
       state.signedIn = true;
       state.loading = false;
-      state.flash.push({ severity: 'info', message: 'ログインしました' });
+      state.flashes.push({ severity: 'info', message: 'ログインしました' });
     });
     builder.addCase(signInWithEmail.rejected, (state, _action) => {
       state.signedIn = false;
@@ -144,13 +146,13 @@ export const authSlice = createSlice({
       if (state.user.email !== action.payload.email) {
         state.user.email = action.payload.email;
         state.user.emailVerifiedAt = null;
-        state.flash.push({
+        state.flashes.push({
           severity: 'info',
           message: '認証用メールを送信しました',
         });
       } else {
         state.user.email = action.payload.email;
-        state.flash.push({
+        state.flashes.push({
           severity: 'success',
           message: 'ユーザー情報を更新しました',
         });
@@ -163,7 +165,7 @@ export const authSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(updatePassword.fulfilled, (state, _action) => {
-      state.flash.push({
+      state.flashes.push({
         severity: 'success',
         message: 'パスワードを変更しました',
       });
@@ -177,7 +179,7 @@ export const authSlice = createSlice({
     });
     builder.addCase(forgotPassword.fulfilled, (state, _action) => {
       state.loading = false;
-      state.flash.push({
+      state.flashes.push({
         severity: 'success',
         message: 'パスワード再設定用のメールを送信しました',
       });
@@ -190,7 +192,7 @@ export const authSlice = createSlice({
     });
     builder.addCase(resetPassword.fulfilled, (state, _action) => {
       state.loading = false;
-      state.flash.push({
+      state.flashes.push({
         severity: 'success',
         message: 'パスワードを再設定しました',
       });
@@ -205,7 +207,10 @@ export const authSlice = createSlice({
       state.user = null;
       state.signedIn = false;
       state.loading = false;
-      state.flash.push({ severity: 'success', message: 'ログアウトしました' });
+      state.flashes.push({
+        severity: 'success',
+        message: 'ログアウトしました',
+      });
     });
     builder.addCase(signOut.rejected, (state, _action) => {
       state.signedIn = false;
@@ -218,7 +223,7 @@ export const authSlice = createSlice({
       state.user = null;
       state.signedIn = false;
       state.loading = false;
-      state.flash.push({
+      state.flashes.push({
         severity: 'warning',
         message: 'アカウントは削除されました',
       });
@@ -229,5 +234,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { flushAllStates, setFlash, shiftFlash, signIn } =
+export const { flushAllStates, pushFlash, shiftFlash, signIn } =
   authSlice.actions;

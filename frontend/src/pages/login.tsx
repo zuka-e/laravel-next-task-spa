@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 
 import { APP_NAME } from '@/config/app';
-import { setFlash } from '@/store/slices';
+import { pushFlash } from '@/store/slices';
 import { SignInRequest, signInWithEmail } from '@/store/thunks/auth';
 import { useAppDispatch, useRoute } from '@/utils/hooks';
 import { FormLayout } from '@/layouts';
@@ -80,7 +80,7 @@ const SignIn = () => {
     if (redirectUri) {
       sessionStorage.setItem('redirectUri', redirectUri);
       dispatch(
-        setFlash({ severity: 'error', message: 'ログインしてください。' })
+        pushFlash({ severity: 'error', message: 'ログインしてください。' })
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

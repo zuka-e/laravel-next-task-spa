@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 import { useAppDispatch, useAppSelector, useAuth } from '@/utils/hooks';
-import { setFlash } from '@/store/slices';
+import { pushFlash } from '@/store/slices';
 import { Loading } from '@/layouts';
 
 export type AuthPage = {
@@ -29,7 +29,7 @@ const AuthRoute = ({ children }: AuthRouteProps) => {
     if (guest) {
       if (httpStatus && [401, 419].includes(httpStatus)) {
         dispatch(
-          setFlash({ severity: 'error', message: 'ログインしてください。' })
+          pushFlash({ severity: 'error', message: 'ログインしてください。' })
         );
       }
 

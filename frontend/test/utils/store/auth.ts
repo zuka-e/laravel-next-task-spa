@@ -12,4 +12,4 @@ export const isLoading = (store: EnhancedStore<RootState>) =>
   store.getState().auth.loading;
 
 export const getFlashState = (store: EnhancedStore<RootState>) =>
-  store.getState().auth.flash;
+  store.getState().auth.flashes;
