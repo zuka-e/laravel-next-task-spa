@@ -6,7 +6,7 @@ import { User } from '@/models/User';
 import { apiClient } from '@/utils/api';
 import { AsyncThunkConfig } from '@/store/thunks/config';
 import { makeRejectValue } from '@/store/thunks/utils';
-import { setIntendedUrl } from '@/store/slices';
+import { setIntendedUrl, type FlashNotificationProps } from '@/store/slices';
 
 export type SignUpRequest = {
   email: string;
@@ -14,7 +14,7 @@ export type SignUpRequest = {
   password_confirmation: string;
 };
 
-export type SignUpResponse = {
+export type SignUpResponse = FlashNotificationProps & {
   user: User;
 };
 

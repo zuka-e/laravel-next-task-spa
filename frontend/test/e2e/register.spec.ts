@@ -77,7 +77,7 @@ test.describe('Registration form', () => {
     // prettier-ignore
     await Promise.all([
       expect(page).toHaveURL('/email-verification'),
-      expect(page.getByRole('alert').filter({ hasText: 'ユーザー登録が完了しました' })).toBeVisible(),
+      expect(page.getByRole('alert').filter({ hasText: '登録が完了しました' })).toBeVisible(),
       expect(page.getByRole('heading', { name: '認証用メールを送信しました。' })).toBeVisible(),
       expect(page.getByRole('button', { name: '再送信する' })).toBeVisible(),
     ]);

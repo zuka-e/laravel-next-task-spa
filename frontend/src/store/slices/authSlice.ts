@@ -59,16 +59,18 @@ export const authSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(createUser.fulfilled, (state, action) => {
+      const { user, ...flash } = action.payload;
       state.user = action.payload.user;
+      state.flashes = [...state.flashes, { ...flash }];
       state.signedIn = true;
       state.loading = false;
-      state.flashes.push({
-        severity: 'success',
-        message: 'ユーザー登録が完了しました',
-      });
     });
-    builder.addCase(createUser.rejected, (state, _action) => {
+    builder.addCase(createUser.rejected, (state, action) => {
       state.signedIn = false;
+      state.flashes.push({
+        severity: 'error',
+        message: action.payload?.error.message || 'Unexpected Error.',
+      });
       state.loading = false;
     });
     builder.addCase(fetchAuthUser.pending, (state, _action) => {
