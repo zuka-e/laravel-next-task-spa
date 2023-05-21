@@ -56,8 +56,9 @@ const FlashNotification = () => {
     >
       <Alert
         onClose={handleClose}
-        severity={currentFlash.severity}
+        severity={currentFlash.severity || 'info'}
         elevation={12}
+        className="whitespace-pre-line"
       >
         {currentFlash.message}
       </Alert>

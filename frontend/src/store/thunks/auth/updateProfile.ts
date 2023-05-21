@@ -4,10 +4,11 @@ import { USER_INFO_PATH } from '@/config/api';
 import { apiClient } from '@/utils/api';
 import { AsyncThunkConfig } from '@/store/thunks/config';
 import { makeRejectValue } from '@/store/thunks/utils';
+import { type FlashNotificationProps } from '@/store/slices';
+import { type User } from '@/models/User';
 
-export type UpdateProfileResponse = {
-  name: string;
-  email: string;
+export type UpdateProfileResponse = FlashNotificationProps & {
+  user: User;
 };
 
 export type UpdateProfileRequest = {
@@ -21,8 +22,7 @@ export const updateProfile = createAsyncThunk<
   AsyncThunkConfig
 >('auth/updateProfile', async (payload, thunkApi) => {
   try {
-    await apiClient().put(USER_INFO_PATH, payload);
-    return payload; // fulfill時は、requestの値をそのまま`return`
+    return (await apiClient().put(USER_INFO_PATH, payload)).data;
   } catch (error) {
     return thunkApi.rejectWithValue(makeRejectValue(error));
   }

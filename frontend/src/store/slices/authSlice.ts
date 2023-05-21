@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { AlertColor } from '@mui/material';
 
 import { User } from '@/models/User';
+import { type RejectValue } from '@/store/thunks/config';
 import {
   createUser,
   fetchAuthUser,
@@ -28,6 +29,14 @@ export type AuthState = {
   flashes: FlashNotificationProps[];
 };
 
+/**
+ * Push API error flash notification to the state
+ */
+const pushErrorFlash = (state: AuthState, rejectValue?: RejectValue): void => {
+  const message = rejectValue?.error.message || 'Unexpected Error.';
+  state.flashes = [...state.flashes, { severity: 'error', message }];
+};
+
 export const initialAuthState = {
   flashes: [] as AuthState['flashes'],
 } as AuthState;
@@ -43,7 +52,7 @@ export const authSlice = createSlice({
       state.user = null;
     },
     /** Add new flash */
-    pushFlash(state, action: PayloadAction<FlashNotificationProps>) {
+    pushFlash(state, action: PayloadAction<FlashNotificationProps>): void {
       state.flashes = [...state.flashes, { ...action.payload }];
     },
     /** Remove the first element of the flashes */
@@ -60,18 +69,16 @@ export const authSlice = createSlice({
     });
     builder.addCase(createUser.fulfilled, (state, action) => {
       const { user, ...flash } = action.payload;
+
       state.user = action.payload.user;
       state.flashes = [...state.flashes, { ...flash }];
       state.signedIn = true;
       state.loading = false;
     });
     builder.addCase(createUser.rejected, (state, action) => {
-      state.signedIn = false;
-      state.flashes.push({
-        severity: 'error',
-        message: action.payload?.error.message || 'Unexpected Error.',
-      });
       state.loading = false;
+      state.signedIn = false;
+      pushErrorFlash(state, action.payload);
     });
     builder.addCase(fetchAuthUser.pending, (state, _action) => {
       state.loading = true;
@@ -90,21 +97,12 @@ export const authSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(sendEmailVerificationLink.fulfilled, (state, action) => {
-      state.loading = false;
-      if (action.payload === 202) {
-        state.flashes.push({
-          severity: 'success',
-          message: '認証用メールを送信しました',
-        });
-      } else if (action.payload === 204) {
-        state.flashes.push({
-          severity: 'error',
-          message: '既に認証済みです',
-        });
-      }
+      const { ...flash } = action.payload;
+      state.flashes = [...state.flashes, { ...flash }];
     });
-    builder.addCase(sendEmailVerificationLink.rejected, (state, _action) => {
+    builder.addCase(sendEmailVerificationLink.rejected, (state, action) => {
       state.loading = false;
+      pushErrorFlash(state, action.payload);
     });
     builder.addCase(verifyEmail.pending, (state) => {
       state.loading = true;
@@ -118,60 +116,46 @@ export const authSlice = createSlice({
     });
     builder.addCase(verifyEmail.rejected, (state, action) => {
       state.loading = false;
-      state.flashes.push({
-        severity: 'error',
-        message: action.payload?.error.message || 'Unexpected Error.',
-      });
+      pushErrorFlash(state, action.payload);
     });
     builder.addCase(signInWithEmail.pending, (state, _action) => {
       state.loading = true;
     });
     builder.addCase(signInWithEmail.fulfilled, (state, action) => {
+      const { user, ...flash } = action.payload;
+
       state.user = action.payload.user;
+      state.flashes = [...state.flashes, { ...flash }];
       state.signedIn = true;
       state.loading = false;
-      state.flashes.push({ severity: 'info', message: 'ログインしました' });
     });
-    builder.addCase(signInWithEmail.rejected, (state, _action) => {
+    builder.addCase(signInWithEmail.rejected, (state, action) => {
       state.signedIn = false;
       state.loading = false;
+      pushErrorFlash(state, action.payload);
     });
     builder.addCase(updateProfile.pending, (state, _action) => {
       state.loading = true;
     });
     builder.addCase(updateProfile.fulfilled, (state, action) => {
-      if (!state.user) return; // `null`を排除 (state.user?利用不可)
+      const { user, ...flash } = action.payload;
 
       state.loading = false;
-      state.user.name = action.payload.name;
-
-      if (state.user.email !== action.payload.email) {
-        state.user.email = action.payload.email;
-        state.user.emailVerifiedAt = null;
-        state.flashes.push({
-          severity: 'info',
-          message: '認証用メールを送信しました',
-        });
-      } else {
-        state.user.email = action.payload.email;
-        state.flashes.push({
-          severity: 'success',
-          message: 'ユーザー情報を更新しました',
-        });
-      }
+      state.user = action.payload.user;
+      state.flashes = [...state.flashes, { ...flash }];
     });
-    builder.addCase(updateProfile.rejected, (state, _action) => {
+    builder.addCase(updateProfile.rejected, (state, action) => {
       state.loading = false;
+      pushErrorFlash(state, action.payload);
     });
     builder.addCase(updatePassword.pending, (state, _action) => {
       state.loading = true;
     });
-    builder.addCase(updatePassword.fulfilled, (state, _action) => {
-      state.flashes.push({
-        severity: 'success',
-        message: 'パスワードを変更しました',
-      });
+    builder.addCase(updatePassword.fulfilled, (state, action) => {
+      const { ...flash } = action.payload;
+
       state.loading = false;
+      state.flashes = [...state.flashes, { ...flash }];
     });
     builder.addCase(updatePassword.rejected, (state, _action) => {
       state.loading = false;
@@ -189,46 +173,46 @@ export const authSlice = createSlice({
     builder.addCase(resetPassword.pending, (state, _action) => {
       state.loading = true;
     });
-    builder.addCase(resetPassword.fulfilled, (state, _action) => {
+    builder.addCase(resetPassword.fulfilled, (state, action) => {
+      const { ...flash } = action.payload;
+
       state.loading = false;
-      state.flashes.push({
-        severity: 'success',
-        message: 'パスワードを再設定しました',
-      });
+      state.flashes = [...state.flashes, { ...flash }];
     });
-    builder.addCase(resetPassword.rejected, (state, _action) => {
+    builder.addCase(resetPassword.rejected, (state, action) => {
       state.loading = false;
+      pushErrorFlash(state, action.payload);
     });
     builder.addCase(signOut.pending, (state, _action) => {
       state.loading = true;
     });
-    builder.addCase(signOut.fulfilled, (state, _action) => {
+    builder.addCase(signOut.fulfilled, (state, action) => {
+      const { ...flash } = action.payload;
+
+      state.loading = false;
       state.user = null;
       state.signedIn = false;
-      state.loading = false;
-      state.flashes.push({
-        severity: 'success',
-        message: 'ログアウトしました',
-      });
+      state.flashes = [...state.flashes, { ...flash }];
     });
-    builder.addCase(signOut.rejected, (state, _action) => {
-      state.signedIn = false;
+    builder.addCase(signOut.rejected, (state, action) => {
       state.loading = false;
+      state.signedIn = false;
+      pushErrorFlash(state, action.payload);
     });
     builder.addCase(deleteAccount.pending, (state, _action) => {
       state.loading = true;
     });
-    builder.addCase(deleteAccount.fulfilled, (state, _action) => {
+    builder.addCase(deleteAccount.fulfilled, (state, action) => {
+      const { ...flash } = action.payload;
+
+      state.loading = false;
       state.user = null;
       state.signedIn = false;
-      state.loading = false;
-      state.flashes.push({
-        severity: 'warning',
-        message: 'アカウントは削除されました',
-      });
+      state.flashes = [...state.flashes, { ...flash }];
     });
-    builder.addCase(deleteAccount.rejected, (state, _action) => {
+    builder.addCase(deleteAccount.rejected, (state, action) => {
       state.loading = false;
+      pushErrorFlash(state, action.payload);
     });
   },
 });

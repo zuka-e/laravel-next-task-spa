@@ -25,11 +25,10 @@ export const createUser = createAsyncThunk<
 >('auth/createUser', async (payload, thunkApi) => {
   try {
     await apiClient({ apiRoute: false }).get(GET_CSRF_TOKEN_PATH);
-    const response = await apiClient().post(
-      SIGNUP_PATH,
-      { name: payload.email, ...payload },
-      { validateStatus: (status) => status === 201 } // `201`以外 error
-    );
+    const response = await apiClient().post(SIGNUP_PATH, {
+      name: payload.email,
+      ...payload,
+    });
 
     thunkApi.dispatch(setIntendedUrl('/email-verification'));
 

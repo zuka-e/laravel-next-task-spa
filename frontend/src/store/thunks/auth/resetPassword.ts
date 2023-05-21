@@ -4,8 +4,9 @@ import { GET_CSRF_TOKEN_PATH, RESET_PASSWORD_PATH } from '@/config/api';
 import { apiClient } from '@/utils/api';
 import { AsyncThunkConfig } from '@/store/thunks/config';
 import { makeRejectValue } from '@/store/thunks/utils';
+import { type FlashNotificationProps } from '@/store/slices';
 
-export type ResetPasswordResponse = void;
+export type ResetPasswordResponse = FlashNotificationProps;
 
 export type ResetPasswordRequest = {
   email: string;
@@ -20,9 +21,8 @@ export const resetPassword = createAsyncThunk<
   AsyncThunkConfig
 >('auth/resetPassword', async (payload, thunkApi) => {
   try {
-    // 正常時は`200`バリデーションエラー時は`422`
     await apiClient({ apiRoute: false }).get(GET_CSRF_TOKEN_PATH);
-    await apiClient().post(RESET_PASSWORD_PATH, payload);
+    return (await apiClient().post(RESET_PASSWORD_PATH, payload)).data;
   } catch (error) {
     return thunkApi.rejectWithValue(makeRejectValue(error));
   }

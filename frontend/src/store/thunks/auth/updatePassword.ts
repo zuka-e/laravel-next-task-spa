@@ -4,6 +4,9 @@ import { UPDATE_PASSWORD_PATH } from '@/config/api';
 import { apiClient } from '@/utils/api';
 import { AsyncThunkConfig } from '@/store/thunks/config';
 import { makeRejectValue } from '@/store/thunks/utils';
+import { type FlashNotificationProps } from '@/store/slices';
+
+export type UpdatePasswordResponse = FlashNotificationProps;
 
 export type UpdatePasswordRequest = {
   current_password: string;
@@ -12,12 +15,12 @@ export type UpdatePasswordRequest = {
 };
 
 export const updatePassword = createAsyncThunk<
-  void,
+  UpdatePasswordResponse,
   UpdatePasswordRequest,
   AsyncThunkConfig
 >('auth/updatePassword', async (payload, thunkApi) => {
   try {
-    await apiClient().put(UPDATE_PASSWORD_PATH, payload);
+    return (await apiClient().put(UPDATE_PASSWORD_PATH, payload)).data;
   } catch (error) {
     return thunkApi.rejectWithValue(makeRejectValue(error));
   }
