@@ -98,6 +98,7 @@ export const authSlice = createSlice({
     });
     builder.addCase(sendEmailVerificationLink.fulfilled, (state, action) => {
       const { ...flash } = action.payload;
+      state.loading = false;
       state.flashes = [...state.flashes, { ...flash }];
     });
     builder.addCase(sendEmailVerificationLink.rejected, (state, action) => {
