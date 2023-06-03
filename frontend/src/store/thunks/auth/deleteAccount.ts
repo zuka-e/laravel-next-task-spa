@@ -6,8 +6,8 @@ import { AsyncThunkConfig } from '@/store/thunks/config';
 import { makeRejectValue } from '@/store/thunks/utils';
 import { type FlashNotificationProps } from '@/store/slices';
 
-type DeleteAccountResponse = FlashNotificationProps;
-type DeleteAccountRequest = void;
+export type DeleteAccountResponse = FlashNotificationProps;
+export type DeleteAccountRequest = void;
 
 export const deleteAccount = createAsyncThunk<
   DeleteAccountResponse,

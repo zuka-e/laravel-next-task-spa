@@ -89,8 +89,8 @@ describe('Thunk updating the user profile', () => {
       expect(updateProfile.fulfilled.match(response)).toBe(true);
       expect(isLoading(store)).toBe(false);
       expect(getFlashState(store).slice(-1)[0]).toEqual({
-        severity: 'info',
-        message: '認証用メールを送信しました',
+        severity: 'success',
+        message: 'ユーザー情報を更新しました',
       });
     });
   });
