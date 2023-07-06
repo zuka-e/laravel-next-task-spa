@@ -7,11 +7,15 @@
   "service": "laravel.test",
   "workspaceFolder": "/var/www/html/backend",
   "remoteUser": "sail",
-  "extensions": [
-    "bmewburn.vscode-intelephense-client", // PHP intellisense
-    "amiralizadeh9480.laravel-extra-intellisense", // Laravel intellisense
-    "dbaeumer.vscode-eslint", // ESLint
-    "esbenp.prettier-vscode", // Prettier
-    "streetsidesoftware.code-spell-checker"
-  ]
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "bmewburn.vscode-intelephense-client",
+        "amiralizadeh9480.laravel-extra-intellisense",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "streetsidesoftware.code-spell-checker"
+      ]
+    }
+  }
 }
