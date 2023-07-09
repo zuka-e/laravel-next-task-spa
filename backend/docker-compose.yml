@@ -1,4 +1,4 @@
-# For more information: https://laravel.com/docs/sail
+# cf. https://laravel.com/docs/sail
 # cf. https://docs.docker.com/compose/compose-file/#compose-file
 # cf. https://docs.docker.com/compose/compose-file/build
 services:
@@ -13,20 +13,20 @@ services:
       args:
         WORKDIR: '${DOCKER_WORKDIR}'
         USERNAME: '${DOCKER_USERNAME}'
-    # Ignored if `servive.build` exists
+    # Used for built image name if `servive.build` is processed
+    image: '${USER}/${COMPOSE_PROJECT_NAME}'
     ports:
       - '${APP_PORT:-80}:80'
     environment:
       LC_ALL: 'C.UTF-8'
-      LARAVEL_SAIL: 1
-    # Starting directory in the container
+    # Starting directory in logining the container
     working_dir: '${DOCKER_WORKDIR}'
     volumes:
       - '.:${DOCKER_WORKDIR}'
       - 'vendor:${DOCKER_WORKDIR}/vendor'
       - 'node_modules:${DOCKER_WORKDIR}/node_modules'
     networks:
-      - sail
+      - backend
     depends_on:
       - mysql
       - redis
@@ -40,10 +40,10 @@ services:
       MYSQL_USER: '${DB_USERNAME}'
       MYSQL_PASSWORD: '${DB_PASSWORD}'
     volumes:
-      - 'sail-mysql:/var/lib/mysql'
+      - 'mysql:/var/lib/mysql'
       - './docker/database/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
     networks:
-      - sail
+      - backend
     healthcheck:
       test: ['CMD', 'mysqladmin', 'ping', '-p${DB_PASSWORD}']
       retries: 3
@@ -51,11 +51,11 @@ services:
   redis:
     image: 'redis:alpine'
     ports:
-      - '${FORWARD_REDIS_PORT:-6379}:6379'
+      - '${FORWARD_REDIS_PORT:-6380}:6379'
     volumes:
-      - 'sail-redis:/data'
+      - 'redis:/data'
     networks:
-      - sail
+      - backend
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       retries: 3
@@ -67,16 +67,16 @@ services:
       - '${FORWARD_MAILPIT_PORT:-1025}:1025'
       - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
     networks:
-      - sail
+      - backend
 networks:
-  sail:
+  backend:
     driver: bridge
 volumes:
   vendor:
     driver: local
   node_modules:
     driver: local
-  sail-mysql:
+  mysql:
     driver: local
-  sail-redis:
+  redis:
     driver: local
