@@ -1,0 +1,26 @@
+# IDE and editor files.
+.vscode
+
+# Git related
+.git
+.gitignore
+
+# configuration files
+.env
+.env.example
+
+# Docker related
+docker-compose.yml
+Dockerfile
+*.dockerignore
+
+# Composer related
+/composer.phar
+/vendor
+
+# Node related
+/node_modules
+/npm-debug.log
+
+/storage
+*.log

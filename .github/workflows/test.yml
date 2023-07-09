@@ -16,7 +16,7 @@ jobs:
         ports:
           - 3306:3306
         env:
-          MYSQL_DATABASE: backend
+          MYSQL_DATABASE: testing
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
         options: >-
           --health-cmd="mysqladmin ping"
@@ -51,6 +51,7 @@ jobs:
       - name: Execute tests
         env:
           DB_HOST: 127.0.0.1 # <- localhost
+          DB_PASSWORD: ''
         run: ./vendor/bin/phpunit
 
   build:

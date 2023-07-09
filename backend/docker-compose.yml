@@ -1,70 +1,61 @@
-# For more information: hettps://laravel.com/docs/sail
+# cf. https://laravel.com/docs/sail
 # cf. https://docs.docker.com/compose/compose-file/#compose-file
 # cf. https://docs.docker.com/compose/compose-file/build
 services:
   laravel.test:
     build:
-      context: ./docker/8.2
-      dockerfile: Dockerfile
-      # cf. `ARG` in `Dockerfile`
+      # As relative path origin in `Dockerfile`
+      # e.g. if it's `.`, `package.json` etc can be referenced as is,
+      # but cannot if it's `./docker` etc. as parent path can't be reached.
+      context: '.'
+      dockerfile: ./docker/8.2-dev/Dockerfile
+      # cf. `Dockerfile.ARG`
       args:
-        WWWGROUP: '${WWWGROUP}'
-        WORKDIR: '${PROJECT_DIR}'
-    image: sail-8.2/app
+        WORKDIR: '${DOCKER_WORKDIR}'
+        USERNAME: '${DOCKER_USERNAME}'
+    # Used for built image name if `servive.build` is processed
+    image: '${USER}/${COMPOSE_PROJECT_NAME}'
     ports:
       - '${APP_PORT:-80}:80'
-    # cf. `start-container`, `supervisord.conf`
     environment:
       LC_ALL: 'C.UTF-8'
-      WWWUSER: '${WWWUSER}'
-      PROJECT_DIR: '${PROJECT_DIR}'
-      BACKEND_DIR: '${BACKEND_DIR}'
-      LARAVEL_SAIL: 1
-    # Starting directory in the container
-    working_dir: '${PROJECT_DIR}/${BACKEND_DIR}'
+    # Starting directory in logining the container
+    working_dir: '${DOCKER_WORKDIR}'
     volumes:
-      - '.:${PROJECT_DIR}/${BACKEND_DIR}'
-      - 'vendor:${PROJECT_DIR}/${BACKEND_DIR}/vendor'
-      - 'node_modules:${PROJECT_DIR}/${BACKEND_DIR}/node_modules'
+      - '.:${DOCKER_WORKDIR}'
+      - 'vendor:${DOCKER_WORKDIR}/vendor'
+      - 'node_modules:${DOCKER_WORKDIR}/node_modules'
     networks:
-      - sail
+      - backend
     depends_on:
       - mysql
       - redis
   mysql:
-    image: 'mysql:8.0'
+    image: 'mariadb:10'
     ports:
-      - '${FORWARD_DB_PORT:-3306}:3306'
+      - '${FORWARD_DB_PORT:-3307}:3306'
     environment:
-      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
       MYSQL_DATABASE: '${DB_DATABASE}'
-      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
     volumes:
-      - 'sail-mysql:/var/lib/mysql'
+      - 'mysql:/var/lib/mysql'
+      - './docker/database/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
     networks:
-      - sail
+      - backend
     healthcheck:
       test: ['CMD', 'mysqladmin', 'ping', '-p${DB_PASSWORD}']
       retries: 3
       timeout: 5s
-  mysql.test:
-    image: 'mysql:8.0'
-    ports:
-      - '${FORWARD_TEST_DB_PORT:-3307}:3306'
-    environment:
-      MYSQL_ROOT_HOST: '%'
-      MYSQL_DATABASE: '${DB_DATABASE}'
-      MYSQL_ALLOW_EMPTY_PASSWORD: 1
-    networks:
-      - sail
   redis:
     image: 'redis:alpine'
     ports:
-      - '${FORWARD_REDIS_PORT:-6379}:6379'
+      - '${FORWARD_REDIS_PORT:-6380}:6379'
     volumes:
-      - 'sail-redis:/data'
+      - 'redis:/data'
     networks:
-      - sail
+      - backend
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       retries: 3
@@ -76,16 +67,16 @@ services:
       - '${FORWARD_MAILPIT_PORT:-1025}:1025'
       - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
     networks:
-      - sail
+      - backend
 networks:
-  sail:
+  backend:
     driver: bridge
 volumes:
   vendor:
     driver: local
   node_modules:
     driver: local
-  sail-mysql:
+  mysql:
     driver: local
-  sail-redis:
+  redis:
     driver: local
