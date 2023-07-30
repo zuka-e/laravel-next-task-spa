@@ -11,7 +11,6 @@ use App\Http\Responses\LoginResponse;
 use App\Http\Responses\LogoutResponse;
 use App\Http\Responses\PasswordUpdateResponse;
 use App\Http\Responses\ProfileInformationUpdatedResponse;
-use App\Http\Responses\VerifyEmailResponse;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -23,7 +22,6 @@ use Laravel\Fortify\Contracts\RegisterResponse as RegisterResponseContract;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 use Laravel\Fortify\Contracts\LogoutResponse as LogoutResponseContract;
 use Laravel\Fortify\Contracts\PasswordUpdateResponse as PasswordUpdateResponseContract;
-use Laravel\Fortify\Contracts\VerifyEmailResponse as VerifyEmailResponseContract;
 
 /**
  * @see \Laravel\Fortify\FortifyServiceProvider
@@ -70,10 +68,6 @@ class FortifyServiceProvider extends ServiceProvider
         $this->app->singleton(
             LogoutResponseContract::class,
             LogoutResponse::class,
-        );
-        $this->app->singleton(
-            VerifyEmailResponseContract::class,
-            VerifyEmailResponse::class,
         );
 
         Fortify::createUsersUsing(CreateNewUser::class);

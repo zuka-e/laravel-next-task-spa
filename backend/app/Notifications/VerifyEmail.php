@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Services\VerifyEmailService;
 use Illuminate\Auth\Notifications\VerifyEmail as VerifyEmailNotification;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\URL;
@@ -18,6 +19,15 @@ use Illuminate\Support\Facades\URL;
  */
 class VerifyEmail extends VerifyEmailNotification
 {
+    /**
+     * @param  \App\Services\VerifyEmailService  $verifyEmailService
+     */
+    public function __construct(
+        protected VerifyEmailService $verifyEmailService,
+    ) {
+        // return parent::__construct();
+    }
+
     /**
      * Build the mail representation of the notification.
      *
@@ -74,10 +84,7 @@ class VerifyEmail extends VerifyEmailNotification
      */
     protected function verificationUrl($notifiable)
     {
-        $credentials = [
-            'id' => $notifiable->getKey(),
-            'hash' => sha1($notifiable->getEmailForVerification()),
-        ];
+        $credentials = $this->verifyEmailService->getCredentials($notifiable);
 
         $signedUrl = URL::temporarySignedRoute(
             'verification.verify',
