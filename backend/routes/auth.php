@@ -9,7 +9,6 @@
 */
 
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
-use App\Http\Controllers\Auth\ProfileInformationController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
@@ -21,6 +20,7 @@ use Laravel\Fortify\Http\Controllers\EmailVerificationPromptController;
 use Laravel\Fortify\Http\Controllers\NewPasswordController;
 use Laravel\Fortify\Http\Controllers\PasswordController;
 use Laravel\Fortify\Http\Controllers\PasswordResetLinkController;
+use Laravel\Fortify\Http\Controllers\ProfileInformationController;
 use Laravel\Fortify\Http\Controllers\RecoveryCodeController;
 use Laravel\Fortify\Http\Controllers\TwoFactorAuthenticatedSessionController;
 use Laravel\Fortify\Http\Controllers\TwoFactorAuthenticationController;
@@ -109,10 +109,6 @@ Route::group(['middleware' => config('fortify.middleware', ['web'])], function (
     }
 
     // Profile Information...
-    Route::get('/user/profile-information', [ProfileInformationController::class, 'show'])
-        ->middleware([config('fortify.auth_middleware', 'auth').':'.config('fortify.guard')])
-        ->name('user-profile-information.show');
-
     if (Features::enabled(Features::updateProfileInformation())) {
         Route::put('/user/profile-information', [ProfileInformationController::class, 'update'])
             ->middleware([config('fortify.auth_middleware', 'auth').':'.config('fortify.guard')])

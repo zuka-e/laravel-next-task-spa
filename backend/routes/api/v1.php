@@ -4,6 +4,8 @@ namespace App\Http\Controllers\V1;
 
 use Illuminate\Support\Facades\Route;
 
+Route::get('/session', [SessionController::class, 'show']);
+
 /*
 |------------------------------------------------------------------------------
 | Authenticated routes being required login.
