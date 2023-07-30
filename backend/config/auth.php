@@ -122,4 +122,16 @@ return [
     */
 
     'password_timeout' => 10800,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Email Verification
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    /** @see \Illuminate\Auth\Notifications\VerifyEmail */
+    'verification' => [
+        'expire' => 5, // minute
+    ],
 ];

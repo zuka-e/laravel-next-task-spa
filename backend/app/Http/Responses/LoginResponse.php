@@ -4,7 +4,6 @@ namespace App\Http\Responses;
 
 use App\Http\Resources\UserResource;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
-use Laravel\Fortify\Fortify;
 
 /**
  * @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::store
@@ -29,26 +28,11 @@ class LoginResponse implements LoginResponseContract
      */
     public function toResponse($request)
     {
-        $flash = [
+        return response()->json([
             'severity' => 'success',
             'message' => __('Logged in.'),
-        ];
-
-        // Mainly for email verification.
-        if (isSameOrigin(redirect()->getIntendedUrl() ?? '', $request->url())) {
-            return redirect()
-                ->intended()
-                ->with($flash);
-        }
-
-        return $request->wantsJson()
-            ? response()->json([
-                ...$flash,
-                'user' => $this->userResource->make($request->user()),
-                'two_factor' => false,
-            ])
-            : redirect()
-                ->intended(Fortify::redirects('login'))
-                ->with($flash);
+            'user' => $this->userResource->make($request->user()),
+            'two_factor' => false,
+        ]);
     }
 }

@@ -4,7 +4,7 @@ namespace App\Notifications;
 
 use Illuminate\Auth\Notifications\VerifyEmail as VerifyEmailNotification;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\URL;
 
 /**
  * This extends `\Illuminate\Auth\Notifications\VerifyEmail`.
@@ -19,6 +19,17 @@ use Illuminate\Support\Facades\Lang;
 class VerifyEmail extends VerifyEmailNotification
 {
     /**
+     * Build the mail representation of the notification.
+     *
+     * @param  \Illuminate\Foundation\Auth\User  $notifiable
+     * @return \Illuminate\Notifications\Messages\MailMessage
+     */
+    public function toMail($notifiable)
+    {
+        return $this->buildMailMessage($this->verificationUrl($notifiable));
+    }
+
+    /**
      * Get the verify email notification mail message for the given URL.
      *
      * @param  string  $url
@@ -27,24 +38,30 @@ class VerifyEmail extends VerifyEmailNotification
     protected function buildMailMessage($url)
     {
         return (new MailMessage())
-            ->subject(Lang::get('Verify Your Email Address'))
-            ->greeting(Lang::get('Thanks for registration'))
+            ->subject(__('Verify Your Email Address'))
+            ->greeting(__('Thanks for registration'))
             ->line(
-                Lang::get(
+                __(
                     'Please click the button below to verify your email address.',
                 ),
             )
-            ->action(Lang::get('Verify Email Address'), $url)
             ->line(
-                Lang::get(
+                __('This password reset link will expire in :count minutes.', [
+                    'count' => config('auth.verification.expire'),
+                ]),
+            )
+            ->action(__('Verify Email Address'), $url)
+            ->line(
+                __(
                     'If you did not create an account, no further action is required.',
                 ),
             )
-            ->salutation(Lang::get('Regards.'));
+            ->salutation(__('Regards.'));
     }
 
     /**
-     * Get the relative verification URL for the given notifiable.
+     * Get the relative verification URL with frontend domain for the given notifiable.
+     * ※ In general, the verification link should point to the frontend.
      *
      * To validate, use relative `ValidateSignature` middleware (`signed:relative`).
      *
@@ -55,18 +72,25 @@ class VerifyEmail extends VerifyEmailNotification
      * @see \Illuminate\Routing\UrlGenerator hasValidRelativeSignature
      * @see \Illuminate\Routing\UrlGenerator temporarySignedRoute
      */
-    // protected function relativeVerificationUrl(User $notifiable)
-    // {
-    //     return URL::temporarySignedRoute(
-    //         'verification.verify',
-    //         Carbon::now()->addMinutes(
-    //             Config::get('auth.verification.expire', 60),
-    //         ),
-    //         [
-    //             'id' => $notifiable->getKey(),
-    //             'hash' => sha1($notifiable->getEmailForVerification()),
-    //         ],
-    //         absolute: false,
-    //     );
-    // }
+    protected function verificationUrl($notifiable)
+    {
+        $credentials = [
+            'id' => $notifiable->getKey(),
+            'hash' => sha1($notifiable->getEmailForVerification()),
+        ];
+
+        $signedUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(config('auth.verification.expire')),
+            $credentials,
+            absolute: false,
+        );
+
+        $signedQuery = parse_url($signedUrl, PHP_URL_QUERY);
+        $frontendUrl = config('fortify.home');
+
+        return "{$frontendUrl}/email/verify/" .
+            join('/', $credentials) .
+            "?{$signedQuery}";
+    }
 }
