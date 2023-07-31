@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Http\Controllers\RegisteredUserController as Controller;
 
 /**
@@ -19,22 +17,18 @@ class RegisteredUserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Request $request): JsonResponse|RedirectResponse
+    public function destroy(Request $request): JsonResponse
     {
         /** @var null|\App\Models\User Auth user if logged in */
         $user = $request->user();
 
         $user->delete();
 
-        $flash = [
+        return response()->json([
             'severity' => 'warning',
             'message' => __('The :resource was deleted!', [
                 'resource' => __('Account'),
             ]),
-        ];
-
-        return $request->wantsJson()
-            ? response()->json($flash)
-            : redirect(Fortify::redirects('registration-delete'))->with($flash);
+        ]);
     }
 }

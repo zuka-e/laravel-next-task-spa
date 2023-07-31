@@ -3,7 +3,6 @@
 namespace App\Http\Responses;
 
 use Laravel\Fortify\Contracts\LogoutResponse as LogoutResponseContract;
-use Laravel\Fortify\Fortify;
 
 /**
  * @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::destroy
@@ -20,13 +19,9 @@ class LogoutResponse implements LogoutResponseContract
      */
     public function toResponse($request)
     {
-        $flash = [
+        return response()->json([
             'severity' => 'success',
             'message' => __('Logged out.'),
-        ];
-
-        return $request->wantsJson()
-            ? response()->json($flash)
-            : redirect(Fortify::redirects('logout'))->with($flash);
+        ]);
     }
 }

@@ -28,21 +28,13 @@ class RegisterResponse implements RegisterResponseContract
      */
     public function toResponse($request)
     {
-        $flash = [
-            'severity' => 'success',
-            'message' => __('Registration has been completed.'),
-        ];
-
-        return $request->wantsJson()
-            ? response()->json(
-                [
-                    ...$flash,
-                    'user' => $this->userResource->make($request->user()),
-                ],
-                201,
-            )
-            : redirect()
-                ->intended(config('fortify.home'))
-                ->with($flash);
+        return response()->json(
+            [
+                'severity' => 'success',
+                'message' => __('Registration has been completed.'),
+                'user' => $this->userResource->make($request->user()),
+            ],
+            201,
+        );
     }
 }

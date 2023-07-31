@@ -3,7 +3,6 @@
 namespace App\Http\Responses;
 
 use Laravel\Fortify\Contracts\PasswordUpdateResponse as PasswordUpdateResponseContract;
-use Laravel\Fortify\Fortify;
 
 /**
  * @see \Laravel\Fortify\Http\Controllers\PasswordController::update
@@ -20,15 +19,11 @@ class PasswordUpdateResponse implements PasswordUpdateResponseContract
      */
     public function toResponse($request)
     {
-        $flash = [
+        return response()->json([
             'severity' => 'success',
             'message' => __('The :resource was updated!', [
                 'resource' => __('Password'),
             ]),
-        ];
-
-        return $request->wantsJson()
-            ? response()->json($flash)
-            : back()->with([...$flash, 'status' => Fortify::PASSWORD_UPDATED]);
+        ]);
     }
 }

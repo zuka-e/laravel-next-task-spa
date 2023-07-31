@@ -4,7 +4,6 @@ namespace App\Http\Responses;
 
 use App\Http\Resources\UserResource;
 use Laravel\Fortify\Contracts\ProfileInformationUpdatedResponse as ProfileInformationUpdatedResponseContract;
-use Laravel\Fortify\Fortify;
 
 /**
  * @see \App\Http\Controllers\Auth\ProfileInformationController::update
@@ -30,21 +29,12 @@ class ProfileInformationUpdatedResponse implements
      */
     public function toResponse($request)
     {
-        $flash = [
+        return response()->json([
             'severity' => 'success',
             'message' => __('The :resource was updated!', [
                 'resource' => __('Profile Information'),
             ]),
-        ];
-
-        return $request->wantsJson()
-            ? response()->json([
-                ...$flash,
-                'user' => $this->userResource->make($request->user()),
-            ])
-            : back()->with([
-                ...$flash,
-                'status' => Fortify::PROFILE_INFORMATION_UPDATED,
-            ]);
+            'user' => $this->userResource->make($request->user()),
+        ]);
     }
 }
