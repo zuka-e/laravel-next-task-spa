@@ -2,6 +2,7 @@
 
 namespace App\Http\Responses;
 
+use App\Enums\Severity;
 use App\Http\Resources\UserResource;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 
@@ -29,7 +30,7 @@ class LoginResponse implements LoginResponseContract
     public function toResponse($request)
     {
         return response()->json([
-            'severity' => 'success',
+            'severity' => Severity::Success,
             'message' => __('Logged in.'),
             'user' => $this->userResource->make($request->user()),
             'two_factor' => false,

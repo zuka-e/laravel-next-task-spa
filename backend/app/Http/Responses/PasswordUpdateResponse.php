@@ -2,6 +2,7 @@
 
 namespace App\Http\Responses;
 
+use App\Enums\Severity;
 use Laravel\Fortify\Contracts\PasswordUpdateResponse as PasswordUpdateResponseContract;
 
 /**
@@ -20,7 +21,7 @@ class PasswordUpdateResponse implements PasswordUpdateResponseContract
     public function toResponse($request)
     {
         return response()->json([
-            'severity' => 'success',
+            'severity' => Severity::Success,
             'message' => __('The :resource was updated!', [
                 'resource' => __('Password'),
             ]),

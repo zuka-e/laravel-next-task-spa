@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\Severity;
 use Illuminate\Http\Request;
 use Laravel\Fortify\Http\Controllers\EmailVerificationNotificationController as Controller;
 
@@ -20,7 +21,7 @@ class EmailVerificationNotificationController extends Controller
     {
         if ($request->user()->hasVerifiedEmail()) {
             return response()->json([
-                'severity' => 'info',
+                'severity' => Severity::Info,
                 'message' => __(
                     'Your email address has already been verified.',
                 ),
@@ -31,7 +32,7 @@ class EmailVerificationNotificationController extends Controller
 
         return response()->json(
             [
-                'severity' => 'success',
+                'severity' => Severity::Success,
                 'message' => __('A new verification link has been sent.'),
             ],
             202,

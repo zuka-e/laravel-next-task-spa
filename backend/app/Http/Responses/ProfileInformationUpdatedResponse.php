@@ -2,6 +2,7 @@
 
 namespace App\Http\Responses;
 
+use App\Enums\Severity;
 use App\Http\Resources\UserResource;
 use Laravel\Fortify\Contracts\ProfileInformationUpdatedResponse as ProfileInformationUpdatedResponseContract;
 
@@ -30,7 +31,7 @@ class ProfileInformationUpdatedResponse implements
     public function toResponse($request)
     {
         return response()->json([
-            'severity' => 'success',
+            'severity' => Severity::Success,
             'message' => __('The :resource was updated!', [
                 'resource' => __('Profile Information'),
             ]),

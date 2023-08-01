@@ -2,6 +2,7 @@
 
 namespace App\Http\Responses;
 
+use App\Enums\Severity;
 use App\Http\Resources\UserResource;
 use Laravel\Fortify\Contracts\RegisterResponse as RegisterResponseContract;
 
@@ -30,7 +31,7 @@ class RegisterResponse implements RegisterResponseContract
     {
         return response()->json(
             [
-                'severity' => 'success',
+                'severity' => Severity::Success,
                 'message' => __('Registration has been completed.'),
                 'user' => $this->userResource->make($request->user()),
             ],

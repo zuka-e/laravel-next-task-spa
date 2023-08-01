@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\Severity;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Laravel\Fortify\Http\Controllers\RegisteredUserController as Controller;
@@ -25,7 +26,7 @@ class RegisteredUserController extends Controller
         $user->delete();
 
         return response()->json([
-            'severity' => 'warning',
+            'severity' => Severity::Warning,
             'message' => __('The :resource was deleted!', [
                 'resource' => __('Account'),
             ]),

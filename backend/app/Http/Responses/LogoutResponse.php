@@ -2,6 +2,7 @@
 
 namespace App\Http\Responses;
 
+use App\Enums\Severity;
 use Laravel\Fortify\Contracts\LogoutResponse as LogoutResponseContract;
 
 /**
@@ -20,7 +21,7 @@ class LogoutResponse implements LogoutResponseContract
     public function toResponse($request)
     {
         return response()->json([
-            'severity' => 'success',
+            'severity' => Severity::Success,
             'message' => __('Logged out.'),
         ]);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\Severity;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\VerifyEmailRequest;
 use App\Http\Resources\UserResource;
@@ -46,7 +47,7 @@ class VerifyEmailController extends Controller
         }
 
         return response()->json([
-            'severity' => 'success',
+            'severity' => Severity::Success,
             'message' => __('Your email address was verified.'),
             'user' => $this->userResource->make($user),
         ]);
