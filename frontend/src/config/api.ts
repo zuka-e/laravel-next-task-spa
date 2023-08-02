@@ -3,14 +3,19 @@ export const API_VERSION = process.env.NEXT_PUBLIC_API_VERSION || 'v1';
 export const API_ROUTE = API_HOST + '/' + API_VERSION;
 
 // paths
+
 export const GET_CSRF_TOKEN_PATH =
   process.env.NEXT_PUBLIC_GET_CSRF_TOKEN_PATH || '/sanctum/csrf-cookie';
+
+export const SESSION_PATH = '/session';
 
 export const SIGNUP_PATH = process.env.NEXT_PUBLIC_SIGNUP_PATH || '/register';
 
 export const VERIFICATION_NOTIFICATION_PATH =
   process.env.NEXT_PUBLIC_VERIFICATION_NOTIFICATION_PATH ||
   '/email/verification-notification';
+
+export const VERIFY_EMAIL_PATH = '/email/verify';
 
 export const SIGNIN_PATH = process.env.NEXT_PUBLIC_SIGNIN_PATH || '/login';
 
@@ -32,6 +37,7 @@ export const paths = {
   GET_CSRF_TOKEN_PATH,
   SIGNUP_PATH,
   VERIFICATION_NOTIFICATION_PATH,
+  VERIFY_EMAIL_PATH,
   SIGNIN_PATH,
   USER_INFO_PATH,
   UPDATE_PASSWORD_PATH,

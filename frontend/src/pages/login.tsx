@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticProps } from 'next';
@@ -16,9 +16,8 @@ import {
 } from '@mui/material';
 
 import { APP_NAME } from '@/config/app';
-import { pushFlash } from '@/store/slices';
 import { SignInRequest, signInWithEmail } from '@/store/thunks/auth';
-import { useAppDispatch, useRoute } from '@/utils/hooks';
+import { useAppDispatch } from '@/utils/hooks';
 import { FormLayout } from '@/layouts';
 import { SubmitButton } from '@/templates';
 import type { GuestPage } from '@/routes';
@@ -66,25 +65,12 @@ const SignIn = () => {
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
   const router = useRouter();
-  const route = useRoute();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({ mode: 'onBlur', resolver: yupResolver(schema) });
-
-  useEffect(() => {
-    const redirectUri = route.queryParams['redirect_uri']?.toString();
-
-    if (redirectUri) {
-      sessionStorage.setItem('redirectUri', redirectUri);
-      dispatch(
-        pushFlash({ severity: 'error', message: 'ログインしてください。' })
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const togglePasswordVisibility = () => {
     setVisiblePassword(!visiblePassword);

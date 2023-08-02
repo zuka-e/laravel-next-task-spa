@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 
-import { verifyEmail } from '@/store/thunks/auth';
 import { useAppDispatch, useAppSelector, useRoute } from '@/utils/hooks';
 import { AuthRoute, GuestRoute } from '@/routes';
 import { clearIntendedUrl } from '@/store/slices';
@@ -27,13 +26,6 @@ const Route = (
       if (route.queryParams['verified']?.toString()) {
         await router.replace('/email-verification');
         return;
-      }
-
-      const redirectUri = sessionStorage.getItem('redirectUri');
-
-      if (redirectUri) {
-        sessionStorage.removeItem('redirectUri');
-        dispatch(verifyEmail({ url: redirectUri }));
       }
     })();
 
