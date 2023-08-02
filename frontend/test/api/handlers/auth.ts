@@ -4,7 +4,6 @@ import { rest } from 'msw';
 import type {
   SignUpRequest,
   SignUpResponse,
-  FetchAuthUserResponse,
   SignInRequest,
   SignInResponse,
   UpdateProfileRequest,
@@ -78,25 +77,6 @@ export const handlers = [
       return res(ctx.cookie(XSRF_TOKEN, csrfToken));
     }
   ),
-
-  rest.get<
-    DefaultRequestBody,
-    FetchAuthUserResponse & ErrorResponse,
-    RequestParams
-  >(url('USER_INFO_PATH'), (req, res, ctx) => {
-    const httpException = applyMiddleware(req, ['authenticate']);
-    if (httpException) return res(httpException);
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const currentUser = auth.getUser()!;
-
-    return res(
-      ctx.status(200),
-      ctx.json({
-        user: sanitizeUser(currentUser),
-      })
-    );
-  }),
 
   rest.post<
     DefaultRequestBody,

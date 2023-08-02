@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { fetchAuthUser } from '@/store/thunks/auth';
+import { fetchSession } from '@/store/thunks/auth';
 import { isReady } from '@/utils/auth';
 import useAppDispatch from './useAppDispatch';
 import useAppSelector from './useAppSelector';
@@ -15,10 +15,11 @@ const useAuth = () => {
   useEffect(() => {
     (async () => {
       if (!isReady()) {
-        await dispatch(fetchAuthUser());
+        await dispatch(fetchSession());
       }
     })();
-  }, [dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return {
     /** Determine if the current user is authenticated. */

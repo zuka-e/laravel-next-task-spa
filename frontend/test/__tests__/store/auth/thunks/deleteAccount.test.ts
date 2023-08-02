@@ -2,7 +2,6 @@ import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
 import { signIn } from '@/store/slices/authSlice';
 import {
   deleteAccount,
-  fetchAuthUser,
   SignInRequest,
   signInWithEmail,
 } from '@/store/thunks/auth';
@@ -70,8 +69,6 @@ describe('Thunk for an account delete', () => {
         severity: 'warning',
         message: 'アカウントは削除されました',
       });
-      const fetchAuthUserResponse = await store.dispatch(fetchAuthUser());
-      expect(fetchAuthUser.fulfilled.match(fetchAuthUserResponse)).toBe(false);
     });
 
     it('should not be authenticated with the data before deleted', async () => {

@@ -1,8 +1,10 @@
 // Enable imports from the higher level. Here is an example
 // before: import { createUser } from '@/store/thunks/createUser';
 // after: import { createUser } from '@/store/thunks';
+
+export { default as fetchSession } from './fetchSession';
+export * from './fetchSession';
 export * from './createUser';
-export * from './fetchAuthUser';
 export * from './sendEmailVerificationLink';
 export { default as verifyEmail } from './verifyEmail';
 export * from './verifyEmail';

@@ -5,7 +5,6 @@ import { User } from '@/models/User';
 import { type RejectValue } from '@/store/thunks/config';
 import {
   createUser,
-  fetchAuthUser,
   sendEmailVerificationLink,
   verifyEmail,
   signInWithEmail,
@@ -15,6 +14,7 @@ import {
   resetPassword,
   signOut,
   deleteAccount,
+  fetchSession,
 } from '@/store/thunks/auth';
 
 export type FlashNotificationProps = {
@@ -64,6 +64,20 @@ export const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(fetchSession.pending, (state, _action) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchSession.fulfilled, (state, action) => {
+      const { user } = action.payload;
+
+      state.loading = false;
+      state.user = user;
+      state.signedIn = !!user;
+    });
+    builder.addCase(fetchSession.rejected, (state, action) => {
+      state.loading = false;
+      pushErrorFlash(state, action.payload);
+    });
     builder.addCase(createUser.pending, (state, _action) => {
       state.loading = true;
     });
@@ -79,19 +93,6 @@ export const authSlice = createSlice({
       state.loading = false;
       state.signedIn = false;
       pushErrorFlash(state, action.payload);
-    });
-    builder.addCase(fetchAuthUser.pending, (state, _action) => {
-      state.loading = true;
-    });
-    builder.addCase(fetchAuthUser.fulfilled, (state, action) => {
-      state.user = action.payload.user;
-      state.signedIn = true;
-      state.loading = false;
-    });
-    builder.addCase(fetchAuthUser.rejected, (state, _action) => {
-      state.user = null;
-      state.signedIn = false;
-      state.loading = false;
     });
     builder.addCase(sendEmailVerificationLink.pending, (state, _action) => {
       state.loading = true;
