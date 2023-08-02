@@ -1,5 +1,7 @@
 // cf. https://nextjs.org/docs/advanced-features/custom-error-page
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Error from 'next/error';
 
 import { useAppSelector } from '@/utils/hooks';
@@ -10,6 +12,8 @@ import PageExpired from '@/pages/419';
 import TooManyRequests from '@/pages/429';
 import InternalServerError from '@/pages/500';
 import ServiceUnavailable from '@/pages/503';
+import { clearHttpStatus } from '@/store/slices';
+import { useAppDispatch } from '@/utils/hooks';
 
 type ErrorHandlerProps = {
   children: React.ReactNode;
@@ -26,6 +30,14 @@ const isRenderableError = (httpStatus: number): boolean => {
 
 const ErrorHandler = ({ children }: ErrorHandlerProps) => {
   const httpStatus = useAppSelector((state) => state.app.httpStatus);
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+
+  useEffect((): (() => void) => {
+    return function cleanup() {
+      dispatch(clearHttpStatus());
+    };
+  }, [dispatch, router.asPath]);
 
   if (!httpStatus || !isRenderableError(httpStatus)) {
     return <>{children}</>;
