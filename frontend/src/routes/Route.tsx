@@ -23,7 +23,7 @@ const Route = (
         return;
       }
 
-      if (route.queryParams['verified']?.toString()) {
+      if (route.queryParams?.['verified']?.toString()) {
         await router.replace('/email-verification');
         return;
       }

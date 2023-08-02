@@ -32,7 +32,7 @@ const TaskListDetails = (props: TaskListDetailsProps) => {
   const { list } = props;
   const { pathParams } = useRoute();
   const boardName = useAppSelector(
-    (state) => state.boards.docs[pathParams.boardId].title
+    (state) => state.boards.docs[pathParams?.boardId || ''].title
   );
   const dispatch = useAppDispatch();
 
