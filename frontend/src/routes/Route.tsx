@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 
 import { useAppDispatch, useAppSelector, useRoute } from '@/utils/hooks';
 import { AuthRoute, GuestRoute } from '@/routes';
-import { clearIntendedUrl } from '@/store/slices';
+import { clearIntendedUrl, pushFlash } from '@/store/slices';
 import { Loading } from '@/layouts';
 
 const Route = (
@@ -13,8 +13,20 @@ const Route = (
   const { Component, pageProps } = props;
   const router = useRouter();
   const route = useRoute();
+  const httpStatus = useAppSelector((state) => state.app.httpStatus);
   const intendedUrl = useAppSelector((state) => state.app.intendedUrl);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (httpStatus && [401, 419].includes(httpStatus)) {
+      dispatch(
+        pushFlash({ severity: 'error', message: 'ログインしてください。' })
+      );
+
+      router.replace('/login');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [httpStatus]);
 
   useEffect((): void => {
     (async (): Promise<void> => {

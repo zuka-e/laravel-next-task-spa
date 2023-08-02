@@ -4,8 +4,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-import { useAppDispatch, useAppSelector, useAuth } from '@/utils/hooks';
-import { pushFlash } from '@/store/slices';
+import { useAuth } from '@/utils/hooks';
 import { Loading } from '@/layouts';
 
 export type AuthPage = {
@@ -21,18 +20,10 @@ type AuthRouteProps = {
  */
 const AuthRoute = ({ children }: AuthRouteProps) => {
   const router = useRouter();
-  const httpStatus = useAppSelector((state) => state.app.httpStatus);
   const { auth, guest } = useAuth();
-  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (guest) {
-      if (httpStatus && [401, 419].includes(httpStatus)) {
-        dispatch(
-          pushFlash({ severity: 'error', message: 'ログインしてください。' })
-        );
-      }
-
       router.replace('/login');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
