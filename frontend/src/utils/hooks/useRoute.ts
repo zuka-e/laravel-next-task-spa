@@ -24,13 +24,13 @@ export type AppRoute<
    * Path parameters as key-value object - *e.g.*`{ userId: 1 }`
    * The key name is determined by the filename.
    */
-  pathParams: Path extends string[]
+  pathParams?: Path extends string[]
     ? { [K in Path[number]]: string }
     : { [key: string]: string };
   /**
    * Query parameters as key-value object - *e.g.*`{ page: 1 }`
    */
-  queryParams: Query extends ParsedUrlQuery
+  queryParams?: Query extends ParsedUrlQuery
     ? { [K in keyof Query]: Query[K] }
     : ParsedUrlQuery;
 };
@@ -50,6 +50,12 @@ const useRoute = <
   Query extends ParsedUrlQuery | void = void
 >(): AppRoute<Path, Query> => {
   const router = useRouter();
+
+  if (!router.isReady) {
+    return {
+      pathname: router.pathname,
+    };
+  }
 
   /**
    * **Note:**
@@ -83,12 +89,12 @@ const useRoute = <
           obj[key] = values.join(' ');
           break;
         default:
-          throw new Error('Unexpected.');
+        // throw new Error('Unexpected.');
       }
 
       return obj;
     },
-    {} as AppRoute<Path, Query>['pathParams']
+    {} as NonNullable<AppRoute<Path, Query>['pathParams']>
   );
 
   /**
@@ -113,7 +119,7 @@ const useRoute = <
 
       return obj;
     },
-    {} as AppRoute<Path, Query>['queryParams']
+    {} as NonNullable<AppRoute<Path, Query>['queryParams']>
   );
 
   return {
