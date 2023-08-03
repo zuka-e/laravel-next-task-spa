@@ -8,18 +8,24 @@ use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
 use App\Http\Responses\RegisterResponse;
 use App\Http\Responses\LoginResponse;
-use App\Http\Controllers\VerifyEmailController as VerifyEmailControllerOverride;
+use App\Http\Responses\LogoutResponse;
+use App\Http\Responses\PasswordUpdateResponse;
+use App\Http\Responses\ProfileInformationUpdatedResponse;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Contracts\ProfileInformationUpdatedResponse as ProfileInformationUpdatedResponseContract;
 use Laravel\Fortify\Contracts\RegisterResponse as RegisterResponseContract;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
-use Laravel\Fortify\Http\Controllers\VerifyEmailController;
+use Laravel\Fortify\Contracts\LogoutResponse as LogoutResponseContract;
+use Laravel\Fortify\Contracts\PasswordUpdateResponse as PasswordUpdateResponseContract;
 
-/** @see \Laravel\Fortify\FortifyServiceProvider */
+/**
+ * @see \Laravel\Fortify\FortifyServiceProvider
+ */
 class FortifyServiceProvider extends ServiceProvider
 {
     /**
@@ -48,12 +54,20 @@ class FortifyServiceProvider extends ServiceProvider
             RegisterResponse::class,
         );
         $this->app->singleton(
+            ProfileInformationUpdatedResponseContract::class,
+            ProfileInformationUpdatedResponse::class,
+        );
+        $this->app->singleton(
+            PasswordUpdateResponseContract::class,
+            PasswordUpdateResponse::class,
+        );
+        $this->app->singleton(
             LoginResponseContract::class,
             LoginResponse::class,
         );
         $this->app->singleton(
-            VerifyEmailController::class,
-            VerifyEmailControllerOverride::class,
+            LogoutResponseContract::class,
+            LogoutResponse::class,
         );
 
         Fortify::createUsersUsing(CreateNewUser::class);

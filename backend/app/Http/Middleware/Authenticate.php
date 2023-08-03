@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use Illuminate\Support\Arr;
 
 class Authenticate extends Middleware
 {
@@ -11,17 +12,15 @@ class Authenticate extends Middleware
      *
      * @param  \Illuminate\Http\Request  $request
      * @return string|null
-     * @see \Illuminate\Auth\Middleware\Authenticate redirectTo
+     * @see \Illuminate\Auth\Middleware\Authenticate::redirectTo
      */
     protected function redirectTo($request)
     {
-        // There is no effect even if anything is implemented.
-        // This is because `unauthenticated()` throws `AuthenticationException`,
-        // the response is always returned as JSON by `shouldReturnJson()`.
-        // Therefore, no redirect will occur.
-        /**
-         * @see \Illuminate\Auth\Middleware\Authenticate unauthenticated
-         * @see \App\Exceptions\Handler shouldReturnJson
-         */
+        if (!$request->expectsJson()) {
+            $frontendUrl = config('fortify.home');
+            $query = Arr::query(['redirect_uri' => $request->fullUrl()]);
+
+            return "{$frontendUrl}/login?{$query}";
+        }
     }
 }

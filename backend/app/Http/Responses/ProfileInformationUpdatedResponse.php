@@ -4,14 +4,15 @@ namespace App\Http\Responses;
 
 use App\Enums\Severity;
 use App\Http\Resources\UserResource;
-use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
+use Laravel\Fortify\Contracts\ProfileInformationUpdatedResponse as ProfileInformationUpdatedResponseContract;
 
 /**
- * @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::store
- * @see \Laravel\Fortify\Http\Responses\LoginResponse
+ * @see \App\Http\Controllers\Auth\ProfileInformationController::update
+ * @see \Laravel\Fortify\Http\Responses\ProfileInformationUpdatedResponse
  * @see \App\Providers\FortifyServiceProvider
  */
-class LoginResponse implements LoginResponseContract
+class ProfileInformationUpdatedResponse implements
+    ProfileInformationUpdatedResponseContract
 {
     /**
      * @param \App\Http\Resources\UserResource $userResource
@@ -31,9 +32,10 @@ class LoginResponse implements LoginResponseContract
     {
         return response()->json([
             'severity' => Severity::Success,
-            'message' => __('Logged in.'),
+            'message' => __('The :resource was updated!', [
+                'resource' => __('Profile Information'),
+            ]),
             'user' => $this->userResource->make($request->user()),
-            'two_factor' => false,
         ]);
     }
 }

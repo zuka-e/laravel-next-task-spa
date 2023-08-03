@@ -2,9 +2,15 @@
 
 namespace App\Http\Responses;
 
+use App\Enums\Severity;
 use App\Http\Resources\UserResource;
 use Laravel\Fortify\Contracts\RegisterResponse as RegisterResponseContract;
 
+/**
+ * @see \App\Http\Controllers\Auth\RegisteredUserController::store
+ * @see \Laravel\Fortify\Http\Responses\RegisterResponse
+ * @see \App\Providers\FortifyServiceProvider
+ */
 class RegisterResponse implements RegisterResponseContract
 {
     /**
@@ -20,15 +26,16 @@ class RegisterResponse implements RegisterResponseContract
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Symfony\Component\HttpFoundation\Response
-     * @see \Laravel\Fortify\Http\Responses\RegisterResponse
      */
     public function toResponse($request)
     {
-        return $request->wantsJson()
-            ? response()->json(
-                ['user' => $this->userResource->make($request->user())],
-                201,
-            )
-            : redirect()->intended(config('fortify.home'));
+        return response()->json(
+            [
+                'severity' => Severity::Success,
+                'message' => __('Registration has been completed.'),
+                'user' => $this->userResource->make($request->user()),
+            ],
+            201,
+        );
     }
 }
