@@ -82,7 +82,7 @@ RUN mkdir -p /home/${USERNAME}/.vscode-server/extensions \
 
 COPY docker/start-container /usr/local/bin/start-container
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY docker/php.ini /etc/php/8.2/cli/conf.d/99-${USERNAME}.ini
+COPY docker/php.ini /usr/local/etc/php/conf.d/99-${USERNAME}.ini
 
 RUN chmod +x /usr/local/bin/start-container
 
