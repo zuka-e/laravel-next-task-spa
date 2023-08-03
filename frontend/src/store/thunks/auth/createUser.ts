@@ -6,6 +6,7 @@ import { User } from '@/models/User';
 import { apiClient } from '@/utils/api';
 import { AsyncThunkConfig } from '@/store/thunks/config';
 import { makeRejectValue } from '@/store/thunks/utils';
+import { setIntendedUrl, type FlashNotificationProps } from '@/store/slices';
 
 export type SignUpRequest = {
   email: string;
@@ -13,7 +14,7 @@ export type SignUpRequest = {
   password_confirmation: string;
 };
 
-export type SignUpResponse = {
+export type SignUpResponse = FlashNotificationProps & {
   user: User;
 };
 
@@ -24,11 +25,13 @@ export const createUser = createAsyncThunk<
 >('auth/createUser', async (payload, thunkApi) => {
   try {
     await apiClient({ apiRoute: false }).get(GET_CSRF_TOKEN_PATH);
-    const response = await apiClient().post(
-      SIGNUP_PATH,
-      { name: payload.email, ...payload },
-      { validateStatus: (status) => status === 201 } // `201`以外 error
-    );
+    const response = await apiClient().post(SIGNUP_PATH, {
+      name: payload.email,
+      ...payload,
+    });
+
+    thunkApi.dispatch(setIntendedUrl('/email-verification'));
+
     return response?.data as SignUpResponse;
   } catch (error) {
     // `Slice`の`extraReducers`の`rejected`を呼び出す

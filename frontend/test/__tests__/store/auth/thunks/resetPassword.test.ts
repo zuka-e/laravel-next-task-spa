@@ -91,7 +91,7 @@ describe('Thunk for resetting the password', () => {
 
       expect(isLoading(store)).toBe(false);
       expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'success',
+        severity: 'success',
         message: 'パスワードを再設定しました',
       });
     });

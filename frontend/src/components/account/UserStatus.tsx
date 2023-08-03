@@ -17,7 +17,7 @@ const UserStatus = () => {
   if (!createdAt) throw new Error();
 
   const showEmailVerificationState = () =>
-    !isVerified() ? (
+    isVerified() ? (
       <AlertMessage severity="success" body="認証済みです" />
     ) : (
       <>
@@ -38,7 +38,7 @@ const UserStatus = () => {
       <Grid item xs={12}>
         {showEmailVerificationState()}
       </Grid>
-      {isVerified() && (
+      {!isVerified() && (
         <Grid item>
           <Button onClick={handleClick} variant="contained" color="secondary">
             メールを再送信する

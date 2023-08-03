@@ -1,6 +1,7 @@
 import { AnyAction, combineReducers, configureStore } from '@reduxjs/toolkit';
 
-import { appSlice, authSlice, taskBoardSlice } from './slices';
+import { appSlice, authSlice, taskBoardSlice, flushAllStates } from './slices';
+import { deleteAccount, signOut } from './thunks/auth';
 
 const combinedReducer = combineReducers({
   app: appSlice.reducer,
@@ -15,9 +16,9 @@ export const rootReducer = (
   action: AnyAction
 ) => {
   const actionsWithReset = [
-    'auth/fetchAuthUser/rejected',
-    'auth/signOut/fulfilled',
-    'auth/deleteAccount/fulfilled',
+    flushAllStates().type,
+    signOut.fulfilled.type,
+    deleteAccount.fulfilled.type,
   ];
 
   if (actionsWithReset.includes(action.type)) {

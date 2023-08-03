@@ -75,7 +75,7 @@ describe('Thunk updating the user password', () => {
 
       expect(isLoading(store)).toBe(false);
       expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'success',
+        severity: 'success',
         message: 'パスワードを変更しました',
       });
     });
@@ -92,7 +92,7 @@ describe('Thunk updating the user password', () => {
 
       expect(isLoading(store)).toBe(false);
       expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'success',
+        severity: 'success',
         message: 'パスワードを変更しました',
       });
     });

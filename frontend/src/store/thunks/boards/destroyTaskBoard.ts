@@ -16,7 +16,7 @@ export const destroyTaskBoard = createAsyncThunk<
   DestroyTaskBoardRequest,
   AsyncThunkConfig
 >('boards/destroyTaskBoard', async (payload, thunkApi) => {
-  const { setFlash } = await import('@/store/slices/authSlice');
+  const { pushFlash } = await import('@/store/slices/authSlice');
 
   const userId = String(thunkApi.getState().auth.user?.id);
   const path = makePath(['users', userId], ['task-boards', payload.id]);
@@ -24,8 +24,8 @@ export const destroyTaskBoard = createAsyncThunk<
   try {
     const response = await apiClient().delete(path);
     thunkApi.dispatch(
-      setFlash({
-        type: 'warning',
+      pushFlash({
+        severity: 'warning',
         message: `${payload.title}は削除されました`,
       })
     );

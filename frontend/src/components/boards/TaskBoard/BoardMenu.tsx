@@ -42,7 +42,7 @@ const BoardMenu = (props: BoardMenuProps) => {
 
   return (
     <List component="nav" aria-label="board-menu" dense>
-      {pathParams.boardId && ( // 詳細ページの場合
+      {pathParams?.boardId && ( // 詳細ページの場合
         <PopoverControl
           position="left"
           trigger={
@@ -57,7 +57,7 @@ const BoardMenu = (props: BoardMenuProps) => {
           <SortSelect model="list" boardId={board.id} />
         </PopoverControl>
       )}
-      {pathParams.boardId && (
+      {pathParams?.boardId && (
         <ListItem button onClick={handleClick('info')} title={menuItem.info}>
           <ListItemIcon>
             <InfoIcon />

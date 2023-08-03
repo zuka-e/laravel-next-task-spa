@@ -1,8 +1,5 @@
-import {
-  UpdateProfileRequest,
-  UpdateProfileResponse,
-} from '@/store/thunks/auth';
-import { db, UserDocument } from '@test/api/models';
+import { type UpdateProfileRequest } from '@/store/thunks/auth';
+import { db, sanitizeUser, UserDocument } from '@test/api/models';
 
 type UpdateProfileProps = {
   currentUser: UserDocument;
@@ -22,10 +19,5 @@ export const update = (props: UpdateProfileProps) => {
 
   db.update('users', newUserDoc);
 
-  const response: UpdateProfileResponse = {
-    name: newUserDoc.name,
-    email: newUserDoc.email,
-  };
-
-  return response;
+  return sanitizeUser(newUserDoc);
 };

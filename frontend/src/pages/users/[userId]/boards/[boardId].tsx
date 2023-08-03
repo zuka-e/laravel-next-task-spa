@@ -40,18 +40,24 @@ export const getStaticProps: GetStaticProps<TaskBoardProps> = async () => {
 
 const TaskBoard = () => {
   const { pathParams } = useRoute();
+
   const dispatch = useAppDispatch();
   const board = useDeepEqualSelector(
-    (state) => state.boards.docs[pathParams.boardId]
+    (state) => state.boards.docs[pathParams?.boardId || '']
   );
 
   useEffect(() => {
+    if (!pathParams) {
+      return;
+    }
+
     const request: FetchTaskBoardRequest = {
       userId: pathParams.userId,
       boardId: pathParams.boardId,
     };
     dispatch(fetchTaskBoard(request));
-  }, [dispatch, pathParams.userId, pathParams.boardId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathParams]);
 
   const handleDrop = () => {
     const listIndexMap = makeIndexMap(board.lists);

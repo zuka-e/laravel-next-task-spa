@@ -1,11 +1,6 @@
 import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
 import { signIn } from '@/store/slices/authSlice';
-import {
-  fetchAuthUser,
-  SignInRequest,
-  signInWithEmail,
-  signOut,
-} from '@/store/thunks/auth';
+import { SignInRequest, signInWithEmail, signOut } from '@/store/thunks/auth';
 import { initializeStore, store } from '@test/store';
 import {
   getFlashState,
@@ -38,9 +33,6 @@ describe('Thunk logging out', () => {
       };
       // ログインリクエスト
       await store.dispatch(signInWithEmail(signInRequest));
-      // セッション有効なら`fulfilled`
-      const fetchAuthUserResponse = await store.dispatch(fetchAuthUser());
-      expect(fetchAuthUser.fulfilled.match(fetchAuthUserResponse)).toBe(true);
       // ログアウト前の`store`を確認
       expect(isSignedIn(store)).toBe(true);
       expect(getUserState(store)).toBeTruthy();

@@ -5,10 +5,10 @@ import { User } from '@/models/User';
 import { apiClient } from '@/utils/api';
 import { AsyncThunkConfig } from '@/store/thunks/config';
 import { makeRejectValue } from '@/store/thunks/utils';
+import { type FlashNotificationProps } from '@/store/slices';
 
-export type SignInResponse = {
+export type SignInResponse = FlashNotificationProps & {
   user: User;
-  verified?: true;
 };
 
 export type SignInRequest = {

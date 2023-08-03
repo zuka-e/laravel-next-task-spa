@@ -4,7 +4,6 @@ import { rest } from 'msw';
 import type {
   SignUpRequest,
   SignUpResponse,
-  FetchAuthUserResponse,
   SignInRequest,
   SignInResponse,
   UpdateProfileRequest,
@@ -12,6 +11,12 @@ import type {
   UpdatePasswordRequest,
   ForgotPasswordRequest,
   ResetPasswordRequest,
+  ResetPasswordResponse,
+  ForgotPasswordResponse,
+  SignOutResponse,
+  DeleteAccountResponse,
+  SendEmailVerificationLinkResponse,
+  UpdatePasswordResponse,
 } from '@/store/thunks/auth';
 import type { ErrorResponse } from './types';
 import { auth, db, sanitizeUser } from '@test/api/models';
@@ -49,13 +54,18 @@ export const handlers = [
           })
         );
 
-      const response = createUserController.store(req.body);
-      const encryptedSessionId = createSessionId(response.user.id);
+      const data: SignUpResponse = {
+        severity: 'success',
+        message: 'ユーザー登録が完了しました',
+        user: createUserController.store(req.body),
+      };
+
+      const encryptedSessionId = createSessionId(data.user.id);
 
       return res(
         ctx.status(201),
         ctx.cookie('session_id', encryptedSessionId, { httpOnly: true }),
-        ctx.json(response)
+        ctx.json(data)
       );
     }
   ),
@@ -68,28 +78,9 @@ export const handlers = [
     }
   ),
 
-  rest.get<
-    DefaultRequestBody,
-    FetchAuthUserResponse & ErrorResponse,
-    RequestParams
-  >(url('USER_INFO_PATH'), (req, res, ctx) => {
-    const httpException = applyMiddleware(req, ['authenticate']);
-    if (httpException) return res(httpException);
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const currentUser = auth.getUser()!;
-
-    return res(
-      ctx.status(200),
-      ctx.json({
-        user: sanitizeUser(currentUser),
-      })
-    );
-  }),
-
   rest.post<
     DefaultRequestBody,
-    FetchAuthUserResponse & ErrorResponse,
+    SendEmailVerificationLinkResponse & ErrorResponse,
     RequestParams
   >(url('VERIFICATION_NOTIFICATION_PATH'), (req, res, ctx) => {
     const httpException = applyMiddleware(req, ['authenticate']);
@@ -98,7 +89,17 @@ export const handlers = [
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const currentUser = auth.getUser()!;
 
-    return res(ctx.status(currentUser.emailVerifiedAt ? 204 : 202));
+    const data: SendEmailVerificationLinkResponse = currentUser.emailVerifiedAt
+      ? {
+          severity: 'error',
+          message: '既に認証済みです',
+        }
+      : {
+          severity: 'success',
+          message: '認証用メールを送信しました',
+        };
+
+    return res(ctx.status(200), ctx.json(data));
   }),
 
   rest.post<SignInRequest, SignInResponse & ErrorResponse, RequestParams>(
@@ -109,10 +110,16 @@ export const handlers = [
       if (!user)
         return res(returnInvalidRequest({ email: ['認証に失敗しました。'] }));
 
+      const data: SignInResponse = {
+        severity: 'info',
+        message: 'ログインしました',
+        user: sanitizeUser(user),
+      };
+
       return res(
         ctx.status(200),
         ctx.cookie('session_id', createSessionId(user.id), { httpOnly: true }),
-        ctx.json({ user: sanitizeUser(user) })
+        ctx.json(data)
       );
     }
   ),
@@ -135,82 +142,108 @@ export const handlers = [
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const currentUser = auth.getUser()!;
     const newSessionId = regenerateSessionId(req.cookies.session_id);
-    const response = updateProfileController.update({
+    const user = updateProfileController.update({
       currentUser: currentUser,
       request: req.body,
     });
 
+    const data: UpdateProfileResponse = {
+      severity: 'success',
+      message: 'ユーザー情報を更新しました',
+      user,
+    };
+
     return res(
       ctx.status(200),
       ctx.cookie('session_id', newSessionId, { httpOnly: true }),
-      ctx.json(response)
+      ctx.json(data)
     );
   }),
 
-  rest.put<UpdatePasswordRequest, void & ErrorResponse, RequestParams>(
-    url('UPDATE_PASSWORD_PATH'),
-    (req, res, ctx) => {
-      const httpException = applyMiddleware(req, ['authenticate']);
-      if (httpException) return res(httpException);
+  rest.put<
+    UpdatePasswordRequest,
+    UpdatePasswordResponse & ErrorResponse,
+    RequestParams
+  >(url('UPDATE_PASSWORD_PATH'), (req, res, ctx) => {
+    const httpException = applyMiddleware(req, ['authenticate']);
+    if (httpException) return res(httpException);
 
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const currentUser = auth.getUser()!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const currentUser = auth.getUser()!;
 
-      if (!isValidPassword(req.body.current_password, currentUser.password))
-        return res(
-          returnInvalidRequest({
-            password: ['パスワードが間違っています。'],
-          })
-        );
-
-      updatePasswordController.update({
-        currentUser: currentUser,
-        request: req.body,
-      });
-
-      const newSessionId = regenerateSessionId(req.cookies.session_id);
-
+    if (!isValidPassword(req.body.current_password, currentUser.password))
       return res(
-        ctx.status(200),
-        ctx.cookie('session_id', newSessionId, { httpOnly: true })
-      );
-    }
-  ),
-
-  rest.post<ForgotPasswordRequest, void & ErrorResponse, RequestParams>(
-    url('FORGOT_PASSWORD_PATH'),
-    (req, res, ctx) => {
-      const requestedUser = db.where('users', 'email', req.body.email)[0];
-
-      if (!requestedUser)
-        return res(
-          returnInvalidRequest({
-            email: ['指定されたメールアドレスは存在しません。'],
-          })
-        );
-
-      return res(ctx.status(200));
-    }
-  ),
-
-  rest.post<ResetPasswordRequest, void & ErrorResponse, RequestParams>(
-    url('RESET_PASSWORD_PATH'),
-    (req, res, ctx) => {
-      if (!isValidPasswordResetToken(req.body))
-        return res(returnInvalidRequest({ email: ['認証に失敗しました。'] }));
-
-      resetPasswordController.reset(req.body);
-
-      return res(
-        ctx.status(200),
-        ctx.cookie('session_id', regenerateSessionId(req.cookies.session_id), {
-          httpOnly: true,
+        returnInvalidRequest({
+          password: ['パスワードが間違っています。'],
         })
       );
-    }
-  ),
 
-  rest.post<DefaultRequestBody, void & ErrorResponse, RequestParams>(
+    updatePasswordController.update({
+      currentUser: currentUser,
+      request: req.body,
+    });
+
+    const data: UpdatePasswordResponse = {
+      severity: 'success',
+      message: 'パスワードを変更しました',
+    };
+
+    const newSessionId = regenerateSessionId(req.cookies.session_id);
+
+    return res(
+      ctx.status(200),
+      ctx.cookie('session_id', newSessionId, { httpOnly: true }),
+      ctx.json(data)
+    );
+  }),
+
+  rest.post<
+    ForgotPasswordRequest,
+    ForgotPasswordResponse & ErrorResponse,
+    RequestParams
+  >(url('FORGOT_PASSWORD_PATH'), (req, res, ctx) => {
+    const requestedUser = db.where('users', 'email', req.body.email)[0];
+
+    if (!requestedUser)
+      return res(
+        returnInvalidRequest({
+          email: ['指定されたメールアドレスは存在しません。'],
+        })
+      );
+
+    const data: ForgotPasswordResponse = {
+      severity: 'success',
+      message: 'パスワード再設定用のメールを送信しました',
+    };
+
+    return res(ctx.status(200), ctx.json(data));
+  }),
+
+  rest.post<
+    ResetPasswordRequest,
+    ResetPasswordResponse & ErrorResponse,
+    RequestParams
+  >(url('RESET_PASSWORD_PATH'), (req, res, ctx) => {
+    if (!isValidPasswordResetToken(req.body))
+      return res(returnInvalidRequest({ email: ['認証に失敗しました。'] }));
+
+    resetPasswordController.reset(req.body);
+
+    const data: ResetPasswordResponse = {
+      severity: 'success',
+      message: 'パスワードを再設定しました',
+    };
+
+    const sessionId = regenerateSessionId(req.cookies.session_id);
+
+    return res(
+      ctx.status(200),
+      ctx.cookie('session_id', sessionId, { httpOnly: true }),
+      ctx.json(data)
+    );
+  }),
+
+  rest.post<DefaultRequestBody, SignOutResponse & ErrorResponse, RequestParams>(
     url('SIGNOUT_PATH'),
     (req, res, ctx) => {
       const httpException = applyMiddleware(req, ['authenticate']);
@@ -218,28 +251,41 @@ export const handlers = [
 
       auth.logout();
 
+      const data: SignOutResponse = {
+        severity: 'info',
+        message: 'ログアウトしました',
+      };
+
       return res(
         ctx.status(204),
-        ctx.cookie('session_id', '', { httpOnly: true })
+        ctx.cookie('session_id', '', { httpOnly: true }),
+        ctx.json(data)
       );
     }
   ),
 
-  rest.delete<DefaultRequestBody, void & ErrorResponse, RequestParams>(
-    url('SIGNUP_PATH'),
-    (req, res, ctx) => {
-      const httpException = applyMiddleware(req, ['authenticate']);
-      if (httpException) return res(httpException);
+  rest.delete<
+    DefaultRequestBody,
+    DeleteAccountResponse & ErrorResponse,
+    RequestParams
+  >(url('SIGNUP_PATH'), (req, res, ctx) => {
+    const httpException = applyMiddleware(req, ['authenticate']);
+    if (httpException) return res(httpException);
 
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const currentUser = auth.getUser()!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const currentUser = auth.getUser()!;
 
-      deleteAccountController.remove(currentUser);
+    deleteAccountController.remove(currentUser);
 
-      return res(
-        ctx.status(204),
-        ctx.cookie('session_id', '', { httpOnly: true })
-      );
-    }
-  ),
+    const data: DeleteAccountResponse = {
+      severity: 'warning',
+      message: 'アカウントは削除されました',
+    };
+
+    return res(
+      ctx.status(204),
+      ctx.cookie('session_id', '', { httpOnly: true }),
+      ctx.json(data)
+    );
+  }),
 ];

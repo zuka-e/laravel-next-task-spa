@@ -9,13 +9,14 @@ import {
 } from '@mui/icons-material';
 
 import { APP_NAME } from '@/config/app';
-import { isSignedIn } from '@/utils/auth';
+import { useAppSelector } from '@/utils/hooks';
 import { Link, LinkButton, PopoverControl } from '@/templates';
 import { AccountMenuList } from '@/components/layouts/Header';
 import Sidebar from './Sidebar';
 import logo from '@/images/logo.svg';
 
 const Header = () => {
+  const signedIn = useAppSelector((state) => state.auth.signedIn);
   const [open, setOpen] = useState(false);
 
   const toggleDrawer =
@@ -79,7 +80,7 @@ const Header = () => {
             />
           </Link>
         </div>
-        {isSignedIn() ? <AccountMenuButton /> : <SignInLinkButton />}
+        {signedIn ? <AccountMenuButton /> : <SignInLinkButton />}
       </Toolbar>
     </AppBar>
   );

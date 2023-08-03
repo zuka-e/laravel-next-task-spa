@@ -4,9 +4,10 @@ import { SIGNUP_PATH } from '@/config/api';
 import { apiClient } from '@/utils/api';
 import { AsyncThunkConfig } from '@/store/thunks/config';
 import { makeRejectValue } from '@/store/thunks/utils';
+import { type FlashNotificationProps } from '@/store/slices';
 
-type DeleteAccountResponse = void;
-type DeleteAccountRequest = void;
+export type DeleteAccountResponse = FlashNotificationProps;
+export type DeleteAccountRequest = void;
 
 export const deleteAccount = createAsyncThunk<
   DeleteAccountResponse,
@@ -14,7 +15,7 @@ export const deleteAccount = createAsyncThunk<
   AsyncThunkConfig
 >('auth/deleteAccount', async (_, thunkApi) => {
   try {
-    await apiClient().delete(SIGNUP_PATH);
+    return (await apiClient().delete(SIGNUP_PATH)).data;
   } catch (error) {
     return thunkApi.rejectWithValue(makeRejectValue(error));
   }

@@ -47,7 +47,7 @@ export const getStaticProps: GetStaticProps<TaskBoardIndexProps> = async () => {
 
 const TaskBoardIndex = () => {
   const router = useRouter();
-  const route = useRoute();
+  const { pathname, pathParams, queryParams } = useRoute();
   const dispatch = useAppDispatch();
   const userId = useAppSelector((state) => state.auth.user?.id);
   const boards = useDeepEqualSelector((state) => state.boards.data);
@@ -55,22 +55,28 @@ const TaskBoardIndex = () => {
   const currentPage = useAppSelector((state) => state.boards.meta.current_page);
 
   useEffect(() => {
+    if (!pathParams || !queryParams) {
+      return;
+    }
+
     dispatch(
       fetchTaskBoards({
-        userId: route.pathParams.userId,
-        page: route.queryParams.page?.toString(),
+        userId: pathParams.userId,
+        page: queryParams.page?.toString(),
       })
     );
-  }, [dispatch, route.pathParams.userId, route.queryParams.page]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathParams, queryParams]);
 
   const handleChange = (_e: React.ChangeEvent<unknown>, page: number) => {
     router.push({
-      pathname: route.pathname,
-      query: { ...route.queryParams, page },
+      pathname: pathname,
+      query: { ...queryParams, page },
     });
   };
 
-  if (!boards || userId !== route.pathParams.userId) return <StandbyScreen />;
+  if (!pathParams || !boards || userId !== pathParams.userId)
+    return <StandbyScreen />;
 
   return (
     <>
@@ -84,7 +90,7 @@ const TaskBoardIndex = () => {
               <Grid item md={4} sm={6} xs={12} key={board.id}>
                 <Card elevation={7}>
                   <Link
-                    href={`/users/${route.pathParams.userId}/boards/${board.id}`}
+                    href={`/users/${pathParams.userId}/boards/${board.id}`}
                     className="text-inherit"
                   >
                     <div className="h-40 overflow-y-auto break-words p-4">

@@ -13,7 +13,7 @@ import { useAppDispatch } from '@/utils/hooks';
 import { createTaskBoard, updateTaskBoard } from '@/store/thunks/boards';
 import { createTaskList, updateTaskList } from '@/store/thunks/lists';
 import { createTaskCard, updateTaskCard } from '@/store/thunks/cards';
-import { setFlash } from '@/store/slices';
+import { pushFlash } from '@/store/slices';
 
 type FormData = {
   title: string;
@@ -54,7 +54,7 @@ const TitleForm = (props: FormProps) => {
     if (thunk.rejected.match(response)) {
       const errorMessage =
         response.payload?.error.message || 'Unexpected Error';
-      dispatch(setFlash({ type: 'error', message: errorMessage }));
+      dispatch(pushFlash({ severity: 'error', message: errorMessage }));
     } else handleClose();
   };
 

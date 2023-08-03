@@ -1,11 +1,8 @@
 import {
   FlashNotificationProps,
-  removeEmailVerificationPage,
-  setFlash,
+  pushFlash,
   signIn,
 } from '@/store/slices/authSlice';
-import { createUser, SignUpRequest } from '@/store/thunks/auth';
-import { generateRandomString, makeEmail } from '@/utils/generator';
 import { initializeStore, store } from '@test/store';
 
 describe('authSlice reducers', () => {
@@ -13,49 +10,30 @@ describe('authSlice reducers', () => {
     initializeStore();
   });
 
-  describe('setFlash', () => {
-    const emptyNewFlash: FlashNotificationProps = { type: 'info', message: '' };
+  describe('pushFlash', () => {
+    const emptyNewFlash: FlashNotificationProps = {
+      severity: 'info',
+      message: '',
+    };
     const hugeNewFlash: FlashNotificationProps = {
-      type: 'error',
+      severity: 'error',
       message: '!@#$%^&*()_+[]\\{}|'.repeat(100),
     };
 
-    const getFlashState = () => store.getState().auth.flash;
+    const getFlashState = () => store.getState().auth.flashes;
 
-    it('should added a new flash to a`flash`state, once', () => {
+    it('should added a new flashes to a`flashes`state, once', () => {
       expect(getFlashState()).toEqual([]);
-      store.dispatch(setFlash(emptyNewFlash));
+      store.dispatch(pushFlash(emptyNewFlash));
       expect(getFlashState()).toEqual([emptyNewFlash]);
     });
 
-    it('should added new flashes to a`flash`state, more than once', () => {
+    it('should added new flashes to a`flashes`state, more than once', () => {
       expect(getFlashState()).toEqual([]);
-      store.dispatch(setFlash(hugeNewFlash));
+      store.dispatch(pushFlash(hugeNewFlash));
       expect(getFlashState()).toEqual([hugeNewFlash]);
-      store.dispatch(setFlash(emptyNewFlash));
+      store.dispatch(pushFlash(emptyNewFlash));
       expect(getFlashState()).toEqual([hugeNewFlash, emptyNewFlash]);
-    });
-  });
-
-  describe('removeEmailVerificationPage', () => {
-    const password = generateRandomString();
-    const createdUser: SignUpRequest = {
-      email: makeEmail(),
-      password,
-      password_confirmation: password,
-    };
-
-    const getAfterRegistrationState = () =>
-      store.getState().auth.afterRegistration;
-
-    it('should update a`removeEmailVerificationPage`state to false', async () => {
-      // `true`の状態を用意する (手段は`createUser`のみ)
-      expect(getAfterRegistrationState()).toEqual(undefined);
-      await store.dispatch(createUser(createdUser));
-      expect(getAfterRegistrationState()).toBe(true);
-
-      store.dispatch(removeEmailVerificationPage());
-      expect(getAfterRegistrationState()).toBe(false);
     });
   });
 

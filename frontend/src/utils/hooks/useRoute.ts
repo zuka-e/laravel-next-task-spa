@@ -24,13 +24,13 @@ export type AppRoute<
    * Path parameters as key-value object - *e.g.*`{ userId: 1 }`
    * The key name is determined by the filename.
    */
-  pathParams: Path extends string[]
+  pathParams?: Path extends string[]
     ? { [K in Path[number]]: string }
     : { [key: string]: string };
   /**
    * Query parameters as key-value object - *e.g.*`{ page: 1 }`
    */
-  queryParams: Query extends ParsedUrlQuery
+  queryParams?: Query extends ParsedUrlQuery
     ? { [K in keyof Query]: Query[K] }
     : ParsedUrlQuery;
 };
@@ -51,6 +51,12 @@ const useRoute = <
 >(): AppRoute<Path, Query> => {
   const router = useRouter();
 
+  if (!router.isReady) {
+    return {
+      pathname: router.pathname,
+    };
+  }
+
   /**
    * **Note:**
    * In terms of [dynamic routes](https://nextjs.org/docs/routing/dynamic-routes),
@@ -61,6 +67,7 @@ const useRoute = <
    * (e.g. `asPath` => `/users/1?foo=bar`, `query` => `{ userId: 1 }`)
    * ~In that time, `query` value is empty `{}`, not like `{ userId: '1' }`.~
    * After the router is ready on the client side, the values are updated.
+   * (e.g. `pathname` => `/email/verify/[...credentials]`, `asPath` => `/email/verify/xxx/yyy`)
    */
   const pathAndQuery = router.asPath.split('?');
   const pathname: AppRoute['pathname'] = pathAndQuery[0];
@@ -70,16 +77,24 @@ const useRoute = <
    * `NextRouter.query` value containing only path params.
    */
   const pathParams = getPathParamNames(router).reduce(
-    (obj, pathParamName: string) => {
-      const value = router.query[pathParamName];
+    (obj, routeSegmentName: string) => {
+      const key = routeSegmentName.replace('...', '');
+      const values = router.query[key];
 
-      if (typeof value !== 'string') throw new Error('Unexpected.');
-
-      obj[pathParamName] = value;
+      switch (typeof values) {
+        case 'string':
+          obj[key] = values;
+          break;
+        case 'object':
+          obj[key] = values.join(' ');
+          break;
+        default:
+        // throw new Error('Unexpected.');
+      }
 
       return obj;
     },
-    {} as AppRoute<Path, Query>['pathParams']
+    {} as NonNullable<AppRoute<Path, Query>['pathParams']>
   );
 
   /**
@@ -90,6 +105,7 @@ const useRoute = <
    * on the server side or until the router is ready (`isReady` is `true`),
    * `query` have no query parameters even if `asPath` contains the query string.
    * (e.g. `asPath` => `/users/1?foo=bar`, `query` => `{ userId: 1 }`)
+   * (e.g. `asPath` => `/email/verify/[...credentials]`, `query` => `{}`)
    */
   const queryParams = getQueryParamNames(router).reduce(
     (obj, queryParamName: string) => {
@@ -103,7 +119,7 @@ const useRoute = <
 
       return obj;
     },
-    {} as AppRoute<Path, Query>['queryParams']
+    {} as NonNullable<AppRoute<Path, Query>['queryParams']>
   );
 
   return {
