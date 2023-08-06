@@ -3,8 +3,8 @@
 
 const colors = require('tailwindcss/colors');
 
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+/** @satisfies {import('tailwindcss').Config} */
+const config = {
   content: ['./src/**/*.{ts,tsx}'],
   important: '#__next',
   theme: {
@@ -46,5 +46,7 @@ module.exports = {
     require('@tailwindcss/line-clamp'),
   ],
 };
+
+module.exports = { ...config };
 
 // ※ If CSS isn't applied after `yarn dev`, maybe `.next/` should be removed.
