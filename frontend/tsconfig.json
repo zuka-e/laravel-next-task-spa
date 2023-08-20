@@ -23,6 +23,7 @@
     // ※ Module resolution generally depends on compiler.
     "paths": {
       "@/*": ["src/*"],
+      "@root/*": ["./*"],
       "@test/*": ["test/*"]
     }
   },

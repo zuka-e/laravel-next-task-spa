@@ -1,17 +1,22 @@
 import type { ThemeOptions } from '@mui/material/styles';
 
+import tailwindConfig from '@root/tailwind.config';
+
+const { colors } = tailwindConfig.theme.extend;
+
 const palette: ThemeOptions['palette'] = {
   primary: {
-    light: '#e0fffa',
-    main: '#40cbb5',
+    light: colors.primary.light,
+    main: colors.primary.DEFAULT,
+    dark: colors.primary.dark,
     contrastText: '#fff',
   },
   secondary: {
-    main: '#ffa133',
+    light: colors.secondary.light,
+    main: colors.secondary.DEFAULT,
+    dark: colors.secondary.dark,
     contrastText: '#fff',
   },
-  // light, dark値の算出 0に近いほど main値に近付く (0-1)
-  tonalOffset: 0.025,
 };
 
 export default palette;
