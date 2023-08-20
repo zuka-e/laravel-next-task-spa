@@ -31,7 +31,6 @@
     "@mui/x-date-pickers": "^5.0.4",
     "@playwright/test": "^1.30.0",
     "@reduxjs/toolkit": "^1.8.6",
-    "@tailwindcss/line-clamp": "^0.4.2",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
@@ -67,7 +66,7 @@
     "react-dnd-html5-backend": "^16.0.1",
     "react-hook-form": "~7.36.0",
     "react-redux": "^8.0.4",
-    "tailwindcss": "^3.2.1",
+    "tailwindcss": "^3.3.3",
     "typescript": "^5.1.6",
     "yup": "^0.32.9"
   },

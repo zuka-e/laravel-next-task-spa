@@ -41,10 +41,6 @@ const config = {
     // Remove Tailwind CSS's preflight style so it can use the MUI's preflight instead (CssBaseline).
     preflight: false,
   },
-  plugins: [
-    // cf. https://github.com/tailwindlabs/tailwindcss-line-clamp
-    require('@tailwindcss/line-clamp'),
-  ],
 };
 
 module.exports = { ...config };
