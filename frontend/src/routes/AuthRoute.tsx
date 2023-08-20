@@ -2,7 +2,7 @@
 // cf. https://github.com/ivandotv/nextjs-client-signin-logic
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/router';
+import Router from 'next/router';
 
 import { useAuth } from '@/utils/hooks';
 import { Loading } from '@/layouts';
@@ -19,14 +19,12 @@ type AuthRouteProps = {
  * Redirect to the login form unless authenticated.
  */
 const AuthRoute = ({ children }: AuthRouteProps) => {
-  const router = useRouter();
   const { auth, guest } = useAuth();
 
   useEffect(() => {
     if (guest) {
-      router.replace('/login');
+      Router.replace('/login');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [guest]);
 
   // Until initialized or the redirect completed.

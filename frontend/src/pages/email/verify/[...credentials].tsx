@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
+import Router from 'next/router';
 
 import { useAppDispatch, useRoute } from '@/utils/hooks';
 import { verifyEmail } from '@/store/thunks/auth';
@@ -14,7 +14,6 @@ import { BaseLayout, Loading } from '@/layouts';
  * It just sends a request to the verification URL.
  */
 const VerifyEmail: React.FC = () => {
-  const router = useRouter();
   const route = useRoute();
   const dispatch = useAppDispatch();
 
@@ -32,12 +31,11 @@ const VerifyEmail: React.FC = () => {
       );
 
       if (verifyEmail.fulfilled.match(response)) {
-        await router.replace('/account');
+        await Router.replace('/account');
         return;
       }
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [credentials, queryString]);
+  }, [credentials, dispatch, queryString]);
 
   return (
     <>

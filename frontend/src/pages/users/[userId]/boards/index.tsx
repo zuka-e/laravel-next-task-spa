@@ -65,8 +65,7 @@ const TaskBoardIndex = () => {
         page: queryParams.page?.toString(),
       })
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathParams, queryParams]);
+  }, [dispatch, pathParams, queryParams]);
 
   const handleChange = (_e: React.ChangeEvent<unknown>, page: number) => {
     router.push({

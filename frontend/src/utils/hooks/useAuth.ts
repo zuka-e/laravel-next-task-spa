@@ -18,8 +18,7 @@ const useAuth = () => {
         await dispatch(fetchSession());
       }
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dispatch]);
 
   return {
     /** Determine if the current user is authenticated. */

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useRouter } from 'next/router';
+import Router from 'next/router';
 
 import { Container } from '@mui/material';
 
@@ -10,14 +10,12 @@ import { SEO } from '@/components/pages';
 import { Hero, Features } from '@/components/home/LandingPage';
 
 const Home = () => {
-  const router = useRouter();
   const { user, guest } = useAuth();
 
   useEffect(() => {
     if (user) {
-      router.replace(`users/${user.id}/boards`);
+      Router.replace(`users/${user.id}/boards`);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   // Until initialized or the redirect completed.
