@@ -56,8 +56,7 @@ const TaskBoard = () => {
       boardId: pathParams.boardId,
     };
     dispatch(fetchTaskBoard(request));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathParams]);
+  }, [dispatch, pathParams]);
 
   const handleDrop = () => {
     const listIndexMap = makeIndexMap(board.lists);
