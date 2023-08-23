@@ -27,6 +27,11 @@ const Route = (
     }
   }, [dispatch, httpStatus]);
 
+  // > Resist adding unrelated logic to your Effect only because this logic needs to run at the same time as an Effect you already wrote.
+  // > ...
+  // > On the other hand, if you split up a cohesive piece of logic into separate Effects, the code may look “cleaner” but will be more difficult to maintain.
+  // >> https://react.dev/learn/lifecycle-of-reactive-effects#each-effect-represents-a-separate-synchronization-process
+  // cf. https://react.dev/learn/you-might-not-need-an-effect#chains-of-computations
   useEffect((): void => {
     (async (): Promise<void> => {
       if (intendedUrl) {
