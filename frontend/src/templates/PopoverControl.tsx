@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Popover, PopoverOrigin } from '@mui/material';
 
@@ -52,10 +52,17 @@ const PopoverControl = (props: PopoverControlProps) => {
   const { children, trigger, position } = props;
   const [className, setClassName] = useState<string | undefined>('contents');
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const timeoutRef = useRef(0);
 
   const open = Boolean(anchorEl);
   const htmlId = open ? 'menu' : undefined;
   const { anchorOrigin, transformOrigin } = makePopoverOriginSet(position);
+
+  useEffect(() => {
+    return function cleanup() {
+      window.clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   /**
    * - `open`時には`class (display: 'contents')`を排除
@@ -64,7 +71,7 @@ const PopoverControl = (props: PopoverControlProps) => {
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     const targetElement = event.currentTarget; // 値の確保
     const readinessTime = 10; // 適当な待機時間
-    setTimeout(() => {
+    timeoutRef.current = window.setTimeout(() => {
       setAnchorEl(targetElement);
     }, readinessTime);
     setClassName(undefined);
