@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import theme from '@/theme';
 import { TaskBoard, TaskList, TaskCard } from '@/models';
@@ -17,6 +17,7 @@ const InfoBox = (props: JSX.IntrinsicElements['div']) => {
   const previousState = usePrevious(
     currentState.model ? currentState : undefined
   );
+  const timeoutRef = useRef(0);
 
   useEffect(() => {
     if (!previousState) return; // `open`を実行していない(`prev`が存在していない)場合
@@ -24,18 +25,14 @@ const InfoBox = (props: JSX.IntrinsicElements['div']) => {
     if (!currentState.model) return; // 既に`remove`されている場合
 
     /** `close`後`transition`動作を待機してから`remove` */
-    const timeoutId = setTimeout(() => {
+    timeoutRef.current = window.setTimeout(() => {
       dispatch(removeInfoBox());
     }, theme.transitions.duration.standard);
-
-    /** Prevent memory leaks */
-    return function cleanup() {
-      clearTimeout(timeoutId);
-    };
   }, [dispatch, previousState, currentState.open, currentState.model]);
 
   useEffect(() => {
     return function cleanup() {
+      window.clearTimeout(timeoutRef.current);
       dispatch(removeInfoBox());
     };
   }, [dispatch]);
