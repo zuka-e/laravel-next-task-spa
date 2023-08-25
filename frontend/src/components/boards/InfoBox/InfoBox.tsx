@@ -3,32 +3,25 @@ import { useEffect, useRef } from 'react';
 import theme from '@/theme';
 import { TaskBoard, TaskList, TaskCard } from '@/models';
 import { removeInfoBox } from '@/store/slices/taskBoardSlice';
-import {
-  useAppDispatch,
-  useDeepEqualSelector,
-  usePrevious,
-} from '@/utils/hooks';
+import { useAppDispatch, useDeepEqualSelector } from '@/utils/hooks';
 import { TaskBoardDetails, TaskListDetails, TaskCardDetails } from '.';
 
 const InfoBox = (props: JSX.IntrinsicElements['div']) => {
   const { className, ...divProps } = props;
   const dispatch = useAppDispatch();
   const currentState = useDeepEqualSelector((state) => state.boards.infoBox);
-  const previousState = usePrevious(
-    currentState.model ? currentState : undefined
-  );
   const timeoutRef = useRef(0);
 
   useEffect(() => {
-    if (!previousState) return; // `open`を実行していない(`prev`が存在していない)場合
-    if (currentState.open) return; // `close`されていない場合
-    if (!currentState.model) return; // 既に`remove`されている場合
+    if (currentState.open) {
+      return;
+    }
 
     /** `close`後`transition`動作を待機してから`remove` */
     timeoutRef.current = window.setTimeout(() => {
       dispatch(removeInfoBox());
     }, theme.transitions.duration.standard);
-  }, [dispatch, previousState, currentState.open, currentState.model]);
+  }, [dispatch, currentState.open]);
 
   useEffect(() => {
     return function cleanup() {
