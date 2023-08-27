@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import {
   Typography,
   List,
@@ -16,7 +18,7 @@ type SidebarProps = {
   ) => (event: React.KeyboardEvent | React.MouseEvent) => void;
 };
 
-const Sidebar = (props: SidebarProps) => {
+const Sidebar = memo(function Sidebar(props: SidebarProps): JSX.Element {
   const { toggleDrawer } = props;
 
   return (
@@ -31,7 +33,7 @@ const Sidebar = (props: SidebarProps) => {
             className="flex items-center gap-2 p-1"
           >
             <ListItemIcon>
-              <IconButton onClick={toggleDrawer(false)} size="large">
+              <IconButton onClick={() => toggleDrawer(false)} size="large">
                 <MenuIcon />
               </IconButton>
             </ListItemIcon>
@@ -40,12 +42,12 @@ const Sidebar = (props: SidebarProps) => {
         }
       >
         <Divider />
-        <div onClick={toggleDrawer(false)}>
+        <div onClick={() => toggleDrawer(false)}>
           <SideMenu />
         </div>
       </List>
     </div>
   );
-};
+});
 
 export default Sidebar;

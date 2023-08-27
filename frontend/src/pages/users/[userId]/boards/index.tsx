@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
+import Router from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 
 import { Container, Grid, Card, Divider, Typography } from '@mui/material';
@@ -45,8 +45,7 @@ export const getStaticProps: GetStaticProps<TaskBoardIndexProps> = async () => {
   };
 };
 
-const TaskBoardIndex = () => {
-  const router = useRouter();
+const TaskBoardIndex = memo(function TaskBoardIndex(): JSX.Element {
   const { pathname, pathParams, queryParams } = useRoute();
   const dispatch = useAppDispatch();
   const userId = useAppSelector((state) => state.auth.user?.id);
@@ -67,12 +66,15 @@ const TaskBoardIndex = () => {
     );
   }, [dispatch, pathParams, queryParams]);
 
-  const handleChange = (_e: React.ChangeEvent<unknown>, page: number) => {
-    router.push({
-      pathname: pathname,
-      query: { ...queryParams, page },
-    });
-  };
+  const handleChange = useCallback(
+    (_e: React.ChangeEvent<unknown>, page: number): void => {
+      Router.push({
+        pathname: pathname,
+        query: { ...queryParams, page },
+      });
+    },
+    [pathname, queryParams]
+  );
 
   if (!pathParams || !boards || userId !== pathParams.userId)
     return <StandbyScreen />;
@@ -122,6 +124,6 @@ const TaskBoardIndex = () => {
       </BaseLayout>
     </>
   );
-};
+});
 
 export default TaskBoardIndex;

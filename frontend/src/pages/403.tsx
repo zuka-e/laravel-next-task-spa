@@ -1,8 +1,9 @@
+import { memo } from 'react';
 import Head from 'next/head';
 
 import { HttpErrorLayout } from '@/layouts';
 
-const Forbidden = () => {
+const Forbidden = memo(function Forbidden(): JSX.Element {
   const title = '403 Forbidden';
 
   return (
@@ -13,6 +14,6 @@ const Forbidden = () => {
       <HttpErrorLayout title={title} description="不正なリクエストです。" />
     </>
   );
-};
+});
 
 export default Forbidden;

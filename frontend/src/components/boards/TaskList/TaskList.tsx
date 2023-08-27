@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 
 import { useDrop } from 'react-dnd';
 import { Card, CardActions, Grid, Chip } from '@mui/material';
@@ -27,7 +27,7 @@ type TaskListProps = {
   listIndex: number;
 };
 
-const TaskList = (props: TaskListProps) => {
+const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
   const { list, listIndex } = props;
   const selectedId = useAppSelector((state) => state.boards.infoBox.data?.id);
   const dispatch = useAppDispatch();
@@ -73,17 +73,24 @@ const TaskList = (props: TaskListProps) => {
     },
   });
 
-  const isSelected = () => list.id === selectedId;
+  const isSelected = useCallback((): boolean => {
+    return list.id === selectedId;
+  }, [list.id, selectedId]);
 
-  const filteredCards = list.cards.filter((card) => {
-    if (filterValue === cardFilter.TODO) return !card.done;
-    else if (filterValue === cardFilter.DONE) return card.done;
-    else return true;
-  });
+  const filteredCards = useMemo((): Model.TaskCard[] => {
+    return list.cards.filter((card) => {
+      if (filterValue === cardFilter.TODO) return !card.done;
+      else if (filterValue === cardFilter.DONE) return card.done;
+      else return true;
+    });
+  }, [filterValue, list.cards]);
 
-  const handleChange: SelectProps['onChange'] = (event) => {
-    setFilterValue(event.target.value as FilterName); // unknown型から変換
-  };
+  const handleChange = useCallback<NonNullable<SelectProps['onChange']>>(
+    (event): void => {
+      setFilterValue(event.target.value as FilterName); // unknown型から変換
+    },
+    []
+  );
 
   return (
     <Card
@@ -131,6 +138,6 @@ const TaskList = (props: TaskListProps) => {
       </CardActions>
     </Card>
   );
-};
+});
 
 export default TaskList;

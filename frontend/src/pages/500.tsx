@@ -1,8 +1,9 @@
+import { memo } from 'react';
 import Head from 'next/head';
 
 import { HttpErrorLayout } from '@/layouts';
 
-const InternalServerError = () => {
+const InternalServerError = memo(function InternalServerError(): JSX.Element {
   const title = '500 Internal Server Error';
 
   return (
@@ -16,6 +17,6 @@ const InternalServerError = () => {
       />
     </>
   );
-};
+});
 
 export default InternalServerError;

@@ -1,8 +1,9 @@
+import { memo } from 'react';
 import Head from 'next/head';
 
 import { HttpErrorLayout } from '@/layouts';
 
-const NotFound = () => {
+const NotFound = memo(function NotFound(): JSX.Element {
   const title = '404 Not Found';
 
   return (
@@ -17,6 +18,6 @@ const NotFound = () => {
       />
     </>
   );
-};
+});
 
 export default NotFound;

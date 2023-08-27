@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 
 import { TextField, TextFieldProps } from '@mui/material';
 
@@ -11,19 +11,21 @@ type EditableTitleProps = FormAction & {
   maxRows?: number;
 } & TextFieldProps;
 
-const EditableTitle = (props: EditableTitleProps) => {
+const EditableTitle = memo(function EditableTitle(
+  props: EditableTitleProps
+): JSX.Element {
   const { inputStyle, disableMargin, maxRows, ...formProps } = props;
   const { method, model, variant, ...textFieldProps } = formProps;
   const defaultValue = props.method === 'PATCH' ? props.data.title : '';
   const [editing, setEditing] = useState(false);
 
-  const handleOpenForm = () => {
+  const handleOpenForm = useCallback((): void => {
     setEditing(true);
-  };
+  }, []);
 
-  const handleCloseForm = () => {
+  const handleCloseForm = useCallback((): void => {
     setEditing(false);
-  };
+  }, []);
 
   return editing ? (
     <TitleForm
@@ -62,6 +64,6 @@ const EditableTitle = (props: EditableTitleProps) => {
       {...textFieldProps}
     />
   );
-};
+});
 
 export default EditableTitle;

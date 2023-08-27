@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 
 import {
   Dialog,
@@ -16,18 +16,24 @@ type DeleteAccountDialogProps = {
   trigger: JSX.Element;
 };
 
-const DeleteAccountDialog = (props: DeleteAccountDialogProps) => {
+const DeleteAccountDialog = memo(function DeleteAccountDialog(
+  props: DeleteAccountDialogProps
+): JSX.Element {
   const { trigger } = props;
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
 
-  const handleClickOpen = () => setOpen(true);
+  const handleClickOpen = useCallback((): void => {
+    setOpen(true);
+  }, []);
 
-  const handleClose = () => setOpen(false);
+  const handleClose = useCallback((): void => {
+    setOpen(false);
+  }, []);
 
-  const handleDelete = () => {
+  const handleDelete = useCallback((): void => {
     dispatch(deleteAccount());
-  };
+  }, [dispatch]);
 
   return (
     <>
@@ -59,6 +65,6 @@ const DeleteAccountDialog = (props: DeleteAccountDialogProps) => {
       </Dialog>
     </>
   );
-};
+});
 
 export default DeleteAccountDialog;

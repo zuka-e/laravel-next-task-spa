@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { memo, useCallback, useRef } from 'react';
 
 import { useDrag, useDrop } from 'react-dnd';
 import { Card, Typography } from '@mui/material';
@@ -14,7 +14,7 @@ type TaskCardProps = {
   listIndex: number;
 };
 
-const TaskCard = (props: TaskCardProps) => {
+const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
   const { card, cardIndex, listIndex } = props;
   const selectedId = useAppSelector((state) => state.boards.infoBox.data?.id);
   const dispatch = useAppDispatch();
@@ -65,11 +65,13 @@ const TaskCard = (props: TaskCardProps) => {
 
   drag(drop(ref));
 
-  const isSelected = () => card.id === selectedId;
+  const isSelected = useCallback((): boolean => {
+    return card.id === selectedId;
+  }, [card.id, selectedId]);
 
-  const handleClick = () => {
+  const handleClick = useCallback((): void => {
     dispatch(openInfoBox({ model: 'card', data: card }));
-  };
+  }, [card, dispatch]);
 
   return (
     <Card
@@ -83,12 +85,12 @@ const TaskCard = (props: TaskCardProps) => {
     >
       <Typography
         title={card.title}
-        className="whitespace-pre-wrap p-1.5 line-clamp-3"
+        className="line-clamp-3 whitespace-pre-wrap p-1.5"
       >
         {card.title}
       </Typography>
     </Card>
   );
-};
+});
 
 export default TaskCard;

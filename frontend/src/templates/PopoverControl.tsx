@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Popover, PopoverOrigin } from '@mui/material';
 
@@ -48,7 +48,9 @@ type PopoverControlProps = {
   position?: PopoverPosition;
 };
 
-const PopoverControl = (props: PopoverControlProps) => {
+const PopoverControl = memo(function PopoverControl(
+  props: PopoverControlProps
+): JSX.Element {
   const { children, trigger, position } = props;
   const [className, setClassName] = useState<string | undefined>('contents');
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -56,7 +58,11 @@ const PopoverControl = (props: PopoverControlProps) => {
 
   const open = Boolean(anchorEl);
   const htmlId = open ? 'menu' : undefined;
-  const { anchorOrigin, transformOrigin } = makePopoverOriginSet(position);
+
+  const { anchorOrigin, transformOrigin } = useMemo(
+    () => makePopoverOriginSet(position),
+    [position]
+  );
 
   useEffect(() => {
     return function cleanup() {
@@ -68,19 +74,22 @@ const PopoverControl = (props: PopoverControlProps) => {
    * - `open`時には`class (display: 'contents')`を排除
    * - 時間差を設けてこれを実行することで`Warning: Failed prop type`を回避
    */
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    const targetElement = event.currentTarget; // 値の確保
-    const readinessTime = 10; // 適当な待機時間
-    timeoutRef.current = window.setTimeout(() => {
-      setAnchorEl(targetElement);
-    }, readinessTime);
-    setClassName(undefined);
-  };
+  const handleClick = useCallback(
+    (event: React.MouseEvent<HTMLElement>): void => {
+      const targetElement = event.currentTarget; // 値の確保
+      const readinessTime = 10; // 適当な待機時間
+      timeoutRef.current = window.setTimeout(() => {
+        setAnchorEl(targetElement);
+      }, readinessTime);
+      setClassName(undefined);
+    },
+    []
+  );
 
-  const handleClose = () => {
+  const handleClose = useCallback((): void => {
     setClassName('contents');
     setAnchorEl(null);
-  };
+  }, []);
 
   return (
     <>
@@ -106,6 +115,6 @@ const PopoverControl = (props: PopoverControlProps) => {
       </Popover>
     </>
   );
-};
+});
 
 export default PopoverControl;

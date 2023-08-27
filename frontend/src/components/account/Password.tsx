@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -44,7 +44,7 @@ const schema = yup.object().shape({
     .oneOf([yup.ref('password'), null], 'Passwords do not match'),
 });
 
-const Password = () => {
+const Password = memo(function Password(): JSX.Element {
   const dispatch = useAppDispatch();
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
@@ -55,20 +55,23 @@ const Password = () => {
     formState: { errors },
   } = useForm<FormData>({ mode: 'onBlur', resolver: yupResolver(schema) });
 
-  const togglePasswordVisibility = () => {
-    setVisiblePassword(!visiblePassword);
-  };
+  const togglePasswordVisibility = useCallback((): void => {
+    setVisiblePassword((prev) => !prev);
+  }, []);
 
   // エラー発生時はメッセージを表示する
-  const onSubmit = async (data: FormData) => {
-    const response = await dispatch(updatePassword(data));
-    if (updatePassword.rejected.match(response)) {
-      setMessage(response.payload?.error?.message);
-    } else {
-      setMessage('');
-      reset(); // フォームの値 (エラー値含む) を消去
-    }
-  };
+  const onSubmit = useCallback(
+    async (data: FormData): Promise<void> => {
+      const response = await dispatch(updatePassword(data));
+      if (updatePassword.rejected.match(response)) {
+        setMessage(response.payload?.error?.message);
+      } else {
+        setMessage('');
+        reset(); // フォームの値 (エラー値含む) を消去
+      }
+    },
+    [dispatch, reset]
+  );
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -137,6 +140,6 @@ const Password = () => {
       {!isGuest() && <SubmitButton>パスワードを変更する</SubmitButton>}
     </form>
   );
-};
+});
 
 export default Password;

@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import { Header, Footer } from '@/layouts';
 
 type BaseLayoutProps = {
@@ -5,12 +7,16 @@ type BaseLayoutProps = {
   withoutHeaders?: boolean;
 };
 
-const BaseLayout = (props: BaseLayoutProps) => (
-  <>
-    {!props.withoutHeaders && <Header />}
-    {props.children}
-    {!props.withoutHeaders && <Footer />}
-  </>
-);
+const BaseLayout = memo(function BaseLayout(
+  props: BaseLayoutProps
+): JSX.Element {
+  return (
+    <>
+      {!props.withoutHeaders && <Header />}
+      {props.children}
+      {!props.withoutHeaders && <Footer />}
+    </>
+  );
+});
 
 export default BaseLayout;

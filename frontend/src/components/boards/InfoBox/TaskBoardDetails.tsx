@@ -1,3 +1,5 @@
+import { memo, useCallback, useMemo } from 'react';
+
 import * as yup from 'yup';
 import dayjs from 'dayjs';
 import {
@@ -27,31 +29,39 @@ type TaskBoardDetailsProps = {
   board: TaskBoard;
 };
 
-const TaskBoardDetails = (props: TaskBoardDetailsProps) => {
+const TaskBoardDetails = memo(function TaskBoardDetails(
+  props: TaskBoardDetailsProps
+): JSX.Element {
   const { board } = props;
   const userId = useAppSelector((state) => state.auth.user?.id);
   const dispatch = useAppDispatch();
 
-  const totalList = board.lists.reduce(
-    (acc, current) => acc + current.cards.length,
-    0
-  );
+  const totalList = useMemo((): number => {
+    return board.lists.reduce((acc, current) => acc + current.cards.length, 0);
+    // ※ Although `board.lists` is an array, it's ok to be used as the dependencies.
+    //  `board.lists` has the same value between the re-renders in this case.
+  }, [board.lists]);
 
-  const totalCompletedCard = board.lists.reduce((acc, list) => {
-    const totalCompletedCardForEachList = list.cards.reduce(
-      (acc, card) => (card.done ? acc + 1 : acc),
-      0
-    );
-    return acc + totalCompletedCardForEachList;
-  }, 0);
+  const totalCompletedCard = useMemo((): number => {
+    return board.lists.reduce((acc, list) => {
+      const totalCompletedCardForEachList = list.cards.reduce(
+        (acc, card) => (card.done ? acc + 1 : acc),
+        0
+      );
+      return acc + totalCompletedCardForEachList;
+    }, 0);
+  }, [board.lists]);
 
-  const handleClose = () => {
+  const handleClose = useCallback((): void => {
     dispatch(closeInfoBox());
-  };
+  }, [dispatch]);
 
-  const handleSubmitText = (text: string) => {
-    dispatch(updateTaskBoard({ id: board.id, description: text }));
-  };
+  const handleSubmitText = useCallback(
+    (text: string): void => {
+      dispatch(updateTaskBoard({ id: board.id, description: text }));
+    },
+    [board.id, dispatch]
+  );
 
   return (
     <Card className="flex h-full flex-col rounded-none">
@@ -134,6 +144,6 @@ const TaskBoardDetails = (props: TaskBoardDetailsProps) => {
       </CardContent>
     </Card>
   );
-};
+});
 
 export default TaskBoardDetails;

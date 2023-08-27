@@ -1,8 +1,9 @@
+import { memo } from 'react';
 import Head from 'next/head';
 
 import { HttpErrorLayout } from '@/layouts';
 
-const ServiceUnavailable = () => {
+const ServiceUnavailable = memo(function ServiceUnavailable(): JSX.Element {
   const title = '503 Service Unavailable';
 
   return (
@@ -17,6 +18,6 @@ const ServiceUnavailable = () => {
       />
     </>
   );
-};
+});
 
 export default ServiceUnavailable;

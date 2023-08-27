@@ -1,13 +1,13 @@
 // cf. https://mui.com/material-ui/react-snackbar/#consecutive-snackbars
 
-import { useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 
 import { Snackbar, Alert } from '@mui/material';
 
 import { shiftFlash } from '@/store/slices';
 import { useAppDispatch, useDeepEqualSelector } from '@/utils/hooks';
 
-const FlashNotification = () => {
+const FlashNotification = memo(function FlashNotification(): JSX.Element {
   const flashes = useDeepEqualSelector((state) => state.auth.flashes);
   const [open, setOpen] = useState(false);
   const [currentFlash, setCurrentFlash] = useState<
@@ -29,17 +29,17 @@ const FlashNotification = () => {
     }
   }, [flashes, currentFlash, open, dispatch]);
 
-  const handleClose = (
-    _event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === 'clickaway') return;
-    else setOpen(false);
-  };
+  const handleClose = useCallback(
+    (_event?: React.SyntheticEvent | Event, reason?: string): void => {
+      if (reason === 'clickaway') return;
+      else setOpen(false);
+    },
+    []
+  );
 
-  const handleExited = () => {
+  const handleExited = useCallback((): void => {
     setCurrentFlash(undefined);
-  };
+  }, []);
 
   if (!currentFlash?.message) {
     return <></>;
@@ -64,6 +64,6 @@ const FlashNotification = () => {
       </Alert>
     </Snackbar>
   );
-};
+});
 
 export default FlashNotification;

@@ -1,8 +1,9 @@
+import { memo } from 'react';
 import Head from 'next/head';
 
 import { HttpErrorLayout } from '@/layouts';
 
-const PageExpired = () => {
+const PageExpired = memo(function PageExpired(): JSX.Element {
   const title = '419 Page Expired';
 
   return (
@@ -17,6 +18,6 @@ const PageExpired = () => {
       />
     </>
   );
-};
+});
 
 export default PageExpired;

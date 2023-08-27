@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticProps } from 'next';
@@ -65,7 +65,7 @@ export const getStaticProps: GetStaticProps<RegisterProps> = async () => {
   };
 };
 
-const SignUp = () => {
+const SignUp = memo(function SignUp(): JSX.Element {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [visiblePassword, setVisiblePassword] = useState(false);
@@ -79,17 +79,20 @@ const SignUp = () => {
     resolver: yupResolver(schema),
   });
 
-  const togglePasswordVisibility = () => {
-    setVisiblePassword(!visiblePassword);
-  };
+  const togglePasswordVisibility = useCallback((): void => {
+    setVisiblePassword((prev) => !prev);
+  }, []);
 
   // エラー発生時はメッセージを表示する
-  const onSubmit = async (data: FormData) => {
-    const response = await dispatch(createUser(data));
-    if (createUser.rejected.match(response)) {
-      setMessage(response.payload?.error?.message);
-    }
-  };
+  const onSubmit = useCallback(
+    async (data: FormData): Promise<void> => {
+      const response = await dispatch(createUser(data));
+      if (createUser.rejected.match(response)) {
+        setMessage(response.payload?.error?.message);
+      }
+    },
+    [dispatch]
+  );
 
   return (
     <>
@@ -172,6 +175,6 @@ const SignUp = () => {
       </FormLayout>
     </>
   );
-};
+});
 
 export default SignUp;

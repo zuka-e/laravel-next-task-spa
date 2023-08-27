@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import { Container, Card, Grid, Avatar, Typography } from '@mui/material';
 
 import { APP_NAME } from '@/config/app';
@@ -5,11 +7,13 @@ import { AlertMessage } from '@/templates';
 import Link, { NextLinkComposed } from '@/templates/Link';
 import logo from '@/images/logo_short.svg';
 
-const Copyright = () => (
-  <Typography variant="body2" color="textSecondary" align="center">
-    © {APP_NAME} {new Date().getFullYear()}
-  </Typography>
-);
+const Copyright = memo(function Copyright(): JSX.Element {
+  return (
+    <Typography variant="body2" color="textSecondary" align="center">
+      © {APP_NAME} {new Date().getFullYear()}
+    </Typography>
+  );
+});
 
 type FormLayoutProps = {
   children: React.ReactNode;
@@ -18,7 +22,9 @@ type FormLayoutProps = {
   onSubmit: React.FormEventHandler<HTMLFormElement>;
 };
 
-const FormLayout = (props: FormLayoutProps) => {
+const FormLayout = memo(function FormLayout(
+  props: FormLayoutProps
+): JSX.Element {
   const { children, title, onSubmit, message } = props;
 
   return (
@@ -68,6 +74,6 @@ const FormLayout = (props: FormLayoutProps) => {
       </footer>
     </>
   );
-};
+});
 
 export default FormLayout;

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 
 import { ClickAwayListener, Card, CardActions, Button } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
@@ -10,17 +10,19 @@ type AddTaskButtonProps = FormAction & {
   transparent?: boolean;
 };
 
-const AddTaskButton = (props: AddTaskButtonProps) => {
+const AddTaskButton = memo(function AddTaskButton(
+  props: AddTaskButtonProps
+): JSX.Element {
   const { transparent, ...formActionType } = props;
   const [isEditing, setIsEditing] = useState(false);
 
-  const toggleForm = () => {
-    setIsEditing(!isEditing);
-  };
+  const toggleForm = useCallback((): void => {
+    setIsEditing((prev) => !prev);
+  }, []);
 
-  const handleClickAway = () => {
+  const handleClickAway = useCallback((): void => {
     setIsEditing(false);
-  };
+  }, []);
 
   return (
     <ClickAwayListener mouseEvent="onMouseDown" onClickAway={handleClickAway}>
@@ -53,6 +55,6 @@ const AddTaskButton = (props: AddTaskButtonProps) => {
       )}
     </ClickAwayListener>
   );
-};
+});
 
 export default AddTaskButton;

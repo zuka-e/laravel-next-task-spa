@@ -1,4 +1,5 @@
-import { useRouter } from 'next/router';
+import { memo, useCallback } from 'react';
+import Router from 'next/router';
 
 import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import {
@@ -9,20 +10,21 @@ import {
 import { signOut } from '@/store/thunks/auth';
 import { useAppDispatch, useAppSelector } from '@/utils/hooks';
 
-const AccountMenuList = () => {
-  const router = useRouter();
+const AccountMenuList = memo(function AccountMenuList(): JSX.Element {
   const username = useAppSelector((state) => state.auth.user?.name);
   const dispatch = useAppDispatch();
 
-  const handleClick = (path: string) => () => router.push(path);
+  const handleClick = useCallback((path: string): void => {
+    Router.push(path);
+  }, []);
 
-  const handleSignOut = () => {
+  const handleSignOut = useCallback((): void => {
     dispatch(signOut());
-  };
+  }, [dispatch]);
 
   return (
     <List component="nav" aria-label="account-menu">
-      <ListItem button onClick={handleClick('/account')} title={username}>
+      <ListItem button onClick={() => handleClick('/account')} title={username}>
         <ListItemIcon>
           <AccountCircleIcon />
         </ListItemIcon>
@@ -36,6 +38,6 @@ const AccountMenuList = () => {
       </ListItem>
     </List>
   );
-};
+});
 
 export default AccountMenuList;

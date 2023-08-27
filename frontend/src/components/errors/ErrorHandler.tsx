@@ -1,6 +1,6 @@
 // cf. https://nextjs.org/docs/advanced-features/custom-error-page
 
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Error from 'next/error';
 
@@ -28,7 +28,9 @@ const isRenderableError = (httpStatus: number): boolean => {
   return isHttpError(httpStatus) && !excluded.includes(httpStatus);
 };
 
-const ErrorHandler = ({ children }: ErrorHandlerProps) => {
+const ErrorHandler = memo(function ErrorHandler({
+  children,
+}: ErrorHandlerProps): JSX.Element {
   const httpStatus = useAppSelector((state) => state.app.httpStatus);
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -62,6 +64,6 @@ const ErrorHandler = ({ children }: ErrorHandlerProps) => {
     default:
       return <Error statusCode={httpStatus} />;
   }
-};
+});
 
 export default ErrorHandler;

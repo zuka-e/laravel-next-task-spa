@@ -1,5 +1,6 @@
+import { memo, useCallback } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
+import Router from 'next/router';
 
 import {
   Button,
@@ -21,26 +22,25 @@ import { makeEmail } from '@/utils/generator';
 import { LinkButton, PopoverControl } from '@/templates';
 import hero from '@/images/hero.svg';
 
-const Hero = () => {
+const Hero = memo(function Hero(): JSX.Element {
   const dispatch = useAppDispatch();
-  const router = useRouter();
 
-  const handleGuestSignUp = async () => {
+  const handleGuestSignUp = useCallback(async (): Promise<void> => {
     const user = {
       name: GUEST_NAME,
       email: makeEmail(),
       password: GUEST_PASSWORD,
       password_confirmation: GUEST_PASSWORD,
     };
-    await router.push('/register'); // `EmailVerification`を表示するため
+    await Router.push('/register'); // `EmailVerification`を表示するため
     dispatch(createUser(user));
-  };
+  }, [dispatch]);
 
-  const handleGuestSignIn = () => {
+  const handleGuestSignIn = useCallback((): void => {
     const email = GUEST_EMAIL;
     const password = GUEST_PASSWORD;
     dispatch(signInWithEmail({ email, password }));
-  };
+  }, [dispatch]);
 
   return (
     <Grid
@@ -102,6 +102,6 @@ const Hero = () => {
       </Grid>
     </Grid>
   );
-};
+});
 
 export default Hero;

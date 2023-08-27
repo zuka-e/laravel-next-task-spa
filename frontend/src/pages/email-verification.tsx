@@ -1,3 +1,4 @@
+import { memo, useCallback } from 'react';
 import Head from 'next/head';
 import type { GetStaticProps } from 'next';
 
@@ -22,15 +23,15 @@ export const getStaticProps: GetStaticProps<
   };
 };
 
-const EmailVerification = () => {
+const EmailVerification = memo(function EmailVerification(): JSX.Element {
   const dispatch = useAppDispatch();
   const verified = useAppSelector(
     (state) => !!state.auth.user?.emailVerifiedAt
   );
 
-  const handleClick = () => {
+  const handleClick = useCallback((): void => {
     dispatch(sendEmailVerificationLink());
-  };
+  }, [dispatch]);
 
   return (
     <>
@@ -84,6 +85,6 @@ const EmailVerification = () => {
       </BaseLayout>
     </>
   );
-};
+});
 
 export default EmailVerification;

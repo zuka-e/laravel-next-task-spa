@@ -1,8 +1,9 @@
+import { memo } from 'react';
 import Head from 'next/head';
 
 import { HttpErrorLayout } from '@/layouts';
 
-const TooManyRequests = () => {
+const TooManyRequests = memo(function TooManyRequests(): JSX.Element {
   const title = '429 Too Many Requests';
 
   return (
@@ -17,6 +18,6 @@ const TooManyRequests = () => {
       />
     </>
   );
-};
+});
 
 export default TooManyRequests;

@@ -1,6 +1,6 @@
 // cf. file://./AuthRoute.tsx
 
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import Router from 'next/router';
 
 import { useAuth } from '@/utils/hooks';
@@ -17,7 +17,9 @@ type GuestRouteProps = {
 /**
  * Redirect if authenticated.
  */
-const GuestRoute = ({ children }: GuestRouteProps) => {
+const GuestRoute = memo(function GuestRoute({
+  children,
+}: GuestRouteProps): JSX.Element {
   const { auth, guest } = useAuth();
 
   useEffect(() => {
@@ -34,6 +36,6 @@ const GuestRoute = ({ children }: GuestRouteProps) => {
   }
 
   return <>{children}</>;
-};
+});
 
 export default GuestRoute;
