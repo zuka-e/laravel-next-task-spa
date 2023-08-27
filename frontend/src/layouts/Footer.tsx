@@ -1,15 +1,19 @@
+import { memo } from 'react';
+
 import { Grid, Typography } from '@mui/material';
 
 import { APP_NAME } from '@/config/app';
 import { Link } from '@/templates';
 
-const Copyright = () => (
-  <Typography variant="body2" className="text-inherit">
-    © {APP_NAME} {new Date().getFullYear()}
-  </Typography>
-);
+const Copyright = memo(function Copyright(): JSX.Element {
+  return (
+    <Typography variant="body2" className="text-inherit">
+      © {APP_NAME} {new Date().getFullYear()}
+    </Typography>
+  );
+});
 
-const Footer = () => {
+const Footer = memo(function Footer(): JSX.Element {
   return (
     <footer className="mt-auto bg-black py-8 text-white">
       <Grid container direction="column" alignItems="center">
@@ -28,6 +32,6 @@ const Footer = () => {
       </Grid>
     </footer>
   );
-};
+});
 
 export default Footer;

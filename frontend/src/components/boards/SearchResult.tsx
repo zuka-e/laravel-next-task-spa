@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   List,
@@ -15,7 +15,9 @@ type SearchResultProps = {
   input: string;
 };
 
-const SearchResult = (props: SearchResultProps) => {
+const SearchResult = memo(function SearchResult(
+  props: SearchResultProps
+): JSX.Element {
   const { input } = props;
   const route = useRoute();
   const dispatch = useAppDispatch();
@@ -58,9 +60,12 @@ const SearchResult = (props: SearchResultProps) => {
     });
   }, [cards, lists, input]);
 
-  const handleClick = (payload: Parameters<typeof openInfoBox>[0]) => () => {
-    dispatch(openInfoBox(payload));
-  };
+  const handleClick = useCallback(
+    (payload: Parameters<typeof openInfoBox>[0]) => (): void => {
+      dispatch(openInfoBox(payload));
+    },
+    [dispatch]
+  );
 
   if (Object.values(results).every((result) => result.length === 0))
     return <CardContent>{'ここに検索結果が表示されます。'}</CardContent>;
@@ -130,6 +135,6 @@ const SearchResult = (props: SearchResultProps) => {
       )}
     </>
   );
-};
+});
 
 export default SearchResult;

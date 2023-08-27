@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 
 import {
   ClickAwayListener,
@@ -14,31 +14,36 @@ import { SearchResult } from '.';
 
 const SEARCH = 'search' as const;
 
-const SearchField = () => {
+const SearchField = memo(function SearchField(): JSX.Element {
   const [inputOpen, setInputOpen] = useState(false);
   const [popperOpen, setPopperOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [value, setValue] = useState('');
 
-  const handleClickAway = () => {
+  const handleClickAway = useCallback((): void => {
     setInputOpen(false);
     setPopperOpen(false);
     setAnchorEl(null);
-  };
+  }, []);
 
-  const handleOpen = () => {
+  const handleOpen = useCallback((): void => {
     setInputOpen(true);
-  };
+  }, []);
 
-  const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
-    setAnchorEl(event.currentTarget);
-    setPopperOpen(true);
-  };
+  const handleFocus = useCallback(
+    (event: React.FocusEvent<HTMLInputElement>): void => {
+      setAnchorEl(event.currentTarget);
+      setPopperOpen(true);
+    },
+    []
+  );
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const input = event.target.value;
-    setValue(input);
-  };
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>): void => {
+      setValue(event.target.value);
+    },
+    []
+  );
 
   if (!inputOpen)
     return (
@@ -84,6 +89,6 @@ const SearchField = () => {
       </div>
     </ClickAwayListener>
   );
-};
+});
 
 export default SearchField;

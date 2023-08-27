@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 
 import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import {
@@ -23,21 +23,28 @@ type ListMenuProps = {
   list: TaskList;
 };
 
-const ListMenu = (props: ListMenuProps) => {
+const ListMenu = memo(function ListMenu(props: ListMenuProps): JSX.Element {
   const { list } = props;
   const dispatch = useAppDispatch();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
-  const handleClick = (key: keyof typeof menuItem) => () => {
-    switch (key) {
-      case 'info':
-        dispatch(openInfoBox({ model: 'list', data: list }));
-        break;
-      case 'delete':
-        setOpenDeleteDialog(true);
-        break;
-    }
-  };
+  const handleClick = useCallback(
+    (key: keyof typeof menuItem): void => {
+      switch (key) {
+        case 'info':
+          dispatch(openInfoBox({ model: 'list', data: list }));
+          break;
+        case 'delete':
+          setOpenDeleteDialog(true);
+          break;
+      }
+    },
+    [dispatch, list]
+  );
+
+  const handleCloseDeleteDialog = useCallback((): void => {
+    setOpenDeleteDialog(false);
+  }, []);
 
   return (
     <List component="nav" aria-label="list-menu" dense>
@@ -54,20 +61,27 @@ const ListMenu = (props: ListMenuProps) => {
       >
         <SortSelect model="card" boardId={list.boardId} listId={list.id} />
       </PopoverControl>
-      <ListItem button onClick={handleClick('info')} title={menuItem.info}>
+      <ListItem
+        button
+        onClick={() => handleClick('info')}
+        title={menuItem.info}
+      >
         <ListItemIcon>
           <InfoIcon />
         </ListItemIcon>
         <ListItemText primary={menuItem.info} />
       </ListItem>
-      {openDeleteDialog && (
-        <DeleteTaskDialog
-          model="list"
-          data={props.list}
-          setOpen={setOpenDeleteDialog}
-        />
-      )}
-      <ListItem button onClick={handleClick('delete')} title={menuItem.delete}>
+      <DeleteTaskDialog
+        model="list"
+        data={props.list}
+        open={openDeleteDialog}
+        onClose={handleCloseDeleteDialog}
+      />
+      <ListItem
+        button
+        onClick={() => handleClick('delete')}
+        title={menuItem.delete}
+      >
         <ListItemIcon>
           <DeleteIcon />
         </ListItemIcon>
@@ -75,6 +89,6 @@ const ListMenu = (props: ListMenuProps) => {
       </ListItem>
     </List>
   );
-};
+});
 
 export default ListMenu;

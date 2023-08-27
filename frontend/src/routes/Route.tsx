@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import type { AppProps } from 'next/app';
 import Router, { useRouter } from 'next/router';
 
@@ -7,9 +7,9 @@ import { AuthRoute, GuestRoute } from '@/routes';
 import { clearIntendedUrl, pushFlash } from '@/store/slices';
 import { Loading } from '@/layouts';
 
-const Route = (
+const Route = memo(function Route(
   props: Pick<AppProps<Record<string, unknown>>, 'Component' | 'pageProps'>
-) => {
+): JSX.Element {
   const { Component, pageProps } = props;
   const router = useRouter();
   const route = useRoute();
@@ -73,6 +73,6 @@ const Route = (
       )}
     </>
   );
-};
+});
 
 export default Route;

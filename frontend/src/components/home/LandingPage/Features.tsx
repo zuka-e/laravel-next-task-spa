@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import Image from 'next/image';
 
 import { Grid, Typography } from '@mui/material';
@@ -22,7 +23,9 @@ type FeatureLayoutProps = {
   header: string;
 };
 
-const FeatureLayout = (props: FeatureLayoutProps) => {
+const FeatureLayout = memo(function FeatureLayout(
+  props: FeatureLayoutProps
+): JSX.Element {
   const { children, image, header } = props;
 
   return (
@@ -40,9 +43,9 @@ const FeatureLayout = (props: FeatureLayoutProps) => {
       </Grid>
     </Grid>
   );
-};
+});
 
-const Features = () => {
+const Features = memo(function Features(): JSX.Element {
   return (
     <Grid container spacing={8} className="justify-around">
       <FeatureLayout image={filingSystem.src} header="サブタスク管理">
@@ -59,6 +62,6 @@ const Features = () => {
       </FeatureLayout>
     </Grid>
   );
-};
+});
 
 export default Features;

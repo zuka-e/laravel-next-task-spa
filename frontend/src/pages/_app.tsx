@@ -3,6 +3,7 @@
 // https://nextjs.org/docs/messages/no-document-viewport-meta
 // e.g. https://github.com/vercel/next.js/blob/canary/examples/with-redux/src/pages/_app.tsx
 
+import { memo } from 'react';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 
@@ -30,7 +31,7 @@ if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
   require('@test/api/servers');
 }
 
-const App = ({ Component, pageProps }: AppProps) => {
+const App = memo(function App({ Component, pageProps }: AppProps): JSX.Element {
   return (
     <>
       <Head>
@@ -55,6 +56,6 @@ const App = ({ Component, pageProps }: AppProps) => {
       </Provider>
     </>
   );
-};
+});
 
 export default App;

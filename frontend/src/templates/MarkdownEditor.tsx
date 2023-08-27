@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 
 import { useForm, Controller } from 'react-hook-form';
@@ -50,12 +50,20 @@ type MarkdownEditorProps = {
   defaultValue?: string;
 };
 
-const MarkdownEditor = (props: MarkdownEditorProps) => {
-  const { schema, defaultValue } = props;
-  const prop: keyof typeof schema.fields = Object.keys(schema.fields)[0];
+const MarkdownEditor = memo(function MarkdownEditor(
+  props: MarkdownEditorProps
+): JSX.Element {
+  const { schema, defaultValue, onSubmit } = props;
+
+  const prop: keyof typeof schema.fields = useMemo(
+    () => Object.keys(schema.fields)[0],
+    [schema.fields]
+  );
+
   const [mode, setMode] = useState<PreviewType>(
     defaultValue ? 'preview' : 'edit'
   );
+
   const {
     formState: { errors },
     control,
@@ -66,18 +74,21 @@ const MarkdownEditor = (props: MarkdownEditorProps) => {
     resolver: yupResolver(schema),
   });
 
-  const handleClickPreview = () => {
+  const handleClickPreview = useCallback((): void => {
     setMode('edit');
-  };
+  }, []);
 
-  const onSubmit: SubmitHandler<Record<typeof prop, string>> = (data) => {
-    if (data[prop] === defaultValue) {
-      setMode('preview');
-      return;
-    }
+  const onSubmitValid: SubmitHandler<Record<typeof prop, string>> = useCallback(
+    (data): void => {
+      if (data[prop] === defaultValue) {
+        setMode('preview');
+        return;
+      }
 
-    props.onSubmit(data[prop]);
-  };
+      onSubmit(data[prop]);
+    },
+    [defaultValue, onSubmit, prop]
+  );
 
   // 表示するデータが変更された場合に値を初期化する
   useEffect(() => {
@@ -96,7 +107,7 @@ const MarkdownEditor = (props: MarkdownEditorProps) => {
     );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmitValid)}>
       {/* cf. https://react-hook-form.com/get-started/#IntegratingwithUIlibraries */}
       <Controller
         control={control}
@@ -125,6 +136,6 @@ const MarkdownEditor = (props: MarkdownEditorProps) => {
       </div>
     </form>
   );
-};
+});
 
 export default MarkdownEditor;

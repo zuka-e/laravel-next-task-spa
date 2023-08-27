@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import MarkdownToJsx, { MarkdownToJSX } from 'markdown-to-jsx';
 import { Typography } from '@mui/material';
 
@@ -32,8 +34,10 @@ const options: MarkdownToJSX.Options = {
   },
 };
 
-const Markdown = ({ children }: Parameters<typeof MarkdownToJsx>[0]) => {
+const Markdown = memo(function Markdown({
+  children,
+}: Parameters<typeof MarkdownToJsx>[0]): JSX.Element {
   return <MarkdownToJsx options={options}>{children}</MarkdownToJsx>;
-};
+});
 
 export default Markdown;

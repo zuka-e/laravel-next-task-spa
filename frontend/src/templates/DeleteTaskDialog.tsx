@@ -1,3 +1,5 @@
+import { memo, useCallback } from 'react';
+
 import {
   Dialog,
   DialogContent,
@@ -14,10 +16,14 @@ import { destroyTaskList } from '@/store/thunks/lists';
 import { destroyTaskCard } from '@/store/thunks/cards';
 
 type DeleteTaskDialogProps = DeleteAction & {
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  open: boolean;
+  onClose: () => void;
 };
 
-const DeleteTaskDialog = (props: DeleteTaskDialogProps) => {
+const DeleteTaskDialog = memo(function DeleteTaskDialog(
+  props: DeleteTaskDialogProps
+): JSX.Element {
+  const { open, onClose } = props;
   const dispatch = useAppDispatch();
 
   const renderTitle = () => {
@@ -45,9 +51,11 @@ const DeleteTaskDialog = (props: DeleteTaskDialogProps) => {
     }
   };
 
-  const handleClose = () => props.setOpen(false);
+  const handleClose = useCallback((): void => {
+    onClose();
+  }, [onClose]);
 
-  const handleDelete = async () => {
+  const handleDelete = useCallback(async () => {
     switch (props.model) {
       case 'board':
         return await dispatch(destroyTaskBoard(props.data));
@@ -56,11 +64,11 @@ const DeleteTaskDialog = (props: DeleteTaskDialogProps) => {
       case 'card':
         return await dispatch(destroyTaskCard(props.data));
     }
-  };
+  }, [dispatch, props.data, props.model]);
 
   return (
     <Dialog
-      open={true}
+      open={open}
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
@@ -81,6 +89,6 @@ const DeleteTaskDialog = (props: DeleteTaskDialogProps) => {
       </DialogActions>
     </Dialog>
   );
-};
+});
 
 export default DeleteTaskDialog;

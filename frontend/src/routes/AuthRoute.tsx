@@ -1,7 +1,7 @@
 // cf. https://dev.to/ivandotv/protecting-static-pages-in-next-js-application-1e50
 // cf. https://github.com/ivandotv/nextjs-client-signin-logic
 
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import Router from 'next/router';
 
 import { useAuth } from '@/utils/hooks';
@@ -18,7 +18,9 @@ type AuthRouteProps = {
 /**
  * Redirect to the login form unless authenticated.
  */
-const AuthRoute = ({ children }: AuthRouteProps) => {
+const AuthRoute = memo(function AuthRoute({
+  children,
+}: AuthRouteProps): JSX.Element {
   const { auth, guest } = useAuth();
 
   useEffect(() => {
@@ -33,6 +35,6 @@ const AuthRoute = ({ children }: AuthRouteProps) => {
   }
 
   return <>{children}</>;
-};
+});
 
 export default AuthRoute;

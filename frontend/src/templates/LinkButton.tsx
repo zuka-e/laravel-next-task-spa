@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import { Button } from '@mui/material';
 import type { ButtonProps } from '@mui/material';
 
@@ -6,7 +8,9 @@ import { NextLinkComposed } from '@/templates/Link';
 type LinkButtonProps = ButtonProps<'a'> &
   Parameters<typeof NextLinkComposed>[number];
 
-const LinkButton = (props: LinkButtonProps) => {
+const LinkButton = memo(function LinkButton(
+  props: LinkButtonProps
+): JSX.Element {
   return (
     <Button
       component={NextLinkComposed}
@@ -15,6 +19,6 @@ const LinkButton = (props: LinkButtonProps) => {
       {...props}
     />
   );
-};
+});
 
 export default LinkButton;

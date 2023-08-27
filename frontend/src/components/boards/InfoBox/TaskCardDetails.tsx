@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 
 import * as yup from 'yup';
 import dayjs from 'dayjs';
@@ -39,7 +39,9 @@ type TaskCardDetailsProps = {
   card: TaskCard;
 };
 
-const TaskCardDetails = (props: TaskCardDetailsProps) => {
+const TaskCardDetails = memo(function TaskCardDetails(
+  props: TaskCardDetailsProps
+): JSX.Element {
   const { card } = props;
   const { pathParams } = useRoute();
   const dispatch = useAppDispatch();
@@ -56,13 +58,7 @@ const TaskCardDetails = (props: TaskCardDetailsProps) => {
     setChecked(card.done);
   }, [card.done]);
 
-  const targetCard = {
-    id: card.id,
-    boardId: card.boardId,
-    listId: card.listId,
-  };
-
-  const handleCheckbox = () => {
+  const handleCheckbox = useCallback((): void => {
     setChecked(!checked);
     dispatch(
       updateTaskCard({
@@ -72,30 +68,49 @@ const TaskCardDetails = (props: TaskCardDetailsProps) => {
         done: !card.done,
       })
     );
-  };
+  }, [card.boardId, card.done, card.id, card.listId, checked, dispatch]);
 
-  const handleClose = () => {
+  const handleClose = useCallback((): void => {
     dispatch(closeInfoBox());
-  };
+  }, [dispatch]);
 
-  const handleDateChange: DatetimeInputProps['onAccept'] = (date) => {
-    dispatch(
-      updateTaskCard({
-        id: card.id,
-        boardId: card.boardId,
-        listId: card.listId,
-        deadline: date?.toISOString(),
-      })
-    );
-  };
+  const handleDateChange = useCallback<
+    NonNullable<DatetimeInputProps['onAccept']>
+  >(
+    (date): void => {
+      dispatch(
+        updateTaskCard({
+          id: card.id,
+          boardId: card.boardId,
+          listId: card.listId,
+          deadline: date?.toISOString(),
+        })
+      );
+    },
+    [card.boardId, card.id, card.listId, dispatch]
+  );
 
-  const handleDelete = () => {
+  const handleDelete = useCallback((): void => {
     setOpenDeleteDialog(true);
-  };
+  }, []);
 
-  const handleSubmitText = (text: string) => {
-    dispatch(updateTaskCard({ ...targetCard, content: text }));
-  };
+  const handleCloseDeleteDialog = useCallback((): void => {
+    setOpenDeleteDialog(false);
+  }, []);
+
+  const handleSubmitText = useCallback(
+    (text: string): void => {
+      dispatch(
+        updateTaskCard({
+          id: card.id,
+          boardId: card.boardId,
+          listId: card.listId,
+          content: text,
+        })
+      );
+    },
+    [card.boardId, card.id, card.listId, dispatch]
+  );
 
   return (
     <Card className="flex h-full flex-col rounded-none">
@@ -188,13 +203,12 @@ const TaskCardDetails = (props: TaskCardDetailsProps) => {
       </CardContent>
 
       <CardActions className="flex-auto">
-        {openDeleteDialog && (
-          <DeleteTaskDialog
-            model="card"
-            data={card}
-            setOpen={setOpenDeleteDialog}
-          />
-        )}
+        <DeleteTaskDialog
+          model="card"
+          data={card}
+          open={openDeleteDialog}
+          onClose={handleCloseDeleteDialog}
+        />
         <Button
           onClick={handleDelete}
           startIcon={<DeleteIcon />}
@@ -208,6 +222,6 @@ const TaskCardDetails = (props: TaskCardDetailsProps) => {
       </CardActions>
     </Card>
   );
-};
+});
 
 export default TaskCardDetails;

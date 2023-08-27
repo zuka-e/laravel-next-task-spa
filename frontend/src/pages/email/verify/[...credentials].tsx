@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { memo, useEffect, useMemo } from 'react';
 import Head from 'next/head';
 import Router from 'next/router';
 
@@ -13,12 +13,18 @@ import { BaseLayout, Loading } from '@/layouts';
  *
  * It just sends a request to the verification URL.
  */
-const VerifyEmail: React.FC = () => {
+const VerifyEmail = memo(function VerifyEmail(): JSX.Element {
   const route = useRoute();
   const dispatch = useAppDispatch();
 
-  const credentials = route.pathParams?.['credentials'];
-  const queryString = route.queryString;
+  const credentials = useMemo(
+    (): string | undefined => route.pathParams?.['credentials'],
+    [route.pathParams]
+  );
+  const queryString = useMemo(
+    (): string | undefined => route.queryString,
+    [route.queryString]
+  );
 
   useEffect((): void => {
     if (!(credentials && queryString)) {
@@ -47,6 +53,6 @@ const VerifyEmail: React.FC = () => {
       </BaseLayout>
     </>
   );
-};
+});
 
 export default VerifyEmail;

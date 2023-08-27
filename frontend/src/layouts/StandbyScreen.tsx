@@ -1,6 +1,8 @@
+import { memo } from 'react';
+
 import { Header, Footer, Progressbar } from '@/layouts';
 
-const StandbyScreen = () => {
+const StandbyScreen = memo(function StandbyScreen(): JSX.Element {
   return (
     <>
       <Header />
@@ -8,6 +10,6 @@ const StandbyScreen = () => {
       <Footer />
     </>
   );
-};
+});
 
 export default StandbyScreen;

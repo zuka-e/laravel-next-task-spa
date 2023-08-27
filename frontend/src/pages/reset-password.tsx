@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticProps } from 'next';
@@ -62,7 +62,7 @@ export const getStaticProps: GetStaticProps<ResetPasswordProps> = async () => {
   };
 };
 
-const ResetPassword = () => {
+const ResetPassword = memo(function ResetPassword(): JSX.Element {
   const router = useRouter();
   const route = useRoute();
   const dispatch = useAppDispatch();
@@ -76,25 +76,30 @@ const ResetPassword = () => {
     mode: 'onBlur',
     resolver: yupResolver(schema),
     defaultValues: {
-      email: route.queryParams.email?.toString() ?? '',
-      token: route.queryParams.token?.toString() ?? '',
+      email: route.queryParams?.email?.toString() ?? '',
+      token: route.queryParams?.token?.toString() ?? '',
     },
     // `defaultValues`はフォーム入力では変更不可
   });
 
-  const togglePasswordVisibility = () => {
-    setVisiblePassword(!visiblePassword);
-  };
+  const togglePasswordVisibility = useCallback((): void => {
+    setVisiblePassword((prev) => !prev);
+  }, []);
 
   // エラー発生時はメッセージを表示する
-  const onSubmit = async (data: FormData) => {
-    const response = await dispatch(resetPassword(data));
-    if (resetPassword.rejected.match(response))
-      setMessage(response.payload?.error?.message);
-    // 認証成功時は自動ログイン
-    else
-      dispatch(signInWithEmail({ email: data.email, password: data.password }));
-  };
+  const onSubmit = useCallback(
+    async (data: FormData): Promise<void> => {
+      const response = await dispatch(resetPassword(data));
+      if (resetPassword.rejected.match(response))
+        setMessage(response.payload?.error?.message);
+      // 認証成功時は自動ログイン
+      else
+        dispatch(
+          signInWithEmail({ email: data.email, password: data.password })
+        );
+    },
+    [dispatch]
+  );
 
   return (
     <>
@@ -164,6 +169,6 @@ const ResetPassword = () => {
       </FormLayout>
     </>
   );
-};
+});
 
 export default ResetPassword;

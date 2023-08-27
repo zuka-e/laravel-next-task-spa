@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -28,13 +28,8 @@ const schema = yup.object().shape({
   email: yup.string().label(formData.email.label).email().max(255),
 });
 
-const UserProfile = () => {
-  const user = {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    name: useAppSelector((state) => state.auth.user!.name),
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    email: useAppSelector((state) => state.auth.user!.email),
-  };
+const UserProfile = memo(function UserProfile(): JSX.Element {
+  const user = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
   const [message, setMessage] = useState<string | undefined>('');
   const {
@@ -44,23 +39,29 @@ const UserProfile = () => {
   } = useForm<FormData>({ mode: 'onBlur', resolver: yupResolver(schema) });
 
   // エラー発生時はメッセージを表示する
-  const onSubmit = async (data: FormData) => {
-    // フォーカスを当てていない場合`defaultValue`でなく`undefined`となる
-    // その場合変更点がないので現在の値をセットする
-    if (!data.name) data.name = user.name;
-    if (!data.email) data.email = user.email;
+  const onSubmit = useCallback(
+    async (data: FormData): Promise<void> => {
+      if (!user) {
+        return;
+      }
+      // フォーカスを当てていない場合`defaultValue`でなく`undefined`となる
+      // その場合変更点がないので現在の値をセットする
+      if (!data.name) data.name = user.name;
+      if (!data.email) data.email = user.email;
 
-    // 全ての項目で変更点がない場合はリクエストを送らない
-    if (data.name === user?.name && data.email === user?.email) {
-      setMessage('プロフィールが変更されておりません');
-      return;
-    }
+      // 全ての項目で変更点がない場合はリクエストを送らない
+      if (data.name === user?.name && data.email === user?.email) {
+        setMessage('プロフィールが変更されておりません');
+        return;
+      }
 
-    const response = await dispatch(updateProfile(data));
-    if (updateProfile.rejected.match(response))
-      setMessage(response.payload?.error?.message);
-    else setMessage('');
-  };
+      const response = await dispatch(updateProfile(data));
+      if (updateProfile.rejected.match(response))
+        setMessage(response.payload?.error?.message);
+      else setMessage('');
+    },
+    [dispatch, user]
+  );
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -104,6 +105,6 @@ const UserProfile = () => {
       </Grid>
     </form>
   );
-};
+});
 
 export default UserProfile;

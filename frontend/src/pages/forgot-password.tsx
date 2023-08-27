@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticProps } from 'next';
@@ -38,7 +38,7 @@ export const getStaticProps: GetStaticProps<ForgotPasswordProps> = async () => {
   };
 };
 
-const ForgotPassword = () => {
+const ForgotPassword = memo(function ForgotPassword(): JSX.Element {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [message, setMessage] = useState<string | undefined>('');
@@ -49,12 +49,15 @@ const ForgotPassword = () => {
   } = useForm<FormData>({ mode: 'onBlur', resolver: yupResolver(schema) });
 
   // エラー発生時はメッセージを表示する
-  const onSubmit = async (data: FormData) => {
-    const response = await dispatch(forgotPassword(data));
-    if (forgotPassword.rejected.match(response))
-      setMessage(response.payload?.error?.message);
-    else setMessage('');
-  };
+  const onSubmit = useCallback(
+    async (data: FormData): Promise<void> => {
+      const response = await dispatch(forgotPassword(data));
+      if (forgotPassword.rejected.match(response))
+        setMessage(response.payload?.error?.message);
+      else setMessage('');
+    },
+    [dispatch]
+  );
 
   return (
     <>
@@ -98,6 +101,6 @@ const ForgotPassword = () => {
       </FormLayout>
     </>
   );
-};
+});
 
 export default ForgotPassword;

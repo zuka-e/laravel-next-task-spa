@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { memo, useEffect, useRef } from 'react';
 
 import theme from '@/theme';
 import { TaskBoard, TaskList, TaskCard } from '@/models';
@@ -6,7 +6,7 @@ import { removeInfoBox } from '@/store/slices/taskBoardSlice';
 import { useAppDispatch, useDeepEqualSelector } from '@/utils/hooks';
 import { TaskBoardDetails, TaskListDetails, TaskCardDetails } from '.';
 
-const InfoBox = (props: JSX.IntrinsicElements['div']) => {
+const InfoBox = memo(function InfoBox(props: JSX.IntrinsicElements['div']) {
   const { className, ...divProps } = props;
   const dispatch = useAppDispatch();
   const currentState = useDeepEqualSelector((state) => state.boards.infoBox);
@@ -59,6 +59,6 @@ const InfoBox = (props: JSX.IntrinsicElements['div']) => {
       )}
     </div>
   );
-};
+});
 
 export default InfoBox;

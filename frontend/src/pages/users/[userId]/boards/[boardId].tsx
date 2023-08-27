@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import Head from 'next/head';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 
@@ -38,7 +38,7 @@ export const getStaticProps: GetStaticProps<TaskBoardProps> = async () => {
   };
 };
 
-const TaskBoard = () => {
+const TaskBoard = memo(function TaskBoard(): JSX.Element {
   const { pathParams } = useRoute();
 
   const dispatch = useAppDispatch();
@@ -134,6 +134,6 @@ const TaskBoard = () => {
       </BaseLayout>
     </>
   );
-};
+});
 
 export default TaskBoard;

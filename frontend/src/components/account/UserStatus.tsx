@@ -1,3 +1,5 @@
+import { memo, useCallback } from 'react';
+
 import dayjs from 'dayjs';
 import { Button, Grid, Typography } from '@mui/material';
 
@@ -6,13 +8,13 @@ import { useAppSelector, useAppDispatch } from '@/utils/hooks';
 import { isVerified } from '@/utils/auth';
 import { AlertMessage } from '@/templates';
 
-const UserStatus = () => {
+const UserStatus = memo(function UserProfile(): JSX.Element {
   const createdAt = useAppSelector((state) => state.auth.user?.createdAt);
   const dispatch = useAppDispatch();
 
-  const handleClick = () => {
+  const handleClick = useCallback((): void => {
     dispatch(sendEmailVerificationLink());
-  };
+  }, [dispatch]);
 
   if (!createdAt) throw new Error();
 
@@ -47,6 +49,6 @@ const UserStatus = () => {
       )}
     </Grid>
   );
-};
+});
 
 export default UserStatus;

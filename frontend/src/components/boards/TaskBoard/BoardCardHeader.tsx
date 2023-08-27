@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import dayjs from 'dayjs';
 import { CardHeader, Typography, Tooltip, IconButton } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
@@ -11,7 +13,9 @@ type BoardCardHeaderProps = {
   board: TaskBoard;
 };
 
-const BoardCardHeader = (props: BoardCardHeaderProps) => {
+const BoardCardHeader = memo(function BoardCardHeader(
+  props: BoardCardHeaderProps
+): JSX.Element {
   const { board } = props;
 
   const Title = () => (
@@ -48,6 +52,6 @@ const BoardCardHeader = (props: BoardCardHeaderProps) => {
       classes={{ action: 'self-end' }}
     />
   );
-};
+});
 
 export default BoardCardHeader;

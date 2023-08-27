@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { memo, useCallback, useRef } from 'react';
 
 import type { AsyncThunk } from '@reduxjs/toolkit';
 import { useForm } from 'react-hook-form';
@@ -27,7 +27,7 @@ type FormProps = FormAction & {
   handleClose: () => void;
 } & TextFieldProps;
 
-const TitleForm = (props: FormProps) => {
+const TitleForm = memo(function TitleForm(props: FormProps): JSX.Element {
   const { method, model, handleClose, ...textFieldProps } = props;
   const dispatch = useAppDispatch();
   const submitRef = useRef<HTMLInputElement>(null);
@@ -40,81 +40,93 @@ const TitleForm = (props: FormProps) => {
     resolver: yupResolver(schema),
   });
 
-  const handleDispatch = async <
-    T extends AsyncThunk<
-      Parameters<T['fulfilled']>[0],
-      Parameters<T>[0],
-      AsyncThunkConfig
-    >
-  >(
-    thunk: T,
-    payload: Parameters<T>[0]
-  ) => {
-    const response = await dispatch(thunk(payload));
-    if (thunk.rejected.match(response)) {
-      const errorMessage =
-        response.payload?.error.message || 'Unexpected Error';
-      dispatch(pushFlash({ severity: 'error', message: errorMessage }));
-    } else handleClose();
-  };
+  const handleDispatch = useCallback(
+    async <
+      T extends AsyncThunk<
+        Parameters<T['fulfilled']>[0],
+        Parameters<T>[0],
+        AsyncThunkConfig
+      >
+    >(
+      thunk: T,
+      payload: Parameters<T>[0]
+    ) => {
+      const response = await dispatch(thunk(payload));
+      if (thunk.rejected.match(response)) {
+        const errorMessage =
+          response.payload?.error.message || 'Unexpected Error';
+        dispatch(pushFlash({ severity: 'error', message: errorMessage }));
+      } else handleClose();
+    },
+    [dispatch, handleClose]
+  );
 
-  const onSubmit = async (data: FormData) => {
-    switch (method) {
-      case 'POST':
-        switch (model) {
-          case 'board': {
-            handleDispatch(createTaskBoard, { ...data });
-            break;
+  const onSubmit = useCallback(
+    async (data: FormData): Promise<void> => {
+      switch (method) {
+        case 'POST':
+          switch (model) {
+            case 'board': {
+              handleDispatch(createTaskBoard, { ...data });
+              break;
+            }
+            case 'list': {
+              const boardId = props.parent.id;
+              handleDispatch(createTaskList, { boardId, ...data });
+              break;
+            }
+            case 'card': {
+              const boardId = props.parent.boardId;
+              const listId = props.parent.id;
+              handleDispatch(createTaskCard, { boardId, listId, ...data });
+              break;
+            }
           }
-          case 'list': {
-            const boardId = props.parent.id;
-            handleDispatch(createTaskList, { boardId, ...data });
-            break;
+          break;
+        case 'PATCH':
+          if (!data.title) break;
+          switch (model) {
+            case 'board': {
+              const id = props.data.id;
+              handleDispatch(updateTaskBoard, { id, ...data });
+              break;
+            }
+            case 'list': {
+              const id = props.data.id;
+              const boardId = props.data.boardId;
+              handleDispatch(updateTaskList, { id, boardId, ...data });
+              break;
+            }
+            case 'card': {
+              const id = props.data.id;
+              const boardId = props.data.boardId;
+              const listId = props.data.listId;
+              handleDispatch(updateTaskCard, { id, boardId, listId, ...data });
+              break;
+            }
           }
-          case 'card': {
-            const boardId = props.parent.boardId;
-            const listId = props.parent.id;
-            handleDispatch(createTaskCard, { boardId, listId, ...data });
-            break;
-          }
-        }
-        break;
-      case 'PATCH':
-        if (!data.title) break;
-        switch (model) {
-          case 'board': {
-            const id = props.data.id;
-            handleDispatch(updateTaskBoard, { id, ...data });
-            break;
-          }
-          case 'list': {
-            const id = props.data.id;
-            const boardId = props.data.boardId;
-            handleDispatch(updateTaskList, { id, boardId, ...data });
-            break;
-          }
-          case 'card': {
-            const id = props.data.id;
-            const boardId = props.data.boardId;
-            const listId = props.data.listId;
-            handleDispatch(updateTaskCard, { id, boardId, listId, ...data });
-            break;
-          }
-        }
-        break;
-    }
-  };
+          break;
+      }
+    },
+    [handleDispatch, method, model, props]
+  );
 
-  const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
-    event.target.select();
-  };
+  const handleFocus = useCallback(
+    (event: React.FocusEvent<HTMLInputElement>): void => {
+      event.target.select();
+    },
+    []
+  );
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLFormElement>) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      submitRef.current?.click();
-    }
-  };
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLFormElement>): void => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        submitRef.current?.click();
+      }
+    },
+    []
+  );
 
   return (
     <ClickAwayListener mouseEvent="onMouseDown" onClickAway={handleClose}>
@@ -141,6 +153,6 @@ const TitleForm = (props: FormProps) => {
       </form>
     </ClickAwayListener>
   );
-};
+});
 
 export default TitleForm;

@@ -1,8 +1,13 @@
+import { memo } from 'react';
+
 import { LinearProgress, LinearProgressProps } from '@mui/material';
 
 import { useAppSelector } from '@/utils/hooks';
 
-const Progressbar = ({ className, ...props }: LinearProgressProps) => {
+const Progressbar = memo(function Progressbar({
+  className,
+  ...props
+}: LinearProgressProps): JSX.Element {
   const loading = useAppSelector(
     (state) => state.auth.loading || state.boards.loading
   );
@@ -17,6 +22,6 @@ const Progressbar = ({ className, ...props }: LinearProgressProps) => {
       />
     );
   else return <></>;
-};
+});
 
 export default Progressbar;

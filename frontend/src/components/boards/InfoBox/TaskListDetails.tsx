@@ -1,3 +1,5 @@
+import { memo, useCallback } from 'react';
+
 import * as yup from 'yup';
 import dayjs from 'dayjs';
 import {
@@ -28,7 +30,9 @@ type TaskListDetailsProps = {
   list: TaskList;
 };
 
-const TaskListDetails = (props: TaskListDetailsProps) => {
+const TaskListDetails = memo(function TaskListDetails(
+  props: TaskListDetailsProps
+): JSX.Element {
   const { list } = props;
   const { pathParams } = useRoute();
   const boardName = useAppSelector(
@@ -36,15 +40,22 @@ const TaskListDetails = (props: TaskListDetailsProps) => {
   );
   const dispatch = useAppDispatch();
 
-  const handleClose = () => {
+  const handleClose = useCallback((): void => {
     dispatch(closeInfoBox());
-  };
+  }, [dispatch]);
 
-  const handleSubmitText = (text: string) => {
-    dispatch(
-      updateTaskList({ id: list.id, boardId: list.boardId, description: text })
-    );
-  };
+  const handleSubmitText = useCallback(
+    (text: string): void => {
+      dispatch(
+        updateTaskList({
+          id: list.id,
+          boardId: list.boardId,
+          description: text,
+        })
+      );
+    },
+    [dispatch, list.boardId, list.id]
+  );
 
   return (
     <Card className="flex h-full flex-col rounded-none">
@@ -122,6 +133,6 @@ const TaskListDetails = (props: TaskListDetailsProps) => {
       </CardContent>
     </Card>
   );
-};
+});
 
 export default TaskListDetails;

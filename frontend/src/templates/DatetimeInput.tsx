@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import dayjs, { type Dayjs } from 'dayjs';
 import {
@@ -13,7 +13,9 @@ export type DatetimeInputProps = {
 /**
  * @see https://mui.com/x/react-date-pickers/date-time-picker
  */
-const DatetimeInput = (props: DatetimeInputProps) => {
+const DatetimeInput = memo(function DatetimeInput(
+  props: DatetimeInputProps
+): JSX.Element {
   const { initialValue } = props;
 
   const [datetime, setDatetime] = useState<Dayjs | null>(
@@ -38,6 +40,6 @@ const DatetimeInput = (props: DatetimeInputProps) => {
       {...props}
     />
   );
-};
+});
 
 export default DatetimeInput;

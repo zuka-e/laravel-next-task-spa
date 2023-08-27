@@ -1,8 +1,12 @@
+import { memo } from 'react';
+
 import { Button, ButtonProps } from '@mui/material';
 
 import { useAppSelector } from '@/utils/hooks';
 
-const SubmitButton = (props: ButtonProps) => {
+const SubmitButton = memo(function SubmitButton(
+  props: ButtonProps
+): JSX.Element {
   const loading = useAppSelector((state) => state.auth.loading);
 
   return (
@@ -14,6 +18,6 @@ const SubmitButton = (props: ButtonProps) => {
       {...props}
     />
   );
-};
+});
 
 export default SubmitButton;

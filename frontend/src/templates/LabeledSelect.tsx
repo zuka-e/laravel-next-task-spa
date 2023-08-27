@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import {
   FormControl,
   InputLabel,
@@ -13,7 +15,9 @@ type LabeledSelectProps = {
   options: Record<string, MenuItemProps['value']>;
 } & SelectProps;
 
-const LabeledSelect = (props: LabeledSelectProps) => {
+const LabeledSelect = memo(function LabeledSelect(
+  props: LabeledSelectProps
+): JSX.Element {
   const { label, options, color, ...selectProps } = props;
 
   const htmlId = 'filter';
@@ -44,6 +48,6 @@ const LabeledSelect = (props: LabeledSelectProps) => {
       </Select>
     </FormControl>
   );
-};
+});
 
 export default LabeledSelect;

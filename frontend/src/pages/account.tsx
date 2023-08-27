@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import Head from 'next/head';
 import type { GetStaticProps } from 'next';
 
@@ -31,7 +32,7 @@ export const getStaticProps: GetStaticProps<AccountProps> = async () => {
   };
 };
 
-const Account = () => {
+const Account = memo(function Account(): JSX.Element {
   return (
     <>
       <Head>
@@ -85,6 +86,6 @@ const Account = () => {
       </BaseLayout>
     </>
   );
-};
+});
 
 export default Account;

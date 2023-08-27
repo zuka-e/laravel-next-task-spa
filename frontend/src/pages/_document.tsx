@@ -1,10 +1,11 @@
 // https://nextjs.org/docs/advanced-features/custom-document
 
+import { memo } from 'react';
 import { Html, Head, Main, NextScript } from 'next/document';
 
 import theme from '@/theme';
 
-const Document = () => {
+const Document = memo(function Document(): JSX.Element {
   return (
     <Html lang="en">
       <Head>
@@ -28,6 +29,6 @@ const Document = () => {
       </body>
     </Html>
   );
-};
+});
 
 export default Document;

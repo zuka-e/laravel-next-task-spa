@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import { Container, Grid } from '@mui/material';
 
 import { Link, Markdown } from '@/templates';
@@ -7,7 +9,9 @@ type MarkdownWithTocProps = {
   articles: string[];
 };
 
-const MarkdownWithToc = (props: MarkdownWithTocProps) => {
+const MarkdownWithToc = memo(function MarkdownWithToc(
+  props: MarkdownWithTocProps
+): JSX.Element {
   const { children, articles } = props;
 
   return (
@@ -28,6 +32,6 @@ const MarkdownWithToc = (props: MarkdownWithTocProps) => {
       </Grid>
     </Container>
   );
-};
+});
 
 export default MarkdownWithToc;

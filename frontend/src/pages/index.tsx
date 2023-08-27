@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import Router from 'next/router';
 
 import { Container } from '@mui/material';
@@ -9,7 +9,7 @@ import { LinkButton } from '@/templates';
 import { SEO } from '@/components/pages';
 import { Hero, Features } from '@/components/home/LandingPage';
 
-const Home = () => {
+const Home = memo(function Home(): JSX.Element {
   const { user, guest } = useAuth();
 
   useEffect(() => {
@@ -45,6 +45,6 @@ const Home = () => {
       </BaseLayout>
     </>
   );
-};
+});
 
 export default Home;

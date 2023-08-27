@@ -1,4 +1,5 @@
-import { useRouter } from 'next/router';
+import { memo, useCallback } from 'react';
+import Router, { useRouter } from 'next/router';
 
 import { Container, Typography, Button } from '@mui/material';
 
@@ -11,13 +12,15 @@ type HttpErrorLayoutProps = {
   children?: React.ReactNode;
 };
 
-const HttpErrorLayout = (props: HttpErrorLayoutProps) => {
+const HttpErrorLayout = memo(function HttpErrorLayout(
+  props: HttpErrorLayoutProps
+): JSX.Element {
   const { title, description, hint, children } = props;
   const router = useRouter();
 
-  const handleClick = () => {
-    router.push(router.asPath === '/' ? '#' : '/');
-  };
+  const handleClick = useCallback((): void => {
+    Router.push(router.asPath === '/' ? '#' : '/');
+  }, [router.asPath]);
 
   return (
     <BaseLayout>
@@ -40,6 +43,6 @@ const HttpErrorLayout = (props: HttpErrorLayoutProps) => {
       </Container>
     </BaseLayout>
   );
-};
+});
 
 export default HttpErrorLayout;

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticProps } from 'next';
@@ -60,7 +60,7 @@ export const getStaticProps: GetStaticProps<LoginProps> = async () => {
   };
 };
 
-const SignIn = () => {
+const SignIn = memo(function SignIn(): JSX.Element {
   const dispatch = useAppDispatch();
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
@@ -72,17 +72,20 @@ const SignIn = () => {
     formState: { errors },
   } = useForm<FormData>({ mode: 'onBlur', resolver: yupResolver(schema) });
 
-  const togglePasswordVisibility = () => {
-    setVisiblePassword(!visiblePassword);
-  };
+  const togglePasswordVisibility = useCallback((): void => {
+    setVisiblePassword((prev) => !prev);
+  }, []);
 
   // エラー発生時はメッセージを表示する
-  const onSubmit = async (data: FormData) => {
-    const response = await dispatch(signInWithEmail(data));
-    if (signInWithEmail.rejected.match(response)) {
-      setMessage(response.payload?.error?.message);
-    }
-  };
+  const onSubmit = useCallback(
+    async (data: FormData): Promise<void> => {
+      const response = await dispatch(signInWithEmail(data));
+      if (signInWithEmail.rejected.match(response)) {
+        setMessage(response.payload?.error?.message);
+      }
+    },
+    [dispatch]
+  );
 
   return (
     <>
@@ -165,6 +168,6 @@ const SignIn = () => {
       </FormLayout>
     </>
   );
-};
+});
 
 export default SignIn;

@@ -1,3 +1,5 @@
+import { memo, useMemo } from 'react';
+
 import { Alert, AlertTitle } from '@mui/material';
 import type { AlertProps, AlertColor } from '@mui/material';
 
@@ -15,9 +17,15 @@ type AlertMessageProps = {
   children?: React.ReactNode;
 } & AlertProps;
 
-const AlertMessage = (props: AlertMessageProps) => {
+const AlertMessage = memo(function AlertMessage(
+  props: AlertMessageProps
+): JSX.Element {
   const { header, body, ...alertProps } = props;
-  const title = props.header || headerMap[props.severity];
+
+  const title = useMemo(
+    (): string => props.header || headerMap[props.severity],
+    [props.header, props.severity]
+  );
 
   return (
     <Alert elevation={2} {...alertProps}>
@@ -25,6 +33,6 @@ const AlertMessage = (props: AlertMessageProps) => {
       {props.body || props.children}
     </Alert>
   );
-};
+});
 
 export default AlertMessage;
