@@ -1,7 +1,7 @@
 // cf. file://./AuthRoute.tsx
 
 import { memo, useEffect } from 'react';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 
 import { useAuth } from '@/utils/hooks';
 import { Loading } from '@/layouts';
@@ -20,15 +20,16 @@ type GuestRouteProps = {
 const GuestRoute = memo(function GuestRoute({
   children,
 }: GuestRouteProps): JSX.Element {
+  const router = useRouter();
   const { auth, guest } = useAuth();
 
   useEffect(() => {
     if (auth) {
       const previousUrl = sessionStorage.getItem('previousUrl');
       sessionStorage.removeItem('previousUrl');
-      Router.replace(previousUrl || '/');
+      router.replace(previousUrl || '/');
     }
-  }, [auth]);
+  }, [auth, router]);
 
   // Until initialized or the redirect completed.
   if (!guest) {
