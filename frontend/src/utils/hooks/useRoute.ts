@@ -1,7 +1,7 @@
 import type { ParsedUrlQuery } from 'querystring';
 
+import { useMemo } from 'react';
 import { useRouter } from 'next/router';
-import type { NextRouter } from 'next/router';
 
 /**
  * Route values that Next `router` object doesn't have directly.
@@ -51,12 +51,6 @@ const useRoute = <
 >(): AppRoute<Path, Query> => {
   const router = useRouter();
 
-  if (!router.isReady) {
-    return {
-      pathname: router.pathname,
-    };
-  }
-
   /**
    * **Note:**
    * In terms of [dynamic routes](https://nextjs.org/docs/routing/dynamic-routes),
@@ -69,15 +63,25 @@ const useRoute = <
    * After the router is ready on the client side, the values are updated.
    * (e.g. `pathname` => `/email/verify/[...credentials]`, `asPath` => `/email/verify/xxx/yyy`)
    */
-  const pathAndQuery = router.asPath.split('?');
-  const pathname: AppRoute['pathname'] = pathAndQuery[0];
-  const queryString: AppRoute['queryString'] = pathAndQuery[1];
+  const pathAndQuery = useMemo(() => router.asPath.split('?'), [router.asPath]);
+
+  const pathname: AppRoute['pathname'] = useMemo(
+    () => pathAndQuery[0],
+    [pathAndQuery]
+  );
+
+  const queryString: AppRoute['queryString'] = useMemo(
+    () => pathAndQuery[1],
+    [pathAndQuery]
+  );
 
   /**
    * `NextRouter.query` value containing only path params.
    */
-  const pathParams = getPathParamNames(router).reduce(
-    (obj, routeSegmentName: string) => {
+  const pathParams = useMemo(() => {
+    const pathParamNames = getPathParamNames(router.pathname);
+
+    return pathParamNames.reduce((obj, routeSegmentName: string) => {
       const key = routeSegmentName.replace('...', '');
       const values = router.query[key];
 
@@ -93,9 +97,8 @@ const useRoute = <
       }
 
       return obj;
-    },
-    {} as NonNullable<AppRoute<Path, Query>['pathParams']>
-  );
+    }, {} as NonNullable<AppRoute<Path, Query>['pathParams']>);
+  }, [router.pathname, router.query]);
 
   /**
    * `NextRouter.query` value containing only query params.
@@ -107,8 +110,10 @@ const useRoute = <
    * (e.g. `asPath` => `/users/1?foo=bar`, `query` => `{ userId: 1 }`)
    * (e.g. `asPath` => `/email/verify/[...credentials]`, `query` => `{}`)
    */
-  const queryParams = getQueryParamNames(router).reduce(
-    (obj, queryParamName: string) => {
+  const queryParams = useMemo(() => {
+    const queryParamNames = getQueryParamNames(queryString);
+
+    return queryParamNames.reduce((obj, queryParamName: string) => {
       const queryValue = router.query[queryParamName];
 
       if (router.isReady && typeof queryValue === 'undefined') {
@@ -118,9 +123,14 @@ const useRoute = <
       obj[queryParamName] = queryValue;
 
       return obj;
-    },
-    {} as NonNullable<AppRoute<Path, Query>['queryParams']>
-  );
+    }, {} as NonNullable<AppRoute<Path, Query>['queryParams']>);
+  }, [queryString, router.isReady, router.query]);
+
+  if (!router.isReady) {
+    return {
+      pathname: router.pathname,
+    };
+  }
 
   return {
     pathname,
@@ -136,8 +146,8 @@ const useRoute = <
  * @example
  * router.pathname ==='/users/[userId]' => ['userId']
  */
-const getPathParamNames = (router: NextRouter): string[] =>
-  router.pathname.match(/(?<=\[)[^\]]+(?=\])/g) ?? [];
+const getPathParamNames = (pathname: string): string[] =>
+  pathname.match(/(?<=\[)[^\]]+(?=\])/g) ?? [];
 
 /**
  * Get the query parameter keys from NextRouter.
@@ -145,8 +155,7 @@ const getPathParamNames = (router: NextRouter): string[] =>
  * @example
  * router.asPath ==='/users?foo=x&bar=y&bar=' => ['foo', 'bar']
  */
-const getQueryParamNames = (router: NextRouter): string[] => {
-  const queryString = router.asPath.split('?')[1];
+const getQueryParamNames = (queryString: string): string[] => {
   const queryParams = queryString?.split('&') ?? [];
 
   return [...new Set(queryParams.map((param) => param.split('=')[0]))];
