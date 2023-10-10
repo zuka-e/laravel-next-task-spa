@@ -1,5 +1,9 @@
-import { DefaultRequestBody, RequestParams } from 'msw';
-import { rest } from 'msw';
+import {
+  rest,
+  type DefaultBodyType,
+  type MockedResponse,
+  type PathParams,
+} from 'msw';
 
 import type {
   SignUpRequest,
@@ -41,7 +45,7 @@ import {
 import { applyMiddleware, returnInvalidRequest } from './utils';
 
 export const handlers = [
-  rest.post<SignUpRequest, SignUpResponse & ErrorResponse, RequestParams>(
+  rest.post<SignUpRequest, PathParams, SignUpResponse & ErrorResponse>(
     url('SIGNUP_PATH'),
     (req, res, ctx) => {
       const httpException = applyMiddleware(req);
@@ -70,7 +74,7 @@ export const handlers = [
     }
   ),
 
-  rest.get<DefaultRequestBody, undefined, RequestParams>(
+  rest.get<DefaultBodyType, PathParams, MockedResponse & ErrorResponse>(
     url('GET_CSRF_TOKEN_PATH'),
     (_req, res, ctx) => {
       const csrfToken = generateCsrfToken();
@@ -79,9 +83,9 @@ export const handlers = [
   ),
 
   rest.post<
-    DefaultRequestBody,
-    SendEmailVerificationLinkResponse & ErrorResponse,
-    RequestParams
+    DefaultBodyType,
+    PathParams,
+    SendEmailVerificationLinkResponse & ErrorResponse
   >(url('VERIFICATION_NOTIFICATION_PATH'), (req, res, ctx) => {
     const httpException = applyMiddleware(req, ['authenticate']);
     if (httpException) return res(httpException);
@@ -102,7 +106,7 @@ export const handlers = [
     return res(ctx.status(200), ctx.json(data));
   }),
 
-  rest.post<SignInRequest, SignInResponse & ErrorResponse, RequestParams>(
+  rest.post<SignInRequest, PathParams, SignInResponse & ErrorResponse>(
     url('SIGNIN_PATH'),
     (req, res, ctx) => {
       const user = authenticate(req.body);
@@ -126,8 +130,8 @@ export const handlers = [
 
   rest.put<
     UpdateProfileRequest,
-    UpdateProfileResponse & ErrorResponse,
-    RequestParams
+    PathParams,
+    UpdateProfileResponse & ErrorResponse
   >(url('USER_INFO_PATH'), (req, res, ctx) => {
     const httpException = applyMiddleware(req, ['authenticate']);
     if (httpException) return res(httpException);
@@ -162,8 +166,8 @@ export const handlers = [
 
   rest.put<
     UpdatePasswordRequest,
-    UpdatePasswordResponse & ErrorResponse,
-    RequestParams
+    PathParams,
+    UpdatePasswordResponse & ErrorResponse
   >(url('UPDATE_PASSWORD_PATH'), (req, res, ctx) => {
     const httpException = applyMiddleware(req, ['authenticate']);
     if (httpException) return res(httpException);
@@ -199,8 +203,8 @@ export const handlers = [
 
   rest.post<
     ForgotPasswordRequest,
-    ForgotPasswordResponse & ErrorResponse,
-    RequestParams
+    PathParams,
+    ForgotPasswordResponse & ErrorResponse
   >(url('FORGOT_PASSWORD_PATH'), (req, res, ctx) => {
     const requestedUser = db.where('users', 'email', req.body.email)[0];
 
@@ -221,8 +225,8 @@ export const handlers = [
 
   rest.post<
     ResetPasswordRequest,
-    ResetPasswordResponse & ErrorResponse,
-    RequestParams
+    PathParams,
+    ResetPasswordResponse & ErrorResponse
   >(url('RESET_PASSWORD_PATH'), (req, res, ctx) => {
     if (!isValidPasswordResetToken(req.body))
       return res(returnInvalidRequest({ email: ['認証に失敗しました。'] }));
@@ -243,7 +247,7 @@ export const handlers = [
     );
   }),
 
-  rest.post<DefaultRequestBody, SignOutResponse & ErrorResponse, RequestParams>(
+  rest.post<DefaultBodyType, PathParams, SignOutResponse & ErrorResponse>(
     url('SIGNOUT_PATH'),
     (req, res, ctx) => {
       const httpException = applyMiddleware(req, ['authenticate']);
@@ -265,9 +269,9 @@ export const handlers = [
   ),
 
   rest.delete<
-    DefaultRequestBody,
-    DeleteAccountResponse & ErrorResponse,
-    RequestParams
+    DefaultBodyType,
+    PathParams,
+    DeleteAccountResponse & ErrorResponse
   >(url('SIGNUP_PATH'), (req, res, ctx) => {
     const httpException = applyMiddleware(req, ['authenticate']);
     if (httpException) return res(httpException);

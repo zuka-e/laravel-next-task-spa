@@ -1,5 +1,4 @@
-import type { DefaultRequestBody } from 'msw';
-import { rest } from 'msw';
+import { rest, type DefaultBodyType } from 'msw';
 
 import type {
   CreateTaskListRequest,
@@ -23,8 +22,8 @@ type TaskListParams = {
 export const handlers = [
   rest.post<
     CreateTaskListRequest,
-    CreateTaskListResponse & ErrorResponse,
-    TaskListParams
+    TaskListParams,
+    CreateTaskListResponse & ErrorResponse
   >(
     API_ROUTE + makePath(['task-boards', ':boardId'], ['task-lists']),
     (req, res, ctx) => {
@@ -45,8 +44,8 @@ export const handlers = [
 
   rest.patch<
     UpdateTaskListRequest,
-    UpdateTaskListResponse & ErrorResponse,
-    TaskListParams
+    TaskListParams,
+    UpdateTaskListResponse & ErrorResponse
   >(
     API_ROUTE +
       makePath(['task-boards', ':boardId'], ['task-lists', ':listId']),
@@ -70,9 +69,9 @@ export const handlers = [
   ),
 
   rest.delete<
-    DefaultRequestBody,
-    DestroyTaskListResponse & ErrorResponse,
-    TaskListParams
+    DefaultBodyType,
+    TaskListParams,
+    DestroyTaskListResponse & ErrorResponse
   >(
     API_ROUTE +
       makePath(['task-boards', ':boardId'], ['task-lists', ':listId']),
