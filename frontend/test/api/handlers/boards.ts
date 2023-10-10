@@ -27,8 +27,8 @@ type TaskBoardParams = {
 export const handlers = [
   rest.get<
     FetchTaskBoardsRequest,
-    FetchTaskBoardsResponse & ErrorResponse,
-    TaskBoardParams
+    TaskBoardParams,
+    FetchTaskBoardsResponse & ErrorResponse
   >(
     API_ROUTE + makePath(['users', ':userId'], ['task-boards']),
     (req, res, ctx) => {
@@ -47,8 +47,8 @@ export const handlers = [
 
   rest.post<
     CreateTaskBoardRequest,
-    CreateTaskBoardResponse & ErrorResponse,
-    TaskBoardParams
+    TaskBoardParams,
+    CreateTaskBoardResponse & ErrorResponse
   >(
     API_ROUTE + makePath(['users', ':userId'], ['task-boards']),
     (req, res, ctx) => {
@@ -67,8 +67,8 @@ export const handlers = [
 
   rest.get<
     FetchTaskBoardRequest,
-    FetchTaskBoardResponse & ErrorResponse,
-    TaskBoardParams
+    TaskBoardParams,
+    FetchTaskBoardResponse & ErrorResponse
   >(
     API_ROUTE + makePath(['users', ':userId'], ['task-boards', ':boardId']),
     (req, res, ctx) => {
@@ -89,8 +89,8 @@ export const handlers = [
 
   rest.patch<
     UpdateTaskBoardRequest,
-    UpdateTaskBoardResponse & ErrorResponse,
-    TaskBoardParams
+    TaskBoardParams,
+    UpdateTaskBoardResponse & ErrorResponse
   >(
     API_ROUTE + makePath(['users', ':userId'], ['task-boards', ':boardId']),
     (req, res, ctx) => {
@@ -113,8 +113,8 @@ export const handlers = [
 
   rest.delete<
     DestroyTaskBoardRequest,
-    DestroyTaskBoardResponse & ErrorResponse,
-    TaskBoardParams
+    TaskBoardParams,
+    DestroyTaskBoardResponse & ErrorResponse
   >(
     API_ROUTE + makePath(['users', ':userId'], ['task-boards', ':boardId']),
     (req, res, ctx) => {
