@@ -4,4 +4,4 @@
 # https://typicode.github.io/husky/#/?id=custom-directory
 cd frontend
 # https://github.com/okonet/lint-staged#command-line-flags
-npx lint-staged
+npx lint-staged --config .lintstagedrc.mjs
