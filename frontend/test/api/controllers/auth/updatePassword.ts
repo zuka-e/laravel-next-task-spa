@@ -1,5 +1,6 @@
-import { UpdatePasswordRequest } from '@/store/thunks/auth';
-import { db, UserDocument } from '@test/api/models';
+import { type UpdatePasswordRequest } from '@/store/thunks/auth';
+import type { UserDocument } from '@test/api/models';
+import { db } from '@test/api/database';
 import { digestText } from '@test/utils/crypto';
 
 type UpdatePasswordProps = {

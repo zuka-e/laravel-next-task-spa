@@ -1,6 +1,8 @@
 import { ResetPasswordRequest } from '@/store/thunks/auth';
-import { auth, db, UserDocument } from '@test/api/models';
+import type { UserDocument } from '@test/api/models';
+import { db } from '@test/api/database';
 import { digestText } from '@test/utils/crypto';
+import { login } from '@test/api/auth';
 
 export const reset = (request: ResetPasswordRequest) => {
   if (request.password !== request.password_confirmation)
@@ -14,5 +16,5 @@ export const reset = (request: ResetPasswordRequest) => {
   };
 
   db.update('users', newUserDoc);
-  auth.login(newUserDoc);
+  login(newUserDoc);
 };

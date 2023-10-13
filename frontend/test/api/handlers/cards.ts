@@ -10,9 +10,10 @@ import type {
 import type { ErrorResponse } from './types';
 import { API_ROUTE } from '@/config/api';
 import { makePath } from '@/utils/api';
-import { db } from '@test/api/models';
+import { db } from '@test/api/database';
 import { taskCardController } from '@test/api/controllers';
-import { applyMiddleware } from './utils';
+import { statefulResponse } from './responses';
+import { resolveMiddleware } from './utils';
 
 type TaskCardParams = {
   listId: string;
@@ -26,19 +27,22 @@ export const handlers = [
     CreateTaskCardResponse & ErrorResponse
   >(
     API_ROUTE + makePath(['task-lists', ':listId'], ['task-cards']),
-    (req, res, ctx) => {
+    (req, _res, ctx) => {
       const list = db.where('taskLists', 'id', req.params.listId)[0];
 
-      const httpException = applyMiddleware(req, [
+      const { transformers, isError } = resolveMiddleware(req, [
         'authenticate',
         `authorize:${list?.userId}`,
         'verified',
       ]);
-      if (httpException) return res(httpException);
+
+      if (isError) {
+        return statefulResponse(...transformers);
+      }
 
       const response = taskCardController.store(req);
 
-      return res(ctx.status(201), ctx.json({ data: response }));
+      return statefulResponse(ctx.status(201), ctx.json({ data: response }));
     }
   ),
 
@@ -48,22 +52,25 @@ export const handlers = [
     UpdateTaskCardResponse & ErrorResponse
   >(
     API_ROUTE + makePath(['task-lists', ':listId'], ['task-cards', ':cardId']),
-    (req, res, ctx) => {
+    (req, _res, ctx) => {
       const list = db.where('taskLists', 'id', req.params.listId)[0];
       const card = db.where('taskCards', 'id', req.params.cardId)[0];
 
-      const httpException = applyMiddleware(req, [
+      const { transformers, isError } = resolveMiddleware(req, [
         'authenticate',
         `authorize:${list?.userId},${card?.userId}`,
         'verified',
       ]);
-      if (httpException) return res(httpException);
+
+      if (isError) {
+        return statefulResponse(...transformers);
+      }
 
       const updated = taskCardController.update(req);
 
-      if (!updated) return res(ctx.status(404));
+      if (!updated) return statefulResponse(ctx.status(404));
 
-      return res(ctx.status(200), ctx.json({ data: updated }));
+      return statefulResponse(ctx.status(200), ctx.json({ data: updated }));
     }
   ),
 
@@ -73,22 +80,25 @@ export const handlers = [
     DestroyTaskCardResponse & ErrorResponse
   >(
     API_ROUTE + makePath(['task-lists', ':listId'], ['task-cards', ':cardId']),
-    (req, res, ctx) => {
+    (req, _res, ctx) => {
       const list = db.where('taskLists', 'id', req.params.listId)[0];
       const card = db.where('taskCards', 'id', req.params.cardId)[0];
 
-      const httpException = applyMiddleware(req, [
+      const { transformers, isError } = resolveMiddleware(req, [
         'authenticate',
         `authorize:${list?.userId},${card?.userId}`,
         'verified',
       ]);
-      if (httpException) return res(httpException);
+
+      if (isError) {
+        return statefulResponse(...transformers);
+      }
 
       const deleted = taskCardController.destroy(req);
 
-      if (!deleted) return res(ctx.status(404));
+      if (!deleted) return statefulResponse(ctx.status(404));
 
-      return res(ctx.status(200), ctx.json({ data: deleted }));
+      return statefulResponse(ctx.status(200), ctx.json({ data: deleted }));
     }
   ),
 ];
