@@ -5,7 +5,8 @@ import {
   CreateTaskCardRequest,
   UpdateTaskCardRequest,
 } from '@/store/thunks/cards';
-import { db, TaskCardDocument } from '@test/api/models';
+import { TaskCardDocument } from '@test/api/models';
+import { db } from '@test/api/database';
 
 export const store = (req: RestRequest<CreateTaskCardRequest>) => {
   const parent = db.where('taskLists', 'id', req.params.listId)[0];

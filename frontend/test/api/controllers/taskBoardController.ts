@@ -5,7 +5,8 @@ import {
   CreateTaskBoardRequest,
   UpdateTaskBoardRequest,
 } from '@/store/thunks/boards';
-import { db, TaskBoardDocument } from '@test/api/models';
+import { TaskBoardDocument } from '@test/api/models';
+import { db } from '@test/api/database';
 import { paginate } from '@test/utils/paginate';
 
 export const index = (req: RestRequest) => {

@@ -1,6 +1,7 @@
 import faker from 'faker';
 
-import { Doc, db, TaskListDocument } from '@test/api/models';
+import { TaskListDocument } from '@test/api/models';
+import { db, type Doc } from '@test/api/database';
 import { uuid } from '@test/utils/uuid';
 import { guestUser, otherUser } from './users';
 import { boardOfGuestUser, boardOfOtherUser } from './taskBoards';

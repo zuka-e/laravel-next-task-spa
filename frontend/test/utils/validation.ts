@@ -1,90 +1,9 @@
 import { ResetPasswordRequest, SignInRequest } from '@/store/thunks/auth';
 import { generateRandomString } from '@/utils/generator';
-import { db, auth } from '@test/api/models';
-import { encrypt, decrypt, digestText } from './crypto';
+import { getUser, login } from '@test/api/auth';
+import { db } from '@test/api/database';
+import { digestText } from '@test/utils/crypto';
 import { GUEST_EMAIL } from '@/config/app';
-
-export const CSRF_TOKEN = 'csrf-token'; // session
-export const XSRF_TOKEN = 'XSRF-TOKEN'; // cookie
-export const X_XSRF_TOKEN = 'X-XSRF-TOKEN'; // header
-
-/**
- * 1. 適当な長さのランダム文字列を生成し、セッションIDとする
- * 2. セッションIDを`key`、`userId`を`value`として`localStorage`に格納
- *
- * @param  userId - リクエストユーザーのID
- * @returns 暗号化済みセッションID (`cookie`格納用)
- */
-export const createSessionId = (userId: string | null) => {
-  const sessionId = generateRandomString(32);
-  const encryptedSessionId = encrypt(sessionId);
-
-  localStorage.setItem(sessionId, String(userId));
-  return encryptedSessionId;
-};
-
-/**
- * 1. 現在のセッションIDを削除
- * 2. 認証ユーザーのIDを取得
- * 3. ユーザーIDを使用して新規にセッションIDを生成
- *
- * @param currentSessionId 復号化済み`session_id`
- * @returns 新規の暗号化済みセッションID (`cookie`格納用)
- */
-export const regenerateSessionId = (currentSessionId: string) => {
-  localStorage.removeItem(currentSessionId);
-  const userId = auth.getUser()?.id || null;
-
-  return createSessionId(userId);
-};
-
-/**
- * 1. `encryptedSessionId`の有無を確認
- * 2. セッションIDを復号化し、セッション(localStorage)からユーザーIDを取得
- * 3. ユーザーIDからユーザーを取得
- *
- * @param encryptedSessionId `cookie`に格納された`session_id`
- * @returns `User` (手順から取得できた場合) | `null`
- */
-export const getUserFromSession = (encryptedSessionId: string) => {
-  // `req.cookies`は`string`型を返すが取得できない場合、`undefined`
-  if (!encryptedSessionId) {
-    console.log('There is no session_id in cookies');
-    return null;
-  }
-
-  const sessionId = decrypt(encryptedSessionId);
-  const userId = localStorage.getItem(sessionId);
-
-  if (!userId) {
-    console.log('There is no session');
-    return null;
-  }
-  // 存在しない`userId`を指定した場合、`undefined`
-  const user = db.collection('users')[userId];
-
-  return user || null;
-};
-
-/**
- * 1. 適当な長さのランダム文字列のハッシュ値をCSRFトークンとして発行
- * 2. セッション (localStorage) の`csrf-token`にトークンを格納
- */
-export const generateCsrfToken = () => {
-  const randomString = generateRandomString(32);
-  const csrfToken = digestText(randomString);
-
-  localStorage.setItem(CSRF_TOKEN, csrfToken);
-  return csrfToken;
-};
-
-/**
- * HTTPヘッダーの`X_XSRF_TOKEN`とセッションの`csrf-token`を比較
- */
-export const hasValidToken = (requestToken: string) => {
-  const sessionToken = localStorage.getItem(CSRF_TOKEN);
-  return requestToken === sessionToken;
-};
 
 /**
  * リクエストされた`password`をハッシュ化し、`User`の`password`と比較
@@ -111,7 +30,7 @@ export const isUniqueEmail = (email: string) => {
   );
   // 合致するデータがない場合`matchedUsers[0]`は`undefined`
   const matchedEmail = matchedUsers[0]?.email;
-  const ownEmail = auth.getUser()?.email;
+  const ownEmail = getUser()?.email;
 
   return !matchedEmail || matchedEmail === ownEmail;
 };
@@ -122,7 +41,7 @@ export const isUniqueEmail = (email: string) => {
  * 3. 成功時は認証ユーザーとして取得した`user`をセット
  * @param request - {`email`, `password`,`remember?`}
  */
-export const authenticate = (request: SignInRequest) => {
+export const authenticate = async (request: SignInRequest) => {
   const matchedUsers = Object.values(db.collection('users')).filter(
     (user) => user.email === request.email
   );
@@ -131,7 +50,7 @@ export const authenticate = (request: SignInRequest) => {
   if (!requestedUser) return null;
 
   if (isValidPassword(request.password, requestedUser.password)) {
-    auth.login(requestedUser);
+    login(requestedUser);
     return requestedUser;
   } else {
     return null;

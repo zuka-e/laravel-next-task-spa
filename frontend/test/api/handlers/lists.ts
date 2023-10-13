@@ -10,9 +10,10 @@ import type {
 import type { ErrorResponse } from './types';
 import { API_ROUTE } from '@/config/api';
 import { makePath } from '@/utils/api';
-import { db } from '@test/api/models';
+import { db } from '@test/api/database';
 import { taskListController } from '@test/api/controllers';
-import { applyMiddleware } from './utils';
+import { statefulResponse } from './responses';
+import { resolveMiddleware } from './utils';
 
 type TaskListParams = {
   boardId: string;
@@ -26,19 +27,22 @@ export const handlers = [
     CreateTaskListResponse & ErrorResponse
   >(
     API_ROUTE + makePath(['task-boards', ':boardId'], ['task-lists']),
-    (req, res, ctx) => {
+    (req, _res, ctx) => {
       const board = db.where('taskBoards', 'id', req.params.boardId)[0];
 
-      const httpException = applyMiddleware(req, [
+      const { transformers, isError } = resolveMiddleware(req, [
         'authenticate',
         `authorize:${board?.userId}`,
         'verified',
       ]);
-      if (httpException) return res(httpException);
+
+      if (isError) {
+        return statefulResponse(...transformers);
+      }
 
       const response = taskListController.store(req);
 
-      return res(ctx.status(201), ctx.json({ data: response }));
+      return statefulResponse(ctx.status(201), ctx.json({ data: response }));
     }
   ),
 
@@ -49,22 +53,25 @@ export const handlers = [
   >(
     API_ROUTE +
       makePath(['task-boards', ':boardId'], ['task-lists', ':listId']),
-    (req, res, ctx) => {
+    (req, _res, ctx) => {
       const board = db.where('taskBoards', 'id', req.params.boardId)[0];
       const list = db.where('taskLists', 'id', req.params.listId)[0];
 
-      const httpException = applyMiddleware(req, [
+      const { transformers, isError } = resolveMiddleware(req, [
         'authenticate',
         `authorize:${board?.userId},${list?.userId}`,
         'verified',
       ]);
-      if (httpException) return res(httpException);
+
+      if (isError) {
+        return statefulResponse(...transformers);
+      }
 
       const updated = taskListController.update(req);
 
-      if (!updated) return res(ctx.status(404));
+      if (!updated) return statefulResponse(ctx.status(404));
 
-      return res(ctx.status(200), ctx.json({ data: updated }));
+      return statefulResponse(ctx.status(200), ctx.json({ data: updated }));
     }
   ),
 
@@ -75,22 +82,25 @@ export const handlers = [
   >(
     API_ROUTE +
       makePath(['task-boards', ':boardId'], ['task-lists', ':listId']),
-    (req, res, ctx) => {
+    (req, _res, ctx) => {
       const board = db.where('taskBoards', 'id', req.params.boardId)[0];
       const list = db.where('taskLists', 'id', req.params.listId)[0];
 
-      const httpException = applyMiddleware(req, [
+      const { transformers, isError } = resolveMiddleware(req, [
         'authenticate',
         `authorize:${board?.userId},${list?.userId}`,
         'verified',
       ]);
-      if (httpException) return res(httpException);
+
+      if (isError) {
+        return statefulResponse(...transformers);
+      }
 
       const deleted = taskListController.destroy(req);
 
-      if (!deleted) return res(ctx.status(404));
+      if (!deleted) return statefulResponse(ctx.status(404));
 
-      return res(ctx.status(200), ctx.json({ data: deleted }));
+      return statefulResponse(ctx.status(200), ctx.json({ data: deleted }));
     }
   ),
 ];

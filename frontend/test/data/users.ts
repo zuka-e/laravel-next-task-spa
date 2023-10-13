@@ -1,7 +1,8 @@
 import faker from 'faker';
 
 import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
-import { db, UserDocument } from '@test/api/models';
+import { UserDocument } from '@test/api/models';
+import { db } from '@test/api/database';
 import { uuid } from '@test/utils/uuid';
 import { digestText } from '@test/utils/crypto';
 

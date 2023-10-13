@@ -1,7 +1,8 @@
 import { type User } from '@/models/User';
 import { type SignUpRequest } from '@/store/thunks/auth';
-import { db, auth } from '@test/api/models';
-import { sanitizeUser, UserDocument } from '@test/api/models/user';
+import { sanitizeUser, type UserDocument } from '@test/api/models/user';
+import { db } from '@test/api/database';
+import { login } from '@test/api/auth';
 import { digestText } from '@test/utils/crypto';
 
 export const store = (request: SignUpRequest): User => {
@@ -13,7 +14,7 @@ export const store = (request: SignUpRequest): User => {
   } as UserDocument;
 
   const createdUser = db.create('users', newUserDoc);
-  auth.login(createdUser);
+  login(createdUser);
 
   return sanitizeUser(createdUser);
 };

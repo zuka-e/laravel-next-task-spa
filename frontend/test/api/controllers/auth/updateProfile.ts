@@ -1,5 +1,6 @@
 import { type UpdateProfileRequest } from '@/store/thunks/auth';
-import { db, sanitizeUser, UserDocument } from '@test/api/models';
+import { sanitizeUser, UserDocument } from '@test/api/models';
+import { db } from '@test/api/database';
 
 type UpdateProfileProps = {
   currentUser: UserDocument;

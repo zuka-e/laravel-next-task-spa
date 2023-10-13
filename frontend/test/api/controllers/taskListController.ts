@@ -5,7 +5,8 @@ import {
   CreateTaskListRequest,
   UpdateTaskListRequest,
 } from '@/store/thunks/lists';
-import { db, TaskListDocument } from '@test/api/models';
+import { TaskListDocument } from '@test/api/models';
+import { db } from '@test/api/database';
 
 export const store = (req: RestRequest<CreateTaskListRequest>) => {
   const newList = db.create('taskLists', {

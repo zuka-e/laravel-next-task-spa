@@ -12,12 +12,13 @@ import type {
   UpdateTaskBoardRequest,
   UpdateTaskBoardResponse,
 } from '@/store/thunks/boards';
-import type { ErrorResponse } from './types';
 import { API_ROUTE } from '@/config/api';
 import { makePath } from '@/utils/api';
-import { db } from '@test/api/models';
+import { db } from '@test/api/database';
 import { taskBoardController } from '@test/api/controllers';
-import { applyMiddleware } from './utils';
+import type { ErrorResponse } from './types';
+import { statefulResponse } from './responses';
+import { resolveMiddleware } from './utils';
 
 type TaskBoardParams = {
   userId: string;
@@ -31,17 +32,24 @@ export const handlers = [
     FetchTaskBoardsResponse & ErrorResponse
   >(
     API_ROUTE + makePath(['users', ':userId'], ['task-boards']),
-    (req, res, ctx) => {
-      const httpException = applyMiddleware(req, [
+    (req, _res, ctx) => {
+      const { transformers, isError } = resolveMiddleware(req, [
         'authenticate',
         `authorize:${req.params.userId}`,
         'verified',
       ]);
-      if (httpException) return res(httpException);
+
+      if (isError) {
+        return statefulResponse(...transformers);
+      }
 
       const response = taskBoardController.index(req);
 
-      return res(ctx.status(200), ctx.json(response));
+      return statefulResponse(
+        ctx.status(200),
+        ctx.json(response),
+        ...transformers
+      );
     }
   ),
 
@@ -51,17 +59,24 @@ export const handlers = [
     CreateTaskBoardResponse & ErrorResponse
   >(
     API_ROUTE + makePath(['users', ':userId'], ['task-boards']),
-    (req, res, ctx) => {
-      const httpException = applyMiddleware(req, [
+    (req, _res, ctx) => {
+      const { transformers, isError } = resolveMiddleware(req, [
         'authenticate',
         `authorize:${req.params.userId}`,
         'verified',
       ]);
-      if (httpException) return res(httpException);
+
+      if (isError) {
+        return statefulResponse(...transformers);
+      }
 
       const response = taskBoardController.store(req);
 
-      return res(ctx.status(201), ctx.json({ data: response }));
+      return statefulResponse(
+        ctx.status(201),
+        ctx.json({ data: response }),
+        ...transformers
+      );
     }
   ),
 
@@ -71,19 +86,26 @@ export const handlers = [
     FetchTaskBoardResponse & ErrorResponse
   >(
     API_ROUTE + makePath(['users', ':userId'], ['task-boards', ':boardId']),
-    (req, res, ctx) => {
+    (req, _res, ctx) => {
       const board = taskBoardController.show(req);
 
-      const httpException = applyMiddleware(req, [
+      const { transformers, isError } = resolveMiddleware(req, [
         'authenticate',
         `authorize:${req.params.userId},${board?.userId}`,
         'verified',
       ]);
-      if (httpException) return res(httpException);
 
-      if (!board) return res(ctx.status(404));
+      if (isError) {
+        return statefulResponse(...transformers);
+      }
 
-      return res(ctx.status(200), ctx.json({ data: board }));
+      if (!board) return statefulResponse(ctx.status(404));
+
+      return statefulResponse(
+        ctx.status(200),
+        ctx.json({ data: board }),
+        ...transformers
+      );
     }
   ),
 
@@ -93,21 +115,28 @@ export const handlers = [
     UpdateTaskBoardResponse & ErrorResponse
   >(
     API_ROUTE + makePath(['users', ':userId'], ['task-boards', ':boardId']),
-    (req, res, ctx) => {
+    (req, _res, ctx) => {
       const board = db.where('taskBoards', 'id', req.params.boardId)[0];
 
-      const httpException = applyMiddleware(req, [
+      const { transformers, isError } = resolveMiddleware(req, [
         'authenticate',
         `authorize:${req.params.userId},${board?.userId}`,
         'verified',
       ]);
-      if (httpException) return res(httpException);
+
+      if (isError) {
+        return statefulResponse(...transformers);
+      }
 
       const newState = taskBoardController.update(req);
 
-      if (!newState) return res(ctx.status(404));
+      if (!newState) return statefulResponse(ctx.status(404));
 
-      return res(ctx.status(201), ctx.json({ data: newState }));
+      return statefulResponse(
+        ctx.status(201),
+        ctx.json({ data: newState }),
+        ...transformers
+      );
     }
   ),
 
@@ -117,21 +146,28 @@ export const handlers = [
     DestroyTaskBoardResponse & ErrorResponse
   >(
     API_ROUTE + makePath(['users', ':userId'], ['task-boards', ':boardId']),
-    (req, res, ctx) => {
+    (req, _res, ctx) => {
       const board = db.where('taskBoards', 'id', req.params.boardId)[0];
 
-      const httpException = applyMiddleware(req, [
+      const { transformers, isError } = resolveMiddleware(req, [
         'authenticate',
         `authorize:${req.params.userId},${board?.userId}`,
         'verified',
       ]);
-      if (httpException) return res(httpException);
+
+      if (isError) {
+        return statefulResponse(...transformers);
+      }
 
       const deleted = taskBoardController.destroy(req);
 
-      if (!deleted) return res(ctx.status(404));
+      if (!deleted) return statefulResponse(ctx.status(404));
 
-      return res(ctx.status(200), ctx.json({ data: deleted }));
+      return statefulResponse(
+        ctx.status(200),
+        ctx.json({ data: deleted }),
+        ...transformers
+      );
     }
   ),
 ];
