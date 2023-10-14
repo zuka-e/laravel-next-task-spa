@@ -5,7 +5,7 @@ import { User } from '@/models/User';
 import { apiClient } from '@/utils/api';
 import { AsyncThunkConfig } from '@/store/thunks/config';
 import { makeRejectValue } from '@/store/thunks/utils';
-import { type FlashNotificationProps } from '@/store/slices';
+import { setIntendedUrl, type FlashNotificationProps } from '@/store/slices';
 
 export type SignInResponse = FlashNotificationProps & {
   user: User;
@@ -25,6 +25,11 @@ export const signInWithEmail = createAsyncThunk<
   try {
     await apiClient({ apiRoute: false }).get(GET_CSRF_TOKEN_PATH);
     const response = await apiClient().post(SIGNIN_PATH, payload);
+
+    thunkApi.dispatch(
+      setIntendedUrl(sessionStorage.getItem('previousUrl') || undefined)
+    );
+
     return response?.data;
   } catch (error) {
     return thunkApi.rejectWithValue(makeRejectValue(error));
