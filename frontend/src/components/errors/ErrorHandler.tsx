@@ -39,7 +39,7 @@ const ErrorHandler = memo(function ErrorHandler({
     return function cleanup() {
       dispatch(clearHttpStatus());
     };
-  }, [dispatch, router.asPath]);
+  }, [dispatch, router]);
 
   if (!httpStatus || !isRenderableError(httpStatus)) {
     return <>{children}</>;

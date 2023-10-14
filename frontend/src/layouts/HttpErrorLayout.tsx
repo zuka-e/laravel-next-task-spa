@@ -1,5 +1,5 @@
 import { memo, useCallback } from 'react';
-import Router, { useRouter } from 'next/router';
+import Router from 'next/router';
 
 import { Container, Typography, Button } from '@mui/material';
 
@@ -16,11 +16,10 @@ const HttpErrorLayout = memo(function HttpErrorLayout(
   props: HttpErrorLayoutProps
 ): JSX.Element {
   const { title, description, hint, children } = props;
-  const router = useRouter();
 
   const handleClick = useCallback((): void => {
-    Router.push(router.asPath === '/' ? '#' : '/');
-  }, [router.asPath]);
+    Router.push('/');
+  }, []);
 
   return (
     <BaseLayout>
