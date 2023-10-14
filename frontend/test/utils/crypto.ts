@@ -1,40 +1,59 @@
-import crypto from 'crypto';
+import {
+  createCipheriv,
+  createDecipheriv,
+  createHash,
+  pbkdf2Sync,
+  randomBytes,
+} from 'crypto';
 
-const password = process.env.NEXT_PUBLIC_APP_KEY || 'password'.repeat(4);
-const salt = crypto.randomBytes(128); // at least 16B recommended
-const key =
-  process.env.NODE_ENV === 'test'
-    ? crypto.scryptSync(password, salt, 32)
-    : Buffer.from(password);
+const CIPHER_ALGORITHM = 'aes-256-cbc';
+const DIGEST_ALGORITHM = 'sha256';
+const PASSWORD = 'd55e76182c856f450ad654f13e2f5b02'; // randomBytes(16).toString('hex')
+const SALT = '8bd861407f94eaf7e7c68150d472119f'; // randomBytes(16).toString('hex')
+/** @see https://nodejs.org/api/crypto.html#cryptopbkdf2syncpassword-salt-iterations-keylen-digest */
+const CIPHER_KEY = pbkdf2Sync(PASSWORD, SALT, 10, 32, DIGEST_ALGORITHM);
+const IV_SIZE = 16;
 
-const iv = 'iv'.repeat(8); // lenght is 16, if AES
-const algorithm = 'aes-256-cbc';
+/**
+ * @see https://nodejs.org/api/crypto.html#class-cipher - Using the cipher.update() and cipher.final() methods:
+ */
+export const encrypt = (text: string): string => {
+  /** Random IV makes an different encrypted value from the same text. */
+  const iv = randomBytes(IV_SIZE);
+  const cipher = createCipheriv(CIPHER_ALGORITHM, CIPHER_KEY, iv);
+  const encrypted = Buffer.concat([
+    cipher.update(text, 'utf8'),
+    cipher.final(),
+  ]);
+  const encryptedWithIv = Buffer.concat([iv, encrypted]);
 
-export const encrypt = (text: string) => {
+  return encryptedWithIv.toString('hex');
+};
+
+/**
+ * @see https://nodejs.org/api/crypto.html#class-decipher - Using the decipher.update() and decipher.final() methods
+ */
+export const decrypt = (text: string): string | null => {
   try {
-    const cipher = crypto.createCipheriv(algorithm, key, iv);
-    let encrypted = cipher.update(text, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
-    return encrypted;
+    const encryptedWithIv = Buffer.from(text, 'hex');
+    const iv = encryptedWithIv.subarray(0, IV_SIZE);
+    const encrypted = encryptedWithIv.subarray(IV_SIZE);
+    const decipher = createDecipheriv(CIPHER_ALGORITHM, CIPHER_KEY, iv);
+    const decrypted = Buffer.concat([
+      decipher.update(encrypted),
+      decipher.final(),
+    ]);
+
+    return decrypted.toString('utf8');
   } catch (e) {
-    console.error(e);
-    throw e;
+    console.log(`"${text}" is a invalid ciphertext.\n` + e);
+    return null;
   }
 };
 
-export const decrypt = (text: string) => {
-  try {
-    const decipher = crypto.createDecipheriv(algorithm, key, iv);
-    let decrypted = decipher.update(text, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-    return decrypted;
-  } catch (e) {
-    console.error(e);
-    throw e;
-  }
-};
-
-export const digestText = (text: string) => {
-  const hashHex = crypto.createHash('sha256').update(text).digest('hex');
-  return hashHex;
+/**
+ * @see https://nodejs.org/api/crypto.html#cryptocreatehashalgorithm-options
+ */
+export const digestText = (text: string): string => {
+  return createHash(DIGEST_ALGORITHM).update(text).digest('hex');
 };
