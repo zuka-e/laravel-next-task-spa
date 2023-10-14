@@ -35,7 +35,8 @@ const Route = memo(function Route(
   useEffect((): void => {
     (async (): Promise<void> => {
       if (intendedUrl) {
-        await Router.push(intendedUrl);
+        dispatch(clearIntendedUrl());
+        await Router.replace(intendedUrl);
         return;
       }
 
@@ -44,14 +45,13 @@ const Route = memo(function Route(
         return;
       }
     })();
-  }, [intendedUrl, route.queryParams]);
+  }, [dispatch, intendedUrl, route.queryParams]);
 
   useEffect((): (() => void) => {
     return function cleanup(): void {
-      dispatch(clearIntendedUrl());
       sessionStorage.setItem('previousUrl', router.asPath);
     };
-  }, [dispatch, router.asPath]);
+  }, [router.asPath]);
 
   if (intendedUrl) {
     return <Loading open={true} />;
