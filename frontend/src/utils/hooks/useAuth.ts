@@ -1,24 +1,11 @@
-import { useEffect } from 'react';
-
-import { fetchSession } from '@/store/thunks/auth';
-import { isReady } from '@/utils/auth';
-import useAppDispatch from './useAppDispatch';
-import useAppSelector from './useAppSelector';
+import { useGetSessionQuery } from '@/store/api/authApi';
 
 /**
  * Attempts to fetch authenticated user if not yet to be determined.
  */
 const useAuth = () => {
-  const user = useAppSelector((state) => state.auth.user);
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    (async () => {
-      if (!isReady()) {
-        await dispatch(fetchSession());
-      }
-    })();
-  }, [dispatch]);
+  const { data } = useGetSessionQuery();
+  const user = data?.user;
 
   return {
     /** Determine if the current user is authenticated. */

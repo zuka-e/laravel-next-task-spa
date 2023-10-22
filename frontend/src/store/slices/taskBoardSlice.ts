@@ -4,8 +4,6 @@ import { TaskBoard, TaskBoardsCollection, TaskCard, TaskList } from '@/models';
 import { compare, SortOperation } from '@/utils/sort';
 import { makeDocsWithIndex } from '@/utils/dnd';
 import {
-  FetchTaskBoardsResponse,
-  fetchTaskBoards,
   fetchTaskBoard,
   createTaskBoard,
   updateTaskBoard,
@@ -59,15 +57,13 @@ type TaskBoardState = {
   loading: boolean;
   infoBox: { open: boolean } & InfoBoxAction;
   docs: TaskBoardsCollection;
-} & FetchTaskBoardsResponse;
+};
 
 const initialState = {
   loading: false,
   infoBox: {} as TaskBoardState['infoBox'],
   docs: {},
   data: [],
-  links: {} as TaskBoardState['links'],
-  meta: {} as TaskBoardState['meta'],
 } as TaskBoardState;
 
 export const taskBoardSlice = createSlice({
@@ -113,21 +109,6 @@ export const taskBoardSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchTaskBoards.pending, (state, _action) => {
-      state.loading = true;
-    });
-
-    builder.addCase(fetchTaskBoards.fulfilled, (state, action) => {
-      state.data = action.payload.data || [];
-      state.links = action.payload.links || {};
-      state.meta = action.payload.meta || {};
-      state.loading = false;
-    });
-
-    builder.addCase(fetchTaskBoards.rejected, (state, _action) => {
-      state.loading = false;
-    });
-
     builder.addCase(fetchTaskBoard.pending, (state, _action) => {
       state.loading = true;
     });

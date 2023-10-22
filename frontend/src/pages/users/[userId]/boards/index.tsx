@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback } from 'react';
 import Head from 'next/head';
 import Router from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next';
@@ -6,13 +6,8 @@ import type { GetStaticPaths, GetStaticProps } from 'next';
 import { Container, Grid, Card, Divider, Typography } from '@mui/material';
 import { Pagination } from '@mui/material';
 
-import { fetchTaskBoards } from '@/store/thunks/boards';
-import {
-  useAppDispatch,
-  useAppSelector,
-  useDeepEqualSelector,
-  useRoute,
-} from '@/utils/hooks';
+import { useGetTaskBoardsQuery } from '@/store/api/taskBoardApi';
+import { useAuth, useRoute } from '@/utils/hooks';
 import { BaseLayout, StandbyScreen } from '@/layouts';
 import { Link } from '@/templates';
 import { AddTaskButton } from '@/components/boards';
@@ -47,24 +42,15 @@ export const getStaticProps: GetStaticProps<TaskBoardIndexProps> = async () => {
 
 const TaskBoardIndex = memo(function TaskBoardIndex(): JSX.Element {
   const { pathname, pathParams, queryParams } = useRoute();
-  const dispatch = useAppDispatch();
-  const userId = useAppSelector((state) => state.auth.user?.id);
-  const boards = useDeepEqualSelector((state) => state.boards.data);
-  const count = useAppSelector((state) => state.boards.meta.last_page);
-  const currentPage = useAppSelector((state) => state.boards.meta.current_page);
+  const { user } = useAuth();
 
-  useEffect(() => {
-    if (!pathParams || !queryParams) {
-      return;
-    }
-
-    dispatch(
-      fetchTaskBoards({
-        userId: pathParams.userId,
-        page: queryParams.page?.toString(),
-      })
-    );
-  }, [dispatch, pathParams, queryParams]);
+  const { data: paginator } = useGetTaskBoardsQuery(
+    {
+      userId: pathParams?.userId ?? '',
+      page: queryParams?.page?.toString(),
+    },
+    { skip: !pathParams || !queryParams }
+  );
 
   const handleChange = useCallback(
     (_e: React.ChangeEvent<unknown>, page: number): void => {
@@ -76,7 +62,7 @@ const TaskBoardIndex = memo(function TaskBoardIndex(): JSX.Element {
     [pathname, queryParams]
   );
 
-  if (!pathParams || !boards || userId !== pathParams.userId)
+  if (!pathParams || !paginator || user?.id !== pathParams.userId)
     return <StandbyScreen />;
 
   return (
@@ -87,7 +73,7 @@ const TaskBoardIndex = memo(function TaskBoardIndex(): JSX.Element {
       <BaseLayout>
         <Container component="main" className="my-8">
           <Grid container spacing={2}>
-            {boards.map((board) => (
+            {paginator.data.map((board) => (
               <Grid item md={4} sm={6} xs={12} key={board.id}>
                 <Card elevation={7}>
                   <Link
@@ -109,10 +95,10 @@ const TaskBoardIndex = memo(function TaskBoardIndex(): JSX.Element {
           </Grid>
         </Container>
 
-        {boards.length > 0 && count && currentPage && (
+        {paginator.data.length > 0 && (
           <Pagination
-            count={count}
-            page={currentPage}
+            count={paginator.meta.last_page}
+            page={paginator.meta.current_page}
             siblingCount={2}
             color="primary"
             size="large"
