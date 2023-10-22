@@ -3,6 +3,7 @@ import { AnyAction, combineReducers, configureStore } from '@reduxjs/toolkit';
 import { appSlice, authSlice, taskBoardSlice, flushAllStates } from './slices';
 import { deleteAccount, signOut } from './thunks/auth';
 import { api } from './api';
+import { apiResponseNotification } from './api/middleware';
 
 const combinedReducer = combineReducers({
   app: appSlice.reducer,
@@ -39,7 +40,7 @@ export const store = configureStore({
        *  that causes a slowdown in dev, can be disabled
        */
       serializableCheck: false,
-    }).concat(api.middleware),
+    }).concat([apiResponseNotification, api.middleware]),
 });
 
 export type AppDispatch = typeof store.dispatch;
