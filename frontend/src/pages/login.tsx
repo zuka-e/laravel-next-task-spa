@@ -16,11 +16,12 @@ import {
 } from '@mui/material';
 
 import { APP_NAME } from '@/config/app';
-import { SignInRequest, signInWithEmail } from '@/store/thunks/auth';
-import { useAppDispatch } from '@/utils/hooks';
+import { type SignInRequest } from '@/store/thunks/auth';
 import { FormLayout } from '@/layouts';
 import { SubmitButton } from '@/templates';
 import type { GuestPage } from '@/routes';
+import { useLoginMutation } from '@/store/api/authApi';
+import { isInvalidRequest, makeErrorMessageFrom } from '@/utils/api/errors';
 
 type FormData = SignInRequest;
 
@@ -61,7 +62,7 @@ export const getStaticProps: GetStaticProps<LoginProps> = async () => {
 };
 
 const SignIn = memo(function SignIn(): JSX.Element {
-  const dispatch = useAppDispatch();
+  const [login] = useLoginMutation();
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
   const router = useRouter();
@@ -79,12 +80,16 @@ const SignIn = memo(function SignIn(): JSX.Element {
   // エラー発生時はメッセージを表示する
   const onSubmit = useCallback(
     async (data: FormData): Promise<void> => {
-      const response = await dispatch(signInWithEmail(data));
-      if (signInWithEmail.rejected.match(response)) {
-        setMessage(response.payload?.error?.message);
+      try {
+        await login(data).unwrap();
+      } catch (error) {
+        if (isInvalidRequest(error)) {
+          return setMessage(makeErrorMessageFrom(error));
+        }
+        throw error;
       }
     },
-    [dispatch]
+    [login]
   );
 
   return (

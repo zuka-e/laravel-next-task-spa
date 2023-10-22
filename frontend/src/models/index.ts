@@ -16,3 +16,4 @@ export interface DocumentBase {
 }
 
 export * from './Task';
+export * from './User';
