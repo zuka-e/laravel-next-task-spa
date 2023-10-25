@@ -6,7 +6,7 @@ import type { GetStaticPaths, GetStaticProps } from 'next';
 import { Container, Grid, Card, Divider, Typography } from '@mui/material';
 import { Pagination } from '@mui/material';
 
-import { useGetTaskBoardsQuery } from '@/store/api/taskBoardApi';
+import { useGetTaskBoardsQuery } from '@/store/api';
 import { useAuth, useRoute } from '@/utils/hooks';
 import { BaseLayout, StandbyScreen } from '@/layouts';
 import { Link } from '@/templates';
