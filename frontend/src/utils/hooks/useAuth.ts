@@ -1,4 +1,4 @@
-import { useGetSessionQuery } from '@/store/api/authApi';
+import { useGetSessionQuery } from '@/store/api';
 
 /**
  * Attempts to fetch authenticated user if not yet to be determined.

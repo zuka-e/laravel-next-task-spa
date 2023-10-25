@@ -17,10 +17,10 @@ import {
 
 import { APP_NAME } from '@/config/app';
 import { type SignInRequest } from '@/store/thunks/auth';
+import { useLoginMutation } from '@/store/api';
 import { FormLayout } from '@/layouts';
 import { SubmitButton } from '@/templates';
 import type { GuestPage } from '@/routes';
-import { useLoginMutation } from '@/store/api/authApi';
 import { isInvalidRequest, makeErrorMessageFrom } from '@/utils/api/errors';
 
 type FormData = SignInRequest;

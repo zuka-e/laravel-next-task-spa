@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 
-import { axiosBaseQuery } from './utils';
+import { axiosBaseQuery } from '@/store/api/utils';
 
 /**
  * Define a base API for others which use the same config such as the query function.
@@ -9,9 +9,13 @@ import { axiosBaseQuery } from './utils';
  */
 const baseApi = createApi({
   baseQuery: axiosBaseQuery(),
-  reducerPath: 'api',
-  tagTypes: ['Auth', 'TaskBoard'],
+  reducerPath: 'taskApi',
+  tagTypes: ['TaskBoard'],
   endpoints: () => ({}),
 });
+
+export type Endpoints = Parameters<
+  typeof baseApi['injectEndpoints']
+>[number]['endpoints'];
 
 export default baseApi;

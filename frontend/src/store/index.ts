@@ -2,14 +2,16 @@ import { AnyAction, combineReducers, configureStore } from '@reduxjs/toolkit';
 
 import { appSlice, authSlice, taskBoardSlice, flushAllStates } from './slices';
 import { deleteAccount, signOut } from './thunks/auth';
-import { api } from './api';
 import { apiResponseNotification } from './api/middleware';
+import authApi from './api/services/auth';
+import taskApi from './api/services/tasks';
 
 const combinedReducer = combineReducers({
   app: appSlice.reducer,
   auth: authSlice.reducer,
   boards: taskBoardSlice.reducer,
-  [api.reducerPath]: api.reducer,
+  [authApi.reducerPath]: authApi.reducer,
+  [taskApi.reducerPath]: taskApi.reducer,
 });
 
 export type RootState = ReturnType<typeof combinedReducer>;
@@ -40,7 +42,11 @@ export const store = configureStore({
        *  that causes a slowdown in dev, can be disabled
        */
       serializableCheck: false,
-    }).concat([apiResponseNotification, api.middleware]),
+    }).concat([
+      apiResponseNotification,
+      authApi.middleware,
+      taskApi.middleware,
+    ]),
 });
 
 export type AppDispatch = typeof store.dispatch;
