@@ -1,13 +1,3 @@
-import baseApi from './baseApi';
-import { taskBoards } from './endpoints';
+export { default as api } from './baseApi';
 
-const api = baseApi.injectEndpoints({
-  overrideExisting: false,
-  endpoints: (builder) => ({
-    ...taskBoards(builder),
-  }),
-});
-
-export default api;
-
-export const { useGetTaskBoardsQuery } = api;
+export * from './taskBoardApi';
