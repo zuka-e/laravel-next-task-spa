@@ -1,13 +1,3 @@
-import baseApi from './baseApi';
-import { session } from './endpoints';
+export { default as api } from './baseApi';
 
-const api = baseApi.injectEndpoints({
-  overrideExisting: false,
-  endpoints: (builder) => ({
-    ...session(builder),
-  }),
-});
-
-export default api;
-
-export const { useGetSessionQuery, useLoginMutation } = api;
+export * from './sessionApi';

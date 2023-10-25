@@ -3,8 +3,8 @@ import { AnyAction, combineReducers, configureStore } from '@reduxjs/toolkit';
 import { appSlice, authSlice, taskBoardSlice, flushAllStates } from './slices';
 import { deleteAccount, signOut } from './thunks/auth';
 import { apiResponseNotification } from './api/middleware';
-import authApi from './api/services/auth';
-import taskApi from './api/services/tasks';
+import { api as authApi } from './api/services/auth';
+import { api as taskApi } from './api/services/tasks';
 
 const combinedReducer = combineReducers({
   app: appSlice.reducer,
