@@ -9,14 +9,19 @@ import {
 } from '@mui/icons-material';
 
 import { APP_NAME } from '@/config/app';
-import { useAppSelector } from '@/utils/hooks';
+import { useGetSessionQuery } from '@/store/api';
 import { Link, LinkButton, PopoverControl } from '@/templates';
 import { AccountMenuList } from '@/components/layouts/Header';
 import Sidebar from './Sidebar';
 import logo from '@/images/logo.svg';
 
 const Header = memo(function Header(): JSX.Element {
-  const signedIn = useAppSelector((state) => state.auth.signedIn);
+  const { auth } = useGetSessionQuery(undefined, {
+    selectFromResult: (result) => ({
+      ...result,
+      auth: !!result.data?.user?.id,
+    }),
+  });
   const [open, setOpen] = useState(false);
 
   const toggleDrawer = useCallback(
@@ -63,7 +68,7 @@ const Header = memo(function Header(): JSX.Element {
             />
           </Link>
         </div>
-        {signedIn ? <AccountMenuButton /> : <SignInLinkButton />}
+        {auth ? <AccountMenuButton /> : <SignInLinkButton />}
       </Toolbar>
     </AppBar>
   );

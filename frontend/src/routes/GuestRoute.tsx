@@ -3,7 +3,7 @@
 import { memo, useEffect } from 'react';
 import Router from 'next/router';
 
-import { useAuth } from '@/utils/hooks';
+import { useGetSessionQuery } from '@/store/api';
 import { Loading } from '@/layouts';
 
 export type GuestPage = {
@@ -20,16 +20,29 @@ type GuestRouteProps = {
 const GuestRoute = memo(function GuestRoute({
   children,
 }: GuestRouteProps): JSX.Element {
-  const { auth, guest } = useAuth();
+  const { auth, isUninitialized } = useGetSessionQuery(undefined, {
+    selectFromResult: (result) => ({
+      ...result,
+      auth: !!result.data?.user?.id,
+    }),
+  });
 
   useEffect(() => {
     if (auth) {
-      Router.replace('/');
+      const intendedUrl = sessionStorage.getItem('intendedUrl');
+
+      if (intendedUrl) {
+        sessionStorage.removeItem('intendedUrl');
+      }
+
+      const redirectUrl = intendedUrl || '/';
+
+      Router.replace(redirectUrl);
     }
   }, [auth]);
 
   // Until initialized or the redirect completed.
-  if (!guest) {
+  if (isUninitialized || auth) {
     return <Loading open={true} />;
   }
 

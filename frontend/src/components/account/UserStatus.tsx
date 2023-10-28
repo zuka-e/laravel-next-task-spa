@@ -3,13 +3,20 @@ import { memo, useCallback } from 'react';
 import dayjs from 'dayjs';
 import { Button, Grid, Typography } from '@mui/material';
 
+import { useGetSessionQuery } from '@/store/api';
 import { sendEmailVerificationLink } from '@/store/thunks/auth';
-import { useAppSelector, useAppDispatch } from '@/utils/hooks';
+import { useAppDispatch } from '@/utils/hooks';
 import { isVerified } from '@/utils/auth';
 import { AlertMessage } from '@/templates';
 
 const UserStatus = memo(function UserProfile(): JSX.Element {
-  const createdAt = useAppSelector((state) => state.auth.user?.createdAt);
+  const { createdAt } = useGetSessionQuery(undefined, {
+    selectFromResult: (result) => ({
+      ...result,
+      createdAt: result.data?.user?.createdAt,
+    }),
+  });
+
   const dispatch = useAppDispatch();
 
   const handleClick = useCallback((): void => {

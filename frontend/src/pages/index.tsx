@@ -3,23 +3,30 @@ import Router from 'next/router';
 
 import { Container } from '@mui/material';
 
-import { useAuth } from '@/utils/hooks';
+import { useGetSessionQuery } from '@/store/api';
 import { BaseLayout, Loading } from '@/layouts';
 import { LinkButton } from '@/templates';
 import { SEO } from '@/components/pages';
 import { Hero, Features } from '@/components/home/LandingPage';
 
 const Home = memo(function Home(): JSX.Element {
-  const { user, guest } = useAuth();
+  const { userId, isUninitialized } = useGetSessionQuery(undefined, {
+    selectFromResult: (result) => ({
+      ...result,
+      userId: result.data?.user?.id,
+    }),
+  });
 
   useEffect(() => {
-    if (user) {
-      Router.replace(`users/${user.id}/boards`);
+    if (userId) {
+      Router.replace(`users/${userId}/boards`);
     }
-  }, [user]);
+  }, [userId]);
 
   // Until initialized or the redirect completed.
-  if (!guest) return <Loading open={true} />;
+  if (isUninitialized || userId) {
+    return <Loading open={true} />;
+  }
 
   return (
     <>

@@ -4,8 +4,7 @@ import Router, { useRouter } from 'next/router';
 
 import { useAppDispatch, useAppSelector, useRoute } from '@/utils/hooks';
 import { AuthRoute, GuestRoute } from '@/routes';
-import { clearIntendedUrl, pushFlash } from '@/store/slices';
-import { Loading } from '@/layouts';
+import { pushFlash } from '@/store/slices';
 
 const Route = memo(function Route(
   props: Pick<AppProps<Record<string, unknown>>, 'Component' | 'pageProps'>
@@ -14,7 +13,6 @@ const Route = memo(function Route(
   const router = useRouter();
   const route = useRoute();
   const httpStatus = useAppSelector((state) => state.app.httpStatus);
-  const intendedUrl = useAppSelector((state) => state.app.intendedUrl);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -34,28 +32,18 @@ const Route = memo(function Route(
   // cf. https://react.dev/learn/you-might-not-need-an-effect#chains-of-computations
   useEffect((): void => {
     (async (): Promise<void> => {
-      if (intendedUrl) {
-        dispatch(clearIntendedUrl());
-        await Router.replace(intendedUrl);
-        return;
-      }
-
       if (route.queryParams?.['verified']?.toString()) {
         await Router.replace('/email-verification');
         return;
       }
     })();
-  }, [dispatch, intendedUrl, route.queryParams]);
+  }, [dispatch, route.queryParams]);
 
   useEffect((): (() => void) => {
     return function cleanup(): void {
       sessionStorage.setItem('previousUrl', router.asPath);
     };
   }, [router.asPath]);
-
-  if (intendedUrl) {
-    return <Loading open={true} />;
-  }
 
   return (
     <>

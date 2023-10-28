@@ -13,11 +13,17 @@ import {
 
 import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
 import { makeEmail } from '@/utils/generator';
-import { useAppSelector, useAppDispatch } from '@/utils/hooks';
+import { useAppDispatch } from '@/utils/hooks';
+import { useGetSessionQuery } from '@/store/api';
 import { createUser, signInWithEmail, signOut } from '@/store/thunks/auth';
 
 const SideMenu = memo(function SideMenu(): JSX.Element {
-  const userId = useAppSelector((state) => state.auth.user?.id);
+  const { userId } = useGetSessionQuery(undefined, {
+    selectFromResult: (result) => ({
+      ...result,
+      userId: result.data?.user?.id,
+    }),
+  });
   const dispatch = useAppDispatch();
 
   const menuItem = useMemo(() => {

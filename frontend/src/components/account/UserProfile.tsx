@@ -5,8 +5,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Grid, TextField } from '@mui/material';
 
+import { useGetSessionQuery } from '@/store/api';
 import { UpdateProfileRequest, updateProfile } from '@/store/thunks/auth';
-import { useAppDispatch, useAppSelector } from '@/utils/hooks';
+import { useAppDispatch } from '@/utils/hooks';
 import { isGuest } from '@/utils/auth';
 import { AlertMessage, SubmitButton } from '@/templates';
 
@@ -29,7 +30,12 @@ const schema = yup.object().shape({
 });
 
 const UserProfile = memo(function UserProfile(): JSX.Element {
-  const user = useAppSelector((state) => state.auth.user);
+  const { user } = useGetSessionQuery(undefined, {
+    selectFromResult: (result) => ({
+      ...result,
+      user: result.data?.user,
+    }),
+  });
   const dispatch = useAppDispatch();
   const [message, setMessage] = useState<string | undefined>('');
   const {
