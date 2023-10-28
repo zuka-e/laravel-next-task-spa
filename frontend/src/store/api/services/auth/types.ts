@@ -6,11 +6,11 @@ export type FetchSessionResponse = {
 };
 export type FetchSessionRequest = void;
 
-export type SignInResponse = FlashNotificationProps & {
+export type LoginResponse = FlashNotificationProps & {
   user: User;
 };
 
-export type SignInRequest = {
+export type LoginRequest = {
   email: string;
   password: string;
   remember?: string;

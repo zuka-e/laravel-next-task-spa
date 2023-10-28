@@ -7,11 +7,17 @@ import {
   ExitToApp as ExitToAppIcon,
 } from '@mui/icons-material';
 
+import { useGetSessionQuery } from '@/store/api';
 import { signOut } from '@/store/thunks/auth';
-import { useAppDispatch, useAppSelector } from '@/utils/hooks';
+import { useAppDispatch } from '@/utils/hooks';
 
 const AccountMenuList = memo(function AccountMenuList(): JSX.Element {
-  const username = useAppSelector((state) => state.auth.user?.name);
+  const { username } = useGetSessionQuery(undefined, {
+    selectFromResult: (result) => ({
+      ...result,
+      username: result.data?.user?.name,
+    }),
+  });
   const dispatch = useAppDispatch();
 
   const handleClick = useCallback((path: string): void => {

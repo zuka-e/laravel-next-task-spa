@@ -20,8 +20,9 @@ import {
 
 import { TaskBoard } from '@/models';
 import { closeInfoBox } from '@/store/slices/taskBoardSlice';
+import { useGetSessionQuery } from '@/store/api';
 import { updateTaskBoard } from '@/store/thunks/boards';
-import { useAppDispatch, useAppSelector } from '@/utils/hooks';
+import { useAppDispatch } from '@/utils/hooks';
 import { Link, MarkdownEditor } from '@/templates';
 import { EditableTitle } from '..';
 
@@ -33,7 +34,13 @@ const TaskBoardDetails = memo(function TaskBoardDetails(
   props: TaskBoardDetailsProps
 ): JSX.Element {
   const { board } = props;
-  const userId = useAppSelector((state) => state.auth.user?.id);
+  const { userId } = useGetSessionQuery(undefined, {
+    selectFromResult: (result) => ({
+      ...result,
+      userId: result.data,
+    }),
+  });
+
   const dispatch = useAppDispatch();
 
   const totalList = useMemo((): number => {

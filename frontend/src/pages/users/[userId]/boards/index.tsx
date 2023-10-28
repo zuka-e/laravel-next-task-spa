@@ -6,8 +6,8 @@ import type { GetStaticPaths, GetStaticProps } from 'next';
 import { Container, Grid, Card, Divider, Typography } from '@mui/material';
 import { Pagination } from '@mui/material';
 
-import { useGetTaskBoardsQuery } from '@/store/api';
-import { useAuth, useRoute } from '@/utils/hooks';
+import { useGetSessionQuery, useGetTaskBoardsQuery } from '@/store/api';
+import { useRoute } from '@/utils/hooks';
 import { BaseLayout, StandbyScreen } from '@/layouts';
 import { Link } from '@/templates';
 import { AddTaskButton } from '@/components/boards';
@@ -42,7 +42,12 @@ export const getStaticProps: GetStaticProps<TaskBoardIndexProps> = async () => {
 
 const TaskBoardIndex = memo(function TaskBoardIndex(): JSX.Element {
   const { pathname, pathParams, queryParams } = useRoute();
-  const { user } = useAuth();
+  const { user } = useGetSessionQuery(undefined, {
+    selectFromResult: (result) => ({
+      ...result,
+      user: result.data?.user,
+    }),
+  });
 
   const { data: paginator } = useGetTaskBoardsQuery(
     {

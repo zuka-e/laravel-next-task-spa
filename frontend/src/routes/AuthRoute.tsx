@@ -4,7 +4,7 @@
 import { memo, useEffect } from 'react';
 import Router from 'next/router';
 
-import { useAuth } from '@/utils/hooks';
+import { useGetSessionQuery } from '@/store/api';
 import { Loading } from '@/layouts';
 
 export type AuthPage = {
@@ -21,7 +21,14 @@ type AuthRouteProps = {
 const AuthRoute = memo(function AuthRoute({
   children,
 }: AuthRouteProps): JSX.Element {
-  const { auth, guest } = useAuth();
+  const { auth, isUninitialized } = useGetSessionQuery(undefined, {
+    selectFromResult: (result) => ({
+      ...result,
+      auth: !!result.data?.user?.id,
+    }),
+  });
+
+  const guest = !isUninitialized && !auth;
 
   useEffect(() => {
     if (guest) {
@@ -30,7 +37,7 @@ const AuthRoute = memo(function AuthRoute({
   }, [guest]);
 
   // Until initialized or the redirect completed.
-  if (!auth) {
+  if (isUninitialized || guest) {
     return <Loading open={true} />;
   }
 

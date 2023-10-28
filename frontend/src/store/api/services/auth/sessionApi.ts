@@ -3,8 +3,8 @@ import baseApi from './baseApi';
 import type {
   FetchSessionRequest,
   FetchSessionResponse,
-  SignInRequest,
-  SignInResponse,
+  LoginRequest,
+  LoginResponse,
 } from './types';
 
 /**
@@ -21,8 +21,15 @@ const sessionApi = baseApi.injectEndpoints({
       query: () => ({ url: SESSION_PATH }),
       providesTags: ['Session'],
     }),
-    login: builder.mutation<SignInResponse, SignInRequest>({
+    login: builder.mutation<LoginResponse, LoginRequest>({
       query: (data) => ({ url: SIGNIN_PATH, method: 'POST', data }),
+      async onCacheEntryAdded() {
+        const previousUrl = sessionStorage.getItem('previousUrl');
+
+        if (previousUrl) {
+          sessionStorage.setItem('intendedUrl', previousUrl);
+        }
+      },
       invalidatesTags: ['Session'],
     }),
   }),
