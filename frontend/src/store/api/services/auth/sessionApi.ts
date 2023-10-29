@@ -1,3 +1,5 @@
+import Router from 'next/router';
+
 import { SESSION_PATH, SIGNIN_PATH } from '@/config/api';
 import baseApi from './baseApi';
 import type {
@@ -26,7 +28,7 @@ const sessionApi = baseApi.injectEndpoints({
       async onCacheEntryAdded() {
         const previousUrl = sessionStorage.getItem('previousUrl');
 
-        if (previousUrl) {
+        if (previousUrl && previousUrl !== Router.asPath) {
           sessionStorage.setItem('intendedUrl', previousUrl);
         }
       },
