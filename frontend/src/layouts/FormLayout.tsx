@@ -3,7 +3,7 @@ import { memo } from 'react';
 import { Container, Card, Grid, Avatar, Typography } from '@mui/material';
 
 import { APP_NAME } from '@/config/app';
-import { AlertMessage } from '@/templates';
+import { AlertMessage, Fieldset } from '@/templates';
 import Link, { NextLinkComposed } from '@/templates/Link';
 import logo from '@/images/logo_short.svg';
 
@@ -19,13 +19,14 @@ type FormLayoutProps = {
   children: React.ReactNode;
   title: string;
   message?: string;
+  disabled?: boolean;
   onSubmit: React.FormEventHandler<HTMLFormElement>;
 };
 
 const FormLayout = memo(function FormLayout(
   props: FormLayoutProps
 ): JSX.Element {
-  const { children, title, onSubmit, message } = props;
+  const { children, title, onSubmit, message, disabled } = props;
 
   return (
     <>
@@ -51,7 +52,7 @@ const FormLayout = memo(function FormLayout(
               {title}
             </Typography>
             <form onSubmit={onSubmit} className="w-full">
-              {children}
+              <Fieldset disabled={disabled}>{children}</Fieldset>
             </form>
           </Grid>
         </Card>

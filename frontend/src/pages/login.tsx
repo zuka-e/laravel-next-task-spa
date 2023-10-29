@@ -19,7 +19,6 @@ import { APP_NAME } from '@/config/app';
 import { type SignInRequest } from '@/store/thunks/auth';
 import { useLoginMutation } from '@/store/api';
 import { FormLayout } from '@/layouts';
-import { SubmitButton } from '@/templates';
 import type { GuestPage } from '@/routes';
 import { isInvalidRequest, makeErrorMessageFrom } from '@/utils/api/errors';
 
@@ -62,7 +61,7 @@ export const getStaticProps: GetStaticProps<LoginProps> = async () => {
 };
 
 const SignIn = memo(function SignIn(): JSX.Element {
-  const [login, { error }] = useLoginMutation();
+  const [login, { isLoading, error }] = useLoginMutation();
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
   const router = useRouter();
@@ -98,6 +97,7 @@ const SignIn = memo(function SignIn(): JSX.Element {
       <FormLayout
         title={`Sign in to ${APP_NAME}`}
         message={message}
+        disabled={isLoading}
         onSubmit={handleSubmit(onSubmit)}
       >
         <TextField
@@ -144,7 +144,9 @@ const SignIn = memo(function SignIn(): JSX.Element {
           }
         />
         <div className="my-8">
-          <SubmitButton fullWidth>{'Sign In'}</SubmitButton>
+          <Button fullWidth type="submit" color="primary" variant="contained">
+            {'Sign In'}
+          </Button>
         </div>
         <Button
           color="info"
