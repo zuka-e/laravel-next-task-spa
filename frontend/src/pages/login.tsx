@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticProps } from 'next';
@@ -62,7 +62,7 @@ export const getStaticProps: GetStaticProps<LoginProps> = async () => {
 };
 
 const SignIn = memo(function SignIn(): JSX.Element {
-  const [login] = useLoginMutation();
+  const [login, { error }] = useLoginMutation();
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
   const router = useRouter();
@@ -77,20 +77,18 @@ const SignIn = memo(function SignIn(): JSX.Element {
     setVisiblePassword((prev) => !prev);
   }, []);
 
-  // エラー発生時はメッセージを表示する
   const onSubmit = useCallback(
-    async (data: FormData): Promise<void> => {
-      try {
-        await login(data).unwrap();
-      } catch (error) {
-        if (isInvalidRequest(error)) {
-          return setMessage(makeErrorMessageFrom(error));
-        }
-        throw error;
-      }
+    (data: FormData): void => {
+      login(data);
     },
     [login]
   );
+
+  useEffect((): void => {
+    if (isInvalidRequest(error)) {
+      setMessage(makeErrorMessageFrom(error));
+    }
+  }, [error]);
 
   return (
     <>
