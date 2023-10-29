@@ -14,8 +14,9 @@ import {
 import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
 import { makeEmail } from '@/utils/generator';
 import { useAppDispatch } from '@/utils/hooks';
-import { useGetSessionQuery } from '@/store/api';
-import { createUser, signInWithEmail, signOut } from '@/store/thunks/auth';
+import { useGetSessionQuery, useLoginMutation } from '@/store/api';
+import { createUser, signOut } from '@/store/thunks/auth';
+import { Fieldset } from '@/templates';
 
 const SideMenu = memo(function SideMenu(): JSX.Element {
   const { userId } = useGetSessionQuery(undefined, {
@@ -24,6 +25,9 @@ const SideMenu = memo(function SideMenu(): JSX.Element {
       userId: result.data?.user?.id,
     }),
   });
+
+  const [login, { isLoading }] = useLoginMutation();
+
   const dispatch = useAppDispatch();
 
   const menuItem = useMemo(() => {
@@ -77,24 +81,22 @@ const SideMenu = memo(function SideMenu(): JSX.Element {
           );
           break;
         case 'guestLogin':
-          dispatch(
-            signInWithEmail({ email: GUEST_EMAIL, password: GUEST_PASSWORD })
-          );
+          login({ email: GUEST_EMAIL, password: GUEST_PASSWORD });
           break;
       }
     },
-    [dispatch, userId]
+    [dispatch, login, userId]
   );
 
   return (
-    <>
+    <Fieldset disabled={isLoading}>
       {(Object.keys(menuItem) as (keyof typeof menuItem)[]).map((key) => (
         <ListItem key={key} button onClick={() => handleClick(key)}>
           <ListItemIcon>{renderIcon(key)}</ListItemIcon>
           <ListItemText primary={menuItem[key]} />
         </ListItem>
       ))}
-    </>
+    </Fieldset>
   );
 });
 
