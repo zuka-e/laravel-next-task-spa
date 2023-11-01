@@ -14,7 +14,7 @@ import { axiosBaseQuery } from '@/store/api/utils';
 const baseApi = createApi({
   baseQuery: axiosBaseQuery(),
   reducerPath: 'taskApi',
-  tagTypes: ['TaskBoard'],
+  tagTypes: ['Session', 'TaskBoard'],
   endpoints: () => ({}),
 });
 
