@@ -14,8 +14,12 @@ import {
 import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
 import { makeEmail } from '@/utils/generator';
 import { useAppDispatch } from '@/utils/hooks';
-import { useGetSessionQuery, useLoginMutation } from '@/store/api';
-import { createUser, signOut } from '@/store/thunks/auth';
+import {
+  useGetSessionQuery,
+  useLoginMutation,
+  useLogoutMutation,
+} from '@/store/api';
+import { createUser } from '@/store/thunks/auth';
 import { Fieldset } from '@/templates';
 
 const SideMenu = memo(function SideMenu(): JSX.Element {
@@ -26,9 +30,15 @@ const SideMenu = memo(function SideMenu(): JSX.Element {
     }),
   });
 
-  const [login, { isLoading }] = useLoginMutation();
+  const [login, { isLoading: loginLoading }] = useLoginMutation();
+  const [logout, { isLoading: logoutLoading }] = useLogoutMutation();
 
   const dispatch = useAppDispatch();
+
+  const isLoading = useMemo(
+    (): boolean => loginLoading || logoutLoading,
+    [loginLoading, logoutLoading]
+  );
 
   const menuItem = useMemo(() => {
     return userId
@@ -61,7 +71,7 @@ const SideMenu = memo(function SideMenu(): JSX.Element {
           Router.push(`/users/${userId}/boards`);
           break;
         case 'logout':
-          dispatch(signOut());
+          logout();
           break;
 
         case 'register':
@@ -85,7 +95,7 @@ const SideMenu = memo(function SideMenu(): JSX.Element {
           break;
       }
     },
-    [dispatch, login, userId]
+    [dispatch, login, logout, userId]
   );
 
   return (

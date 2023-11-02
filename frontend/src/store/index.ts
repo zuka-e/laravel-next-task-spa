@@ -1,7 +1,7 @@
 import { AnyAction, combineReducers, configureStore } from '@reduxjs/toolkit';
 
 import { appSlice, authSlice, taskBoardSlice, flushAllStates } from './slices';
-import { deleteAccount, signOut } from './thunks/auth';
+import { deleteAccount } from './thunks/auth';
 import { apiResponseNotification } from './api/middleware';
 import { api as taskApi } from './api/services/tasks';
 
@@ -20,7 +20,6 @@ export const rootReducer = (
 ) => {
   const actionsWithReset = [
     flushAllStates().type,
-    signOut.fulfilled.type,
     deleteAccount.fulfilled.type,
   ];
 
