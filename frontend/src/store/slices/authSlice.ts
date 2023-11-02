@@ -12,7 +12,6 @@ import {
   updatePassword,
   forgotPassword,
   resetPassword,
-  signOut,
   deleteAccount,
   fetchSession,
 } from '@/store/thunks/auth';
@@ -183,22 +182,6 @@ export const authSlice = createSlice({
     });
     builder.addCase(resetPassword.rejected, (state, action) => {
       state.loading = false;
-      pushErrorFlash(state, action.payload);
-    });
-    builder.addCase(signOut.pending, (state, _action) => {
-      state.loading = true;
-    });
-    builder.addCase(signOut.fulfilled, (state, action) => {
-      const { ...flash } = action.payload;
-
-      state.loading = false;
-      state.user = null;
-      state.signedIn = false;
-      state.flashes = [...state.flashes, { ...flash }];
-    });
-    builder.addCase(signOut.rejected, (state, action) => {
-      state.loading = false;
-      state.signedIn = false;
       pushErrorFlash(state, action.payload);
     });
     builder.addCase(deleteAccount.pending, (state, _action) => {

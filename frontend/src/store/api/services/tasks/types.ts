@@ -18,6 +18,10 @@ export type LoginRequest = {
   remember?: string;
 };
 
+export type LogoutResponse = FlashNotificationProps;
+
+export type LogoutRequest = void;
+
 export type FetchTaskBoardsResponse = PaginationResponse<TaskBoard>;
 
 export type FetchTaskBoardsRequest = {

@@ -7,9 +7,8 @@ import {
   ExitToApp as ExitToAppIcon,
 } from '@mui/icons-material';
 
-import { useGetSessionQuery } from '@/store/api';
-import { signOut } from '@/store/thunks/auth';
-import { useAppDispatch } from '@/utils/hooks';
+import { useGetSessionQuery, useLogoutMutation } from '@/store/api';
+import { Fieldset } from '@/templates';
 
 const AccountMenuList = memo(function AccountMenuList(): JSX.Element {
   const { username } = useGetSessionQuery(undefined, {
@@ -18,31 +17,38 @@ const AccountMenuList = memo(function AccountMenuList(): JSX.Element {
       username: result.data?.user?.name,
     }),
   });
-  const dispatch = useAppDispatch();
+
+  const [logout, { isLoading }] = useLogoutMutation();
 
   const handleClick = useCallback((path: string): void => {
     Router.push(path);
   }, []);
 
-  const handleSignOut = useCallback((): void => {
-    dispatch(signOut());
-  }, [dispatch]);
+  const handleLogout = useCallback((): void => {
+    logout();
+  }, [logout]);
 
   return (
-    <List component="nav" aria-label="account-menu">
-      <ListItem button onClick={() => handleClick('/account')} title={username}>
-        <ListItemIcon>
-          <AccountCircleIcon />
-        </ListItemIcon>
-        <ListItemText primary={username} />
-      </ListItem>
-      <ListItem button onClick={handleSignOut}>
-        <ListItemIcon>
-          <ExitToAppIcon />
-        </ListItemIcon>
-        <ListItemText primary="ログアウト" />
-      </ListItem>
-    </List>
+    <Fieldset disabled={isLoading}>
+      <List component="nav" aria-label="account-menu">
+        <ListItem
+          button
+          onClick={() => handleClick('/account')}
+          title={username}
+        >
+          <ListItemIcon>
+            <AccountCircleIcon />
+          </ListItemIcon>
+          <ListItemText primary={username} />
+        </ListItem>
+        <ListItem button onClick={handleLogout}>
+          <ListItemIcon>
+            <ExitToAppIcon />
+          </ListItemIcon>
+          <ListItemText primary="ログアウト" />
+        </ListItem>
+      </List>
+    </Fieldset>
   );
 });
 

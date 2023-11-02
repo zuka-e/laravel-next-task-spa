@@ -1,12 +1,14 @@
 import Router from 'next/router';
 
-import { SESSION_PATH, SIGNIN_PATH } from '@/config/api';
+import { SESSION_PATH, SIGNIN_PATH, SIGNOUT_PATH } from '@/config/api';
 import baseApi from './baseApi';
 import type {
   FetchSessionRequest,
   FetchSessionResponse,
   LoginRequest,
   LoginResponse,
+  LogoutRequest,
+  LogoutResponse,
 } from './types';
 
 /**
@@ -39,7 +41,21 @@ const api = baseApi.injectEndpoints({
       },
       invalidatesTags: ['Session', 'TaskBoard'],
     }),
+    logout: builder.mutation<LogoutResponse, LogoutRequest>({
+      query: () => ({ url: SIGNOUT_PATH, method: 'POST' }),
+      // cf. https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#pessimistic-updates
+      async onQueryStarted(_, { queryFulfilled, dispatch }) {
+        try {
+          await queryFulfilled;
+          // cf. https://redux-toolkit.js.org/rtk-query/api/created-api/api-slice-utils#resetapistate
+          dispatch(baseApi.util.resetApiState());
+        } catch (error) {
+          //
+        }
+      },
+      invalidatesTags: ['Session'],
+    }),
   }),
 });
 
-export const { useGetSessionQuery, useLoginMutation } = api;
+export const { useGetSessionQuery, useLoginMutation, useLogoutMutation } = api;
