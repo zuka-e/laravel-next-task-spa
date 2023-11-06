@@ -1,5 +1,3 @@
-export { default as fetchSession } from './fetchSession';
-export * from './fetchSession';
 export * from './sendEmailVerificationLink';
 export { default as verifyEmail } from './verifyEmail';
 export * from './verifyEmail';
