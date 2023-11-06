@@ -22,6 +22,16 @@ export type LogoutResponse = FlashNotificationProps;
 
 export type LogoutRequest = void;
 
+export type RegisterRequest = {
+  email: string;
+  password: string;
+  password_confirmation: string;
+};
+
+export type RegisterResponse = FlashNotificationProps & {
+  user: User;
+};
+
 export type FetchTaskBoardsResponse = PaginationResponse<TaskBoard>;
 
 export type FetchTaskBoardsRequest = {

@@ -4,7 +4,6 @@ import type { AlertColor } from '@mui/material';
 import { User } from '@/models/User';
 import { type RejectValue } from '@/store/thunks/config';
 import {
-  createUser,
   sendEmailVerificationLink,
   verifyEmail,
   signInWithEmail,
@@ -75,22 +74,6 @@ export const authSlice = createSlice({
     });
     builder.addCase(fetchSession.rejected, (state, action) => {
       state.loading = false;
-      pushErrorFlash(state, action.payload);
-    });
-    builder.addCase(createUser.pending, (state, _action) => {
-      state.loading = true;
-    });
-    builder.addCase(createUser.fulfilled, (state, action) => {
-      const { user, ...flash } = action.payload;
-
-      state.user = action.payload.user;
-      state.flashes = [...state.flashes, { ...flash }];
-      state.signedIn = true;
-      state.loading = false;
-    });
-    builder.addCase(createUser.rejected, (state, action) => {
-      state.loading = false;
-      state.signedIn = false;
       pushErrorFlash(state, action.payload);
     });
     builder.addCase(sendEmailVerificationLink.pending, (state, _action) => {

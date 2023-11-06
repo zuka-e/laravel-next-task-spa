@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticProps } from 'next';
@@ -15,14 +15,15 @@ import {
   Checkbox,
 } from '@mui/material';
 
-import { SignUpRequest, createUser } from '@/store/thunks/auth';
-import { useAppDispatch } from '@/utils/hooks';
+import { useRegisterMutation } from '@/store/api';
+import type { RegisterRequest } from '@/store/api/services/tasks/types';
 import { FormLayout } from '@/layouts';
 import { SubmitButton } from '@/templates';
 import type { GuestPage } from '@/routes';
+import { isInvalidRequest, makeErrorMessageFrom } from '@/utils/api/errors';
 
 // Input items
-type FormData = SignUpRequest;
+type FormData = RegisterRequest;
 
 const formData: Record<keyof FormData, { id: string; label: string }> = {
   email: {
@@ -67,7 +68,7 @@ export const getStaticProps: GetStaticProps<RegisterProps> = async () => {
 
 const SignUp = memo(function SignUp(): JSX.Element {
   const router = useRouter();
-  const dispatch = useAppDispatch();
+  const [signUp, { isLoading, error }] = useRegisterMutation();
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
   const {
@@ -83,16 +84,18 @@ const SignUp = memo(function SignUp(): JSX.Element {
     setVisiblePassword((prev) => !prev);
   }, []);
 
-  // エラー発生時はメッセージを表示する
   const onSubmit = useCallback(
-    async (data: FormData): Promise<void> => {
-      const response = await dispatch(createUser(data));
-      if (createUser.rejected.match(response)) {
-        setMessage(response.payload?.error?.message);
-      }
+    (data: FormData): void => {
+      signUp(data);
     },
-    [dispatch]
+    [signUp]
   );
+
+  useEffect((): void => {
+    if (isInvalidRequest(error)) {
+      setMessage(makeErrorMessageFrom(error));
+    }
+  }, [error]);
 
   return (
     <>
@@ -102,6 +105,7 @@ const SignUp = memo(function SignUp(): JSX.Element {
       <FormLayout
         title={'Create an account'}
         message={message}
+        disabled={isLoading}
         onSubmit={handleSubmit(onSubmit)}
       >
         <TextField
