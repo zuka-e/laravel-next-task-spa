@@ -1,6 +1,11 @@
 import Router from 'next/router';
 
-import { SESSION_PATH, SIGNIN_PATH, SIGNOUT_PATH } from '@/config/api';
+import {
+  SESSION_PATH,
+  SIGNIN_PATH,
+  SIGNOUT_PATH,
+  SIGNUP_PATH,
+} from '@/config/api';
 import baseApi from './baseApi';
 import type {
   FetchSessionRequest,
@@ -9,6 +14,8 @@ import type {
   LoginResponse,
   LogoutRequest,
   LogoutResponse,
+  RegisterRequest,
+  RegisterResponse,
 } from './types';
 
 /**
@@ -55,7 +62,23 @@ const api = baseApi.injectEndpoints({
       },
       invalidatesTags: ['Session'],
     }),
+    register: builder.mutation<RegisterResponse, RegisterRequest>({
+      query: (data) => ({
+        url: SIGNUP_PATH,
+        method: 'POST',
+        data: { name: data.email, ...data },
+      }),
+      onQueryStarted() {
+        sessionStorage.setItem('intendedUrl', '/email-verification');
+      },
+      invalidatesTags: ['Session', 'TaskBoard'],
+    }),
   }),
 });
 
-export const { useGetSessionQuery, useLoginMutation, useLogoutMutation } = api;
+export const {
+  useGetSessionQuery,
+  useLoginMutation,
+  useLogoutMutation,
+  useRegisterMutation,
+} = api;

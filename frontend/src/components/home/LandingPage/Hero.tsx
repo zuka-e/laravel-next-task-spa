@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import Router from 'next/router';
 
@@ -15,29 +15,28 @@ import {
   Menu as MenuIcon,
 } from '@mui/icons-material';
 
-import { GUEST_EMAIL, GUEST_NAME, GUEST_PASSWORD } from '@/config/app';
-import { useLoginMutation } from '@/store/api';
-import { createUser } from '@/store/thunks/auth';
-import { useAppDispatch } from '@/utils/hooks';
+import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
+import { useLoginMutation, useRegisterMutation } from '@/store/api';
 import { makeEmail } from '@/utils/generator';
 import { Fieldset, LinkButton, PopoverControl } from '@/templates';
 import hero from '@/images/hero.svg';
 
 const Hero = memo(function Hero(): JSX.Element {
-  const [login, { isLoading }] = useLoginMutation();
+  const [login, { isLoading: isLoginLoading }] = useLoginMutation();
+  const [register, { isLoading: isRegisterLoading }] = useRegisterMutation();
 
-  const dispatch = useAppDispatch();
+  const isLoading = useMemo((): boolean => {
+    return isLoginLoading || isRegisterLoading;
+  }, [isLoginLoading, isRegisterLoading]);
 
   const handleGuestSignUp = useCallback(async (): Promise<void> => {
-    const user = {
-      name: GUEST_NAME,
+    await Router.push('/register');
+    register({
       email: makeEmail(),
       password: GUEST_PASSWORD,
       password_confirmation: GUEST_PASSWORD,
-    };
-    await Router.push('/register'); // `EmailVerification`を表示するため
-    dispatch(createUser(user));
-  }, [dispatch]);
+    });
+  }, [register]);
 
   const handleGuestSignIn = useCallback((): void => {
     login({ email: GUEST_EMAIL, password: GUEST_PASSWORD });

@@ -13,13 +13,12 @@ import {
 
 import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
 import { makeEmail } from '@/utils/generator';
-import { useAppDispatch } from '@/utils/hooks';
 import {
   useGetSessionQuery,
   useLoginMutation,
   useLogoutMutation,
+  useRegisterMutation,
 } from '@/store/api';
-import { createUser } from '@/store/thunks/auth';
 import { Fieldset } from '@/templates';
 
 const SideMenu = memo(function SideMenu(): JSX.Element {
@@ -30,15 +29,13 @@ const SideMenu = memo(function SideMenu(): JSX.Element {
     }),
   });
 
-  const [login, { isLoading: loginLoading }] = useLoginMutation();
-  const [logout, { isLoading: logoutLoading }] = useLogoutMutation();
+  const [login, { isLoading: isLoginLoading }] = useLoginMutation();
+  const [logout, { isLoading: isLogoutLoading }] = useLogoutMutation();
+  const [register, { isLoading: isRegisterLoading }] = useRegisterMutation();
 
-  const dispatch = useAppDispatch();
-
-  const isLoading = useMemo(
-    (): boolean => loginLoading || logoutLoading,
-    [loginLoading, logoutLoading]
-  );
+  const isLoading = useMemo((): boolean => {
+    return isLoginLoading || isLogoutLoading || isRegisterLoading;
+  }, [isLoginLoading, isLogoutLoading, isRegisterLoading]);
 
   const menuItem = useMemo(() => {
     return userId
@@ -65,7 +62,7 @@ const SideMenu = memo(function SideMenu(): JSX.Element {
   };
 
   const handleClick = useCallback(
-    (key: keyof typeof menuItem): void => {
+    async (key: keyof typeof menuItem): Promise<void> => {
       switch (key) {
         case 'boards':
           Router.push(`/users/${userId}/boards`);
@@ -81,21 +78,19 @@ const SideMenu = memo(function SideMenu(): JSX.Element {
           Router.push('login');
           break;
         case 'guestRegister':
-          Router.push('/register'); // `EmailVerification`を表示するため
-          dispatch(
-            createUser({
-              email: makeEmail(),
-              password: GUEST_PASSWORD,
-              password_confirmation: GUEST_PASSWORD,
-            })
-          );
+          await Router.push('/register');
+          register({
+            email: makeEmail(),
+            password: GUEST_PASSWORD,
+            password_confirmation: GUEST_PASSWORD,
+          });
           break;
         case 'guestLogin':
           login({ email: GUEST_EMAIL, password: GUEST_PASSWORD });
           break;
       }
     },
-    [dispatch, login, logout, userId]
+    [login, logout, register, userId]
   );
 
   return (
