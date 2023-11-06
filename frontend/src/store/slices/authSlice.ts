@@ -12,7 +12,6 @@ import {
   forgotPassword,
   resetPassword,
   deleteAccount,
-  fetchSession,
 } from '@/store/thunks/auth';
 
 export type FlashNotificationProps = {
@@ -62,20 +61,6 @@ export const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchSession.pending, (state, _action) => {
-      state.loading = true;
-    });
-    builder.addCase(fetchSession.fulfilled, (state, action) => {
-      const { user } = action.payload;
-
-      state.loading = false;
-      state.user = user;
-      state.signedIn = !!user;
-    });
-    builder.addCase(fetchSession.rejected, (state, action) => {
-      state.loading = false;
-      pushErrorFlash(state, action.payload);
-    });
     builder.addCase(sendEmailVerificationLink.pending, (state, _action) => {
       state.loading = true;
     });
