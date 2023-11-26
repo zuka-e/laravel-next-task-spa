@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
+#==========================================================================
 # Note:
+#==========================================================================
 #
 # Even if installing dependencies like npm at `Dockerfile`,
 # with setting a volume in `docker-compose.yml`,
@@ -16,9 +18,10 @@
 # Instead, there is another approach where installing dependencies also in the host.
 # Run `npm ci; composer i` in this file,
 # and the dependencies will be installed when the Docker container is started.
-
+#
 # npm ci
-
+#
 # composer i
+#
 
-/usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.dev.conf

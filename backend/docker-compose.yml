@@ -7,6 +7,7 @@ services:
     image: 'nginx:1.25'
     environment:
       DOCKER_WORKDIR: '${DOCKER_WORKDIR}'
+      APP_ENV: '${APP_ENV}'
       SERVER_NAME: '${APP_DOMAIN}'
     ports:
       - '${APP_PORT:-8080}:80'
@@ -22,6 +23,10 @@ services:
         source: './docker/nginx/default.conf'
         target: '/etc/nginx/templates/default.conf.template'
         consistency: ro
+      - type: bind
+        source: './docker/nginx/${APP_ENV}.conf'
+        target: '/etc/nginx/templates/${APP_ENV}.conf.template'
+        consistency: ro
     depends_on:
       php-fpm:
         condition: service_started
@@ -32,13 +37,12 @@ services:
       # but cannot if it's `./docker` etc. as parent path can't be reached.
       context: '.'
       dockerfile: './docker/app/Dockerfile'
-      # cf. `Dockerfile.ARG`
+      target: '${APP_ENV}'
       args:
         PHP_VERSION: '${PHP_VERSION}'
         WORKDIR: '${DOCKER_WORKDIR}'
         USERNAME: '${DOCKER_USERNAME}'
-    # Used for built image name if `servive.build` is processed
-    image: '${USER}/${COMPOSE_PROJECT_NAME}'
+    image: '${USER}/${COMPOSE_PROJECT_NAME}:${APP_ENV}'
     environment:
       LC_ALL: 'C.UTF-8'
     # Starting directory in logining the container
