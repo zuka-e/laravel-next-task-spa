@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-php artisan optimize &&
+php artisan key:generate &&
+  php artisan optimize &&
+  php artisan migrate --force &&
   exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.prod.conf
 
 #==========================================================================
