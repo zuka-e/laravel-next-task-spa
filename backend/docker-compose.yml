@@ -23,9 +23,18 @@ services:
     # Starting directory in logining the container
     working_dir: '${DOCKER_WORKDIR}'
     volumes:
-      - '.:${DOCKER_WORKDIR}'
-      - 'vendor:${DOCKER_WORKDIR}/vendor'
-      - 'node_modules:${DOCKER_WORKDIR}/node_modules'
+      # cf. https://docs.docker.com/compose/compose-file/05-services/#long-syntax-5
+      # cf. https://docs.docker.com/desktop/previous-versions/edge-releases-mac/#docker-desktop-community-2330
+      - type: bind
+        source: '.'
+        target: '${DOCKER_WORKDIR}'
+        consistency: delegated
+      - type: volume
+        source: 'vendor'
+        target: '${DOCKER_WORKDIR}/vendor'
+      - type: volume
+        source: 'node_modules'
+        target: '${DOCKER_WORKDIR}/node_modules'
     depends_on:
       mysql:
         condition: service_healthy
