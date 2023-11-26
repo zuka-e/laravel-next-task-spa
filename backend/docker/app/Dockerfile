@@ -16,11 +16,12 @@ FROM php:${PHP_VERSION}-fpm AS base
 
 ARG CONFIG_DIR=./docker/app
 ARG WORKDIR=/var/www/html
-ARG WWWUSER=1000
-ARG USERNAME=sail
+ARG WEB_USER=www-data
+ARG USER=${WEB_USER}
+ARG HOME=/home/${USER}
 
 ENV WORK_DIR=${WORKDIR}
-ENV USERNAME=${USERNAME}
+ENV USER=${USER}
 
 WORKDIR ${WORKDIR}
 
@@ -43,8 +44,13 @@ RUN apt-get update && apt-get install -y \
         pdo_mysql \
         zip
 
-# Create a non root user
-RUN useradd -m -s /bin/bash -u ${WWWUSER} ${USERNAME}
+# Create the home directory for an user used by web server.
+# Note:
+# The default home dir is `/var/www` and should be changed or a npm error will occur.
+# (`npm i` => `Your cache folder contains root-owned files..`)
+RUN mkdir -p ${HOME} \
+    && chown ${USER}:${USER} ${HOME} \
+    && usermod --home ${HOME} ${USER}
 
 ENTRYPOINT ["start-container"]
 
@@ -76,15 +82,21 @@ RUN apt-get update && apt-get install -y \
 RUN mv ${PHP_INI_DIR}/php.ini-development ${PHP_INI_DIR}/php.ini
 
 # Install Composer.
-COPY --from=composer /usr/bin/composer /usr/bin/composer
+COPY --from=composer --chown=${USER} /usr/bin/composer /usr/bin/composer
 # Install `node`.
-COPY --from=node /usr/local/bin/ /usr/bin/
+COPY --from=node --chown=${USER} /usr/local/bin/ /usr/bin/
 # Install `npm`.
-COPY --from=node /usr/local/lib/node_modules/npm /usr/lib/node_modules/npm
+COPY --from=node --chown=${USER} /usr/local/lib/node_modules/npm /usr/lib/node_modules/npm
 
 # VSCode extensions for DevContainer
-RUN mkdir -p /home/${USERNAME}/.vscode-server/extensions \
-    && chown -R ${USERNAME} /home/${USERNAME}/.vscode-server
+RUN mkdir -p ${HOME}/.vscode-server/extensions \
+    && chown -R ${USER} ${HOME}/.vscode-server
+
+# Enabele a non-root user to access files.
+RUN mkdir -p ./vendor ./node_modules \
+    && chown -R ${USER}:${USER} ./
+
+USER ${USER}
 
 # Install Composer dependencies.
 COPY ./composer.json ./composer.lock ./
@@ -127,4 +139,6 @@ COPY --from=build ${WORKDIR}/vendor/ ./vendor/
 COPY ${CONFIG_DIR}/php/php.ini ${PHP_INI_DIR}/conf.d/
 COPY ${CONFIG_DIR}/start-container.prod.sh /usr/local/bin/start-container
 COPY ${CONFIG_DIR}/supervisor/ /etc/supervisor/conf.d/
+
+USER ${USER}
 

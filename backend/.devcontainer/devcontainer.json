@@ -6,7 +6,7 @@
   ],
   "service": "php-fpm",
   "workspaceFolder": "/var/www/html/backend",
-  "remoteUser": "sail",
+  "remoteUser": "www-data",
   "customizations": {
     "vscode": {
       "extensions": [
