@@ -26,8 +26,6 @@ services:
       - '.:${DOCKER_WORKDIR}'
       - 'vendor:${DOCKER_WORKDIR}/vendor'
       - 'node_modules:${DOCKER_WORKDIR}/node_modules'
-    networks:
-      - backend
     depends_on:
       - mysql
       - redis
@@ -43,8 +41,6 @@ services:
     volumes:
       - 'mysql:/var/lib/mysql'
       - './docker/database/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
-    networks:
-      - backend
     healthcheck:
       test: ['CMD', 'mysqladmin', 'ping', '-p${DB_PASSWORD}']
       retries: 3
@@ -55,8 +51,6 @@ services:
       - '${FORWARD_REDIS_PORT:-6380}:6379'
     volumes:
       - 'redis:/data'
-    networks:
-      - backend
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       retries: 3
@@ -67,11 +61,6 @@ services:
     ports:
       - '${FORWARD_MAILPIT_PORT:-1025}:1025'
       - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
-    networks:
-      - backend
-networks:
-  backend:
-    driver: bridge
 volumes:
   vendor:
     driver: local
