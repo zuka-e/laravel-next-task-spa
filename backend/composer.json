@@ -11,23 +11,23 @@
         "php": "^8.2",
         "bref/bref": "^1.2",
         "bref/laravel-bridge": "^1.1",
-        "fakerphp/faker": "^1.9.1",
+        "doctrine/dbal": "^3.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/fortify": "^1.7",
         "laravel/framework": "^10.0",
-        "laravel/horizon": "^5.15",
         "laravel/sanctum": "^3.2",
-        "laravel/telescope": "^4.14",
-        "laravel/tinker": "^2.5"
+        "laravel/telescope": "^4.14"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.13",
-        "doctrine/dbal": "^3.0",
-        "spatie/laravel-ignition": "^2.0",
+        "fakerphp/faker": "^1.9.1",
+        "laravel/horizon": "^5.15",
         "laravel/sail": "^1.0.1",
+        "laravel/tinker": "^2.5",
         "mockery/mockery": "^1.4.2",
         "nunomaduro/collision": "^7.0",
-        "phpunit/phpunit": "^10.0"
+        "phpunit/phpunit": "^10.0",
+        "spatie/laravel-ignition": "^2.0"
     },
     "config": {
         "optimize-autoloader": true,
