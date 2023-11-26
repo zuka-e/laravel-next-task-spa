@@ -8,9 +8,10 @@ services:
       # e.g. if it's `.`, `package.json` etc can be referenced as is,
       # but cannot if it's `./docker` etc. as parent path can't be reached.
       context: '.'
-      dockerfile: ./docker/8.2-dev/Dockerfile
+      dockerfile: ./docker/Dockerfile
       # cf. `Dockerfile.ARG`
       args:
+        PHP_VERSION: '${PHP_VERSION}'
         WORKDIR: '${DOCKER_WORKDIR}'
         USERNAME: '${DOCKER_USERNAME}'
     # Used for built image name if `servive.build` is processed

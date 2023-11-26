@@ -1,5 +1,7 @@
 # cf. https://docs.docker.com/develop/develop-images/dockerfile_best-practices
 
+ARG PHP_VERSION
+
 # cf. https://hub.docker.com/_/composer
 FROM composer:2.5.8 as composer
 
@@ -7,7 +9,7 @@ FROM composer:2.5.8 as composer
 FROM node:20.3.1 as node
 
 # cf. https://hub.docker.com/_/php
-FROM php:8.2-fpm
+FROM php:${PHP_VERSION}-fpm
 
 ARG WORKDIR=/var/www/html
 ARG WWWUSER=1000
