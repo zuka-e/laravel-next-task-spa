@@ -122,7 +122,13 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 # Install Composer dependencies.
 COPY ./composer.json ./composer.lock ./
 # cf. https://getcomposer.org/doc/03-cli.md#install-i
-RUN composer install --no-dev --no-scripts --no-plugins --no-interaction
+RUN composer install --no-dev --classmap-authoritative --no-scripts --no-plugins --no-interaction
+
+# Update the autoloader (otherwise Class won't be found).
+RUN mkdir -p ./bootstrap/cache/
+COPY ./ ./
+# cf. https://getcomposer.org/doc/03-cli.md#dump-autoload-dumpautoload
+RUN composer dump-autoload --no-dev --classmap-authoritative
 
 #==========================================================================
 # For production
@@ -135,6 +141,7 @@ RUN mv ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini
 COPY ./ ./
 
 COPY --from=build ${WORKDIR}/vendor/ ./vendor/
+COPY --from=build --chown=${USER} ${WORKDIR}/bootstrap/cache/ ./bootstrap/cache/
 
 COPY ${CONFIG_DIR}/php/php.ini ${PHP_INI_DIR}/conf.d/
 COPY ${CONFIG_DIR}/start-container.prod.sh /usr/local/bin/start-container

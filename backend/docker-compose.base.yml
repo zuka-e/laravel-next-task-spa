@@ -1,6 +1,5 @@
 # cf. https://laravel.com/docs/sail
-# cf. https://docs.docker.com/compose/compose-file/#compose-file
-# cf. https://docs.docker.com/compose/compose-file/build
+# cf. https://docs.docker.com/compose/compose-file
 services:
   nginx:
     # cf. https://hub.docker.com/_/nginx
@@ -9,8 +8,6 @@ services:
       DOCKER_WORKDIR: '${DOCKER_WORKDIR}'
       APP_ENV: '${APP_ENV}'
       SERVER_NAME: '${APP_DOMAIN}'
-    ports:
-      - '${APP_PORT:-8080}:80'
     volumes:
       # cf. https://docs.docker.com/compose/compose-file/05-services/#long-syntax-5
       # cf. https://docs.docker.com/desktop/previous-versions/edge-releases-mac/#docker-desktop-community-2330
@@ -27,14 +24,14 @@ services:
         source: './docker/nginx/${APP_ENV}.conf'
         target: '/etc/nginx/templates/${APP_ENV}.conf.template'
         consistency: ro
+    ports:
+      - '${APP_PORT:-8080}:80'
     depends_on:
       php-fpm:
         condition: service_started
   php-fpm:
+    # cf. https://docs.docker.com/compose/compose-file/build
     build:
-      # As relative path origin in `Dockerfile`
-      # e.g. if it's `.`, `package.json` etc can be referenced as is,
-      # but cannot if it's `./docker` etc. as parent path can't be reached.
       context: '.'
       dockerfile: './docker/app/Dockerfile'
       target: '${APP_ENV}'
@@ -54,10 +51,10 @@ services:
         consistency: delegated
       - type: volume
         source: 'vendor'
-        target: '${DOCKER_WORKDIR}/vendor'
+        target: '${DOCKER_WORKDIR}/vendor/'
       - type: volume
         source: 'node_modules'
-        target: '${DOCKER_WORKDIR}/node_modules'
+        target: '${DOCKER_WORKDIR}/node_modules/'
     depends_on:
       mysql:
         condition: service_healthy
@@ -77,33 +74,16 @@ services:
       MYSQL_PASSWORD: '${DB_PASSWORD}'
     volumes:
       - 'mysql:/var/lib/mysql'
-      - './docker/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh:ro'
     healthcheck:
       test: ['CMD', 'mysqladmin', 'ping', '-p${DB_PASSWORD}']
       retries: 3
       timeout: 5s
-  redis:
-    image: 'redis:alpine'
-    ports:
-      - '${FORWARD_REDIS_PORT:-6380}:6379'
-    volumes:
-      - 'redis:/data'
-    healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
-      retries: 3
-      timeout: 5s
-  # https://github.com/axllent/mailpit
-  mailpit:
-    image: 'axllent/mailpit:latest'
-    ports:
-      - '${FORWARD_MAILPIT_PORT:-1025}:1025'
-      - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
 volumes:
   vendor:
     driver: local
   node_modules:
     driver: local
-  mysql:
+  laravel-cache:
     driver: local
-  redis:
+  mysql:
     driver: local

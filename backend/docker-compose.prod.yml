@@ -1,0 +1,13 @@
+# cf. https://docs.docker.com/compose/compose-file
+# cf. https://docs.docker.com/compose/multiple-compose-files
+# cf. https://docs.docker.com/compose/reference/#specifying-multiple-compose-files
+
+services:
+  php-fpm:
+    volumes:
+      - type: volume
+        source: laravel-cache
+        target: '${DOCKER_WORKDIR}/bootstrap/cache/'
+volumes:
+  laravel-cache:
+    driver: local

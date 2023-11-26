@@ -1,7 +1,7 @@
 // https://code.visualstudio.com/docs/remote/devcontainerjson-reference
 {
   "dockerComposeFile": [
-    "../docker-compose.yml",
+    "../docker-compose.dev.yml",
     "../docker-compose.extend.yml"
   ],
   "service": "php-fpm",

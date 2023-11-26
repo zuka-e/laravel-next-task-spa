@@ -7,7 +7,7 @@
 
 # configuration files
 .env
-.env.example
+.env.*
 
 # Docker related
 docker-compose.yml
@@ -22,5 +22,7 @@ Dockerfile
 /node_modules
 /npm-debug.log
 
-/storage
+storage/*/*
+logs/*
 *.log
+**/cache
