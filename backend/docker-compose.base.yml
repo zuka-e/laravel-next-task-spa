@@ -40,10 +40,6 @@ services:
         WORKDIR: '${DOCKER_WORKDIR}'
         USER: '${WEB_USER}'
     image: '${USER}/${COMPOSE_PROJECT_NAME}:${APP_ENV}'
-    environment:
-      LC_ALL: 'C.UTF-8'
-    # Starting directory in logining the container
-    working_dir: '${DOCKER_WORKDIR}'
     volumes:
       - type: bind
         source: '.'
