@@ -27,8 +27,12 @@ services:
       - 'vendor:${DOCKER_WORKDIR}/vendor'
       - 'node_modules:${DOCKER_WORKDIR}/node_modules'
     depends_on:
-      - mysql
-      - redis
+      mysql:
+        condition: service_healthy
+        restart: true
+      redis:
+        condition: service_healthy
+        restart: true
   mysql:
     image: 'mariadb:10'
     ports:
