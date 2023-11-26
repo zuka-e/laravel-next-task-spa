@@ -4,7 +4,7 @@
     "../docker-compose.yml",
     "../docker-compose.extend.yml"
   ],
-  "service": "laravel.test",
+  "service": "php-fpm",
   "workspaceFolder": "/var/www/html/backend",
   "remoteUser": "sail",
   "customizations": {

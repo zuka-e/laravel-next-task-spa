@@ -82,9 +82,9 @@ RUN composer dump-autoload
 RUN mkdir -p /home/${USERNAME}/.vscode-server/extensions \
     && chown -R ${USERNAME} /home/${USERNAME}/.vscode-server
 
-COPY docker/start-container /usr/local/bin/start-container
-COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY docker/php.ini /usr/local/etc/php/conf.d/99-${USERNAME}.ini
+COPY docker/app/start-container /usr/local/bin/start-container
+COPY docker/app/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY docker/app/php.ini /usr/local/etc/php/conf.d/99-${USERNAME}.ini
 
 RUN chmod +x /usr/local/bin/start-container
 

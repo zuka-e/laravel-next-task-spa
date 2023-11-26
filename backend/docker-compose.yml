@@ -2,13 +2,36 @@
 # cf. https://docs.docker.com/compose/compose-file/#compose-file
 # cf. https://docs.docker.com/compose/compose-file/build
 services:
-  laravel.test:
+  nginx:
+    # cf. https://hub.docker.com/_/nginx
+    image: 'nginx:1.25'
+    environment:
+      DOCKER_WORKDIR: '${DOCKER_WORKDIR}'
+      SERVER_NAME: '${APP_DOMAIN}'
+    ports:
+      - '${APP_PORT:-8080}:80'
+    volumes:
+      # cf. https://docs.docker.com/compose/compose-file/05-services/#long-syntax-5
+      # cf. https://docs.docker.com/desktop/previous-versions/edge-releases-mac/#docker-desktop-community-2330
+      - type: bind
+        source: './public'
+        target: '${DOCKER_WORKDIR}/public'
+        consistency: ro
+      # cf. https://hub.docker.com/_/nginx - Using environment variables
+      - type: bind
+        source: './docker/nginx/default.conf'
+        target: '/etc/nginx/templates/default.conf.template'
+        consistency: ro
+    depends_on:
+      php-fpm:
+        condition: service_started
+  php-fpm:
     build:
       # As relative path origin in `Dockerfile`
       # e.g. if it's `.`, `package.json` etc can be referenced as is,
       # but cannot if it's `./docker` etc. as parent path can't be reached.
       context: '.'
-      dockerfile: ./docker/Dockerfile
+      dockerfile: './docker/app/Dockerfile'
       # cf. `Dockerfile.ARG`
       args:
         PHP_VERSION: '${PHP_VERSION}'
@@ -16,15 +39,11 @@ services:
         USERNAME: '${DOCKER_USERNAME}'
     # Used for built image name if `servive.build` is processed
     image: '${USER}/${COMPOSE_PROJECT_NAME}'
-    ports:
-      - '${APP_PORT:-80}:80'
     environment:
       LC_ALL: 'C.UTF-8'
     # Starting directory in logining the container
     working_dir: '${DOCKER_WORKDIR}'
     volumes:
-      # cf. https://docs.docker.com/compose/compose-file/05-services/#long-syntax-5
-      # cf. https://docs.docker.com/desktop/previous-versions/edge-releases-mac/#docker-desktop-community-2330
       - type: bind
         source: '.'
         target: '${DOCKER_WORKDIR}'
@@ -43,6 +62,7 @@ services:
         condition: service_healthy
         restart: true
   mysql:
+    # cf. https://hub.docker.com/_/mariadb
     image: 'mariadb:10'
     ports:
       - '${FORWARD_DB_PORT:-3307}:3306'
@@ -53,7 +73,7 @@ services:
       MYSQL_PASSWORD: '${DB_PASSWORD}'
     volumes:
       - 'mysql:/var/lib/mysql'
-      - './docker/database/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
+      - './docker/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh:ro'
     healthcheck:
       test: ['CMD', 'mysqladmin', 'ping', '-p${DB_PASSWORD}']
       retries: 3

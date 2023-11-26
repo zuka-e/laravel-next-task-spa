@@ -1,5 +1,5 @@
 services:
-  laravel.test:
+  php-fpm:
     volumes:
       - '..:${DOCKER_PROJECT_DIR}'
       - 'vscode-extensions:/home/${DOCKER_USERNAME}/.vscode-server/extensions'
