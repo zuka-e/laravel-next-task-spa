@@ -1,4 +1,5 @@
 {
   "singleQuote": true,
-  "phpVersion": "8.1"
+  "phpVersion": "8.2",
+  "plugins": ["@prettier/plugin-php"]
 }
