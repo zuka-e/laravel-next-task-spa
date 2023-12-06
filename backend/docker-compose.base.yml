@@ -40,6 +40,8 @@ services:
         WORKDIR: '${DOCKER_WORKDIR}'
         USER: '${WEB_USER}'
     image: '${USER}/${COMPOSE_PROJECT_NAME}:${APP_ENV}'
+    environment:
+      SHELL: /usr/bin/bash
     volumes:
       - type: bind
         source: '.'
