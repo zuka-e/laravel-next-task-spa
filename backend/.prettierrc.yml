@@ -1,0 +1,7 @@
+# cf. https://prettier.io/docs/en/options
+singleQuote: true
+# cf. https://github.com/prettier/plugin-php#configuration
+phpVersion: '8.2'
+# cf. https://prettier.io/docs/en/plugins
+plugins:
+  - '@prettier/plugin-php'
