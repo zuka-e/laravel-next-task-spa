@@ -3,7 +3,7 @@
   "dockerComposeFile": [
     "../docker-compose.base.yml",
     "../docker-compose.dev.yml",
-    "../docker-compose.extend.yml"
+    "../docker-compose.devcontainer.yml"
   ],
   "service": "php-fpm",
   "workspaceFolder": "/var/www/html/backend",
