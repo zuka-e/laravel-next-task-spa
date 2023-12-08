@@ -9,7 +9,7 @@ services:
   mysql:
     volumes:
       - type: bind
-        source: ./docker/mysql/create-testing-database.sh
+        source: ${DOCKER_CONFIG_DIR}/mysql/create-testing-database.sh
         target: /docker-entrypoint-initdb.d/10-create-testing-database.sh
         read_only: true
   redis:

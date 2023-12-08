@@ -6,23 +6,23 @@ services:
     image: nginx:1.25
     # cf. https://docs.docker.com/compose/environment-variables/env-file
     environment:
-      DOCKER_WORKDIR: ${DOCKER_WORKDIR}
+      CONTAINER_WORKDIR: ${CONTAINER_WORKDIR}
       APP_ENV: ${APP_ENV}
       SERVER_NAME: ${APP_DOMAIN}
     volumes:
       # cf. https://docs.docker.com/compose/compose-file/05-services/#long-syntax-5
       # cf. https://hub.docker.com/_/nginx - Using environment variables
       - type: bind
-        source: ./docker/nginx/default.conf
+        source: ${DOCKER_CONFIG_DIR}/nginx/default.conf
         target: /etc/nginx/templates/default.conf.template
         read_only: true
       - type: bind
-        source: ./docker/nginx/${APP_ENV}.conf
+        source: ${DOCKER_CONFIG_DIR}/nginx/${APP_ENV}.conf
         target: /etc/nginx/templates/${APP_ENV}.conf.template
         read_only: true
       - type: bind
         source: ./public
-        target: ${DOCKER_WORKDIR}/public
+        target: ${CONTAINER_WORKDIR}/public
         read_only: true
     ports:
       - ${APP_PORT:-8080}:80
@@ -33,11 +33,12 @@ services:
     # cf. https://docs.docker.com/compose/compose-file/build
     build:
       context: ./
-      dockerfile: ./docker/app/Dockerfile
+      dockerfile: ${DOCKER_CONFIG_DIR}/app/Dockerfile
       target: ${APP_ENV}
       args:
+        CONFIG_DIR: ${DOCKER_CONFIG_DIR}/app
         PHP_VERSION: ${PHP_VERSION}
-        WORKDIR: ${DOCKER_WORKDIR}
+        WORKDIR: ${CONTAINER_WORKDIR}
         USER: ${WEB_USER}
     image: ${USER}/${COMPOSE_PROJECT_NAME}:${APP_ENV}
     environment:
@@ -45,14 +46,14 @@ services:
     volumes:
       - type: volume
         source: vendor
-        target: ${DOCKER_WORKDIR}/vendor/
+        target: ${CONTAINER_WORKDIR}/vendor/
       - type: volume
         source: node_modules
-        target: ${DOCKER_WORKDIR}/node_modules/
+        target: ${CONTAINER_WORKDIR}/node_modules/
       # cf. https://docs.docker.com/desktop/previous-versions/edge-releases-mac/#docker-desktop-community-2330
       - type: bind
         source: ./
-        target: ${DOCKER_WORKDIR}
+        target: ${CONTAINER_WORKDIR}
         consistency: delegated
     depends_on:
       mysql:
