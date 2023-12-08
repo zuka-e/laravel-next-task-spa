@@ -1,7 +1,7 @@
 services:
   php-fpm:
     volumes:
-      - ..:${DOCKER_PROJECT_DIR}
       - vscode-extensions:/home/${WEB_USER}/.vscode-server/extensions
+      - ..:${DOCKER_PROJECT_DIR}
 volumes:
   vscode-extensions:
