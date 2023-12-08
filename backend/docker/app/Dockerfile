@@ -94,7 +94,7 @@ COPY --from=node --chown=${USER} /usr/local/lib/node_modules/npm /usr/lib/node_m
 RUN mkdir -p ${HOME}/.vscode-server/extensions \
     && chown -R ${USER} ${HOME}/.vscode-server
 
-# Enabele a non-root user to access files.
+# Allow the non-root user to access these files.
 RUN mkdir -p ./vendor ./node_modules \
     && chown -R ${USER}:${USER} ./
 
