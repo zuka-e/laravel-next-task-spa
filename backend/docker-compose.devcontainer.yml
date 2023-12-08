@@ -1,7 +1,12 @@
 services:
   php-fpm:
     volumes:
-      - vscode-extensions:/home/${WEB_USER}/.vscode-server/extensions
-      - ..:${DOCKER_PROJECT_DIR}
+      - type: volume
+        source: vscode-extensions
+        target: /home/${WEB_USER}/.vscode-server/extensions
+      - type: bind
+        source: ../
+        target: ${DOCKER_PROJECT_DIR}
+        consistency: delegated
 volumes:
   vscode-extensions:

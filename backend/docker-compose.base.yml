@@ -72,7 +72,9 @@ services:
     ports:
       - ${FORWARD_DB_PORT:-3307}:3306
     volumes:
-      - mysql:/var/lib/mysql
+      - type: volume
+        source: mysql
+        target: /var/lib/mysql/
     healthcheck:
       test: ['CMD', 'mysqladmin', 'ping', '-p${DB_PASSWORD}']
       retries: 3
