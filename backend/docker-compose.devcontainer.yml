@@ -1,7 +1,15 @@
 services:
   php-fpm:
     volumes:
-      - '..:${DOCKER_PROJECT_DIR}'
-      - 'vscode-extensions:/home/${WEB_USER}/.vscode-server/extensions'
+      - type: volume
+        source: vscode-extensions
+        target: /home/${WEB_USER}/.vscode-server/extensions
+      - type: bind
+        source: ../
+        target: ${CONTAINER_PROJECT_DIR}
+        consistency: delegated
 volumes:
   vscode-extensions:
+    # https://docs.docker.com/compose/compose-file/07-volumes/#name
+    name: vscode-extensions-for-laravel-api
+    driver: local

@@ -7,7 +7,7 @@ services:
     volumes:
       - type: volume
         source: laravel-cache
-        target: '${DOCKER_WORKDIR}/bootstrap/cache/'
+        target: ${CONTAINER_WORKDIR}/bootstrap/cache/
 volumes:
   laravel-cache:
     driver: local

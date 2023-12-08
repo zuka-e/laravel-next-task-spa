@@ -8,13 +8,18 @@
 services:
   mysql:
     volumes:
-      - './docker/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh:ro'
+      - type: bind
+        source: ${DOCKER_CONFIG_DIR}/mysql/create-testing-database.sh
+        target: /docker-entrypoint-initdb.d/10-create-testing-database.sh
+        read_only: true
   redis:
-    image: 'redis:7.2-alpine'
+    image: redis:7.2-alpine
     ports:
-      - '${FORWARD_REDIS_PORT:-6380}:6379'
+      - ${FORWARD_REDIS_PORT:-6380}:6379
     volumes:
-      - 'redis:/data'
+      - type: volume
+        source: redis
+        target: /data
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       retries: 3
@@ -22,10 +27,10 @@ services:
   # cf. https://github.com/axllent/mailpit
   mailpit:
     # cf. https://hub.docker.com/r/axllent/mailpit
-    image: 'axllent/mailpit:latest'
+    image: axllent/mailpit:latest
     ports:
-      - '${FORWARD_MAILPIT_PORT:-1025}:1025'
-      - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
+      - ${FORWARD_MAILPIT_PORT:-1025}:1025
+      - ${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025
 volumes:
   redis:
     driver: local

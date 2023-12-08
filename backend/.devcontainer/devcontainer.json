@@ -1,4 +1,4 @@
-// https://code.visualstudio.com/docs/remote/devcontainerjson-reference
+// https://containers.dev/implementors/json_reference/#compose-specific
 {
   "dockerComposeFile": [
     "../docker-compose.base.yml",
@@ -8,7 +8,6 @@
   "shutdownAction": "none",
   "service": "php-fpm",
   "workspaceFolder": "/var/www/html/backend",
-  "remoteUser": "www-data",
   "customizations": {
     "vscode": {
       "extensions": [
