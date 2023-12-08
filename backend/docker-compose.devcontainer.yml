@@ -10,3 +10,6 @@ services:
         consistency: delegated
 volumes:
   vscode-extensions:
+    # https://docs.docker.com/compose/compose-file/07-volumes/#name
+    name: vscode-extensions-for-laravel-api
+    driver: local
