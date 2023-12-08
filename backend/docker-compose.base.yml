@@ -11,20 +11,19 @@ services:
       SERVER_NAME: ${APP_DOMAIN}
     volumes:
       # cf. https://docs.docker.com/compose/compose-file/05-services/#long-syntax-5
-      # cf. https://docs.docker.com/desktop/previous-versions/edge-releases-mac/#docker-desktop-community-2330
       - type: bind
         source: ./public
         target: ${DOCKER_WORKDIR}/public
-        consistency: ro
+        read_only: true
       # cf. https://hub.docker.com/_/nginx - Using environment variables
       - type: bind
         source: ./docker/nginx/default.conf
         target: /etc/nginx/templates/default.conf.template
-        consistency: ro
+        read_only: true
       - type: bind
         source: ./docker/nginx/${APP_ENV}.conf
         target: /etc/nginx/templates/${APP_ENV}.conf.template
-        consistency: ro
+        read_only: true
     ports:
       - ${APP_PORT:-8080}:80
     depends_on:
@@ -44,6 +43,7 @@ services:
     environment:
       SHELL: /usr/bin/bash
     volumes:
+      # cf. https://docs.docker.com/desktop/previous-versions/edge-releases-mac/#docker-desktop-community-2330
       - type: bind
         source: ./
         target: ${DOCKER_WORKDIR}
