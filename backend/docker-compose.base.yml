@@ -81,7 +81,5 @@ volumes:
     driver: local
   node_modules:
     driver: local
-  laravel-cache:
-    driver: local
   mysql:
     driver: local

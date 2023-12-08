@@ -8,7 +8,6 @@
   "shutdownAction": "none",
   "service": "php-fpm",
   "workspaceFolder": "/var/www/html/backend",
-  "remoteUser": "www-data",
   "customizations": {
     "vscode": {
       "extensions": [
