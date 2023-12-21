@@ -16,12 +16,11 @@ import {
 } from '@mui/material';
 
 import { APP_NAME } from '@/config/app';
-import { type SignInRequest } from '@/store/thunks/auth';
-import { useLoginMutation } from '@/store/api';
+import { useLoginMutation, type LoginRequest } from '@/store/api';
 import { FormLayout } from '@/layouts';
 import type { GuestPage } from '@/routes';
 
-type FormData = SignInRequest;
+type FormData = LoginRequest;
 
 const formData: Record<keyof FormData, { id: string; label: string }> = {
   email: {

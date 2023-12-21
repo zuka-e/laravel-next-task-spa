@@ -15,8 +15,7 @@ import {
   Checkbox,
 } from '@mui/material';
 
-import { useRegisterMutation } from '@/store/api';
-import type { RegisterRequest } from '@/store/api/services/tasks/types';
+import { useRegisterMutation, type RegisterRequest } from '@/store/api';
 import { FormLayout } from '@/layouts';
 import { SubmitButton } from '@/templates';
 import type { GuestPage } from '@/routes';
