@@ -5,6 +5,7 @@ import {
   SIGNIN_PATH,
   SIGNOUT_PATH,
   SIGNUP_PATH,
+  VERIFY_EMAIL_PATH,
 } from '@/config/api';
 import baseApi from './baseApi';
 import type {
@@ -16,6 +17,8 @@ import type {
   LogoutResponse,
   RegisterRequest,
   RegisterResponse,
+  VerifyEmailRequest,
+  VerifyEmailResponse,
 } from './types';
 
 /**
@@ -73,6 +76,18 @@ const api = baseApi.injectEndpoints({
       },
       invalidatesTags: ['Session', 'TaskBoard'],
     }),
+    verifyEmail: builder.query<VerifyEmailResponse, VerifyEmailRequest>({
+      query: (data) => {
+        const { credentials, queryString } = data;
+        const path = credentials.replace(' ', '/');
+
+        return {
+          url: `${VERIFY_EMAIL_PATH}/${path}?${queryString}`,
+          method: 'GET',
+        };
+      },
+      providesTags: ['Session'],
+    }),
   }),
 });
 
@@ -81,4 +96,5 @@ export const {
   useLoginMutation,
   useLogoutMutation,
   useRegisterMutation,
+  useVerifyEmailQuery,
 } = api;

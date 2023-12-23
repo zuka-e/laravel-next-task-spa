@@ -5,7 +5,6 @@ import { User } from '@/models/User';
 import { type RejectValue } from '@/store/thunks/config';
 import {
   sendEmailVerificationLink,
-  verifyEmail,
   signInWithEmail,
   updateProfile,
   updatePassword,
@@ -70,20 +69,6 @@ export const authSlice = createSlice({
       state.flashes = [...state.flashes, { ...flash }];
     });
     builder.addCase(sendEmailVerificationLink.rejected, (state, action) => {
-      state.loading = false;
-      pushErrorFlash(state, action.payload);
-    });
-    builder.addCase(verifyEmail.pending, (state) => {
-      state.loading = true;
-    });
-    builder.addCase(verifyEmail.fulfilled, (state, action) => {
-      const { user, ...flash } = action.payload;
-
-      state.loading = false;
-      state.user = user;
-      state.flashes.push({ ...flash });
-    });
-    builder.addCase(verifyEmail.rejected, (state, action) => {
       state.loading = false;
       pushErrorFlash(state, action.payload);
     });

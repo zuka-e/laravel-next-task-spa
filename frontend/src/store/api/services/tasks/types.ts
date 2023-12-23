@@ -32,6 +32,15 @@ export type RegisterResponse = FlashNotificationProps & {
   user: User;
 };
 
+export type VerifyEmailRequest = {
+  credentials: string;
+  queryString: string;
+};
+
+export type VerifyEmailResponse = FlashNotificationProps & {
+  user: User;
+};
+
 export type FetchTaskBoardsResponse = PaginationResponse<TaskBoard>;
 
 export type FetchTaskBoardsRequest = {
