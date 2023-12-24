@@ -47,3 +47,12 @@ export type FetchTaskBoardsRequest = {
   userId: User['id'];
   page?: string;
 };
+
+export type FetchTaskBoardResponse = {
+  data: TaskBoard;
+};
+
+export type FetchTaskBoardRequest = {
+  userId: string;
+  boardId: string;
+};

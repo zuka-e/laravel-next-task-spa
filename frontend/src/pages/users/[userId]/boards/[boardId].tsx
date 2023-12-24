@@ -1,17 +1,15 @@
-import { memo, useEffect } from 'react';
+import { memo } from 'react';
 import Head from 'next/head';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 
+import { skipToken } from '@reduxjs/toolkit/dist/query';
 import { Container, Grid, Divider, IconButton } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 
 import { makeIndexMap } from '@/utils/dnd';
-import { useAppDispatch, useDeepEqualSelector, useRoute } from '@/utils/hooks';
-import {
-  FetchTaskBoardRequest,
-  fetchTaskBoard,
-  updateTaskBoard,
-} from '@/store/thunks/boards';
+import { useAppDispatch, useRoute } from '@/utils/hooks';
+import { updateTaskBoard } from '@/store/thunks/boards';
+import { useGetTaskBoardQuery } from '@/store/api';
 import { BaseLayout, StandbyScreen } from '@/layouts';
 import { PopoverControl } from '@/templates';
 import { AddTaskButton, EditableTitle, SearchField } from '@/components/boards';
@@ -42,21 +40,21 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
   const { pathParams } = useRoute();
 
   const dispatch = useAppDispatch();
-  const board = useDeepEqualSelector(
-    (state) => state.boards.docs[pathParams?.boardId || '']
+
+  const { data } = useGetTaskBoardQuery(
+    pathParams
+      ? {
+          boardId: pathParams['boardId'] ?? '',
+          userId: pathParams['userId'] ?? '',
+        }
+      : skipToken
   );
 
-  useEffect(() => {
-    if (!pathParams) {
-      return;
-    }
+  const board = data?.data;
 
-    const request: FetchTaskBoardRequest = {
-      userId: pathParams.userId,
-      boardId: pathParams.boardId,
-    };
-    dispatch(fetchTaskBoard(request));
-  }, [dispatch, pathParams]);
+  if (!board) {
+    return <StandbyScreen />;
+  }
 
   const handleDrop = () => {
     const listIndexMap = makeIndexMap(board.lists);
@@ -66,8 +64,6 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
 
     dispatch(updateTaskBoard({ id: board.id, listIndexMap, cardIndexMap }));
   };
-
-  if (!board) return <StandbyScreen />;
 
   return (
     <>

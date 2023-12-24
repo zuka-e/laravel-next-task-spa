@@ -2,9 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { TaskBoard, TaskBoardsCollection, TaskCard, TaskList } from '@/models';
 import { compare, SortOperation } from '@/utils/sort';
-import { makeDocsWithIndex } from '@/utils/dnd';
 import {
-  fetchTaskBoard,
   createTaskBoard,
   updateTaskBoard,
   destroyTaskBoard,
@@ -109,48 +107,6 @@ export const taskBoardSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchTaskBoard.pending, (state, _action) => {
-      state.loading = true;
-    });
-
-    builder.addCase(fetchTaskBoard.fulfilled, (state, action) => {
-      const docId = action.payload.data.id;
-
-      /** `TaskBoard` */
-      state.docs[docId] = action.payload.data;
-
-      /** `TaskList` (プロパティが存在しない場合は`[]`を設定) */
-      state.docs[docId].lists = state.docs[docId].lists
-        ? state.docs[docId].lists
-        : [];
-
-      /** `TaskCard` (`boardId`及び`index`プロパティを設定)*/
-      state.docs[docId].lists.forEach((list) => {
-        if (!list.cards) {
-          list.cards = [];
-          return;
-        }
-
-        const cardsWithIndex = makeDocsWithIndex(
-          list.cards,
-          state.docs[docId].cardIndexMap
-        );
-        const cards = cardsWithIndex.map((card) => ({
-          ...card,
-          boardId: state.docs[docId].id,
-        }));
-
-        /** `index`プロパティに従って並び替え */
-        list.cards = cards.slice().sort((a, b) => a.index - b.index);
-      });
-
-      state.loading = false;
-    });
-
-    builder.addCase(fetchTaskBoard.rejected, (state, _action) => {
-      state.loading = false;
-    });
-
     builder.addCase(createTaskBoard.pending, (state, _action) => {
       state.loading = true;
     });
