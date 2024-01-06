@@ -1,37 +1,43 @@
-import type {
-  MiddlewareAPI,
-  Middleware,
-  PayloadAction,
+import {
+  type AnyAction,
+  type MiddlewareAPI,
+  type Middleware,
+  type PayloadAction,
+  isAsyncThunkAction,
 } from '@reduxjs/toolkit';
+import { type UnknownAsyncThunkAction } from '@reduxjs/toolkit/dist/matchers';
 
 import { pushFlash, type FlashNotificationProps } from '@/store/slices';
 
-/**
- * Determine if an action is `PayloadAction` with object.
- */
-const isObjectPayloadAction = (
-  action: unknown
-): action is PayloadAction<Record<string, unknown>> => {
-  return (
-    action !== null &&
-    typeof action === 'object' &&
-    'type' in action &&
-    'payload' in action &&
-    typeof action.payload === 'object'
-  );
-};
+const severities: FlashNotificationProps['severity'][] = [
+  'error',
+  'warning',
+  'info',
+  'success',
+];
 
 /**
  * Determine if an action includes notification props.
  */
-const hasFlash = (
+const isAsyncThunkActionWithFlash = (
   action: unknown
-): action is PayloadAction<FlashNotificationProps> => {
+): action is UnknownAsyncThunkAction &
+  PayloadAction<FlashNotificationProps> => {
+  if (!isAsyncThunkAction(action)) {
+    return false;
+  }
+
+  // Determine if an `AsyncThunkAction` that has a payload with object type.
+  if (!(typeof action.payload === 'object' && action.payload !== null)) {
+    return false;
+  }
+
   return (
-    isObjectPayloadAction(action) &&
-    action.type !== pushFlash.type &&
     'severity' in action.payload &&
-    'message' in action.payload
+    typeof action.payload.severity === 'string' &&
+    (severities as string[]).includes(action.payload.severity) &&
+    'message' in action.payload &&
+    typeof action.payload.message === 'string'
   );
 };
 
@@ -41,8 +47,8 @@ const hasFlash = (
  * @see https://redux-toolkit.js.org/rtk-query/usage/error-handling#handling-errors-at-a-macro-level
  */
 const apiResponseNotification: Middleware =
-  (api: MiddlewareAPI) => (next) => (action) => {
-    if (hasFlash(action)) {
+  (api: MiddlewareAPI) => (next) => (action: AnyAction) => {
+    if (isAsyncThunkActionWithFlash(action)) {
       api.dispatch(pushFlash(action.payload));
     }
 

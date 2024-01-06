@@ -1,5 +1,6 @@
 import { type BaseQueryFn } from '@reduxjs/toolkit/query/react';
 import {
+  isAxiosError,
   type AxiosRequestConfig as BaseAxiosRequestConfig,
   type Method,
 } from 'axios';
@@ -32,7 +33,11 @@ const axiosBaseQuery =
       return { data: response.data };
     } catch (error) {
       // cf. https://redux-toolkit.js.org/rtk-query/usage-with-typescript#type-safe-error-handling
-      return { error };
+      if (!isAxiosError(error)) {
+        throw new Error('Unexpected Error.');
+      }
+
+      return { error: error };
     }
   };
 
