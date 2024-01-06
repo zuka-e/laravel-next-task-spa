@@ -88,6 +88,11 @@ const api = baseApi.injectEndpoints({
       },
       providesTags: ['Session'],
     }),
+    // cf. https://redux-toolkit.js.org/rtk-query/usage/automated-refetching#providing-errors-to-the-cache
+    invalidateSession: builder.mutation<null, void>({
+      queryFn: () => ({ data: null }),
+      invalidatesTags: ['Session'],
+    }),
   }),
 });
 
@@ -97,4 +102,5 @@ export const {
   useLogoutMutation,
   useRegisterMutation,
   useVerifyEmailQuery,
+  useInvalidateSessionMutation,
 } = api;

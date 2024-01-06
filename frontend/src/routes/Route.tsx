@@ -4,6 +4,7 @@ import Router, { useRouter } from 'next/router';
 
 import { useAppDispatch, useAppSelector, useRoute } from '@/utils/hooks';
 import { AuthRoute, GuestRoute } from '@/routes';
+import { useInvalidateSessionMutation } from '@/store/api';
 import { pushFlash } from '@/store/slices';
 
 const Route = memo(function Route(
@@ -12,6 +13,7 @@ const Route = memo(function Route(
   const { Component, pageProps } = props;
   const router = useRouter();
   const route = useRoute();
+  const [invalidateSession] = useInvalidateSessionMutation();
   const httpStatus = useAppSelector((state) => state.app.httpStatus);
   const dispatch = useAppDispatch();
 
@@ -21,9 +23,11 @@ const Route = memo(function Route(
         pushFlash({ severity: 'error', message: 'ログインしてください。' })
       );
 
+      invalidateSession();
+
       Router.replace('/login');
     }
-  }, [dispatch, httpStatus]);
+  }, [dispatch, httpStatus, invalidateSession]);
 
   // > Resist adding unrelated logic to your Effect only because this logic needs to run at the same time as an Effect you already wrote.
   // > ...
