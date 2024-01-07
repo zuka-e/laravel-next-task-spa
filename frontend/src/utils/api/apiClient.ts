@@ -2,9 +2,6 @@ import axios from 'axios';
 
 import { API_HOST, API_ROUTE } from '@/config/api';
 import { DocumentBase } from '@/models';
-import { setHttpStatus } from '@/store/slices/appSlice';
-import { flushAllStates } from '@/store/slices/authSlice';
-import { isSignedIn } from '@/utils/auth';
 
 /**
  * Laravelからデータの配列と共にページネーションに関する情報及びリンクをリクエストする際のレスポンスタイプ
@@ -50,26 +47,6 @@ export const apiClient = (options?: ApiClientOption) => {
     baseURL: isNonApiRoute() ? API_HOST : API_ROUTE,
     withCredentials: true,
   });
-
-  apiClient.interceptors.response.use(
-    (response) => response, // response = 2xx の場合は素通り
-    async (error) => {
-      const { default: store } =
-        process.env.NODE_ENV === 'test'
-          ? await import('@test/store')
-          : await import('@/store');
-
-      if (axios.isAxiosError(error) && error.response) {
-        if (isSignedIn() && [401, 419].includes(error.response.status)) {
-          store.dispatch(flushAllStates());
-        }
-
-        store.dispatch(setHttpStatus(error.response.status));
-      }
-
-      return Promise.reject(error);
-    }
-  );
 
   return apiClient;
 };

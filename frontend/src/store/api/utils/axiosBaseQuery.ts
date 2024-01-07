@@ -7,6 +7,7 @@ import {
 
 import { GET_CSRF_TOKEN_PATH } from '@/config/api';
 import { apiClient } from '@/utils/api';
+import { setHttpStatus } from '@/store/slices';
 import isReadRequest from './isReadRequest';
 
 type AxiosRequestConfig<D = unknown> = BaseAxiosRequestConfig<D> & {
@@ -24,7 +25,8 @@ type AxiosRequestConfig<D = unknown> = BaseAxiosRequestConfig<D> & {
  * @see https://redux-toolkit.js.org/rtk-query/usage-with-typescript#typing-a-basequery
  */
 const axiosBaseQuery =
-  (): BaseQueryFn<AxiosRequestConfig, unknown, unknown> => async (config) => {
+  (): BaseQueryFn<AxiosRequestConfig, unknown, unknown> =>
+  async (config, api) => {
     try {
       if (!isReadRequest(config.method ?? 'GET')) {
         await apiClient({ apiRoute: false }).get(GET_CSRF_TOKEN_PATH);
@@ -36,6 +38,8 @@ const axiosBaseQuery =
       if (!isAxiosError(error)) {
         throw new Error('Unexpected Error.');
       }
+
+      api.dispatch(setHttpStatus(error.response?.status));
 
       return { error: error };
     }
