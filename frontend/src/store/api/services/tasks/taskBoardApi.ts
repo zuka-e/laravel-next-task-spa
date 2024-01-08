@@ -1,5 +1,6 @@
 import { makePath } from '@/utils/api';
 import { makeDocsWithIndex } from '@/utils/dnd';
+import { providesList } from '@/store/api/utils';
 import baseApi from './baseApi';
 import type {
   FetchTaskBoardRequest,
@@ -22,14 +23,14 @@ const api = baseApi.injectEndpoints({
       FetchTaskBoardsResponse,
       FetchTaskBoardsRequest
     >({
-      providesTags: ['TaskBoard'],
       query: ({ userId, page }) => ({
         url: makePath(['users', userId], ['task-boards']),
         params: { page: page || undefined },
       }),
+      // cf. https://redux-toolkit.js.org/rtk-query/usage/mutations#revalidation-example
+      providesTags: (res) => providesList(res?.data, 'TaskBoard'),
     }),
     getTaskBoard: builder.query<FetchTaskBoardResponse, FetchTaskBoardRequest>({
-      providesTags: ['TaskBoard'],
       query: ({ userId, boardId }) => ({
         url: makePath(['users', userId], ['task-boards', boardId]),
       }),
@@ -64,6 +65,10 @@ const api = baseApi.injectEndpoints({
           data: board,
         };
       },
+      // cf. https://redux-toolkit.js.org/rtk-query/usage/mutations#revalidation-example
+      providesTags: (_res, _err, req) => [
+        { type: 'TaskBoard', id: req.boardId },
+      ],
     }),
   }),
 });
