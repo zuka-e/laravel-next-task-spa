@@ -40,7 +40,7 @@ const TaskBoardDetails = memo(function TaskBoardDetails(
     }),
   });
 
-  const [updateTaskBoard] = useUpdateTaskBoardMutation();
+  const [updateTaskBoard, { isLoading }] = useUpdateTaskBoardMutation();
 
   const dispatch = useAppDispatch();
 
@@ -148,6 +148,7 @@ const TaskBoardDetails = memo(function TaskBoardDetails(
             description: yup.string().label('Description').max(2000),
           })}
           defaultValue={board.description}
+          isLoading={isLoading}
         />
       </CardContent>
     </Card>

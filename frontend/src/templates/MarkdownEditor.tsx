@@ -11,7 +11,7 @@ import type { MDEditorProps, PreviewType } from '@uiw/react-md-editor';
 import type { MarkdownPreviewProps } from '@uiw/react-markdown-preview';
 
 import { mdCommands } from '@/config/mdEditor';
-import { SubmitButton } from '@/templates';
+import { Fieldset, SubmitButton } from '@/templates';
 
 // cf. https://github.com/uiwjs/react-md-editor/issues/52
 import '@uiw/react-md-editor/markdown-editor.css';
@@ -48,12 +48,13 @@ type MarkdownEditorProps = {
   schema: yup.ObjectSchema<ObjectShape>;
   onSubmit: (text: string) => void;
   defaultValue?: string;
+  isLoading: boolean;
 };
 
 const MarkdownEditor = memo(function MarkdownEditor(
   props: MarkdownEditorProps
 ): JSX.Element {
-  const { schema, defaultValue, onSubmit } = props;
+  const { schema, defaultValue, isLoading, onSubmit } = props;
 
   const prop: keyof typeof schema.fields = useMemo(
     () => Object.keys(schema.fields)[0],
@@ -108,32 +109,34 @@ const MarkdownEditor = memo(function MarkdownEditor(
 
   return (
     <form onSubmit={handleSubmit(onSubmitValid)}>
-      {/* cf. https://react-hook-form.com/get-started/#IntegratingwithUIlibraries */}
-      <Controller
-        control={control}
-        name={prop}
-        defaultValue={defaultValue}
-        render={({ field }) => (
-          <MDEditor
-            autoFocus
-            preview={mode}
-            commands={mdCommands}
-            className={errors[prop] ? 'outline outline-1 outline-error' : ''}
-            {...field}
-            textareaProps={{
-              placeholder: 'Enter the text',
-            }}
-          />
-        )}
-      />
-      <div className="my-2 flex items-baseline">
-        <span className={errors[prop] ? 'text-error' : ''}>
-          {errors[prop]?.message}
-        </span>
-        <SubmitButton size="small" className="ml-auto">
-          {'Save'}
-        </SubmitButton>
-      </div>
+      <Fieldset disabled={isLoading}>
+        {/* cf. https://react-hook-form.com/get-started/#IntegratingwithUIlibraries */}
+        <Controller
+          control={control}
+          name={prop}
+          defaultValue={defaultValue}
+          render={({ field }) => (
+            <MDEditor
+              autoFocus
+              preview={mode}
+              commands={mdCommands}
+              className={errors[prop] ? 'outline outline-1 outline-error' : ''}
+              {...field}
+              textareaProps={{
+                placeholder: 'Enter the text',
+              }}
+            />
+          )}
+        />
+        <div className="my-2 flex items-baseline">
+          <span className={errors[prop] ? 'text-error' : ''}>
+            {errors[prop]?.message}
+          </span>
+          <SubmitButton size="small" className="ml-auto">
+            {'Save'}
+          </SubmitButton>
+        </div>
+      </Fieldset>
     </form>
   );
 });
