@@ -10,7 +10,8 @@ import type { FormAction } from '@/store/slices/taskBoardSlice';
 import type { AsyncThunkConfig } from '@/store/thunks/config';
 import theme from '@/theme';
 import { useAppDispatch } from '@/utils/hooks';
-import { createTaskBoard, updateTaskBoard } from '@/store/thunks/boards';
+import { useUpdateTaskBoardMutation } from '@/store/api';
+import { createTaskBoard } from '@/store/thunks/boards';
 import { createTaskList, updateTaskList } from '@/store/thunks/lists';
 import { createTaskCard, updateTaskCard } from '@/store/thunks/cards';
 import { pushFlash } from '@/store/slices';
@@ -29,6 +30,7 @@ type FormProps = FormAction & {
 
 const TitleForm = memo(function TitleForm(props: FormProps): JSX.Element {
   const { method, model, handleClose, ...textFieldProps } = props;
+  const [updateTaskBoard, { isLoading }] = useUpdateTaskBoardMutation();
   const dispatch = useAppDispatch();
   const submitRef = useRef<HTMLInputElement>(null);
   const {
@@ -87,8 +89,7 @@ const TitleForm = memo(function TitleForm(props: FormProps): JSX.Element {
           if (!data.title) break;
           switch (model) {
             case 'board': {
-              const id = props.data.id;
-              handleDispatch(updateTaskBoard, { id, ...data });
+              updateTaskBoard({ id: props.data.id, ...data });
               break;
             }
             case 'list': {
@@ -108,7 +109,7 @@ const TitleForm = memo(function TitleForm(props: FormProps): JSX.Element {
           break;
       }
     },
-    [handleDispatch, method, model, props]
+    [handleDispatch, method, model, props, updateTaskBoard]
   );
 
   const handleFocus = useCallback(
@@ -136,6 +137,7 @@ const TitleForm = memo(function TitleForm(props: FormProps): JSX.Element {
           required
           autoFocus
           onFocus={handleFocus}
+          disabled={isLoading}
           fullWidth
           variant="outlined"
           placeholder="Enter a title"

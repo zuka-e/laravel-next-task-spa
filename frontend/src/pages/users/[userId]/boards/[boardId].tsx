@@ -7,9 +7,8 @@ import { Container, Grid, Divider, IconButton } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 
 import { makeIndexMap } from '@/utils/dnd';
-import { useAppDispatch, useRoute } from '@/utils/hooks';
-import { updateTaskBoard } from '@/store/thunks/boards';
-import { useGetTaskBoardQuery } from '@/store/api';
+import { useRoute } from '@/utils/hooks';
+import { useGetTaskBoardQuery, useUpdateTaskBoardMutation } from '@/store/api';
 import { BaseLayout, StandbyScreen } from '@/layouts';
 import { PopoverControl } from '@/templates';
 import { AddTaskButton, EditableTitle, SearchField } from '@/components/boards';
@@ -38,16 +37,10 @@ export const getStaticProps: GetStaticProps<TaskBoardProps> = async () => {
 
 const TaskBoard = memo(function TaskBoard(): JSX.Element {
   const { pathParams } = useRoute();
-
-  const dispatch = useAppDispatch();
+  const [updateTaskBoard] = useUpdateTaskBoardMutation();
 
   const { data } = useGetTaskBoardQuery(
-    pathParams
-      ? {
-          boardId: pathParams['boardId'] ?? '',
-          userId: pathParams['userId'] ?? '',
-        }
-      : skipToken
+    pathParams ? { id: pathParams['boardId'] ?? '' } : skipToken
   );
 
   const board = data?.data;
@@ -62,7 +55,7 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
       return { ...acc, ...makeIndexMap(list.cards) };
     }, {});
 
-    dispatch(updateTaskBoard({ id: board.id, listIndexMap, cardIndexMap }));
+    updateTaskBoard({ id: board.id, listIndexMap, cardIndexMap });
   };
 
   return (

@@ -7,6 +7,8 @@ import type {
   FetchTaskBoardResponse,
   FetchTaskBoardsRequest,
   FetchTaskBoardsResponse,
+  UpdateTaskBoardRequest,
+  UpdateTaskBoardResponse,
 } from './types';
 
 /**
@@ -70,7 +72,22 @@ const api = baseApi.injectEndpoints({
         { type: 'TaskBoard', id: req.boardId },
       ],
     }),
+    updateTaskBoard: builder.mutation<
+      UpdateTaskBoardResponse,
+      UpdateTaskBoardRequest
+    >({
+      query: ({ id, ...data }) => ({
+        url: makePath(['task-boards', id]),
+        method: 'PATCH',
+        data,
+      }),
+      invalidatesTags: (_res, _err, req) => [{ type: 'TaskBoard', id: req.id }],
+    }),
   }),
 });
 
-export const { useGetTaskBoardsQuery, useGetTaskBoardQuery } = api;
+export const {
+  useGetTaskBoardsQuery,
+  useGetTaskBoardQuery,
+  useUpdateTaskBoardMutation,
+} = api;

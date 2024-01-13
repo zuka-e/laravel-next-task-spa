@@ -56,3 +56,12 @@ export type FetchTaskBoardRequest = {
   userId: string;
   boardId: string;
 };
+
+export type UpdateTaskBoardResponse = {
+  data: TaskBoard;
+};
+
+export type UpdateTaskBoardRequest = Pick<TaskBoard, 'id'> &
+  Partial<
+    Pick<TaskBoard, 'title' | 'description' | 'listIndexMap' | 'cardIndexMap'>
+  >;

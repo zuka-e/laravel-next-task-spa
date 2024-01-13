@@ -20,8 +20,7 @@ import {
 
 import { TaskBoard } from '@/models';
 import { closeInfoBox } from '@/store/slices/taskBoardSlice';
-import { useGetSessionQuery } from '@/store/api';
-import { updateTaskBoard } from '@/store/thunks/boards';
+import { useGetSessionQuery, useUpdateTaskBoardMutation } from '@/store/api';
 import { useAppDispatch } from '@/utils/hooks';
 import { Link, MarkdownEditor } from '@/templates';
 import { EditableTitle } from '..';
@@ -40,6 +39,8 @@ const TaskBoardDetails = memo(function TaskBoardDetails(
       userId: result.data,
     }),
   });
+
+  const [updateTaskBoard] = useUpdateTaskBoardMutation();
 
   const dispatch = useAppDispatch();
 
@@ -65,9 +66,9 @@ const TaskBoardDetails = memo(function TaskBoardDetails(
 
   const handleSubmitText = useCallback(
     (text: string): void => {
-      dispatch(updateTaskBoard({ id: board.id, description: text }));
+      updateTaskBoard({ id: board.id, description: text });
     },
-    [board.id, dispatch]
+    [board.id, updateTaskBoard]
   );
 
   return (
