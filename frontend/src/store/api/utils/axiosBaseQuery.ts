@@ -3,6 +3,8 @@ import {
   isAxiosError,
   type AxiosRequestConfig as BaseAxiosRequestConfig,
   type Method,
+  type AxiosResponse,
+  type AxiosError,
 } from 'axios';
 
 import { GET_CSRF_TOKEN_PATH } from '@/config/api';
@@ -25,7 +27,7 @@ type AxiosRequestConfig<D = unknown> = BaseAxiosRequestConfig<D> & {
  * @see https://redux-toolkit.js.org/rtk-query/usage-with-typescript#typing-a-basequery
  */
 const axiosBaseQuery =
-  (): BaseQueryFn<AxiosRequestConfig, unknown, unknown> =>
+  (): BaseQueryFn<AxiosRequestConfig, AxiosResponse['data'], AxiosError> =>
   async (config, api) => {
     try {
       if (!isReadRequest(config.method ?? 'GET')) {
@@ -41,7 +43,7 @@ const axiosBaseQuery =
 
       api.dispatch(setHttpStatus(error.response?.status));
 
-      return { error: error };
+      return { error };
     }
   };
 
