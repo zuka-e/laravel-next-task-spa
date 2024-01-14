@@ -1,23 +1,22 @@
 import { memo } from 'react';
 
-type FieldsetProps = {
-  children: React.ReactNode;
-  disabled?: boolean;
-};
-
-const Fieldset = memo(function Fieldset(props: FieldsetProps): JSX.Element {
-  const { children, disabled } = props;
-
+/**
+ * [`<fieldset>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/fieldset) for use with MUI.
+ *
+ * @example
+ * <Fieldset disabled={isLoading}>...</Fieldset>
+ */
+const Fieldset = memo(function Fieldset(
+  props: JSX.IntrinsicElements['fieldset']
+): JSX.Element {
   return (
     <fieldset
-      disabled={disabled}
       className={
         'm-0 border-none p-0' +
-        (disabled ? ' pointer-events-none opacity-50' : '')
+        (props.disabled ? ' pointer-events-none opacity-50' : '')
       }
-    >
-      {children}
-    </fieldset>
+      {...props}
+    />
   );
 });
 
