@@ -1,44 +1,36 @@
-import { memo, useEffect, useRef } from 'react';
+import { memo } from 'react';
 
-import theme from '@/theme';
-import { TaskBoard, TaskList, TaskCard } from '@/models';
-import { removeInfoBox } from '@/store/slices/taskBoardSlice';
-import { useAppDispatch, useDeepEqualSelector } from '@/utils/hooks';
-import { TaskBoardDetails, TaskListDetails, TaskCardDetails } from '.';
+import { skipToken } from '@reduxjs/toolkit/dist/query';
+import { CardContent } from '@mui/material';
+
+import { useGetTaskBoardQuery } from '@/store/api';
+import { useRoute } from '@/utils/hooks';
+import { TaskBoardDetails } from '.';
 
 const InfoBox = memo(function InfoBox(props: JSX.IntrinsicElements['div']) {
   const { className, ...divProps } = props;
-  const dispatch = useAppDispatch();
-  const currentState = useDeepEqualSelector((state) => state.boards.infoBox);
-  const timeoutRef = useRef(0);
+  const { queryParams } = useRoute();
 
-  useEffect(() => {
-    if (currentState.open) {
-      return;
+  const params = queryParams?.['details']?.toString().split(':');
+  const type = params?.[0];
+  const id = params?.[1] ?? '';
+
+  const {
+    data: taskBoardResponse,
+    isLoading,
+    isUninitialized,
+  } = useGetTaskBoardQuery(type === 'b' ? { id } : skipToken);
+
+  const renderInfoBox = (): JSX.Element => {
+    if (isUninitialized) {
+      return <></>;
     }
 
-    /** `close`後`transition`動作を待機してから`remove` */
-    timeoutRef.current = window.setTimeout(() => {
-      dispatch(removeInfoBox());
-    }, theme.transitions.duration.standard);
-  }, [dispatch, currentState.open]);
-
-  useEffect(() => {
-    return function cleanup() {
-      window.clearTimeout(timeoutRef.current);
-      dispatch(removeInfoBox());
-    };
-  }, [dispatch]);
-
-  const renderInfoBox = () => {
-    switch (currentState.model) {
-      case 'board':
-        return <TaskBoardDetails board={currentState.data as TaskBoard} />;
-      case 'list':
-        return <TaskListDetails list={currentState.data as TaskList} />;
-      case 'card':
-        return <TaskCardDetails card={currentState.data as TaskCard} />;
+    if (taskBoardResponse) {
+      return <TaskBoardDetails board={taskBoardResponse.data} />;
     }
+
+    throw new Error('Unexpected Error.');
   };
 
   return (
@@ -46,17 +38,13 @@ const InfoBox = memo(function InfoBox(props: JSX.IntrinsicElements['div']) {
       className={
         'relative w-full min-w-0 overflow-hidden shadow transition-all' +
         (className ? ` ${className} ` : ' ') +
-        (currentState.open ? 'max-w-full' : 'max-w-0')
+        (isLoading || !isUninitialized ? 'max-w-full' : 'max-w-0')
       }
       {...divProps}
     >
-      {currentState.model ? (
-        <div className="absolute h-full w-full [&>*]:overflow-y-auto">
-          {renderInfoBox()}
-        </div>
-      ) : (
-        <h2 className="text-center">There is no content</h2>
-      )}
+      <CardContent className="absolute h-full w-full [&>*]:overflow-y-auto">
+        {isLoading ? <></> : renderInfoBox()}
+      </CardContent>
     </div>
   );
 });

@@ -1,4 +1,5 @@
 import { memo, useCallback, useMemo } from 'react';
+import { useRouter } from 'next/router';
 
 import * as yup from 'yup';
 import dayjs from 'dayjs';
@@ -19,9 +20,7 @@ import {
 } from '@mui/icons-material';
 
 import { TaskBoard } from '@/models';
-import { closeInfoBox } from '@/store/slices/taskBoardSlice';
 import { useGetSessionQuery, useUpdateTaskBoardMutation } from '@/store/api';
-import { useAppDispatch } from '@/utils/hooks';
 import { Link, MarkdownEditor } from '@/templates';
 import { EditableTitle } from '..';
 
@@ -33,6 +32,7 @@ const TaskBoardDetails = memo(function TaskBoardDetails(
   props: TaskBoardDetailsProps
 ): JSX.Element {
   const { board } = props;
+  const router = useRouter();
   const { userId } = useGetSessionQuery(undefined, {
     selectFromResult: (result) => ({
       ...result,
@@ -41,8 +41,6 @@ const TaskBoardDetails = memo(function TaskBoardDetails(
   });
 
   const [updateTaskBoard, { isLoading }] = useUpdateTaskBoardMutation();
-
-  const dispatch = useAppDispatch();
 
   const totalList = useMemo((): number => {
     return board.lists.reduce((acc, current) => acc + current.cards.length, 0);
@@ -61,8 +59,17 @@ const TaskBoardDetails = memo(function TaskBoardDetails(
   }, [board.lists]);
 
   const handleClose = useCallback((): void => {
-    dispatch(closeInfoBox());
-  }, [dispatch]);
+    const { ['details']: _, ...restQueryParams } = router.query;
+
+    router.push(
+      {
+        pathname: router.pathname,
+        query: restQueryParams,
+      },
+      undefined,
+      { shallow: true }
+    );
+  }, [router]);
 
   const handleSubmitText = useCallback(
     (text: string): void => {
