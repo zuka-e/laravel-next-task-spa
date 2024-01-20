@@ -53,8 +53,8 @@ export type FetchTaskBoardResponse = {
 };
 
 export type FetchTaskBoardRequest = {
-  userId: string;
-  boardId: string;
+  userId: User['id'];
+  boardId: TaskBoard['id'];
 };
 
 export type UpdateTaskBoardResponse = {
