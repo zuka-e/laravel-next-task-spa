@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticProps } from 'next';
@@ -20,7 +20,6 @@ import type { RegisterRequest } from '@/store/api/services/tasks/types';
 import { FormLayout } from '@/layouts';
 import { SubmitButton } from '@/templates';
 import type { GuestPage } from '@/routes';
-import { isInvalidRequest, makeErrorMessageFrom } from '@/utils/api/errors';
 
 // Input items
 type FormData = RegisterRequest;
@@ -70,7 +69,6 @@ const SignUp = memo(function SignUp(): JSX.Element {
   const router = useRouter();
   const [signUp, { isLoading, error }] = useRegisterMutation();
   const [visiblePassword, setVisiblePassword] = useState(false);
-  const [message, setMessage] = useState<string | undefined>('');
   const {
     register, // 入力項目の登録
     handleSubmit, // 用意された`handleSubmit`
@@ -84,19 +82,6 @@ const SignUp = memo(function SignUp(): JSX.Element {
     setVisiblePassword((prev) => !prev);
   }, []);
 
-  const onSubmit = useCallback(
-    (data: FormData): void => {
-      signUp(data);
-    },
-    [signUp]
-  );
-
-  useEffect((): void => {
-    if (isInvalidRequest(error)) {
-      setMessage(makeErrorMessageFrom(error));
-    }
-  }, [error]);
-
   return (
     <>
       <Head>
@@ -104,9 +89,9 @@ const SignUp = memo(function SignUp(): JSX.Element {
       </Head>
       <FormLayout
         title={'Create an account'}
-        message={message}
-        disabled={isLoading}
-        onSubmit={handleSubmit(onSubmit)}
+        error={error}
+        isLoading={isLoading}
+        onSubmit={handleSubmit(signUp)}
       >
         <TextField
           variant="outlined"

@@ -71,7 +71,7 @@ const ResetPassword = memo(function ResetPassword(): JSX.Element {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<FormData>({
     mode: 'onBlur',
     resolver: yupResolver(schema),
@@ -108,7 +108,8 @@ const ResetPassword = memo(function ResetPassword(): JSX.Element {
       </Head>
       <FormLayout
         title={'Reset Password'}
-        message={message}
+        error={message}
+        isLoading={isSubmitting}
         onSubmit={handleSubmit(onSubmit)}
       >
         <TextField

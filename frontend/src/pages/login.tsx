@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticProps } from 'next';
@@ -20,7 +20,6 @@ import { type SignInRequest } from '@/store/thunks/auth';
 import { useLoginMutation } from '@/store/api';
 import { FormLayout } from '@/layouts';
 import type { GuestPage } from '@/routes';
-import { isInvalidRequest, makeErrorMessageFrom } from '@/utils/api/errors';
 
 type FormData = SignInRequest;
 
@@ -63,7 +62,6 @@ export const getStaticProps: GetStaticProps<LoginProps> = async () => {
 const SignIn = memo(function SignIn(): JSX.Element {
   const [login, { isLoading, error }] = useLoginMutation();
   const [visiblePassword, setVisiblePassword] = useState(false);
-  const [message, setMessage] = useState<string | undefined>('');
   const router = useRouter();
 
   const {
@@ -76,19 +74,6 @@ const SignIn = memo(function SignIn(): JSX.Element {
     setVisiblePassword((prev) => !prev);
   }, []);
 
-  const onSubmit = useCallback(
-    (data: FormData): void => {
-      login(data);
-    },
-    [login]
-  );
-
-  useEffect((): void => {
-    if (isInvalidRequest(error)) {
-      setMessage(makeErrorMessageFrom(error));
-    }
-  }, [error]);
-
   return (
     <>
       <Head>
@@ -96,9 +81,9 @@ const SignIn = memo(function SignIn(): JSX.Element {
       </Head>
       <FormLayout
         title={`Sign in to ${APP_NAME}`}
-        message={message}
-        disabled={isLoading}
-        onSubmit={handleSubmit(onSubmit)}
+        error={error}
+        isLoading={isLoading}
+        onSubmit={handleSubmit(login)}
       >
         <TextField
           variant="outlined"

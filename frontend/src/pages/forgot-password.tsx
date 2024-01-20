@@ -45,7 +45,7 @@ const ForgotPassword = memo(function ForgotPassword(): JSX.Element {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<FormData>({ mode: 'onBlur', resolver: yupResolver(schema) });
 
   // エラー発生時はメッセージを表示する
@@ -66,7 +66,8 @@ const ForgotPassword = memo(function ForgotPassword(): JSX.Element {
       </Head>
       <FormLayout
         title={'Forgot Password?'}
-        message={message}
+        error={message}
+        isLoading={isSubmitting}
         onSubmit={handleSubmit(onSubmit)}
       >
         <TextField
