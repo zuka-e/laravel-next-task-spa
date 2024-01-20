@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
 import { skipToken } from '@reduxjs/toolkit/dist/query';
-import { CardContent } from '@mui/material';
+import { CardContent, Skeleton, Stack } from '@mui/material';
 
 import { useGetTaskBoardQuery } from '@/store/api';
 import { useRoute } from '@/utils/hooks';
@@ -43,7 +43,15 @@ const InfoBox = memo(function InfoBox(props: JSX.IntrinsicElements['div']) {
       {...divProps}
     >
       <CardContent className="absolute h-full w-full [&>*]:overflow-y-auto">
-        {isLoading ? <></> : renderInfoBox()}
+        {isLoading ? (
+          <Stack spacing={2}>
+            {Array.from({ length: 10 }, (_, i) => i).map((i) => (
+              <Skeleton key={i} variant="text" className="text-2xl" />
+            ))}
+          </Stack>
+        ) : (
+          renderInfoBox()
+        )}
       </CardContent>
     </div>
   );
