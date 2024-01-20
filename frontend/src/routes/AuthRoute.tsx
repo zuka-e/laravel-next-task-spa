@@ -21,14 +21,15 @@ type AuthRouteProps = {
 const AuthRoute = memo(function AuthRoute({
   children,
 }: AuthRouteProps): JSX.Element {
-  const { auth, isUninitialized } = useGetSessionQuery(undefined, {
+  const { auth, isLoading, isUninitialized } = useGetSessionQuery(undefined, {
     selectFromResult: (result) => ({
       ...result,
       auth: !!result.data?.user?.id,
     }),
   });
 
-  const guest = !isUninitialized && !auth;
+  const unresolved = isLoading || isUninitialized;
+  const guest = unresolved ? undefined : !auth;
 
   useEffect(() => {
     if (guest) {
@@ -37,7 +38,7 @@ const AuthRoute = memo(function AuthRoute({
   }, [guest]);
 
   // Until initialized or the redirect completed.
-  if (isUninitialized || guest) {
+  if (unresolved || guest) {
     return <Loading open={true} />;
   }
 
