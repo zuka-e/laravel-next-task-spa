@@ -52,10 +52,12 @@ export type FetchTaskBoardResponse = {
   data: TaskBoard;
 };
 
-export type FetchTaskBoardRequest = {
-  userId: User['id'];
-  boardId: TaskBoard['id'];
-};
+export type FetchTaskBoardRequest =
+  | Pick<TaskBoard, 'id'>
+  | {
+      userId: User['id'];
+      boardId: TaskBoard['id'];
+    };
 
 export type UpdateTaskBoardResponse = {
   data: TaskBoard;

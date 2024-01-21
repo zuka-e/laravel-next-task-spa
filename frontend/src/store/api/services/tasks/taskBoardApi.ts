@@ -33,8 +33,11 @@ const api = baseApi.injectEndpoints({
       providesTags: (res) => providesList(res?.data, 'TaskBoard'),
     }),
     getTaskBoard: builder.query<FetchTaskBoardResponse, FetchTaskBoardRequest>({
-      query: ({ userId, boardId }) => ({
-        url: makePath(['users', userId], ['task-boards', boardId]),
+      query: (arg) => ({
+        url:
+          'userId' in arg
+            ? makePath(['users', arg.userId], ['task-boards', arg.boardId])
+            : makePath(['task-boards', arg.id]),
       }),
       // cf. https://redux-toolkit.js.org/rtk-query/api/createApi#transformresponse
       transformResponse: (response: FetchTaskBoardResponse) => {
@@ -68,8 +71,8 @@ const api = baseApi.injectEndpoints({
         };
       },
       // cf. https://redux-toolkit.js.org/rtk-query/usage/mutations#revalidation-example
-      providesTags: (_res, _err, req) => [
-        { type: 'TaskBoard', id: req.boardId },
+      providesTags: (res, _err, _req) => [
+        { type: 'TaskBoard', id: res?.data.id },
       ],
     }),
     updateTaskBoard: builder.mutation<
