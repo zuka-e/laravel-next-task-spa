@@ -4,7 +4,6 @@ import { TaskBoard, TaskBoardsCollection, TaskCard, TaskList } from '@/models';
 import { compare, SortOperation } from '@/utils/sort';
 import {
   createTaskBoard,
-  updateTaskBoard,
   destroyTaskBoard,
 } from '@/store/thunks/boards';
 import {
@@ -118,33 +117,6 @@ export const taskBoardSlice = createSlice({
     });
 
     builder.addCase(createTaskBoard.rejected, (state, _action) => {
-      state.loading = false;
-    });
-
-    builder.addCase(updateTaskBoard.pending, (state, _action) => {
-      state.loading = true;
-    });
-
-    builder.addCase(updateTaskBoard.fulfilled, (state, action) => {
-      const updatedBoard = action.payload.data;
-      const currentBoard = state.data.find(
-        (board) => board.id === updatedBoard.id
-      );
-
-      if (currentBoard) Object.assign(currentBoard, updatedBoard);
-
-      state.docs[updatedBoard.id] = {
-        ...state.docs[updatedBoard.id],
-        ...updatedBoard,
-      };
-
-      if (updatedBoard.id === state.infoBox.data?.id)
-        state.infoBox.data = { ...state.infoBox.data, ...updatedBoard };
-
-      state.loading = false;
-    });
-
-    builder.addCase(updateTaskBoard.rejected, (state, _action) => {
       state.loading = false;
     });
 
