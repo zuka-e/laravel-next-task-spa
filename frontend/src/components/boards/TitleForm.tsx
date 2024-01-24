@@ -1,4 +1,4 @@
-import { memo, useCallback, useRef } from 'react';
+import { memo, useCallback, useMemo, useRef } from 'react';
 
 import type { AsyncThunk } from '@reduxjs/toolkit';
 import { useForm } from 'react-hook-form';
@@ -10,8 +10,10 @@ import type { FormAction } from '@/store/slices/taskBoardSlice';
 import type { AsyncThunkConfig } from '@/store/thunks/config';
 import theme from '@/theme';
 import { useAppDispatch } from '@/utils/hooks';
-import { useUpdateTaskBoardMutation } from '@/store/api';
-import { createTaskBoard } from '@/store/thunks/boards';
+import {
+  useCreateTaskBoardMutation,
+  useUpdateTaskBoardMutation,
+} from '@/store/api';
 import { createTaskList, updateTaskList } from '@/store/thunks/lists';
 import { createTaskCard, updateTaskCard } from '@/store/thunks/cards';
 import { pushFlash } from '@/store/slices';
@@ -30,7 +32,10 @@ type FormProps = FormAction & {
 
 const TitleForm = memo(function TitleForm(props: FormProps): JSX.Element {
   const { method, model, handleClose, ...textFieldProps } = props;
-  const [updateTaskBoard, { isLoading }] = useUpdateTaskBoardMutation();
+  const [createTaskBoard, { isLoading: isLoadingToCreateBoard }] =
+    useCreateTaskBoardMutation();
+  const [updateTaskBoard, { isLoading: isLoadingToUpdateBoard }] =
+    useUpdateTaskBoardMutation();
   const dispatch = useAppDispatch();
   const submitRef = useRef<HTMLInputElement>(null);
   const {
@@ -41,6 +46,10 @@ const TitleForm = memo(function TitleForm(props: FormProps): JSX.Element {
     mode: 'onBlur',
     resolver: yupResolver(schema),
   });
+
+  const isLoading = useMemo((): boolean => {
+    return isLoadingToCreateBoard || isLoadingToUpdateBoard;
+  }, [isLoadingToCreateBoard, isLoadingToUpdateBoard]);
 
   const handleDispatch = useCallback(
     async <
@@ -69,7 +78,7 @@ const TitleForm = memo(function TitleForm(props: FormProps): JSX.Element {
         case 'POST':
           switch (model) {
             case 'board': {
-              handleDispatch(createTaskBoard, { ...data });
+              createTaskBoard(data);
               break;
             }
             case 'list': {
@@ -108,8 +117,18 @@ const TitleForm = memo(function TitleForm(props: FormProps): JSX.Element {
           }
           break;
       }
+
+      handleClose();
     },
-    [handleDispatch, method, model, props, updateTaskBoard]
+    [
+      createTaskBoard,
+      handleClose,
+      handleDispatch,
+      method,
+      model,
+      props,
+      updateTaskBoard,
+    ]
   );
 
   const handleFocus = useCallback(

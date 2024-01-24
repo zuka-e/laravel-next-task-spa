@@ -48,6 +48,14 @@ export type FetchTaskBoardsRequest = {
   page?: string;
 };
 
+export type CreateTaskBoardResponse = {
+  data: TaskBoard;
+};
+
+export type CreateTaskBoardRequest = Partial<
+  Pick<TaskBoard, 'title' | 'description'>
+>;
+
 export type FetchTaskBoardResponse = {
   data: TaskBoard;
 };

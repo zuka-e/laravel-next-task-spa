@@ -3,6 +3,8 @@ import { makeDocsWithIndex } from '@/utils/dnd';
 import { providesList } from '@/store/api/utils';
 import baseApi from './baseApi';
 import type {
+  CreateTaskBoardRequest,
+  CreateTaskBoardResponse,
   FetchTaskBoardRequest,
   FetchTaskBoardResponse,
   FetchTaskBoardsRequest,
@@ -31,6 +33,17 @@ const api = baseApi.injectEndpoints({
       }),
       // cf. https://redux-toolkit.js.org/rtk-query/usage/mutations#revalidation-example
       providesTags: (res) => providesList(res?.data, 'TaskBoard'),
+    }),
+    createTaskBoard: builder.mutation<
+      CreateTaskBoardResponse,
+      CreateTaskBoardRequest
+    >({
+      query: (data) => ({
+        url: makePath(['task-boards']),
+        method: 'POST',
+        data,
+      }),
+      invalidatesTags: () => providesList(undefined, 'TaskBoard'),
     }),
     getTaskBoard: builder.query<FetchTaskBoardResponse, FetchTaskBoardRequest>({
       query: (arg) => ({
@@ -91,6 +104,7 @@ const api = baseApi.injectEndpoints({
 
 export const {
   useGetTaskBoardsQuery,
+  useCreateTaskBoardMutation,
   useGetTaskBoardQuery,
   useUpdateTaskBoardMutation,
 } = api;
