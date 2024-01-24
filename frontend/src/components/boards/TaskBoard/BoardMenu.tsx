@@ -1,5 +1,4 @@
 import { memo, useCallback, useState } from 'react';
-import { useRouter } from 'next/router';
 
 import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import {
@@ -11,6 +10,7 @@ import {
 import { TaskBoard } from '@/models';
 import { useRoute } from '@/utils/hooks';
 import { PopoverControl, DeleteTaskDialog } from '@/templates';
+import { showTaskBoardDetails } from '@/components/boards/InfoBox/InfoBox';
 import { SortSelect } from '..';
 
 const menuItem = {
@@ -25,7 +25,6 @@ type BoardMenuProps = {
 
 const BoardMenu = memo(function BoardMenu(props: BoardMenuProps): JSX.Element {
   const { board } = props;
-  const router = useRouter();
   const { pathParams } = useRoute();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
@@ -33,23 +32,14 @@ const BoardMenu = memo(function BoardMenu(props: BoardMenuProps): JSX.Element {
     (key: keyof typeof menuItem): void => {
       switch (key) {
         case 'info':
-          router.push(
-            {
-              query: {
-                ...router.query,
-                details: `b:${board.id}`,
-              },
-            },
-            undefined,
-            { shallow: true }
-          );
+          showTaskBoardDetails(board.id);
           break;
         case 'delete':
           setOpenDeleteDialog(true);
           break;
       }
     },
-    [board.id, router]
+    [board.id]
   );
 
   const handleCloseDeleteDialog = useCallback((): void => {

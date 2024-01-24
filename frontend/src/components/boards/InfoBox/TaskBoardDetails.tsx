@@ -1,20 +1,16 @@
 import { memo, useCallback, useMemo } from 'react';
-import { useRouter } from 'next/router';
 
 import * as yup from 'yup';
 import dayjs from 'dayjs';
 import {
   Grid,
-  Card,
   CardHeader,
   CardContent,
   CardActions,
-  IconButton,
   Typography,
   Breadcrumbs,
 } from '@mui/material';
 import {
-  Close as CloseIcon,
   FolderOpen as FolderOpenIcon,
   Folder as FolderIcon,
 } from '@mui/icons-material';
@@ -32,7 +28,6 @@ const TaskBoardDetails = memo(function TaskBoardDetails(
   props: TaskBoardDetailsProps
 ): JSX.Element {
   const { board } = props;
-  const router = useRouter();
   const { userId } = useGetSessionQuery(undefined, {
     selectFromResult: (result) => ({
       ...result,
@@ -58,19 +53,6 @@ const TaskBoardDetails = memo(function TaskBoardDetails(
     }, 0);
   }, [board.lists]);
 
-  const handleClose = useCallback((): void => {
-    const { ['details']: _, ...restQueryParams } = router.query;
-
-    router.push(
-      {
-        pathname: router.pathname,
-        query: restQueryParams,
-      },
-      undefined,
-      { shallow: true }
-    );
-  }, [router]);
-
   const handleSubmitText = useCallback(
     (text: string): void => {
       updateTaskBoard({ id: board.id, description: text });
@@ -79,7 +61,7 @@ const TaskBoardDetails = memo(function TaskBoardDetails(
   );
 
   return (
-    <Card className="flex h-full flex-col rounded-none">
+    <div className="flex h-full flex-col">
       <CardActions
         disableSpacing
         className="sticky top-0 z-10 gap-2 bg-inherit shadow-sm"
@@ -101,13 +83,6 @@ const TaskBoardDetails = memo(function TaskBoardDetails(
             {board.title}
           </Typography>
         </Breadcrumbs>
-        <IconButton
-          aria-label="close"
-          onClick={handleClose}
-          className="ml-auto"
-        >
-          <CloseIcon />
-        </IconButton>
       </CardActions>
       <CardHeader
         className="pb-0"
@@ -158,7 +133,7 @@ const TaskBoardDetails = memo(function TaskBoardDetails(
           isLoading={isLoading}
         />
       </CardContent>
-    </Card>
+    </div>
   );
 });
 
