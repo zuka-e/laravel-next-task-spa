@@ -5,6 +5,8 @@ import baseApi from './baseApi';
 import type {
   CreateTaskBoardRequest,
   CreateTaskBoardResponse,
+  DestroyTaskBoardRequest,
+  DestroyTaskBoardResponse,
   FetchTaskBoardRequest,
   FetchTaskBoardResponse,
   FetchTaskBoardsRequest,
@@ -99,6 +101,16 @@ const api = baseApi.injectEndpoints({
       }),
       invalidatesTags: (_res, _err, req) => [{ type: 'TaskBoard', id: req.id }],
     }),
+    destroyTaskBoard: builder.mutation<
+      DestroyTaskBoardResponse,
+      DestroyTaskBoardRequest
+    >({
+      query: ({ id }) => ({
+        url: makePath(['task-boards', id]),
+        method: 'DELETE',
+      }),
+      invalidatesTags: (_res, _err, req) => [{ type: 'TaskBoard', id: req.id }],
+    }),
   }),
 });
 
@@ -107,4 +119,5 @@ export const {
   useCreateTaskBoardMutation,
   useGetTaskBoardQuery,
   useUpdateTaskBoardMutation,
+  useDestroyTaskBoardMutation,
 } = api;

@@ -11,9 +11,9 @@ import {
 
 import { DeleteAction } from '@/store/slices';
 import { useAppDispatch } from '@/utils/hooks';
-import { destroyTaskBoard } from '@/store/thunks/boards';
 import { destroyTaskList } from '@/store/thunks/lists';
 import { destroyTaskCard } from '@/store/thunks/cards';
+import { useDestroyTaskBoardMutation } from '@/store/api';
 
 type DeleteTaskDialogProps = DeleteAction & {
   open: boolean;
@@ -24,6 +24,7 @@ const DeleteTaskDialog = memo(function DeleteTaskDialog(
   props: DeleteTaskDialogProps
 ): JSX.Element {
   const { open, onClose } = props;
+  const [destroyTaskBoard, { isLoading }] = useDestroyTaskBoardMutation();
   const dispatch = useAppDispatch();
 
   const renderTitle = () => {
@@ -58,13 +59,13 @@ const DeleteTaskDialog = memo(function DeleteTaskDialog(
   const handleDelete = useCallback(async () => {
     switch (props.model) {
       case 'board':
-        return await dispatch(destroyTaskBoard(props.data));
+        return destroyTaskBoard(props.data);
       case 'list':
         return await dispatch(destroyTaskList(props.data));
       case 'card':
         return await dispatch(destroyTaskCard(props.data));
     }
-  }, [dispatch, props.data, props.model]);
+  }, [destroyTaskBoard, dispatch, props.data, props.model]);
 
   return (
     <Dialog
@@ -83,7 +84,7 @@ const DeleteTaskDialog = memo(function DeleteTaskDialog(
         <Button onClick={handleClose} color="primary" autoFocus>
           キャンセル
         </Button>
-        <Button onClick={handleDelete} color="error">
+        <Button disabled={isLoading} onClick={handleDelete} color="error">
           削除
         </Button>
       </DialogActions>

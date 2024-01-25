@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { TaskBoard, TaskBoardsCollection, TaskCard, TaskList } from '@/models';
 import { compare, SortOperation } from '@/utils/sort';
-import { destroyTaskBoard } from '@/store/thunks/boards';
 import {
   createTaskList,
   updateTaskList,
@@ -103,24 +102,6 @@ export const taskBoardSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(destroyTaskBoard.pending, (state, _action) => {
-      state.loading = true;
-    });
-
-    builder.addCase(destroyTaskBoard.fulfilled, (state, action) => {
-      state.data = state.data.filter(
-        (board) => board.id !== action.payload.data.id
-      );
-
-      delete state.docs[action.payload.data.id];
-
-      state.loading = false;
-    });
-
-    builder.addCase(destroyTaskBoard.rejected, (state, _action) => {
-      state.loading = false;
-    });
-
     builder.addCase(createTaskList.pending, (state, _action) => {
       state.loading = true;
     });

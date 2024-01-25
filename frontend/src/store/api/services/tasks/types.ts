@@ -75,3 +75,9 @@ export type UpdateTaskBoardRequest = Pick<TaskBoard, 'id'> &
   Partial<
     Pick<TaskBoard, 'title' | 'description' | 'listIndexMap' | 'cardIndexMap'>
   >;
+
+export type DestroyTaskBoardResponse = {
+  data: TaskBoard;
+};
+
+export type DestroyTaskBoardRequest = Pick<TaskBoard, 'id'>;
