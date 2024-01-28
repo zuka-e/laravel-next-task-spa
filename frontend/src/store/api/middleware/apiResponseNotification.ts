@@ -1,3 +1,4 @@
+import { isAxiosError } from 'axios';
 import {
   type AnyAction,
   type MiddlewareAPI,
@@ -27,17 +28,21 @@ const isAsyncThunkActionWithFlash = (
     return false;
   }
 
+  const response = isAxiosError(action.payload)
+    ? (action.payload.response?.data as unknown)
+    : action.payload;
+
   // Determine if an `AsyncThunkAction` that has a payload with object type.
-  if (!(typeof action.payload === 'object' && action.payload !== null)) {
+  if (!(typeof response === 'object' && response !== null)) {
     return false;
   }
 
   return (
-    'severity' in action.payload &&
-    typeof action.payload.severity === 'string' &&
-    (severities as string[]).includes(action.payload.severity) &&
-    'message' in action.payload &&
-    typeof action.payload.message === 'string'
+    'severity' in response &&
+    typeof response.severity === 'string' &&
+    (severities as string[]).includes(response.severity) &&
+    'message' in response &&
+    typeof response.message === 'string'
   );
 };
 
