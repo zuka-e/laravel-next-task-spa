@@ -1,4 +1,5 @@
-import { memo, useCallback, useMemo, useRef } from 'react';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
+import Router from 'next/router';
 
 import type { AsyncThunk } from '@reduxjs/toolkit';
 import { useForm } from 'react-hook-form';
@@ -10,6 +11,11 @@ import type { FormAction } from '@/store/slices/taskBoardSlice';
 import type { AsyncThunkConfig } from '@/store/thunks/config';
 import theme from '@/theme';
 import { useAppDispatch } from '@/utils/hooks';
+import {
+  isHttpException,
+  isInvalidRequest,
+  makeErrorMessageFrom,
+} from '@/utils/api/errors';
 import {
   useCreateTaskBoardMutation,
   useUpdateTaskBoardMutation,
@@ -36,6 +42,7 @@ const TitleForm = memo(function TitleForm(props: FormProps): JSX.Element {
     useCreateTaskBoardMutation();
   const [updateTaskBoard, { isLoading: isLoadingToUpdateBoard }] =
     useUpdateTaskBoardMutation();
+  const [apiError, setApiError] = useState('');
   const dispatch = useAppDispatch();
   const submitRef = useRef<HTMLInputElement>(null);
   const {
@@ -74,51 +81,70 @@ const TitleForm = memo(function TitleForm(props: FormProps): JSX.Element {
 
   const onSubmit = useCallback(
     async (data: FormData): Promise<void> => {
-      switch (method) {
-        case 'POST':
-          switch (model) {
-            case 'board': {
-              createTaskBoard(data);
-              break;
+      try {
+        switch (method) {
+          case 'POST':
+            switch (model) {
+              case 'board': {
+                const response = await createTaskBoard(data).unwrap();
+                const taskBoard = response.data;
+                Router.push(
+                  `/users/${taskBoard.userId}/boards/${taskBoard.id}`
+                );
+                break;
+              }
+              case 'list': {
+                const boardId = props.parent.id;
+                handleDispatch(createTaskList, { boardId, ...data });
+                break;
+              }
+              case 'card': {
+                const boardId = props.parent.boardId;
+                const listId = props.parent.id;
+                handleDispatch(createTaskCard, { boardId, listId, ...data });
+                break;
+              }
             }
-            case 'list': {
-              const boardId = props.parent.id;
-              handleDispatch(createTaskList, { boardId, ...data });
-              break;
+            break;
+          case 'PATCH':
+            if (!data.title) break;
+            switch (model) {
+              case 'board': {
+                updateTaskBoard({ id: props.data.id, ...data });
+                break;
+              }
+              case 'list': {
+                const id = props.data.id;
+                const boardId = props.data.boardId;
+                handleDispatch(updateTaskList, { id, boardId, ...data });
+                break;
+              }
+              case 'card': {
+                const id = props.data.id;
+                const boardId = props.data.boardId;
+                const listId = props.data.listId;
+                handleDispatch(updateTaskCard, {
+                  id,
+                  boardId,
+                  listId,
+                  ...data,
+                });
+                break;
+              }
             }
-            case 'card': {
-              const boardId = props.parent.boardId;
-              const listId = props.parent.id;
-              handleDispatch(createTaskCard, { boardId, listId, ...data });
-              break;
-            }
-          }
-          break;
-        case 'PATCH':
-          if (!data.title) break;
-          switch (model) {
-            case 'board': {
-              updateTaskBoard({ id: props.data.id, ...data });
-              break;
-            }
-            case 'list': {
-              const id = props.data.id;
-              const boardId = props.data.boardId;
-              handleDispatch(updateTaskList, { id, boardId, ...data });
-              break;
-            }
-            case 'card': {
-              const id = props.data.id;
-              const boardId = props.data.boardId;
-              const listId = props.data.listId;
-              handleDispatch(updateTaskCard, { id, boardId, listId, ...data });
-              break;
-            }
-          }
-          break;
-      }
+            break;
+        }
 
-      handleClose();
+        handleClose();
+      } catch (e) {
+        if (!isHttpException(e)) {
+          throw e;
+        }
+
+        if (isInvalidRequest(e)) {
+          setApiError(makeErrorMessageFrom(e));
+        }
+      }
     },
     [
       createTaskBoard,
@@ -165,8 +191,8 @@ const TitleForm = memo(function TitleForm(props: FormProps): JSX.Element {
             style: { backgroundColor: theme.palette.background.paper },
           }}
           InputLabelProps={{ margin: 'dense' }}
-          helperText={errors?.title?.message || '1-255 characters'}
-          error={!!errors?.title}
+          helperText={apiError || errors?.title?.message || '1-255 characters'}
+          error={!!apiError || !!errors?.title}
           {...textFieldProps}
           {...register('title')}
         />
