@@ -38,7 +38,7 @@ const axiosBaseQuery =
     } catch (error) {
       // cf. https://redux-toolkit.js.org/rtk-query/usage-with-typescript#type-safe-error-handling
       if (!isAxiosError(error)) {
-        throw new Error('Unexpected Error.');
+        throw error;
       }
 
       api.dispatch(setHttpStatus(error.response?.status));
