@@ -5,13 +5,13 @@ import { useRouter } from 'next/router';
 import Error from 'next/error';
 
 import { useAppSelector } from '@/utils/hooks';
-import BadRequest from '@/pages/400';
-import Forbidden from '@/pages/403';
+import BadRequest from '@/components/errors/400';
+import Forbidden from '@/components/errors/403';
 import NotFound from '@/pages/404';
-import PageExpired from '@/pages/419';
-import TooManyRequests from '@/pages/429';
+import PageExpired from '@/components/errors/419';
+import TooManyRequests from '@/components/errors/429';
 import InternalServerError from '@/pages/500';
-import ServiceUnavailable from '@/pages/503';
+import ServiceUnavailable from '@/components/errors/503';
 import { clearHttpStatus } from '@/store/slices';
 import { useAppDispatch } from '@/utils/hooks';
 
