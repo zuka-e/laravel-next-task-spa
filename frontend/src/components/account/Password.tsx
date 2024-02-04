@@ -135,7 +135,7 @@ const Password = memo(function Password(): JSX.Element {
             size="small"
           />
         }
-        className="mx-0 mb-4 block text-gray-600"
+        className="mx-0 mb-4 block w-fit text-gray-600"
       />
       {!isGuest() && <SubmitButton>パスワードを変更する</SubmitButton>}
     </form>
