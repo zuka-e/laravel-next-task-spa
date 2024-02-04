@@ -1,5 +1,5 @@
 import {
-  isHttpException,
+  isApiError,
   isInvalidRequest,
   makeErrorMessageFrom,
 } from '@/utils/api/errors';
@@ -13,13 +13,21 @@ export const makeRejectValue = (error: unknown): RejectValue => {
         message: makeErrorMessageFrom(error),
       },
     };
-  if (isHttpException(error))
+  if (isApiError(error)) {
+    const message =
+      typeof error.response.data === 'object' &&
+      error.response.data &&
+      'message' in error.response.data
+        ? error.response.data.message
+        : error.response.statusText;
+
     return {
       error: {
         ...error,
-        message: `${error.response.status}: ${error.response.data.message}`,
+        message: `${error.response.status}: ${message}`,
       },
     };
+  }
   return {
     error: { message: String(error) },
   };

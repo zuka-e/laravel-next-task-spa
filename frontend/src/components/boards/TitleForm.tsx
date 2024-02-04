@@ -12,7 +12,7 @@ import type { AsyncThunkConfig } from '@/store/thunks/config';
 import theme from '@/theme';
 import { useAppDispatch } from '@/utils/hooks';
 import {
-  isHttpException,
+  isApiError,
   isInvalidRequest,
   makeErrorMessageFrom,
 } from '@/utils/api/errors';
@@ -137,7 +137,7 @@ const TitleForm = memo(function TitleForm(props: FormProps): JSX.Element {
 
         handleClose();
       } catch (e) {
-        if (!isHttpException(e)) {
+        if (!isApiError(e)) {
           throw e;
         }
 

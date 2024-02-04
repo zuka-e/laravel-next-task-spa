@@ -1,3 +1,3 @@
-export * from './isHttpException';
+export * from './isApiError';
 export * from './isInvalidRequest';
 export * from './makeErrorMessageFrom';
