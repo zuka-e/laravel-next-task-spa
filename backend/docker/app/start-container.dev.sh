@@ -24,6 +24,6 @@
 # composer i
 #
 
-php artisan key:generate &&
+composer dump-autoload &&
   php artisan migrate &&
   exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.dev.conf
