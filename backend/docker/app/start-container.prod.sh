@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 
-php artisan key:generate &&
-  php artisan optimize &&
-  php artisan migrate --force &&
-  exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.prod.conf
-
 #==========================================================================
 # Note:
 #==========================================================================
 #
-# Running `php artisan optimize` in a Dockerfile leads to vulnerabilities,
-# particularly when dealing with sensitive values like `APP_KEY`
+# Running `artisan optimize` in a Dockerfile leads to vulnerabilities,
+# particularly when dealing with sensitive values like `APP_KEY`.
+# In addition, you may consider not using `artisan optimize`(`config:cache`),
+# bacause it'll cache configs in the server which could be a problem if compromised.
 #
+
+php artisan migrate --force &&
+  php artisan optimize &&
+  exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.prod.conf

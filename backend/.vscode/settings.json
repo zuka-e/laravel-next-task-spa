@@ -1,5 +1,45 @@
 {
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-  "files.associations": { "*.module": "php" }
+  "files.associations": { "*.module": "php" },
+  // For PHP extension completion, add default and installed functions.
+  // cf. `docker-php-ext-install`/`pecl install` in Dockerfile.
+  "intelephense.stubs": [
+    "Core",
+    "ctype",
+    "curl",
+    "date",
+    "fileinfo",
+    "filter",
+    "gd",
+    "hash",
+    "iconv",
+    "json",
+    "mbstring",
+    "openssl",
+    "pcntl",
+    "pcre",
+    "PDO",
+    "Phar",
+    "posix",
+    "random",
+    "readline",
+    "Reflection",
+    "standard",
+    "session",
+    "SimpleXML",
+    "sodium",
+    "SPL",
+    "sqlite3",
+    "superglobals",
+    "tokenizer",
+    "xml",
+    "xmlreader",
+    "xmlwriter",
+    "Zend OPcache",
+    "zip",
+    "zlib",
+    "redis",
+    "xdebug"
+  ]
 }

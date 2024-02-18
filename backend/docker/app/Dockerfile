@@ -63,6 +63,7 @@ FROM base as local
 
 RUN apt-get update && apt-get install -y \
         git \
+        libpq-dev \
         vim \
     && apt-get -y autoremove \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
@@ -70,6 +71,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install \
         # cf. `laravel/horizon`
         pcntl \
+        pdo_pgsql \
     # PECL extensions (cf. https://hub.docker.com/_/php)
     && pecl install \
         # cf. https://laravel.com/docs/10.x/redis
