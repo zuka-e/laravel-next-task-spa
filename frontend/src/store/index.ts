@@ -38,7 +38,7 @@ export const store = configureStore({
        *  the SerializableStateInvariantMiddleware,
        *  that causes a slowdown in dev, can be disabled
        */
-      serializableCheck: false,
+      // serializableCheck: false,
     }).concat([apiResponseNotification, taskApi.middleware]),
 });
 

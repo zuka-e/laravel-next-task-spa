@@ -2,9 +2,9 @@ import { type BaseQueryFn } from '@reduxjs/toolkit/query/react';
 import {
   isAxiosError,
   type AxiosRequestConfig as BaseAxiosRequestConfig,
-  type Method,
   type AxiosResponse,
   type AxiosError,
+  type Method,
 } from 'axios';
 
 import { GET_CSRF_TOKEN_PATH } from '@/config/api';
@@ -12,6 +12,9 @@ import { apiClient } from '@/utils/api';
 import { setHttpStatus } from '@/store/slices';
 import isReadRequest from './isReadRequest';
 
+/**
+ * More strict `AxiosRequestConfig`
+ */
 type AxiosRequestConfig<D = unknown> = BaseAxiosRequestConfig<D> & {
   /** @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods */
   method?: Extract<
@@ -21,13 +24,29 @@ type AxiosRequestConfig<D = unknown> = BaseAxiosRequestConfig<D> & {
 };
 
 /**
+ * `AxiosError` without non-serializable values
+ *
+ * ※ It'll counter `non-serializable value was detected` warning
+ * when a middleware option, `serializableCheck`, is set to `false`.
+ *
+ * cf. https://redux-toolkit.js.org/rtk-query/usage-with-typescript#type-safe-error-handling
+ */
+type SerializableAxiosError = Pick<AxiosError, 'isAxiosError'> & {
+  response: Pick<NonNullable<AxiosError['response']>, 'status' | 'data'>;
+};
+
+/**
  * Base query function RTK Query uses
  *
  * @see https://redux-toolkit.js.org/rtk-query/usage/customizing-queries
  * @see https://redux-toolkit.js.org/rtk-query/usage-with-typescript#typing-a-basequery
  */
 const axiosBaseQuery =
-  (): BaseQueryFn<AxiosRequestConfig, AxiosResponse['data'], AxiosError> =>
+  (): BaseQueryFn<
+    AxiosRequestConfig,
+    AxiosResponse<Record<string, unknown>>['data'],
+    SerializableAxiosError
+  > =>
   async (config, api) => {
     try {
       if (!isReadRequest(config.method ?? 'GET')) {
@@ -36,14 +55,24 @@ const axiosBaseQuery =
       const response = await apiClient().request(config);
       return { data: response.data };
     } catch (error) {
-      // cf. https://redux-toolkit.js.org/rtk-query/usage-with-typescript#type-safe-error-handling
       if (!isAxiosError(error)) {
         throw error;
       }
 
-      api.dispatch(setHttpStatus(error.response?.status));
+      /** HTTP status code */
+      const status = error.response?.status || 500;
 
-      return { error };
+      api.dispatch(setHttpStatus(status));
+
+      return {
+        error: {
+          isAxiosError: error.isAxiosError,
+          response: {
+            status: status,
+            data: error.response?.data,
+          },
+        },
+      };
     }
   };
 
