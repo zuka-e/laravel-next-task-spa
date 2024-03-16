@@ -41,7 +41,7 @@ const Header = memo(function Header(): JSX.Element {
   );
 
   return (
-    <AppBar position="static">
+    <AppBar position="sticky">
       <Toolbar>
         <IconButton
           edge="start"
