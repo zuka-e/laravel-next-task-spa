@@ -89,15 +89,16 @@ const InfoBox = memo(function InfoBox(props: JSX.IntrinsicElements['div']) {
   const { type, data, isLoading } = taskDetailsQuery;
 
   const renderInfoBox = (): JSX.Element => {
-    if (isLoading) {
+    if (!data) {
       return <></>;
     }
 
-    if (type === 'b' && data) {
-      return <TaskBoardDetails board={data.data} />;
+    switch (type) {
+      case 'b':
+        return <TaskBoardDetails board={data.data} />;
+      default:
+        throw new Error('Unexpected Error.');
     }
-
-    throw new Error('Unexpected Error.');
   };
 
   return (
