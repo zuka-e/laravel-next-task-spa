@@ -8,6 +8,7 @@ import { clsx } from 'clsx';
 
 import type { TaskBoard } from '@/models';
 import { useGetTaskBoardQuery } from '@/store/api';
+import { repeatMap } from '@/utils';
 import { useRoute } from '@/utils/hooks';
 import { TaskBoardDetails } from '.';
 
@@ -112,7 +113,7 @@ const InfoBox = memo(function InfoBox(props: JSX.IntrinsicElements['div']) {
         </div>
         {isLoading ? (
           <Stack spacing={2} className="ml-4 mr-10">
-            {Array.from({ length: 10 }, (_, i) => i).map((i) => (
+            {repeatMap(15, (i) => (
               <Skeleton key={i} variant="text" className="text-2xl" />
             ))}
           </Stack>
