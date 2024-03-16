@@ -84,55 +84,56 @@ const TaskBoardDetails = memo(function TaskBoardDetails(
           </Typography>
         </Breadcrumbs>
       </CardActions>
-      <CardHeader
-        className="pb-0"
-        disableTypography
-        title={<EditableTitle method="PATCH" model="board" data={board} />}
-      />
-      <CardContent className="flex flex-col gap-3 py-0">
-        <Grid container className="items-center">
-          <Grid item className="mr-4 w-32">
-            <label>合計リスト</label>
-          </Grid>
-          <Grid item>{board.lists.length}</Grid>
-        </Grid>
-        <Grid container className="items-center">
-          <Grid item className="mr-4 w-32">
-            <label>
-              合計カード
-              <br />
-              (完了 / 未完了)
-            </label>
-          </Grid>
-          <Grid item>
-            {totalList}&nbsp; ({totalCompletedCard}&nbsp;/&nbsp;
-            {totalList - totalCompletedCard})
-          </Grid>
-        </Grid>
-        <Grid container className="items-center">
-          <Grid item className="mr-4 w-32">
-            <label>作成日時</label>
-          </Grid>
-          <Grid item>{dayjs(board.createdAt).calendar()}</Grid>
-        </Grid>
-        <Grid container className="items-center">
-          <Grid item className="mr-4 w-32">
-            <label>変更日時</label>
-          </Grid>
-          <Grid item>{dayjs(board.updatedAt).calendar()}</Grid>
-        </Grid>
-      </CardContent>
-
-      <CardContent>
-        <MarkdownEditor
-          onSubmit={handleSubmitText}
-          schema={yup.object().shape({
-            description: yup.string().label('Description').max(2000),
-          })}
-          defaultValue={board.description}
-          isLoading={isLoading}
+      <div className="overflow-y-auto">
+        <CardHeader
+          className="pb-0"
+          disableTypography
+          title={<EditableTitle method="PATCH" model="board" data={board} />}
         />
-      </CardContent>
+        <CardContent className="flex flex-col gap-3 py-0">
+          <Grid container className="items-center">
+            <Grid item className="mr-4 w-32">
+              <label>合計リスト</label>
+            </Grid>
+            <Grid item>{board.lists.length}</Grid>
+          </Grid>
+          <Grid container className="items-center">
+            <Grid item className="mr-4 w-32">
+              <label>
+                合計カード
+                <br />
+                (完了 / 未完了)
+              </label>
+            </Grid>
+            <Grid item>
+              {totalList}&nbsp; ({totalCompletedCard}&nbsp;/&nbsp;
+              {totalList - totalCompletedCard})
+            </Grid>
+          </Grid>
+          <Grid container className="items-center">
+            <Grid item className="mr-4 w-32">
+              <label>作成日時</label>
+            </Grid>
+            <Grid item>{dayjs(board.createdAt).calendar()}</Grid>
+          </Grid>
+          <Grid container className="items-center">
+            <Grid item className="mr-4 w-32">
+              <label>変更日時</label>
+            </Grid>
+            <Grid item>{dayjs(board.updatedAt).calendar()}</Grid>
+          </Grid>
+        </CardContent>
+        <CardContent>
+          <MarkdownEditor
+            onSubmit={handleSubmitText}
+            schema={yup.object().shape({
+              description: yup.string().label('Description').max(2000),
+            })}
+            defaultValue={board.description}
+            isLoading={isLoading}
+          />
+        </CardContent>{' '}
+      </div>
     </div>
   );
 });

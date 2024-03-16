@@ -4,6 +4,7 @@ import Router from 'next/router';
 import { skipToken } from '@reduxjs/toolkit/dist/query';
 import { CardContent, IconButton, Skeleton, Stack } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
+import { clsx } from 'clsx';
 
 import type { TaskBoard } from '@/models';
 import { useGetTaskBoardQuery } from '@/store/api';
@@ -81,13 +82,13 @@ const InfoBox = memo(function InfoBox(props: JSX.IntrinsicElements['div']) {
   const taskDetailsQuery = useGetTaskDetailsQuery();
 
   if (!taskDetailsQuery) {
-    return <></>;
+    return <div className="w-0" />;
   }
 
-  const { type, data, isUninitialized, isLoading } = taskDetailsQuery;
+  const { type, data, isLoading } = taskDetailsQuery;
 
   const renderInfoBox = (): JSX.Element => {
-    if (isLoading || isUninitialized) {
+    if (isLoading) {
       return <></>;
     }
 
@@ -100,21 +101,15 @@ const InfoBox = memo(function InfoBox(props: JSX.IntrinsicElements['div']) {
 
   return (
     <div
-      className={
-        'relative w-full min-w-0 overflow-hidden shadow transition-all' +
-        (className ? ` ${className} ` : ' ') +
-        (isLoading || !isUninitialized ? 'max-w-full' : 'max-w-0')
-      }
+      className={clsx('sticky top-16 w-full shadow transition-all', className)}
       {...divProps}
     >
-      <CardContent className="absolute h-full w-full [&>*]:overflow-y-auto">
-        <IconButton
-          aria-label="close"
-          onClick={hideTaskDetails}
-          className="absolute right-3 top-3 z-20"
-        >
-          <CloseIcon />
-        </IconButton>
+      <CardContent className="absolute h-full w-full">
+        <div className="absolute right-2 top-2 z-20 w-fit rounded bg-white p-1">
+          <IconButton aria-label="close" onClick={hideTaskDetails}>
+            <CloseIcon />
+          </IconButton>
+        </div>
         {isLoading ? (
           <Stack spacing={2} className="ml-4 mr-10">
             {Array.from({ length: 10 }, (_, i) => i).map((i) => (
