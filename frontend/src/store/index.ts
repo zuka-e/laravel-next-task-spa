@@ -31,23 +31,30 @@ export const rootReducer = (
   return combinedReducer(state, action);
 };
 
-export const store = configureStore({
-  reducer: rootReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      /**
-       *  If your state or actions are very large,
-       *  the SerializableStateInvariantMiddleware,
-       *  that causes a slowdown in dev, can be disabled
-       */
-      // serializableCheck: false,
-    }).concat([
-      apiResponseNotification,
-      taskApi.middleware,
-      ...(envIs('development') ? [logger] : []),
-    ]),
-});
+/**
+ * Create a configured Redux store.
+ */
+export const setupStore = () => {
+  return configureStore({
+    reducer: rootReducer,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        /**
+         *  If your state or actions are very large,
+         *  the SerializableStateInvariantMiddleware,
+         *  that causes a slowdown in dev, can be disabled
+         */
+        // serializableCheck: false,
+      }).concat([
+        apiResponseNotification,
+        taskApi.middleware,
+        ...(envIs('development') ? [logger] : []),
+      ]),
+  });
+};
 
-export type AppDispatch = typeof store.dispatch;
+export const store = setupStore();
+
+export type AppDispatch = ReturnType<typeof setupStore>['dispatch'];
 
 export default store;
