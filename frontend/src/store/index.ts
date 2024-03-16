@@ -1,5 +1,7 @@
 import { AnyAction, combineReducers, configureStore } from '@reduxjs/toolkit';
 
+import { envIs } from '@/utils/app';
+import { logger } from './middleware';
 import { appSlice, authSlice, taskBoardSlice, flushAllStates } from './slices';
 import { deleteAccount } from './thunks/auth';
 import { apiResponseNotification } from './api/middleware';
@@ -39,7 +41,11 @@ export const store = configureStore({
        *  that causes a slowdown in dev, can be disabled
        */
       // serializableCheck: false,
-    }).concat([apiResponseNotification, taskApi.middleware]),
+    }).concat([
+      apiResponseNotification,
+      taskApi.middleware,
+      ...(envIs('development') ? [logger] : []),
+    ]),
 });
 
 export type AppDispatch = typeof store.dispatch;
