@@ -1,7 +1,5 @@
 import { isAxiosError } from 'axios';
 import {
-  type AnyAction,
-  type MiddlewareAPI,
   type Middleware,
   type PayloadAction,
   isAsyncThunkAction,
@@ -50,14 +48,14 @@ const isAsyncThunkActionWithFlash = (
  * Display a notification if the API response contains certain props.
  *
  * @see https://redux-toolkit.js.org/rtk-query/usage/error-handling#handling-errors-at-a-macro-level
+ * @see https://redux.js.org/usage/usage-with-typescript#type-checking-middleware
  */
-const apiResponseNotification: Middleware =
-  (api: MiddlewareAPI) => (next) => (action: AnyAction) => {
-    if (isAsyncThunkActionWithFlash(action)) {
-      api.dispatch(pushFlash(action.payload));
-    }
+const apiResponseNotification: Middleware = (api) => (next) => (action) => {
+  if (isAsyncThunkActionWithFlash(action)) {
+    api.dispatch(pushFlash(action.payload));
+  }
 
-    return next(action);
-  };
+  return next(action);
+};
 
 export default apiResponseNotification;

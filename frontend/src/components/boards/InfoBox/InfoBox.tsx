@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import Router from 'next/router';
 
-import { skipToken } from '@reduxjs/toolkit/dist/query';
+import { skipToken } from '@reduxjs/toolkit/query';
 import { CardContent, IconButton, Skeleton, Stack } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { clsx } from 'clsx';

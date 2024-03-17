@@ -2,7 +2,7 @@ import { memo } from 'react';
 import Head from 'next/head';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 
-import { skipToken } from '@reduxjs/toolkit/dist/query';
+import { skipToken } from '@reduxjs/toolkit/query';
 import { Container, Grid, Divider, IconButton, Skeleton } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 

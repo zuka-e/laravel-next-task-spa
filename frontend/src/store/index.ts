@@ -1,4 +1,8 @@
-import { AnyAction, combineReducers, configureStore } from '@reduxjs/toolkit';
+import {
+  type UnknownAction,
+  configureStore,
+  combineSlices,
+} from '@reduxjs/toolkit';
 
 import { envIs } from '@/utils/app';
 import { logger } from './middleware';
@@ -7,18 +11,16 @@ import { deleteAccount } from './thunks/auth';
 import { apiResponseNotification } from './api/middleware';
 import { api as taskApi } from './api/services/tasks';
 
-const combinedReducer = combineReducers({
-  app: appSlice.reducer,
-  auth: authSlice.reducer,
+// cf. https://redux-toolkit.js.org/api/combineSlices
+const combinedReducer = combineSlices(appSlice, authSlice, taskApi, {
   boards: taskBoardSlice.reducer,
-  [taskApi.reducerPath]: taskApi.reducer,
 });
 
 export type RootState = ReturnType<typeof combinedReducer>;
 
 export const rootReducer = (
   state: RootState | undefined,
-  action: AnyAction
+  action: UnknownAction
 ) => {
   const actionsWithReset = [
     flushAllStates().type,
@@ -35,6 +37,7 @@ export const rootReducer = (
  * Create a configured Redux store.
  */
 export const setupStore = () => {
+  // cf. https://redux.js.org/usage/usage-with-typescript#typing-configurestore
   return configureStore({
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) =>
