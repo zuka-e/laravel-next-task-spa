@@ -88,9 +88,7 @@ const TitleForm = memo(function TitleForm(props: FormProps): JSX.Element {
               case 'board': {
                 const response = await createTaskBoard(data).unwrap();
                 const taskBoard = response.data;
-                Router.push(
-                  `/users/${taskBoard.userId}/boards/${taskBoard.id}`
-                );
+                Router.push(`/boards/${taskBoard.id}`);
                 break;
               }
               case 'list': {

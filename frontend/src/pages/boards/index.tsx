@@ -1,12 +1,12 @@
 import { memo, useCallback } from 'react';
 import Head from 'next/head';
 import Router from 'next/router';
-import type { GetStaticPaths, GetStaticProps } from 'next';
+import type { GetStaticProps } from 'next';
 
 import { Container, Grid, Card, Divider, Typography } from '@mui/material';
 import { Pagination } from '@mui/material';
 
-import { useGetSessionQuery, useGetTaskBoardsQuery } from '@/store/api';
+import { useGetTaskBoardsQuery } from '@/store/api';
 import { useRoute } from '@/utils/hooks';
 import { BaseLayout, StandbyScreen } from '@/layouts';
 import { Link } from '@/templates';
@@ -15,17 +15,6 @@ import { BoardCardHeader } from '@/components/boards/TaskBoard';
 import type { AuthPage } from '@/routes';
 
 type TaskBoardIndexProps = AuthPage;
-
-/**
- * @see https://nextjs.org/docs/basic-features/data-fetching/get-static-paths
- * @see https://nextjs.org/docs/api-reference/data-fetching/get-static-paths
- */
-export const getStaticPaths: GetStaticPaths = async () => {
-  return {
-    paths: [],
-    fallback: 'blocking',
-  };
-};
 
 /**
  * @see https://nextjs.org/docs/basic-features/data-fetching/get-static-props
@@ -42,12 +31,6 @@ export const getStaticProps: GetStaticProps<TaskBoardIndexProps> = async () => {
 
 const TaskBoardIndex = memo(function TaskBoardIndex(): JSX.Element {
   const { pathname, pathParams, queryParams } = useRoute();
-  const { user } = useGetSessionQuery(undefined, {
-    selectFromResult: (result) => ({
-      ...result,
-      user: result.data?.user,
-    }),
-  });
 
   const { data: paginator } = useGetTaskBoardsQuery(
     { page: queryParams?.page?.toString() },
@@ -64,8 +47,7 @@ const TaskBoardIndex = memo(function TaskBoardIndex(): JSX.Element {
     [pathname, queryParams]
   );
 
-  if (!pathParams || !paginator || user?.id !== pathParams.userId)
-    return <StandbyScreen />;
+  if (!pathParams || !paginator) return <StandbyScreen />;
 
   return (
     <>
@@ -78,10 +60,7 @@ const TaskBoardIndex = memo(function TaskBoardIndex(): JSX.Element {
             {paginator.data.map((board) => (
               <Grid item md={4} sm={6} xs={12} key={board.id}>
                 <Card elevation={7}>
-                  <Link
-                    href={`/users/${pathParams.userId}/boards/${board.id}`}
-                    className="text-inherit"
-                  >
+                  <Link href={`/boards/${board.id}`} className="text-inherit">
                     <div className="h-40 overflow-y-auto break-words p-4">
                       <Typography>{board.description}</Typography>
                     </div>

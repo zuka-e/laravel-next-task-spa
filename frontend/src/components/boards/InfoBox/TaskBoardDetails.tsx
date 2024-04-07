@@ -16,7 +16,7 @@ import {
 } from '@mui/icons-material';
 
 import { TaskBoard } from '@/models';
-import { useGetSessionQuery, useUpdateTaskBoardMutation } from '@/store/api';
+import { useUpdateTaskBoardMutation } from '@/store/api';
 import { Link, MarkdownEditor } from '@/templates';
 import { EditableTitle } from '..';
 
@@ -28,12 +28,6 @@ const TaskBoardDetails = memo(function TaskBoardDetails(
   props: TaskBoardDetailsProps
 ): JSX.Element {
   const { board } = props;
-  const { userId } = useGetSessionQuery(undefined, {
-    selectFromResult: (result) => ({
-      ...result,
-      userId: result.data,
-    }),
-  });
 
   const [updateTaskBoard, { isLoading }] = useUpdateTaskBoardMutation();
 
@@ -74,7 +68,7 @@ const TaskBoardDetails = memo(function TaskBoardDetails(
             li: '[&>*]:flex [&>*]:items-center',
           }}
         >
-          <Link href={`/users/${userId}/boards`}>
+          <Link href={'/boards'}>
             <FolderIcon className="mr-1 h-6 w-6" />
             {'Boards'}
           </Link>

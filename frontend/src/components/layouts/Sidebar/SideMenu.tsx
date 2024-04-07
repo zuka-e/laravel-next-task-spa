@@ -65,7 +65,7 @@ const SideMenu = memo(function SideMenu(): JSX.Element {
     async (key: keyof typeof menuItem): Promise<void> => {
       switch (key) {
         case 'boards':
-          Router.push(`/users/${userId}/boards`);
+          Router.push('/boards');
           break;
         case 'logout':
           logout();
@@ -90,7 +90,7 @@ const SideMenu = memo(function SideMenu(): JSX.Element {
           break;
       }
     },
-    [login, logout, register, userId]
+    [login, logout, register]
   );
 
   return (

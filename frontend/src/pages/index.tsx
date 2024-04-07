@@ -19,7 +19,7 @@ const Home = memo(function Home(): JSX.Element {
 
   useEffect(() => {
     if (userId) {
-      Router.replace(`users/${userId}/boards`);
+      Router.replace('/boards');
     }
   }, [userId]);
 
