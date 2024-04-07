@@ -1,6 +1,6 @@
 import { makePath } from '@/utils/api';
 import { makeDocsWithIndex } from '@/utils/dnd';
-import { providesList } from '@/store/api/utils';
+import { getTagsForPartialList } from '@/store/api/utils/caching';
 import baseApi from './baseApi';
 import type {
   CreateTaskBoardRequest,
@@ -34,7 +34,7 @@ const api = baseApi.injectEndpoints({
         params: { page: page || undefined },
       }),
       // cf. https://redux-toolkit.js.org/rtk-query/usage/mutations#revalidation-example
-      providesTags: (res) => providesList(res?.data, 'TaskBoard'),
+      providesTags: (res) => getTagsForPartialList(res?.data, 'TaskBoard'),
     }),
     createTaskBoard: builder.mutation<
       CreateTaskBoardResponse,
@@ -45,7 +45,7 @@ const api = baseApi.injectEndpoints({
         method: 'POST',
         data,
       }),
-      invalidatesTags: () => providesList(undefined, 'TaskBoard'),
+      invalidatesTags: () => getTagsForPartialList(undefined, 'TaskBoard'),
     }),
     getTaskBoard: builder.query<FetchTaskBoardResponse, FetchTaskBoardRequest>({
       query: (arg) => ({
@@ -109,7 +109,7 @@ const api = baseApi.injectEndpoints({
         url: makePath(['task-boards', id]),
         method: 'DELETE',
       }),
-      invalidatesTags: (_res, _err, req) => [{ type: 'TaskBoard', id: req.id }],
+      invalidatesTags: () => getTagsForPartialList(undefined, 'TaskBoard'),
     }),
   }),
 });
