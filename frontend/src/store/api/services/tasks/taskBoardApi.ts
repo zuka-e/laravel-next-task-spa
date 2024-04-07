@@ -7,7 +7,6 @@ import type {
   CreateTaskBoardResponse,
   DestroyTaskBoardRequest,
   DestroyTaskBoardResponse,
-  FetchSessionResponse,
   FetchTaskBoardRequest,
   FetchTaskBoardResponse,
   FetchTaskBoardsRequest,
@@ -15,7 +14,6 @@ import type {
   UpdateTaskBoardRequest,
   UpdateTaskBoardResponse,
 } from './types';
-import type { User } from '@/models';
 
 /**
  * @see https://redux-toolkit.js.org/rtk-query/api/created-api/code-splitting
@@ -31,8 +29,8 @@ const api = baseApi.injectEndpoints({
       FetchTaskBoardsResponse,
       FetchTaskBoardsRequest
     >({
-      query: ({ userId, page }) => ({
-        url: makePath(['users', userId], ['task-boards']),
+      query: ({ page }) => ({
+        url: makePath(['task-boards']),
         params: { page: page || undefined },
       }),
       // cf. https://redux-toolkit.js.org/rtk-query/usage/mutations#revalidation-example
@@ -51,10 +49,7 @@ const api = baseApi.injectEndpoints({
     }),
     getTaskBoard: builder.query<FetchTaskBoardResponse, FetchTaskBoardRequest>({
       query: (arg) => ({
-        url:
-          'userId' in arg
-            ? makePath(['users', arg.userId], ['task-boards', arg.boardId])
-            : makePath(['task-boards', arg.id]),
+        url: makePath(['task-boards', arg.id]),
       }),
       // cf. https://redux-toolkit.js.org/rtk-query/api/createApi#transformresponse
       transformResponse: (response: FetchTaskBoardResponse) => {
@@ -113,27 +108,18 @@ const api = baseApi.injectEndpoints({
       }),
       // Invalidates only listed data.
       invalidatesTags: () => getTagsForPartialList(undefined, 'TaskBoard'),
-      onQueryStarted: async (req, { queryFulfilled, getState, dispatch }) => {
+      onQueryStarted: async ({ id }, { queryFulfilled, dispatch }) => {
         // cf. https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#pessimistic-updates
         // (`invalidateTags` behavior appears to be pessimistic)
         try {
           await queryFulfilled;
 
-          const currentUser = (
-            getState().taskApi.queries['getSession(undefined)']
-              ?.data as FetchSessionResponse
-          ).user as User;
-
           // Don't invalidate the tag to avoid immediate refetching resulting in 404.
           // todo: consider a better approach.
           dispatch(
-            api.util.updateQueryData(
-              'getTaskBoard',
-              { userId: currentUser.id, boardId: req.id },
-              (draft) => {
-                draft.data.isDeleted = true;
-              }
-            )
+            api.util.updateQueryData('getTaskBoard', { id }, (draft) => {
+              draft.data.isDeleted = true;
+            })
           );
         } catch (e) {
           //

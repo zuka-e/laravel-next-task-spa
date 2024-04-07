@@ -48,7 +48,6 @@ export type VerifyEmailResponse = FlashNotificationProps & {
 export type FetchTaskBoardsResponse = PaginationResponse<TaskBoard>;
 
 export type FetchTaskBoardsRequest = {
-  userId: User['id'];
   page?: string;
 };
 
@@ -64,12 +63,7 @@ export type FetchTaskBoardResponse = {
   data: TaskBoard & LazyInvalidationModel;
 };
 
-export type FetchTaskBoardRequest =
-  | Pick<TaskBoard, 'id'>
-  | {
-      userId: User['id'];
-      boardId: TaskBoard['id'];
-    };
+export type FetchTaskBoardRequest = Pick<TaskBoard, 'id'>;
 
 export type UpdateTaskBoardResponse = {
   data: TaskBoard;

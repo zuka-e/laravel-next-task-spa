@@ -42,12 +42,7 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
   const [updateTaskBoard] = useUpdateTaskBoardMutation();
 
   const { data: { data: board } = {} } = useGetTaskBoardQuery(
-    pathParams
-      ? {
-          userId: pathParams['userId'] ?? '',
-          boardId: pathParams['boardId'] ?? '',
-        }
-      : skipToken
+    pathParams ? { id: pathParams['boardId'] ?? '' } : skipToken
   );
 
   if (board?.isDeleted) {

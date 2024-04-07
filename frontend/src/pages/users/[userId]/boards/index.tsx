@@ -50,10 +50,7 @@ const TaskBoardIndex = memo(function TaskBoardIndex(): JSX.Element {
   });
 
   const { data: paginator } = useGetTaskBoardsQuery(
-    {
-      userId: pathParams?.userId ?? '',
-      page: queryParams?.page?.toString(),
-    },
+    { page: queryParams?.page?.toString() },
     { skip: !pathParams || !queryParams }
   );
 
