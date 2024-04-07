@@ -2,6 +2,10 @@ import type { TaskBoard, User } from '@/models';
 import { type FlashNotificationProps } from '@/store/slices';
 import { type PaginationResponse } from '@/utils/api';
 
+type LazyInvalidationModel = {
+  isDeleted?: boolean;
+};
+
 export type FetchSessionResponse = {
   user: User | null;
 };
@@ -57,7 +61,7 @@ export type CreateTaskBoardRequest = Partial<
 >;
 
 export type FetchTaskBoardResponse = {
-  data: TaskBoard;
+  data: TaskBoard & LazyInvalidationModel;
 };
 
 export type FetchTaskBoardRequest =

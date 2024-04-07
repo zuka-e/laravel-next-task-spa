@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 
 import { skipToken } from '@reduxjs/toolkit/query';
@@ -36,10 +37,11 @@ export const getStaticProps: GetStaticProps<TaskBoardProps> = async () => {
 };
 
 const TaskBoard = memo(function TaskBoard(): JSX.Element {
+  const router = useRouter();
   const { pathParams } = useRoute();
   const [updateTaskBoard] = useUpdateTaskBoardMutation();
 
-  const { data } = useGetTaskBoardQuery(
+  const { data: { data: board } = {} } = useGetTaskBoardQuery(
     pathParams
       ? {
           userId: pathParams['userId'] ?? '',
@@ -48,7 +50,9 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
       : skipToken
   );
 
-  const board = data?.data;
+  if (board?.isDeleted) {
+    router.back();
+  }
 
   const handleDrop = () => {
     if (!board) {

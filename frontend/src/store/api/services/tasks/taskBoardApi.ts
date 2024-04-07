@@ -7,6 +7,7 @@ import type {
   CreateTaskBoardResponse,
   DestroyTaskBoardRequest,
   DestroyTaskBoardResponse,
+  FetchSessionResponse,
   FetchTaskBoardRequest,
   FetchTaskBoardResponse,
   FetchTaskBoardsRequest,
@@ -14,6 +15,7 @@ import type {
   UpdateTaskBoardRequest,
   UpdateTaskBoardResponse,
 } from './types';
+import type { User } from '@/models';
 
 /**
  * @see https://redux-toolkit.js.org/rtk-query/api/created-api/code-splitting
@@ -109,7 +111,34 @@ const api = baseApi.injectEndpoints({
         url: makePath(['task-boards', id]),
         method: 'DELETE',
       }),
+      // Invalidates only listed data.
       invalidatesTags: () => getTagsForPartialList(undefined, 'TaskBoard'),
+      onQueryStarted: async (req, { queryFulfilled, getState, dispatch }) => {
+        // cf. https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#pessimistic-updates
+        // (`invalidateTags` behavior appears to be pessimistic)
+        try {
+          await queryFulfilled;
+
+          const currentUser = (
+            getState().taskApi.queries['getSession(undefined)']
+              ?.data as FetchSessionResponse
+          ).user as User;
+
+          // Don't invalidate the tag to avoid immediate refetching resulting in 404.
+          // todo: consider a better approach.
+          dispatch(
+            api.util.updateQueryData(
+              'getTaskBoard',
+              { userId: currentUser.id, boardId: req.id },
+              (draft) => {
+                draft.data.isDeleted = true;
+              }
+            )
+          );
+        } catch (e) {
+          //
+        }
+      },
     }),
   }),
 });
