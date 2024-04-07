@@ -1,18 +1,22 @@
 import type { TaskBoard, User } from '@/models';
-import { type FlashNotificationProps } from '@/store/slices';
 import { type PaginationResponse } from '@/utils/api';
+
+type ApiResponse = {
+  severity: 'success' | 'info' | 'warning' | 'error';
+  message: string;
+};
 
 type LazyInvalidationModel = {
   isDeleted?: boolean;
 };
 
-export type FetchSessionResponse = {
+export type FetchSessionResponse = ApiResponse & {
   user: User | null;
 };
 
 export type FetchSessionRequest = void;
 
-export type LoginResponse = FlashNotificationProps & {
+export type LoginResponse = ApiResponse & {
   user: User;
 };
 
@@ -22,9 +26,13 @@ export type LoginRequest = {
   remember?: string;
 };
 
-export type LogoutResponse = FlashNotificationProps;
+export type LogoutResponse = ApiResponse;
 
 export type LogoutRequest = void;
+
+export type RegisterResponse = ApiResponse & {
+  user: User;
+};
 
 export type RegisterRequest = {
   email: string;
@@ -32,7 +40,7 @@ export type RegisterRequest = {
   password_confirmation: string;
 };
 
-export type RegisterResponse = FlashNotificationProps & {
+export type VerifyEmailResponse = ApiResponse & {
   user: User;
 };
 
@@ -41,17 +49,14 @@ export type VerifyEmailRequest = {
   queryString: string;
 };
 
-export type VerifyEmailResponse = FlashNotificationProps & {
-  user: User;
-};
-
-export type FetchTaskBoardsResponse = PaginationResponse<TaskBoard>;
+export type FetchTaskBoardsResponse = ApiResponse &
+  PaginationResponse<TaskBoard>;
 
 export type FetchTaskBoardsRequest = {
   page?: string;
 };
 
-export type CreateTaskBoardResponse = {
+export type CreateTaskBoardResponse = ApiResponse & {
   data: TaskBoard;
 };
 
@@ -59,13 +64,13 @@ export type CreateTaskBoardRequest = Partial<
   Pick<TaskBoard, 'title' | 'description'>
 >;
 
-export type FetchTaskBoardResponse = {
+export type FetchTaskBoardResponse = ApiResponse & {
   data: TaskBoard & LazyInvalidationModel;
 };
 
 export type FetchTaskBoardRequest = Pick<TaskBoard, 'id'>;
 
-export type UpdateTaskBoardResponse = {
+export type UpdateTaskBoardResponse = ApiResponse & {
   data: TaskBoard;
 };
 
@@ -74,7 +79,7 @@ export type UpdateTaskBoardRequest = Pick<TaskBoard, 'id'> &
     Pick<TaskBoard, 'title' | 'description' | 'listIndexMap' | 'cardIndexMap'>
   >;
 
-export type DestroyTaskBoardResponse = {
+export type DestroyTaskBoardResponse = ApiResponse & {
   data: TaskBoard;
 };
 

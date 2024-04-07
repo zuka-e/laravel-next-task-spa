@@ -11,7 +11,7 @@ import { pushFlash, type FlashNotificationProps } from '@/store/slices';
 const severities: FlashNotificationProps['severity'][] = [
   'error',
   'warning',
-  'info',
+  // 'info',
   'success',
 ];
 
