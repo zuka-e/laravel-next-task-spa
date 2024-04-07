@@ -1,7 +1,7 @@
 import type { TaskBoard, User } from '@/models';
 import { type PaginationResponse } from '@/utils/api';
 
-type ApiResponse = {
+export type ApiResponse = {
   severity: 'success' | 'info' | 'warning' | 'error';
   message: string;
 };

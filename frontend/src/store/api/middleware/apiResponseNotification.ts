@@ -6,42 +6,34 @@ import {
 } from '@reduxjs/toolkit';
 import { type UnknownAsyncThunkAction } from '@reduxjs/toolkit/dist/matchers';
 
-import { pushFlash, type FlashNotificationProps } from '@/store/slices';
-
-const severities: FlashNotificationProps['severity'][] = [
-  'error',
-  'warning',
-  // 'info',
-  'success',
-];
+import { pushFlash } from '@/store/slices';
+import { type ApiResponse } from '@/store/api/services/tasks';
+import { isApiResponse } from '@/store/api/services/tasks/utils';
 
 /**
- * Determine if an action includes notification props.
+ * Determine if the action is an API response.
  */
-const isAsyncThunkActionWithFlash = (
+const isAsyncThunkActionResponse = (
   action: unknown
-): action is UnknownAsyncThunkAction &
-  PayloadAction<FlashNotificationProps> => {
+): action is UnknownAsyncThunkAction & PayloadAction<ApiResponse> => {
   if (!isAsyncThunkAction(action)) {
     return false;
   }
 
   const response = isAxiosError(action.payload)
-    ? (action.payload.response?.data as unknown)
+    ? action.payload.response?.data
     : action.payload;
 
-  // Determine if an `AsyncThunkAction` that has a payload with object type.
-  if (!(typeof response === 'object' && response !== null)) {
-    return false;
-  }
+  return isApiResponse(response);
+};
 
-  return (
-    'severity' in response &&
-    typeof response.severity === 'string' &&
-    (severities as string[]).includes(response.severity) &&
-    'message' in response &&
-    typeof response.message === 'string'
-  );
+/**
+ * Determine if the `response` should be notified.
+ */
+const shouldNotify = (response: ApiResponse): boolean => {
+  const notifiable: ApiResponse['severity'][] = ['success', 'warning', 'error'];
+
+  return notifiable.includes(response.severity);
 };
 
 /**
@@ -51,7 +43,7 @@ const isAsyncThunkActionWithFlash = (
  * @see https://redux.js.org/usage/usage-with-typescript#type-checking-middleware
  */
 const apiResponseNotification: Middleware = (api) => (next) => (action) => {
-  if (isAsyncThunkActionWithFlash(action)) {
+  if (isAsyncThunkActionResponse(action) && shouldNotify(action.payload)) {
     api.dispatch(pushFlash(action.payload));
   }
 
