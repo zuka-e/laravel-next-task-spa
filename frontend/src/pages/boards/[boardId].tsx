@@ -46,7 +46,7 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
   );
 
   if (board?.isDeleted) {
-    router.back();
+    router.replace(sessionStorage.getItem('previousUrl') ?? '/');
   }
 
   const handleDrop = () => {
