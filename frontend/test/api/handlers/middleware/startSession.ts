@@ -6,7 +6,7 @@ import {
   setSessionId,
   startSession as startSessionStore,
 } from '@test/api/session/store';
-import { COOKIE } from '@test/api/handlers/config/cookies';
+import { SESSION_COOKIE } from '@test/api/handlers/config/cookies';
 import { decrypt } from '@test/utils/crypto';
 import type { Middleware } from './types';
 
@@ -19,7 +19,7 @@ import type { Middleware } from './types';
 const startSession: Middleware = () => {
   // Issue:
   // `document.cookie` isn't always the same as `res.cookies`
-  setSessionId(decrypt(parse(document.cookie)[COOKIE]) || undefined);
+  setSessionId(decrypt(parse(document.cookie)[SESSION_COOKIE]) || undefined);
 
   /** @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Middleware/StartSession.php#L142 - startSession() */
   startSessionStore();

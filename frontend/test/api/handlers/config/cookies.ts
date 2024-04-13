@@ -3,7 +3,7 @@ import type { CookieSerializeOptions } from 'cookie';
 /**
  * Cookie key of encrypted session ID.
  */
-export const COOKIE = 'msw_session';
+export const SESSION_COOKIE = 'msw_session';
 
 /**
  * Key of "XSRF-TOKEN" cookie that contains the CSRF token.
@@ -20,7 +20,7 @@ export const XSRF_TOKEN = 'XSRF-TOKEN';
 export const options: CookieSerializeOptions = {
   // domain: `.${new URL(process.env.NEXT_PUBLIC_APP_URL || '').host}`,
   path: '/',
-  maxAge: 300,
+  // maxAge: 300,
   // httpOnly: true,
   // secure: true,
   sameSite: 'lax',
