@@ -1,24 +1,28 @@
 import type { TaskBoard, User } from '@/models';
 import { type PaginationResponse } from '@/utils/api';
+import type { SoftDelete } from '@/store/api/types';
 
-export type ApiResponse = {
-  severity: 'success' | 'info' | 'warning' | 'error';
+type Severity = 'success' | 'info' | 'warning' | 'error';
+
+/**
+ * API response with default properties
+ */
+export type ApiResponse<
+  T extends Record<string, unknown> = Record<never, never>
+> = {
+  severity: Severity;
   message: string;
-};
+} & { [K in keyof T]: T[K] };
 
-type LazyInvalidationModel = {
-  isDeleted?: boolean;
-};
-
-export type FetchSessionResponse = ApiResponse & {
+export type FetchSessionResponse = ApiResponse<{
   user: User | null;
-};
+}>;
 
 export type FetchSessionRequest = void;
 
-export type LoginResponse = ApiResponse & {
+export type LoginResponse = ApiResponse<{
   user: User;
-};
+}>;
 
 export type LoginRequest = {
   email: string;
@@ -30,9 +34,9 @@ export type LogoutResponse = ApiResponse;
 
 export type LogoutRequest = void;
 
-export type RegisterResponse = ApiResponse & {
+export type RegisterResponse = ApiResponse<{
   user: User;
-};
+}>;
 
 export type RegisterRequest = {
   email: string;
@@ -40,47 +44,48 @@ export type RegisterRequest = {
   password_confirmation: string;
 };
 
-export type VerifyEmailResponse = ApiResponse & {
+export type VerifyEmailResponse = ApiResponse<{
   user: User;
-};
+}>;
 
 export type VerifyEmailRequest = {
   credentials: string;
   queryString: string;
 };
 
-export type FetchTaskBoardsResponse = ApiResponse &
-  PaginationResponse<TaskBoard>;
+export type FetchTaskBoardsResponse = ApiResponse<
+  PaginationResponse<TaskBoard>
+>;
 
 export type FetchTaskBoardsRequest = {
   page?: string;
 };
 
-export type CreateTaskBoardResponse = ApiResponse & {
+export type CreateTaskBoardResponse = ApiResponse<{
   data: TaskBoard;
-};
+}>;
 
 export type CreateTaskBoardRequest = Partial<
   Pick<TaskBoard, 'title' | 'description'>
 >;
 
-export type FetchTaskBoardResponse = ApiResponse & {
-  data: TaskBoard & LazyInvalidationModel;
-};
+export type FetchTaskBoardResponse = ApiResponse<{
+  data: TaskBoard & SoftDelete;
+}>;
 
 export type FetchTaskBoardRequest = Pick<TaskBoard, 'id'>;
 
-export type UpdateTaskBoardResponse = ApiResponse & {
+export type UpdateTaskBoardResponse = ApiResponse<{
   data: TaskBoard;
-};
+}>;
 
 export type UpdateTaskBoardRequest = Pick<TaskBoard, 'id'> &
   Partial<
     Pick<TaskBoard, 'title' | 'description' | 'listIndexMap' | 'cardIndexMap'>
   >;
 
-export type DestroyTaskBoardResponse = ApiResponse & {
+export type DestroyTaskBoardResponse = ApiResponse<{
   data: TaskBoard;
-};
+}>;
 
 export type DestroyTaskBoardRequest = Pick<TaskBoard, 'id'>;
