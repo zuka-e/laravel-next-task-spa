@@ -1,3 +1,5 @@
+import { type AxiosError } from 'axios';
+
 import type { TaskBoard, User } from '@/models';
 import { type PaginationResponse } from '@/utils/api';
 import type { SoftDelete } from '@/store/api/types';
@@ -13,6 +15,23 @@ export type ApiResponse<
   severity: Severity;
   message: string;
 } & { [K in keyof T]: T[K] };
+
+/**
+ * Validation error
+ */
+export type ValidationError = {
+  errors: { [source: string]: string[] };
+};
+
+/**
+ * Validation error response
+ */
+export type ValidationErrorResponse = ApiResponse<ValidationError>;
+
+/**
+ * Validation error response by Axios
+ */
+export type AxiosValidationErrorResponse = AxiosError<ValidationErrorResponse>;
 
 export type FetchSessionResponse = ApiResponse<{
   user: User | null;

@@ -1,5 +1,5 @@
 import type { DocumentBase } from '@/models';
-import { uuid } from '@test/utils/uuid';
+import { faker } from '@test/utils/faker';
 import type {
   SessionCollection,
   UsersCollection,
@@ -110,7 +110,7 @@ const docs = <T extends keyof DB>(model: T) => {
  */
 const create = <T extends keyof DB>(model: T, doc: Doc<T>) => {
   const defaultValues: DocumentBase = {
-    id: uuid(),
+    id: faker.string.uuid(),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
@@ -211,7 +211,7 @@ interface Model {
    */
   create<T extends keyof DB>(
     model: T,
-    doc: Omit<Doc<T>, keyof DocumentBase>
+    doc: Partial<Omit<Doc<T>, keyof DocumentBase>>
   ): Doc<T>;
   /**
    * 指定された`SessionCollection`に引数の`Document`を新たに作成

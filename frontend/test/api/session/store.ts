@@ -65,7 +65,7 @@ export const setSession = (session: Partial<Session>): void => {
 /**
  * Put a key / value pair in the session.
  *
- * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Store.php#L354 - put()
+ * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Store.php#L365 - put()
  */
 export const putSession = <K extends keyof Session>(
   key: K,
@@ -76,7 +76,6 @@ export const putSession = <K extends keyof Session>(
   session[key] = value;
 
   setSession(session);
-  saveSession(getSession());
 };
 
 /**
@@ -111,7 +110,7 @@ export const startSession = (): void => {
 /**
  * Generate a new session ID for the session.
  *
- * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Store.php#L578 - migrate()
+ * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Store.php#L589 - migrate()
  */
 export const migrateSession = (destroy = false): void => {
   if (destroy) {
@@ -120,7 +119,6 @@ export const migrateSession = (destroy = false): void => {
   }
 
   setSessionId();
-  saveSession(getSession());
 };
 
 /**

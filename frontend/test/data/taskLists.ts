@@ -1,13 +1,12 @@
-import faker from 'faker';
+import { faker } from '@faker-js/faker/locale/ja';
 
 import { TaskListDocument } from '@test/api/models';
 import { db, type Doc } from '@test/api/database';
-import { uuid } from '@test/utils/uuid';
 import { guestUser, otherUser } from './users';
 import { boardOfGuestUser, boardOfOtherUser } from './taskBoards';
 
 export const listOfGuestUser: TaskListDocument = {
-  id: uuid(),
+  id: faker.string.uuid(),
   userId: guestUser.id,
   boardId: boardOfGuestUser.id,
   title: 'ゲストユーザーのTaskList',
@@ -17,7 +16,7 @@ export const listOfGuestUser: TaskListDocument = {
 };
 
 export const listOfOtherUser: TaskListDocument = {
-  id: uuid(),
+  id: faker.string.uuid(),
   userId: otherUser.id,
   boardId: boardOfOtherUser.id,
   title: '他のユーザーのTaskList',
@@ -46,7 +45,7 @@ const runSeeder = (props: SeederProps) => {
 
   [...Array(props.count)].forEach(() => {
     db.create('taskLists', {
-      id: faker.datatype.uuid(),
+      id: faker.string.faker.string.uuid(),
       userId: props.belongsTo.user.id,
       boardId: props.belongsTo.board.id,
       title: `${faker.hacker.adjective()} ${faker.hacker.verb()}`,

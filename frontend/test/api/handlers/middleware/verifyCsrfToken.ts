@@ -1,7 +1,8 @@
-import { context, type RestRequest } from 'msw';
+import { HttpResponse, type DefaultBodyType, type StrictRequest } from 'msw';
 
 import { getCsrfTokenFromSession } from '@test/api/session/store';
-import type { ErrorResponse } from '@test/api/handlers/types';
+import { XSRF_TOKEN } from '@test/api/handlers/config/cookies';
+import { setCookie } from '@test/api/handlers/utils';
 import { decrypt } from '@test/utils/crypto';
 import type { Middleware } from './types';
 
@@ -19,21 +20,28 @@ const X_XSRF_TOKEN = 'X-XSRF-TOKEN';
  *
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php#L70 - handle()
  */
-const verifyCsrfToken: Middleware = (req) => {
-  if (isReadRequest(req) || hasValidToken(req)) {
-    /** @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php#L183 - addCookieToResponse() */
-    // Issue:
-    // Setting cookie with the same name using `context.cookie` probably doesn't always overwrite the previous.
-    // So, use `context.cookie` once when returning the response in the handler instead of in this.
-    return [
-      // context.cookie(XSRF_TOKEN, getCsrfTokenFromSession())
-    ];
-  }
+const verifyCsrfToken: Middleware = (resolver) => {
+  return async (input) => {
+    const { request } = input;
 
-  throw [
-    context.status(419),
-    context.json<ErrorResponse>({ message: 'CSRF token mismatch.' }),
-  ];
+    if (!isReadRequest(request) && !hasValidToken(request)) {
+      /** @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php#L85 - TokenMismatchException */
+      return HttpResponse.json(
+        {
+          severity: 'error',
+          message: 'CSRF token mismatch.',
+        },
+        { status: 419 }
+      );
+    }
+
+    const response = await resolver(input);
+
+    /** @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php#L183 - addCookieToResponse() */
+    setCookie(XSRF_TOKEN, getCsrfTokenFromSession());
+
+    return response;
+  };
 };
 
 /**
@@ -41,7 +49,7 @@ const verifyCsrfToken: Middleware = (req) => {
  *
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php - isReading()
  */
-const isReadRequest = (req: RestRequest): boolean => {
+const isReadRequest = (req: StrictRequest<DefaultBodyType>): boolean => {
   return ['HEAD', 'GET', 'OPTIONS'].includes(req.method);
 };
 
@@ -50,7 +58,7 @@ const isReadRequest = (req: RestRequest): boolean => {
  *
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php#L136 - tokensMatch()
  */
-const hasValidToken = (req: RestRequest): boolean => {
+const hasValidToken = (req: StrictRequest<DefaultBodyType>): boolean => {
   const requestToken = decrypt(req.headers.get(X_XSRF_TOKEN) ?? '');
   const sessionToken = getCsrfTokenFromSession();
 

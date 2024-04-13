@@ -1,13 +1,13 @@
-import faker from 'faker';
+import { faker } from '@faker-js/faker/locale/ja';
 
 import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
 import { UserDocument } from '@test/api/models';
 import { db } from '@test/api/database';
-import { uuid } from '@test/utils/uuid';
 import { digestText } from '@test/utils/crypto';
+import { repeatEach } from '@/utils';
 
 export const guestUser: UserDocument = {
-  id: uuid(),
+  id: faker.string.uuid(),
   name: 'ゲストユーザー',
   email: GUEST_EMAIL,
   emailVerifiedAt: new Date().toISOString(),
@@ -17,7 +17,7 @@ export const guestUser: UserDocument = {
 };
 
 export const otherUser: UserDocument = {
-  id: uuid(),
+  id: faker.string.uuid(),
   name: 'other_ユーザー',
   email: 'other_' + GUEST_EMAIL,
   emailVerifiedAt: new Date().toISOString(),
@@ -27,7 +27,7 @@ export const otherUser: UserDocument = {
 };
 
 export const unverifiedUser: UserDocument = {
-  id: uuid(),
+  id: faker.string.uuid(),
   name: '未認証ユーザー',
   email: 'unverified_' + GUEST_EMAIL,
   emailVerifiedAt: null,
@@ -43,9 +43,9 @@ const runSeeder = (props: { count: number }) => {
     db.create('users', user);
   });
 
-  [...Array(props.count)].forEach(() => {
+  repeatEach(props.count, () => {
     db.create('users', {
-      name: `${faker.name.firstName()} ${faker.name.lastName()}`,
+      name: `${faker.person.firstName()} ${faker.person.lastName()}`,
       email: faker.internet.exampleEmail(),
       emailVerifiedAt: faker.date.recent().toISOString(),
       password: digestText(GUEST_PASSWORD),
@@ -67,7 +67,7 @@ const initialize = () => {
     console.log(e); // ignore SyntaxError at JSON.parse
   }
   if (db.exists('users')) return;
-  else runSeeder({ count: 1 });
+  else runSeeder({ count: 3 });
 };
 
 // 初期化実行

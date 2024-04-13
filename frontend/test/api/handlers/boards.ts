@@ -1,4 +1,4 @@
-import { rest } from 'msw';
+import { HttpResponse, http } from 'msw';
 
 import type {
   CreateTaskBoardRequest,
@@ -11,14 +11,11 @@ import type {
   FetchTaskBoardsResponse,
   UpdateTaskBoardRequest,
   UpdateTaskBoardResponse,
-} from '@/store/thunks/boards';
+} from '@/store/api';
 import { API_ROUTE } from '@/config/api';
 import { makePath } from '@/utils/api';
-import { db } from '@test/api/database';
+import { withMiddleware } from '@test/api/handlers/middleware/utils/withMiddleware';
 import { taskBoardController } from '@test/api/controllers';
-import type { ErrorResponse } from './types';
-import { statefulResponse } from './responses';
-import { resolveMiddleware } from './utils';
 
 type TaskBoardParams = {
   userId: string;
@@ -26,148 +23,104 @@ type TaskBoardParams = {
 };
 
 export const handlers = [
-  rest.get<
-    FetchTaskBoardsRequest,
-    TaskBoardParams,
-    FetchTaskBoardsResponse & ErrorResponse
-  >(
-    API_ROUTE + makePath(['users', ':userId'], ['task-boards']),
-    (req, _res, ctx) => {
-      const { transformers, isError } = resolveMiddleware(req, [
-        'authenticate',
-        `authorize:${req.params.userId}`,
-        'verified',
-      ]);
+  http.get(
+    API_ROUTE + makePath(['task-boards']),
+    withMiddleware<
+      TaskBoardParams,
+      FetchTaskBoardsRequest,
+      FetchTaskBoardsResponse
+    >()(({ request }) => {
+      const response = taskBoardController.index(request);
 
-      if (isError) {
-        return statefulResponse(...transformers);
-      }
-
-      const response = taskBoardController.index(req);
-
-      return statefulResponse(
-        ctx.status(200),
-        ctx.json(response),
-        ...transformers
-      );
-    }
+      return HttpResponse.json({
+        ...response,
+        severity: 'info',
+        message: 'タスクボード一覧を取得しました。',
+      });
+    })
   ),
 
-  rest.post<
-    CreateTaskBoardRequest,
-    TaskBoardParams,
-    CreateTaskBoardResponse & ErrorResponse
-  >(
-    API_ROUTE + makePath(['users', ':userId'], ['task-boards']),
-    (req, _res, ctx) => {
-      const { transformers, isError } = resolveMiddleware(req, [
-        'authenticate',
-        `authorize:${req.params.userId}`,
-        'verified',
-      ]);
+  http.post(
+    API_ROUTE + makePath(['task-boards']),
+    withMiddleware<
+      TaskBoardParams,
+      CreateTaskBoardRequest,
+      CreateTaskBoardResponse
+    >()(async ({ request }) => {
+      const data = await request.json();
+      const taskBoard = taskBoardController.store(data);
 
-      if (isError) {
-        return statefulResponse(...transformers);
-      }
-
-      const response = taskBoardController.store(req);
-
-      return statefulResponse(
-        ctx.status(201),
-        ctx.json({ data: response }),
-        ...transformers
+      return HttpResponse.json(
+        {
+          data: taskBoard,
+          severity: 'success',
+          message: 'タスクボードを作成しました。',
+        },
+        { status: 201 }
       );
-    }
+    })
   ),
 
-  rest.get<
-    FetchTaskBoardRequest,
-    TaskBoardParams,
-    FetchTaskBoardResponse & ErrorResponse
-  >(
-    API_ROUTE + makePath(['users', ':userId'], ['task-boards', ':boardId']),
-    (req, _res, ctx) => {
-      const board = taskBoardController.show(req);
+  http.get(
+    API_ROUTE + makePath(['task-boards', ':boardId']),
+    withMiddleware<
+      TaskBoardParams,
+      FetchTaskBoardRequest,
+      FetchTaskBoardResponse | null
+    >()(async ({ params }) => {
+      const board = taskBoardController.show(params['boardId']);
 
-      const { transformers, isError } = resolveMiddleware(req, [
-        'authenticate',
-        `authorize:${req.params.userId},${board?.userId}`,
-        'verified',
-      ]);
-
-      if (isError) {
-        return statefulResponse(...transformers);
+      if (!board) {
+        return HttpResponse.json(null, { status: 404 });
       }
-
-      if (!board) return statefulResponse(ctx.status(404));
-
-      return statefulResponse(
-        ctx.status(200),
-        ctx.json({ data: board }),
-        ...transformers
-      );
-    }
+      return HttpResponse.json({
+        data: board,
+        severity: 'info',
+        message: 'タスクボードを取得しました。',
+      });
+    })
   ),
 
-  rest.patch<
-    UpdateTaskBoardRequest,
-    TaskBoardParams,
-    UpdateTaskBoardResponse & ErrorResponse
-  >(
-    API_ROUTE + makePath(['users', ':userId'], ['task-boards', ':boardId']),
-    (req, _res, ctx) => {
-      const board = db.where('taskBoards', 'id', req.params.boardId)[0];
+  http.patch(
+    API_ROUTE + makePath(['task-boards', ':boardId']),
+    withMiddleware<
+      TaskBoardParams,
+      UpdateTaskBoardRequest,
+      UpdateTaskBoardResponse | null
+    >()(async ({ request, params }) => {
+      const data = await request.json();
+      const newState = taskBoardController.update(params['boardId'], data);
 
-      const { transformers, isError } = resolveMiddleware(req, [
-        'authenticate',
-        `authorize:${req.params.userId},${board?.userId}`,
-        'verified',
-      ]);
-
-      if (isError) {
-        return statefulResponse(...transformers);
+      if (!newState) {
+        return HttpResponse.json(null, { status: 404 });
       }
 
-      const newState = taskBoardController.update(req);
-
-      if (!newState) return statefulResponse(ctx.status(404));
-
-      return statefulResponse(
-        ctx.status(201),
-        ctx.json({ data: newState }),
-        ...transformers
-      );
-    }
+      return HttpResponse.json({
+        data: newState,
+        severity: 'info',
+        message: 'タスクボードを更新しました。',
+      });
+    })
   ),
 
-  rest.delete<
-    DestroyTaskBoardRequest,
-    TaskBoardParams,
-    DestroyTaskBoardResponse & ErrorResponse
-  >(
-    API_ROUTE + makePath(['users', ':userId'], ['task-boards', ':boardId']),
-    (req, _res, ctx) => {
-      const board = db.where('taskBoards', 'id', req.params.boardId)[0];
+  http.delete(
+    API_ROUTE + makePath(['task-boards', ':boardId']),
+    withMiddleware<
+      TaskBoardParams,
+      DestroyTaskBoardRequest,
+      DestroyTaskBoardResponse | null
+    >()(async ({ params }) => {
+      const deleted = taskBoardController.destroy(params['boardId']);
 
-      const { transformers, isError } = resolveMiddleware(req, [
-        'authenticate',
-        `authorize:${req.params.userId},${board?.userId}`,
-        'verified',
-      ]);
-
-      if (isError) {
-        return statefulResponse(...transformers);
+      if (!deleted) {
+        return HttpResponse.json(null, { status: 404 });
       }
 
-      const deleted = taskBoardController.destroy(req);
-
-      if (!deleted) return statefulResponse(ctx.status(404));
-
-      return statefulResponse(
-        ctx.status(200),
-        ctx.json({ data: deleted }),
-        ...transformers
-      );
-    }
+      return HttpResponse.json({
+        data: deleted,
+        severity: 'warning',
+        message: 'タスクボードを削除しました。',
+      });
+    })
   ),
 ];

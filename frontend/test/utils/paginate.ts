@@ -1,22 +1,23 @@
-import { RestRequest } from 'msw';
+import { type DefaultBodyType, type StrictRequest } from 'msw';
 
-import { DocumentBase } from '@test/api/models';
-import { PaginationResponse } from '@/utils/api';
+import type { DocumentBase } from '@/models';
+import { type PaginationResponse } from '@/utils/api';
 
 type PaginateProps<T> = {
-  req: RestRequest;
+  request: StrictRequest<DefaultBodyType>;
   allData: T[];
   perPage?: number;
 };
 
 export const paginate = <T extends DocumentBase>(props: PaginateProps<T>) => {
-  const { req, allData } = props;
+  const { request, allData } = props;
+  const url = new URL(request.url);
 
   /** APIエンドポイントの内クエリパラメータ (`?page=`) を除外した部分 */
-  const path = req.url.origin + req.url.pathname;
+  const path = url.origin + url.pathname;
   /** @prop page - パラメータ未指定 or `NaN` の場合 `1` () */
   const query = {
-    page: parseInt(String(req.url.searchParams.get('page')), 10) || 1,
+    page: parseInt(String(url.searchParams.get('page')), 10) || 1,
   };
   /** 一度に返却するデータ数 (任意の値) */
   const perPage = props.perPage || 20;

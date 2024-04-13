@@ -1,13 +1,12 @@
-import faker from 'faker';
+import { faker } from '@faker-js/faker/locale/ja';
 
 import { TaskCardDocument } from '@test/api/models';
 import { db, type Doc } from '@test/api/database';
-import { uuid } from '@test/utils/uuid';
 import { guestUser, otherUser } from './users';
 import { listOfGuestUser, listOfOtherUser } from './taskLists';
 
 export const cardOfGuestUser: TaskCardDocument = {
-  id: uuid(),
+  id: faker.string.uuid(),
   userId: guestUser.id,
   listId: listOfGuestUser.id,
   title: 'ゲストユーザーのTaskCard',
@@ -19,7 +18,7 @@ export const cardOfGuestUser: TaskCardDocument = {
 };
 
 export const cardOfOtherUser: TaskCardDocument = {
-  id: uuid(),
+  id: faker.string.uuid(),
   userId: otherUser.id,
   listId: listOfOtherUser.id,
   title: '他のユーザーのTaskCard',
@@ -50,7 +49,7 @@ const runSeeder = (props: SeederProps) => {
 
   [...Array(props.count)].forEach(() => {
     db.create('taskCards', {
-      id: faker.datatype.uuid(),
+      id: faker.string.faker.string.uuid(),
       userId: props.belongsTo.user.id,
       listId: props.belongsTo.list.id,
       title: `${faker.hacker.adjective()} ${faker.hacker.verb()}`,

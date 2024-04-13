@@ -1,12 +1,11 @@
-import faker from 'faker';
+import { faker } from '@faker-js/faker/locale/ja';
 
 import { TaskBoardDocument } from '@test/api/models';
 import { db, type Doc } from '@test/api/database';
-import { uuid } from '@test/utils/uuid';
 import { guestUser, otherUser, unverifiedUser } from './users';
 
 export const boardOfGuestUser: TaskBoardDocument = {
-  id: uuid(),
+  id: faker.string.uuid(),
   userId: guestUser.id,
   title: 'ゲストユーザーのBoard',
   description: 'ゲストユーザーが所有するTaskBoard',
@@ -15,7 +14,7 @@ export const boardOfGuestUser: TaskBoardDocument = {
 };
 
 export const boardOfOtherUser: TaskBoardDocument = {
-  id: uuid(),
+  id: faker.string.uuid(),
   userId: otherUser.id,
   title: '他のユーザーのBoard',
   description: '他のユーザーが所有するTaskBoard',
@@ -24,7 +23,7 @@ export const boardOfOtherUser: TaskBoardDocument = {
 };
 
 export const boardOfUnverifiedUser: TaskBoardDocument = {
-  id: uuid(),
+  id: faker.string.uuid(),
   userId: unverifiedUser.id,
   title: '未認証ユーザーのBoard',
   description: '未認証ユーザーが所有するTaskBoard',

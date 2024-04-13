@@ -1,85 +1,59 @@
-import { RestRequest } from 'msw';
+import { type DefaultBodyType, type StrictRequest } from 'msw';
 
-import { TaskBoard, TaskList, TaskCard } from '@/models';
-import {
-  CreateTaskBoardRequest,
-  UpdateTaskBoardRequest,
-} from '@/store/thunks/boards';
-import { TaskBoardDocument } from '@test/api/models';
+import type { TaskBoard, TaskList, TaskCard } from '@/models';
 import { db } from '@test/api/database';
 import { paginate } from '@test/utils/paginate';
+import { getUser } from '../auth';
 
-export const index = (req: RestRequest) => {
-  const boards = db.where(
-    'taskBoards',
-    'userId',
-    req.params.userId
-  ) as TaskBoard[];
-  const response = paginate({ req: req, allData: boards });
+export const index = (request: StrictRequest<DefaultBodyType>) => {
+  const userId = getUser()?.id;
+  const boards = db.where('taskBoards', 'userId', userId) as TaskBoard[];
+  const response = paginate({ request, allData: boards });
 
   return response;
 };
 
-export const store = (req: RestRequest<CreateTaskBoardRequest>) => {
-  const response = db.create('taskBoards', {
-    ...({} as TaskBoardDocument),
-    userId: req.params.userId,
-    ...req.body,
+export const store = (params: Partial<Omit<TaskBoard, 'id' | 'userId'>>) => {
+  const taskBoard = db.create('taskBoards', {
+    userId: getUser()!.id,
+    ...params,
   }) as TaskBoard;
 
-  return response;
+  return taskBoard;
 };
 
-export const show = (req: RestRequest) => {
-  const board = db.where(
-    'taskBoards',
-    'id',
-    req.params.boardId
-  )[0] as TaskBoard;
+export const show = (boardId: TaskBoard['id']) => {
+  const board = db.where('taskBoards', 'id', boardId)[0] as TaskBoard;
 
   if (!board) return;
 
-  board.lists = db.where(
-    'taskLists',
-    'boardId',
-    req.params.boardId
-  ) as unknown as TaskList[];
+  const limit = 1;
+
+  board.lists = db
+    .where('taskLists', 'boardId', boardId)
+    .slice(0, limit) as unknown as TaskList[];
 
   board.lists.forEach((list) => {
-    const cards = db.where('taskCards', 'listId', list.id);
+    const cards = db.where('taskCards', 'listId', list.id).slice(0, limit);
     list.cards = cards.map((card) => ({
       ...(card as unknown as TaskCard),
-      boardId: board.id,
+      boardId,
     }));
   });
 
-  return board;
+  return board as TaskBoard;
 };
 
-export const update = (req: RestRequest<UpdateTaskBoardRequest>) => {
-  const board = db.where(
-    'taskBoards',
-    'id',
-    req.params.boardId
-  )[0] as TaskBoard;
-
-  if (!board) return;
-
-  const updated = db.update('taskBoards', { ...board, ...req.body });
+export const update = (
+  boardId: TaskBoard['id'],
+  params: Partial<TaskBoard>
+) => {
+  const board = db.where('taskBoards', 'id', boardId)[0];
+  const updated = db.update('taskBoards', { ...board, ...params });
 
   return updated as TaskBoard;
 };
 
-export const destroy = (req: RestRequest<UpdateTaskBoardRequest>) => {
-  const board = db.where(
-    'taskBoards',
-    'id',
-    req.params.boardId
-  )[0] as TaskBoard;
-
-  if (!board) return;
-
-  db.remove('taskBoards', req.params.boardId);
-
-  return board;
+export const destroy = (boardId: TaskBoard['id']) => {
+  return db.remove('taskBoards', boardId) as TaskBoard;
 };

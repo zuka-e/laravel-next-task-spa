@@ -1,12 +1,12 @@
-import { parse } from 'cookie';
-
 import {
   getSession,
+  getSessionId,
   saveSession,
   setSessionId,
   startSession as startSessionStore,
 } from '@test/api/session/store';
 import { SESSION_COOKIE } from '@test/api/handlers/config/cookies';
+import { setCookie } from '@test/api/handlers/utils';
 import { decrypt } from '@test/utils/crypto';
 import type { Middleware } from './types';
 
@@ -16,25 +16,26 @@ import type { Middleware } from './types';
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Middleware/StartSession.php#L51 - handle()
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Middleware/StartSession.php#L110 - handleStatefulRequest()
  */
-const startSession: Middleware = () => {
-  // Issue:
-  // `document.cookie` isn't always the same as `res.cookies`
-  setSessionId(decrypt(parse(document.cookie)[SESSION_COOKIE]) || undefined);
+const startSession: Middleware = (resolver) => {
+  return async (input) => {
+    const { cookies } = input;
 
-  /** @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Middleware/StartSession.php#L142 - startSession() */
-  startSessionStore();
+    /** @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Middleware/StartSession.php#L157-L160 - getSession() */
+    setSessionId(decrypt(cookies[SESSION_COOKIE]) || undefined);
 
-  /** @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Middleware/StartSession.php#L235 - saveSession() */
-  saveSession(getSession());
+    /** @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Middleware/StartSession.php#L142 - startSession() */
+    startSessionStore();
 
-  /** @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Middleware/StartSession.php#L218 - addCookieToResponse() */
-  // Issue:
-  // Setting cookie with the same name using `context.cookie` probably doesn't always overwrite the previous.
-  // So, use `context.cookie` once when returning the response in the handler instead of in this file.
-  return [
-    // context.cookie(COOKIE, encrypt(getSessionId()))
-    // context.cookie(COOKIE, getSessionId())
-  ];
+    const response = await resolver(input);
+
+    /** @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Middleware/StartSession.php#L218 - addCookieToResponse() */
+    setCookie(SESSION_COOKIE, getSessionId());
+
+    /** @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Middleware/StartSession.php#L242 - saveSession() */
+    saveSession(getSession());
+
+    return response;
+  };
 };
 
 export default startSession;
