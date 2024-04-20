@@ -1,8 +1,7 @@
-import { faker } from '@faker-js/faker/locale/ja';
-
 import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
 import { UserDocument } from '@test/api/models';
 import { db } from '@test/api/database';
+import { faker } from '@test/utils/faker';
 import { digestText } from '@test/utils/crypto';
 import { repeatEach } from '@/utils';
 

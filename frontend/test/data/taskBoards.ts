@@ -1,7 +1,6 @@
-import { faker } from '@faker-js/faker/locale/ja';
-
 import { TaskBoardDocument } from '@test/api/models';
 import { db, type Doc } from '@test/api/database';
+import { faker } from '@test/utils/faker';
 import { guestUser, otherUser, unverifiedUser } from './users';
 
 export const boardOfGuestUser: TaskBoardDocument = {

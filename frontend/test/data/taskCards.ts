@@ -1,7 +1,6 @@
-import { faker } from '@faker-js/faker/locale/ja';
-
 import { TaskCardDocument } from '@test/api/models';
 import { db, type Doc } from '@test/api/database';
+import { faker } from '@test/utils/faker';
 import { guestUser, otherUser } from './users';
 import { listOfGuestUser, listOfOtherUser } from './taskLists';
 
