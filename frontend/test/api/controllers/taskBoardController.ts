@@ -1,6 +1,6 @@
 import { type DefaultBodyType, type StrictRequest } from 'msw';
 
-import type { TaskBoard, TaskList, TaskCard } from '@/models';
+import type { TaskBoard } from '@/models';
 import { db } from '@test/api/database';
 import { paginate } from '@test/utils/paginate';
 import { getUser } from '../auth';
@@ -22,38 +22,24 @@ export const store = (params: Partial<Omit<TaskBoard, 'id' | 'userId'>>) => {
   return taskBoard;
 };
 
-export const show = (boardId: TaskBoard['id']) => {
-  const board = db.where('taskBoards', 'id', boardId)[0] as TaskBoard;
+export const show = (id: TaskBoard['id']) => {
+  const board = db.where('taskBoards', 'id', id)[0] as TaskBoard;
 
   if (!board) return;
-
-  const limit = 1;
-
-  board.lists = db
-    .where('taskLists', 'boardId', boardId)
-    .slice(0, limit) as unknown as TaskList[];
-
-  board.lists.forEach((list) => {
-    const cards = db.where('taskCards', 'listId', list.id).slice(0, limit);
-    list.cards = cards.map((card) => ({
-      ...(card as unknown as TaskCard),
-      boardId,
-    }));
-  });
 
   return board as TaskBoard;
 };
 
 export const update = (
-  boardId: TaskBoard['id'],
-  params: Partial<TaskBoard>
+  id: TaskBoard['id'],
+  params: Partial<Omit<TaskBoard, 'id' | 'userId'>>
 ) => {
-  const board = db.where('taskBoards', 'id', boardId)[0];
+  const board = db.where('taskBoards', 'id', id)[0];
   const updated = db.update('taskBoards', { ...board, ...params });
 
   return updated as TaskBoard;
 };
 
-export const destroy = (boardId: TaskBoard['id']) => {
-  return db.remove('taskBoards', boardId) as TaskBoard;
+export const destroy = (id: TaskBoard['id']) => {
+  return db.remove('taskBoards', id) as TaskBoard;
 };

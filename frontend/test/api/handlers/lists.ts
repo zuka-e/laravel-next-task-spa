@@ -7,6 +7,8 @@ import type {
   UpdateTaskListResponse,
   DestroyTaskListResponse,
   DestroyTaskListRequest,
+  FetchTaskListsRequest,
+  FetchTaskListsResponse,
 } from '@/store/api';
 import { API_ROUTE } from '@/config/api';
 import { makePath } from '@/utils/api';
@@ -20,6 +22,23 @@ type TaskListParams = {
 };
 
 export const handlers = [
+  http.get(
+    API_ROUTE + makePath(['task-boards', ':boardId'], ['task-lists']),
+    withMiddleware<
+      Pick<TaskListParams, 'boardId'>,
+      FetchTaskListsRequest,
+      FetchTaskListsResponse
+    >()(async ({ params, request }) => {
+      const paginated = taskListController.index(params.boardId, request);
+
+      return HttpResponse.json({
+        severity: 'info',
+        message: 'タスクボード一覧を取得しました。',
+        ...paginated,
+      });
+    })
+  ),
+
   http.post(
     API_ROUTE + makePath(['task-boards', ':boardId'], ['task-lists']),
     withMiddleware<

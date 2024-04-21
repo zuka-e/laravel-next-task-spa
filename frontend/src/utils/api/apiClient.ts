@@ -16,8 +16,8 @@ export type PaginationResponse<T extends DocumentBase> = {
   links: {
     first: string;
     last: string;
-    next: string;
-    prev: string;
+    next: string | null;
+    prev: string | null;
   };
   meta: {
     current_page: number;

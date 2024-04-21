@@ -1,15 +1,27 @@
-import { memo } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 
 import { skipToken } from '@reduxjs/toolkit/query';
-import { Container, Grid, Divider, IconButton, Skeleton } from '@mui/material';
+import {
+  Container,
+  Grid,
+  Divider,
+  IconButton,
+  Skeleton,
+  CircularProgress,
+} from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 
+import { repeatMap } from '@/utils';
 import { makeIndexMap } from '@/utils/dnd';
 import { useRoute } from '@/utils/hooks';
-import { useGetTaskBoardQuery, useUpdateTaskBoardMutation } from '@/store/api';
+import {
+  useGetTaskBoardQuery,
+  useGetTaskListsQuery,
+  useUpdateTaskBoardMutation,
+} from '@/store/api';
 import { BaseLayout } from '@/layouts';
 import { PopoverControl } from '@/templates';
 import { AddTaskButton, EditableTitle, SearchField } from '@/components/boards';
@@ -40,14 +52,48 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
   const router = useRouter();
   const { pathParams } = useRoute();
   const [updateTaskBoard] = useUpdateTaskBoardMutation();
+  const [page, setPage] = useState(1);
 
   const { data: { data: board } = {} } = useGetTaskBoardQuery(
     pathParams ? { id: pathParams['boardId'] ?? '' } : skipToken
   );
 
+  const { data: paginatedList, isLoading: isLoadingLists } =
+    useGetTaskListsQuery(
+      pathParams
+        ? { boardId: pathParams['boardId'], page, limit: 10 }
+        : skipToken
+    );
+
   if (board?.isDeleted) {
     router.replace(sessionStorage.getItem('previousUrl') ?? '/');
   }
+
+  const observer = useRef<IntersectionObserver>();
+  const lastListRef = useRef<HTMLSpanElement | null>(null);
+  const currentPage = paginatedLists?.meta.current_page;
+  const nextLink = paginatedLists?.links.next;
+
+  useEffect(() => {
+    // Ensure no duplicate observations
+    if (observer.current) {
+      observer.current.disconnect();
+    }
+
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && nextLink && currentPage) {
+        setPage(currentPage + 1);
+      }
+    });
+
+    if (lastListRef.current) {
+      observer.current.observe(lastListRef.current);
+    }
+
+    return function cleanup() {
+      observer.current?.disconnect();
+    };
+  }, [currentPage, nextLink]);
 
   const handleDrop = () => {
     if (!board) {
@@ -120,23 +166,26 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
               wrap="nowrap"
               className="overflow-x-auto [&>div]:w-80 [&>div]:flex-shrink-0 [&>div]:p-2"
             >
-              {board ? (
-                <>
-                  {board.lists?.map((list, i) => (
+              {isLoadingLists
+                ? repeatMap(5, (i) => (
+                    <div key={i}>
+                      <Skeleton variant="rounded" className="h-full w-full" />
+                    </div>
+                  ))
+                : paginatedList?.data.map((list, i) => (
                     <Grid item key={list.id} id={list.id}>
                       <TaskList list={list} listIndex={i} />
                     </Grid>
                   ))}
-                  <Grid item>
-                    <AddTaskButton method="POST" model="list" parent={board} />
-                  </Grid>
-                </>
-              ) : (
-                Array.from({ length: 5 }, (_, i) => i).map((i) => (
-                  <div key={i}>
-                    <Skeleton variant="rounded" className="h-full w-full" />
-                  </div>
-                ))
+              {paginatedList?.links.next && (
+                <Grid item>
+                  <CircularProgress ref={lastListRef} />
+                </Grid>
+              )}
+              {board && (
+                <Grid item>
+                  <AddTaskButton method="POST" model="list" parent={board} />
+                </Grid>
               )}
             </Grid>
             <InfoBox className="max-md:flex-shrink-0" />

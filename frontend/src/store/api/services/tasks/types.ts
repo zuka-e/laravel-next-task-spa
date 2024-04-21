@@ -33,6 +33,16 @@ export type ValidationErrorResponse = ApiResponse<ValidationError>;
  */
 export type AxiosValidationErrorResponse = AxiosError<ValidationErrorResponse>;
 
+/**
+ * Request params expecting paginated response
+ */
+type PaginationRequest<
+  T extends Record<string, unknown> = Record<never, never>
+> = {
+  page?: number;
+  limit?: number;
+} & { [K in keyof T]: T[K] };
+
 export type FetchSessionResponse = ApiResponse<{
   user: User | null;
 }>;
@@ -108,6 +118,12 @@ export type DestroyTaskBoardResponse = ApiResponse<{
 }>;
 
 export type DestroyTaskBoardRequest = Pick<TaskBoard, 'id'>;
+
+export type FetchTaskListsResponse = ApiResponse<PaginationResponse<TaskList>>;
+
+export type FetchTaskListsRequest = PaginationRequest<{
+  boardId: TaskBoard['id'];
+}>;
 
 export type CreateTaskListResponse = ApiResponse<{
   data: TaskList;

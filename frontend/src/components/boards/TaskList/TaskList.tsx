@@ -78,7 +78,7 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
   }, [list.id, selectedId]);
 
   const filteredCards = useMemo((): Model.TaskCard[] => {
-    return list.cards.filter((card) => {
+    return (list.cards ?? []).filter((card) => {
       if (filterValue === cardFilter.TODO) return !card.done;
       else if (filterValue === cardFilter.DONE) return card.done;
       else return true;

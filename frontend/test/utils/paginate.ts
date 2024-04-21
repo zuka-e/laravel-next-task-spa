@@ -6,7 +6,6 @@ import { type PaginationResponse } from '@/utils/api';
 type PaginateProps<T> = {
   request: StrictRequest<DefaultBodyType>;
   allData: T[];
-  perPage?: number;
 };
 
 export const paginate = <T extends DocumentBase>(props: PaginateProps<T>) => {
@@ -15,23 +14,23 @@ export const paginate = <T extends DocumentBase>(props: PaginateProps<T>) => {
 
   /** APIエンドポイントの内クエリパラメータ (`?page=`) を除外した部分 */
   const path = url.origin + url.pathname;
-  /** @prop page - パラメータ未指定 or `NaN` の場合 `1` () */
+  /** クエリパラメータ */
   const query = {
-    page: parseInt(String(url.searchParams.get('page')), 10) || 1,
-  };
+    /** パラメータ未指定 or `NaN` の場合 `1` () */
+    page: parseInt(url.searchParams.get('page') ?? '') || 1,
+    /** パラメータ未指定 or `NaN` の場合 `20` () */
+    limit: parseInt(url.searchParams.get('limit') ?? '') || 20,
+  } as const;
   /** 一度に返却するデータ数 (任意の値) */
-  const perPage = props.perPage || 20;
+  const perPage = query.limit;
   /** `perPage`に収まらない分だけページ数を増加 (データが存在しない場合 `1`) */
   const lastPage = allData.length > 0 ? Math.ceil(allData.length / perPage) : 1;
-  /** `lastPage` を超過するページ番号 or `0`以下が指定された場合 `1` */
-  const currentPage = query.page > lastPage || query.page <= 0 ? 1 : query.page;
+  /** `0`以下が指定された場合 `0` */
+  const currentPage = query.page <= 0 ? 0 : query.page;
   /** `currentPage`で表示するデータの先頭インデックス (始点: `1`) */
   const from = perPage * (currentPage - 1) + 1;
   /** `currentPage`で表示するデータの後尾インデックス */
-  const to =
-    perPage * currentPage > allData.length
-      ? allData.length
-      : perPage * currentPage;
+  const to = perPage * currentPage;
 
   const response: PaginationResponse<T> = {
     data: allData.slice(from - 1, to),
@@ -39,8 +38,10 @@ export const paginate = <T extends DocumentBase>(props: PaginateProps<T>) => {
       first: path + '?page=' + 1,
       last: path + '?page=' + lastPage,
       next:
-        currentPage === lastPage ? 'null' : path + '?page=' + (currentPage + 1),
-      prev: currentPage === 1 ? 'null' : path + '?page=' + (currentPage - 1),
+        1 <= currentPage && currentPage < lastPage
+          ? path + '?page=' + (currentPage + 1)
+          : null,
+      prev: 1 < currentPage ? path + '?page=' + (currentPage - 1) : null,
     },
     meta: {
       current_page: currentPage,
@@ -67,13 +68,13 @@ const addMetaLinks = (props: PaginationResponse<DocumentBase>) => {
   Array(count)
     .fill('_')
     .forEach((_, i) => {
-      if (i === 0) {
+      if (i === 0 && props.links.prev) {
         props.meta.links.push({
           url: props.links.prev,
           label: '&laquo; Prev',
           active: false,
         });
-      } else if (i === count - 1) {
+      } else if (i === count - 1 && props.links.next) {
         props.meta.links.push({
           url: props.links.next,
           label: 'Next &raquo;',
