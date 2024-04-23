@@ -30,12 +30,12 @@ export const handlers = [
       FetchTaskBoardsRequest,
       FetchTaskBoardsResponse
     >()(({ request }) => {
-      const response = taskBoardController.index(request);
+      const paginated = taskBoardController.index(request);
 
       return HttpResponse.json({
-        ...response,
         severity: 'info',
         message: 'タスクボード一覧を取得しました。',
+        ...paginated,
       });
     })
   ),
@@ -52,9 +52,9 @@ export const handlers = [
 
       return HttpResponse.json(
         {
-          data: taskBoard,
           severity: 'success',
           message: 'タスクボードを作成しました。',
+          data: taskBoard,
         },
         { status: 201 }
       );
@@ -68,15 +68,15 @@ export const handlers = [
       FetchTaskBoardRequest,
       FetchTaskBoardResponse | null
     >()(async ({ params }) => {
-      const board = taskBoardController.show(params['boardId']);
+      const taskBoard = taskBoardController.show(params['boardId']);
 
       if (!board) {
         return HttpResponse.json(null, { status: 404 });
       }
       return HttpResponse.json({
-        data: board,
         severity: 'info',
         message: 'タスクボードを取得しました。',
+        data: taskBoard,
       });
     })
   ),
@@ -89,16 +89,16 @@ export const handlers = [
       UpdateTaskBoardResponse | null
     >()(async ({ request, params }) => {
       const data = await request.json();
-      const newState = taskBoardController.update(params['boardId'], data);
+      const updated = taskBoardController.update(params['boardId'], data);
 
       if (!newState) {
         return HttpResponse.json(null, { status: 404 });
       }
 
       return HttpResponse.json({
-        data: newState,
         severity: 'info',
         message: 'タスクボードを更新しました。',
+        data: updated,
       });
     })
   ),
@@ -117,9 +117,9 @@ export const handlers = [
       }
 
       return HttpResponse.json({
-        data: deleted,
         severity: 'warning',
         message: 'タスクボードを削除しました。',
+        data: deleted,
       });
     })
   ),
