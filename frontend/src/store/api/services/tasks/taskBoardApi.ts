@@ -31,7 +31,7 @@ const api = baseApi.injectEndpoints({
     >({
       query: ({ page }) => ({
         url: makePath(['task-boards']),
-        params: { page: page || undefined },
+        params: { page },
       }),
       // cf. https://redux-toolkit.js.org/rtk-query/usage/mutations#revalidation-example
       providesTags: (res) => getTagsForPartialList(res?.data, 'TaskBoard'),
