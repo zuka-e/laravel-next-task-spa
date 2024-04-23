@@ -1,12 +1,16 @@
 import { HttpResponse } from 'msw';
 
-import { type ValidationErrorResponse } from '@/store/api';
+import { type ApiResponse, type ValidationErrorResponse } from '@/store/api';
+
+export type ErrorResponse = ApiResponse<{
+  severity: 'error';
+}>;
 
 /**
  * Create `Response` for authentication errors.
  */
 export const authenticationErrorResponse = (message?: string) => {
-  return HttpResponse.json(
+  return HttpResponse.json<ErrorResponse>(
     {
       severity: 'error',
       message: message ?? 'Unauthenticated.',
@@ -19,7 +23,7 @@ export const authenticationErrorResponse = (message?: string) => {
  * Create `Response` for authorization errors.
  */
 export const authorizationErrorResponse = (message?: string) => {
-  return HttpResponse.json(
+  return HttpResponse.json<ErrorResponse>(
     {
       severity: 'error',
       message: message ?? 'Forbidden.',
@@ -29,12 +33,25 @@ export const authorizationErrorResponse = (message?: string) => {
 };
 
 /**
+ * Create `Response` for no resource errors.
+ */
+export const notFoundErrorResponse = (message?: string) => {
+  return HttpResponse.json<ErrorResponse>(
+    {
+      severity: 'error',
+      message: message ?? 'Not Found.',
+    } as const,
+    { status: 404 }
+  );
+};
+
+/**
  * Create `Response` for validation errors.
  */
 export const validationErrorResponse = (
   errors: ValidationErrorResponse['errors']
 ) => {
-  return HttpResponse.json(
+  return HttpResponse.json<ValidationErrorResponse>(
     {
       severity: 'error',
       message: 'Invalid request.',

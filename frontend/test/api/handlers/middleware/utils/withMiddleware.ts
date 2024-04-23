@@ -1,12 +1,10 @@
-import {
-  type PathParams,
-  type DefaultBodyType,
-  type HttpResponseResolver,
-} from 'msw';
+import { type PathParams, type HttpResponseResolver } from 'msw';
 import { compose } from '@reduxjs/toolkit';
 
+import { type ApiResponse } from '@/store/api';
 import { startSession, verifyCsrfToken } from '@test/api/handlers/middleware';
-import type { Middleware } from '../types';
+import type { Middleware } from '@test/api/handlers/middleware/types';
+import { type ErrorResponse } from '@test/api/handlers/utils/responses';
 
 /**
  * Global middleware that will run for every request handler.
@@ -24,13 +22,17 @@ const globalMiddleware: Middleware[] = [startSession, verifyCsrfToken];
 export const withMiddleware =
   <
     Params extends PathParams<keyof Params> = PathParams,
-    RequestBodyType extends DefaultBodyType = DefaultBodyType,
-    ResponseBodyType extends DefaultBodyType = DefaultBodyType
+    RequestBody extends Record<string, unknown> | undefined = undefined,
+    ResponseBody extends ApiResponse = ApiResponse
   >(
     middleware?: Middleware[]
   ) =>
   (
-    resolver: HttpResponseResolver<Params, RequestBodyType, ResponseBodyType>
+    resolver: HttpResponseResolver<
+      Params,
+      RequestBody,
+      ResponseBody | ErrorResponse
+    >
   ) => {
     return compose<typeof resolver>(
       ...globalMiddleware,

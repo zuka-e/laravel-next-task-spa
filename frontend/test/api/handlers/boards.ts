@@ -15,6 +15,7 @@ import type {
 import { API_ROUTE } from '@/config/api';
 import { makePath } from '@/utils/api';
 import { withMiddleware } from '@test/api/handlers/middleware/utils/withMiddleware';
+import { notFoundErrorResponse } from '@test/api/handlers/utils/responses';
 import { taskBoardController } from '@test/api/controllers';
 
 type TaskBoardParams = {
@@ -66,13 +67,14 @@ export const handlers = [
     withMiddleware<
       TaskBoardParams,
       FetchTaskBoardRequest,
-      FetchTaskBoardResponse | null
+      FetchTaskBoardResponse
     >()(async ({ params }) => {
       const taskBoard = taskBoardController.show(params['boardId']);
 
-      if (!board) {
-        return HttpResponse.json(null, { status: 404 });
+      if (!taskBoard) {
+        return notFoundErrorResponse();
       }
+
       return HttpResponse.json({
         severity: 'info',
         message: 'タスクボードを取得しました。',
@@ -86,13 +88,13 @@ export const handlers = [
     withMiddleware<
       TaskBoardParams,
       UpdateTaskBoardRequest,
-      UpdateTaskBoardResponse | null
-    >()(async ({ request, params }) => {
+      UpdateTaskBoardResponse
+    >()(async ({ params, request }) => {
       const data = await request.json();
       const updated = taskBoardController.update(params['boardId'], data);
 
-      if (!newState) {
-        return HttpResponse.json(null, { status: 404 });
+      if (!updated) {
+        return notFoundErrorResponse();
       }
 
       return HttpResponse.json({
@@ -108,12 +110,12 @@ export const handlers = [
     withMiddleware<
       TaskBoardParams,
       DestroyTaskBoardRequest,
-      DestroyTaskBoardResponse | null
+      DestroyTaskBoardResponse
     >()(async ({ params }) => {
       const deleted = taskBoardController.destroy(params['boardId']);
 
       if (!deleted) {
-        return HttpResponse.json(null, { status: 404 });
+        return notFoundErrorResponse();
       }
 
       return HttpResponse.json({

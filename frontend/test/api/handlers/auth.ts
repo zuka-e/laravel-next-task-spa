@@ -1,4 +1,4 @@
-import { http, HttpResponse, type DefaultBodyType, type PathParams } from 'msw';
+import { http, HttpResponse, type PathParams } from 'msw';
 
 import type {
   SignInRequest,
@@ -79,45 +79,46 @@ export const handlers = [
     url('GET_CSRF_TOKEN_PATH'),
     withMiddleware()(async () => {
       // cf. https://github.com/laravel/sanctum/blob/3.x/src/Http/Controllers/CsrfCookieController.php
-      return HttpResponse.json(undefined, { status: 204 });
+      return HttpResponse.json({
+        severity: 'info',
+        message: 'CSRFトークンを取得しました。',
+      });
     })
   ),
 
   http.get(
     url('SESSION_PATH'),
-    withMiddleware<PathParams, DefaultBodyType, FetchSessionResponse>()(() => {
+    withMiddleware<PathParams, undefined, FetchSessionResponse>()(() => {
       const currentUser = getUser();
 
       return HttpResponse.json({
-        user: currentUser ? sanitizeUser(currentUser) : null,
         severity: 'info',
         message: 'ユーザー情報を取得しました。',
+        user: currentUser ? sanitizeUser(currentUser) : null,
       });
     })
   ),
 
   http.post(
     url('VERIFICATION_NOTIFICATION_PATH'),
-    withMiddleware<
-      PathParams,
-      DefaultBodyType,
-      SendEmailVerificationLinkResponse
-    >()(() => {
-      const currentUser = getUser()!;
+    withMiddleware<PathParams, undefined, SendEmailVerificationLinkResponse>()(
+      () => {
+        const currentUser = getUser()!;
 
-      const data: SendEmailVerificationLinkResponse =
-        currentUser.emailVerifiedAt
-          ? {
-              severity: 'error',
-              message: '既に認証済みです。',
-            }
-          : {
-              severity: 'success',
-              message: '認証用メールを送信しました。',
-            };
+        const data: SendEmailVerificationLinkResponse =
+          currentUser.emailVerifiedAt
+            ? {
+                severity: 'error',
+                message: '既に認証済みです。',
+              }
+            : {
+                severity: 'success',
+                message: '認証用メールを送信しました。',
+              };
 
-      return HttpResponse.json(data);
-    })
+        return HttpResponse.json(data);
+      }
+    )
   ),
 
   http.post(
@@ -289,7 +290,7 @@ export const handlers = [
 
   http.post(
     url('SIGNOUT_PATH'),
-    withMiddleware<PathParams, DefaultBodyType, LogoutResponse>()(() => {
+    withMiddleware<PathParams, undefined, LogoutResponse>()(() => {
       logout();
 
       const data: LogoutResponse = {
@@ -303,7 +304,7 @@ export const handlers = [
 
   http.delete(
     url('SIGNUP_PATH'),
-    withMiddleware<PathParams, DefaultBodyType, DeleteAccountResponse>()(() => {
+    withMiddleware<PathParams, undefined, DeleteAccountResponse>()(() => {
       const currentUser = getUser()!;
 
       deleteAccountController.remove(currentUser);
