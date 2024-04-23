@@ -1,4 +1,4 @@
-import { rest, type DefaultBodyType } from 'msw';
+import { HttpResponse, http } from 'msw';
 
 import type {
   CreateTaskListRequest,
@@ -6,14 +6,13 @@ import type {
   UpdateTaskListRequest,
   UpdateTaskListResponse,
   DestroyTaskListResponse,
-} from '@/store/thunks/lists';
-import type { ErrorResponse } from './types';
+  DestroyTaskListRequest,
+} from '@/store/api';
 import { API_ROUTE } from '@/config/api';
 import { makePath } from '@/utils/api';
-import { db } from '@test/api/database';
 import { taskListController } from '@test/api/controllers';
-import { statefulResponse } from './responses';
-import { resolveMiddleware } from './utils';
+import { notFoundErrorResponse } from '@test/api/handlers/utils/responses';
+import { withMiddleware } from '@test/api/handlers/middleware/utils/withMiddleware';
 
 type TaskListParams = {
   boardId: string;
@@ -21,86 +20,67 @@ type TaskListParams = {
 };
 
 export const handlers = [
-  rest.post<
-    CreateTaskListRequest,
-    TaskListParams,
-    CreateTaskListResponse & ErrorResponse
-  >(
+  http.post(
     API_ROUTE + makePath(['task-boards', ':boardId'], ['task-lists']),
-    (req, _res, ctx) => {
-      const board = db.where('taskBoards', 'id', req.params.boardId)[0];
+    withMiddleware<
+      Pick<TaskListParams, 'boardId'>,
+      CreateTaskListRequest,
+      CreateTaskListResponse
+    >()(async ({ params, request }) => {
+      const data = await request.json();
+      const taskList = taskListController.store(params['boardId'], data);
 
-      const { transformers, isError } = resolveMiddleware(req, [
-        'authenticate',
-        `authorize:${board?.userId}`,
-        'verified',
-      ]);
-
-      if (isError) {
-        return statefulResponse(...transformers);
-      }
-
-      const response = taskListController.store(req);
-
-      return statefulResponse(ctx.status(201), ctx.json({ data: response }));
-    }
+      return HttpResponse.json(
+        {
+          severity: 'success',
+          message: 'タスクリストを作成しました。',
+          data: taskList,
+        },
+        { status: 201 }
+      );
+    })
   ),
 
-  rest.patch<
-    UpdateTaskListRequest,
-    TaskListParams,
-    UpdateTaskListResponse & ErrorResponse
-  >(
-    API_ROUTE +
-      makePath(['task-boards', ':boardId'], ['task-lists', ':listId']),
-    (req, _res, ctx) => {
-      const board = db.where('taskBoards', 'id', req.params.boardId)[0];
-      const list = db.where('taskLists', 'id', req.params.listId)[0];
+  http.patch(
+    API_ROUTE + makePath(['task-lists', ':listId']),
+    withMiddleware<
+      Pick<TaskListParams, 'listId'>,
+      UpdateTaskListRequest,
+      UpdateTaskListResponse
+    >()(async ({ params, request }) => {
+      const data = await request.json();
+      const updated = taskListController.update(params['listId'], data);
 
-      const { transformers, isError } = resolveMiddleware(req, [
-        'authenticate',
-        `authorize:${board?.userId},${list?.userId}`,
-        'verified',
-      ]);
-
-      if (isError) {
-        return statefulResponse(...transformers);
+      if (!updated) {
+        return notFoundErrorResponse();
       }
 
-      const updated = taskListController.update(req);
-
-      if (!updated) return statefulResponse(ctx.status(404));
-
-      return statefulResponse(ctx.status(200), ctx.json({ data: updated }));
-    }
+      return HttpResponse.json({
+        severity: 'info',
+        message: 'タスクリストを更新しました。',
+        data: updated,
+      });
+    })
   ),
 
-  rest.delete<
-    DefaultBodyType,
-    TaskListParams,
-    DestroyTaskListResponse & ErrorResponse
-  >(
-    API_ROUTE +
-      makePath(['task-boards', ':boardId'], ['task-lists', ':listId']),
-    (req, _res, ctx) => {
-      const board = db.where('taskBoards', 'id', req.params.boardId)[0];
-      const list = db.where('taskLists', 'id', req.params.listId)[0];
+  http.delete(
+    API_ROUTE + makePath(['task-lists', ':listId']),
+    withMiddleware<
+      Pick<TaskListParams, 'listId'>,
+      DestroyTaskListRequest,
+      DestroyTaskListResponse
+    >()(({ params }) => {
+      const deleted = taskListController.destroy(params.listId);
 
-      const { transformers, isError } = resolveMiddleware(req, [
-        'authenticate',
-        `authorize:${board?.userId},${list?.userId}`,
-        'verified',
-      ]);
-
-      if (isError) {
-        return statefulResponse(...transformers);
+      if (!deleted) {
+        return notFoundErrorResponse();
       }
 
-      const deleted = taskListController.destroy(req);
-
-      if (!deleted) return statefulResponse(ctx.status(404));
-
-      return statefulResponse(ctx.status(200), ctx.json({ data: deleted }));
-    }
+      return HttpResponse.json({
+        severity: 'warning',
+        message: 'タスクリストを削除しました。',
+        data: deleted,
+      });
+    })
   ),
 ];

@@ -1,19 +1,18 @@
-import { rest, type DefaultBodyType } from 'msw';
+import { HttpResponse, http } from 'msw';
 
 import type {
   CreateTaskCardRequest,
   CreateTaskCardResponse,
   UpdateTaskCardRequest,
   UpdateTaskCardResponse,
+  DestroyTaskCardRequest,
   DestroyTaskCardResponse,
-} from '@/store/thunks/cards';
-import type { ErrorResponse } from './types';
+} from '@/store/api';
 import { API_ROUTE } from '@/config/api';
 import { makePath } from '@/utils/api';
-import { db } from '@test/api/database';
 import { taskCardController } from '@test/api/controllers';
-import { statefulResponse } from './responses';
-import { resolveMiddleware } from './utils';
+import { notFoundErrorResponse } from '@test/api/handlers/utils/responses';
+import { withMiddleware } from '@test/api/handlers/middleware/utils/withMiddleware';
 
 type TaskCardParams = {
   listId: string;
@@ -21,84 +20,67 @@ type TaskCardParams = {
 };
 
 export const handlers = [
-  rest.post<
-    CreateTaskCardRequest,
-    TaskCardParams,
-    CreateTaskCardResponse & ErrorResponse
-  >(
+  http.post(
     API_ROUTE + makePath(['task-lists', ':listId'], ['task-cards']),
-    (req, _res, ctx) => {
-      const list = db.where('taskLists', 'id', req.params.listId)[0];
+    withMiddleware<
+      TaskCardParams,
+      CreateTaskCardRequest,
+      CreateTaskCardResponse
+    >()(async ({ params, request }) => {
+      const data = await request.json();
+      const response = taskCardController.store(params.listId, data);
 
-      const { transformers, isError } = resolveMiddleware(req, [
-        'authenticate',
-        `authorize:${list?.userId}`,
-        'verified',
-      ]);
-
-      if (isError) {
-        return statefulResponse(...transformers);
-      }
-
-      const response = taskCardController.store(req);
-
-      return statefulResponse(ctx.status(201), ctx.json({ data: response }));
-    }
+      return HttpResponse.json(
+        {
+          severity: 'success',
+          message: 'タスクカードを作成しました。',
+          data: response,
+        },
+        { status: 201 }
+      );
+    })
   ),
 
-  rest.patch<
-    UpdateTaskCardRequest,
-    TaskCardParams,
-    UpdateTaskCardResponse & ErrorResponse
-  >(
-    API_ROUTE + makePath(['task-lists', ':listId'], ['task-cards', ':cardId']),
-    (req, _res, ctx) => {
-      const list = db.where('taskLists', 'id', req.params.listId)[0];
-      const card = db.where('taskCards', 'id', req.params.cardId)[0];
+  http.patch(
+    API_ROUTE + makePath(['task-cards', ':cardId']),
+    withMiddleware<
+      Pick<TaskCardParams, 'cardId'>,
+      UpdateTaskCardRequest,
+      UpdateTaskCardResponse
+    >()(async ({ params, request }) => {
+      const data = await request.json();
+      const updated = taskCardController.update(params.cardId, data);
 
-      const { transformers, isError } = resolveMiddleware(req, [
-        'authenticate',
-        `authorize:${list?.userId},${card?.userId}`,
-        'verified',
-      ]);
-
-      if (isError) {
-        return statefulResponse(...transformers);
+      if (!updated) {
+        return notFoundErrorResponse();
       }
 
-      const updated = taskCardController.update(req);
-
-      if (!updated) return statefulResponse(ctx.status(404));
-
-      return statefulResponse(ctx.status(200), ctx.json({ data: updated }));
-    }
+      return HttpResponse.json({
+        severity: 'info',
+        message: 'タスクカードを更新しました。',
+        data: updated,
+      });
+    })
   ),
 
-  rest.delete<
-    DefaultBodyType,
-    TaskCardParams,
-    DestroyTaskCardResponse & ErrorResponse
-  >(
-    API_ROUTE + makePath(['task-lists', ':listId'], ['task-cards', ':cardId']),
-    (req, _res, ctx) => {
-      const list = db.where('taskLists', 'id', req.params.listId)[0];
-      const card = db.where('taskCards', 'id', req.params.cardId)[0];
+  http.delete(
+    API_ROUTE + makePath(['task-cards', ':cardId']),
+    withMiddleware<
+      Pick<TaskCardParams, 'cardId'>,
+      DestroyTaskCardRequest,
+      DestroyTaskCardResponse
+    >()(({ params }) => {
+      const deleted = taskCardController.destroy(params.cardId);
 
-      const { transformers, isError } = resolveMiddleware(req, [
-        'authenticate',
-        `authorize:${list?.userId},${card?.userId}`,
-        'verified',
-      ]);
-
-      if (isError) {
-        return statefulResponse(...transformers);
+      if (!deleted) {
+        return notFoundErrorResponse();
       }
 
-      const deleted = taskCardController.destroy(req);
-
-      if (!deleted) return statefulResponse(ctx.status(404));
-
-      return statefulResponse(ctx.status(200), ctx.json({ data: deleted }));
-    }
+      return HttpResponse.json({
+        severity: 'warning',
+        message: 'タスクカードを削除しました。',
+        data: deleted,
+      });
+    })
   ),
 ];

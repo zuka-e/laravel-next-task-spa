@@ -1,18 +1,15 @@
-import { RestRequest } from 'msw';
-
-import { TaskList } from '@/models';
-import {
-  CreateTaskListRequest,
-  UpdateTaskListRequest,
-} from '@/store/thunks/lists';
-import { TaskListDocument } from '@test/api/models';
+import type { TaskBoard, TaskList } from '@/models';
+import type { TaskListDocument } from '@test/api/models';
 import { db } from '@test/api/database';
 
-export const store = (req: RestRequest<CreateTaskListRequest>) => {
+export const store = (
+  boardId: TaskBoard['id'],
+  params: Partial<Omit<TaskList, 'id' | 'boardId'>>
+) => {
   const newList = db.create('taskLists', {
     ...({} as TaskListDocument),
-    boardId: req.params.boardId,
-    ...req.body,
+    boardId,
+    ...params,
   });
 
   const response: TaskList = { ...newList, cards: [] };
@@ -20,19 +17,22 @@ export const store = (req: RestRequest<CreateTaskListRequest>) => {
   return response;
 };
 
-export const update = (req: RestRequest<UpdateTaskListRequest>) => {
-  const list = db.where('taskLists', 'id', req.params.listId)[0];
+export const update = (
+  id: TaskList['id'],
+  params: Partial<Omit<TaskList, 'id' | 'boardId'>>
+) => {
+  const list = db.where('taskLists', 'id', id)[0];
 
   if (!list) return;
 
-  const updated = db.update('taskLists', { ...list, ...req.body });
+  const updated = db.update('taskLists', { ...list, ...params });
   const response: TaskList = { ...updated, cards: [] };
 
   return response;
 };
 
-export const destroy = (req: RestRequest) => {
-  const deleted = db.remove('taskLists', req.params.listId);
+export const destroy = (id: TaskList['id']) => {
+  const deleted = db.remove('taskLists', id);
 
   if (!deleted) return;
 

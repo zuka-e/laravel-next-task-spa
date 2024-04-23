@@ -1,6 +1,6 @@
 import { type AxiosError } from 'axios';
 
-import type { TaskBoard, User } from '@/models';
+import type { TaskBoard, TaskCard, TaskList, User } from '@/models';
 import { type PaginationResponse } from '@/utils/api';
 import type { SoftDelete } from '@/store/api/types';
 
@@ -108,3 +108,46 @@ export type DestroyTaskBoardResponse = ApiResponse<{
 }>;
 
 export type DestroyTaskBoardRequest = Pick<TaskBoard, 'id'>;
+
+export type CreateTaskListResponse = ApiResponse<{
+  data: TaskList;
+}>;
+
+export type CreateTaskListRequest = Partial<
+  Pick<TaskList, 'title' | 'description'>
+>;
+
+export type UpdateTaskListResponse = ApiResponse<{
+  data: TaskList;
+}>;
+
+export type UpdateTaskListRequest = Partial<
+  Pick<TaskList, 'title' | 'description'>
+>;
+
+export type DestroyTaskListResponse = ApiResponse<{
+  data: TaskList;
+}>;
+
+export type DestroyTaskListRequest = Pick<TaskList, 'id'>;
+
+export type CreateTaskCardResponse = ApiResponse<{
+  data: TaskCard;
+}>;
+
+export type CreateTaskCardRequest = Pick<TaskCard, 'title'> &
+  Partial<Pick<TaskCard, 'content' | 'deadline' | 'done'>>;
+
+export type UpdateTaskCardResponse = ApiResponse<{
+  data: TaskCard;
+}>;
+
+export type UpdateTaskCardRequest = Partial<
+  Pick<TaskCard, 'listId' | 'title' | 'content' | 'deadline' | 'done'>
+>;
+
+export type DestroyTaskCardResponse = ApiResponse<{
+  data: TaskCard;
+}>;
+
+export type DestroyTaskCardRequest = Pick<TaskCard, 'id'>;
