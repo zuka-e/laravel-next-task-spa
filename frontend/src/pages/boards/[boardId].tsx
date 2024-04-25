@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next';
@@ -16,7 +16,7 @@ import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 
 import { repeatMap } from '@/utils';
 import { makeIndexMap } from '@/utils/dnd';
-import { useRoute } from '@/utils/hooks';
+import { useIntersectionObserver, useRoute } from '@/utils/hooks';
 import {
   useGetTaskBoardQuery,
   useGetTaskListsQuery,
@@ -69,31 +69,9 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
     router.replace(sessionStorage.getItem('previousUrl') ?? '/');
   }
 
-  const observer = useRef<IntersectionObserver>();
-  const lastListRef = useRef<HTMLSpanElement | null>(null);
-  const currentPage = paginatedLists?.meta.current_page;
-  const nextLink = paginatedLists?.links.next;
-
-  useEffect(() => {
-    // Ensure no duplicate observations
-    if (observer.current) {
-      observer.current.disconnect();
-    }
-
-    observer.current = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && nextLink && currentPage) {
-        setPage(currentPage + 1);
-      }
-    });
-
-    if (lastListRef.current) {
-      observer.current.observe(lastListRef.current);
-    }
-
-    return function cleanup() {
-      observer.current?.disconnect();
-    };
-  }, [currentPage, nextLink]);
+  const lastListRef = useIntersectionObserver((): void => {
+    setPage((paginatedList?.meta.current_page || 0) + 1);
+  });
 
   const handleDrop = () => {
     if (!board) {
