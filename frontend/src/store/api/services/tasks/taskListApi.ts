@@ -20,8 +20,11 @@ const api = baseApi.injectEndpoints({
         return getTagsForPartialList(res?.data, 'TaskList');
       },
       // cf. https://redux-toolkit.js.org/rtk-query/api/createApi#merge
-      serializeQueryArgs: ({ endpointName }) => {
-        return endpointName;
+      serializeQueryArgs: ({ endpointName, queryArgs }) => {
+        const { boardId } = queryArgs;
+        // Sole cache key per board  (cf. usual cache key format)
+        // It allow data to be added to the sole cache across all pages
+        return `${endpointName}(${JSON.stringify({ boardId })})`;
       },
       // cf. https://redux-toolkit.js.org/rtk-query/api/createApi#merge
       merge: (current, incoming) => {
