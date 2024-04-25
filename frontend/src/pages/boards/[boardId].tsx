@@ -69,7 +69,7 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
     router.replace(sessionStorage.getItem('previousUrl') ?? '/');
   }
 
-  const lastListRef = useIntersectionObserver((): void => {
+  const nextListRef = useIntersectionObserver((): void => {
     setPage((paginatedList?.meta.current_page || 0) + 1);
   });
 
@@ -157,7 +157,7 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
                   ))}
               {paginatedList?.links.next && (
                 <Grid item>
-                  <CircularProgress ref={lastListRef} />
+                  <CircularProgress ref={nextListRef} />
                 </Grid>
               )}
               {board && (
