@@ -1,7 +1,11 @@
-import { getTagsForPartialList } from '@/store/api/utils/caching';
 import { makePath } from '@/utils/api';
 import baseApi from './baseApi';
-import type { FetchTaskListsRequest, FetchTaskListsResponse } from './types';
+import type {
+  CreateTaskListRequest,
+  CreateTaskListResponse,
+  FetchTaskListsRequest,
+  FetchTaskListsResponse,
+} from './types';
 
 /**
  * @see https://redux-toolkit.js.org/rtk-query/api/created-api/code-splitting
@@ -16,9 +20,6 @@ const api = baseApi.injectEndpoints({
         url: makePath(['task-boards', boardId], ['task-lists']),
         params: { page, limit },
       }),
-      providesTags: (res) => {
-        return getTagsForPartialList(res?.data, 'TaskList');
-      },
       // cf. https://redux-toolkit.js.org/rtk-query/api/createApi#merge
       serializeQueryArgs: ({ endpointName, queryArgs }) => {
         const { boardId } = queryArgs;
@@ -45,7 +46,34 @@ const api = baseApi.injectEndpoints({
         return currentArg !== previousArg;
       },
     }),
+    createTaskList: builder.mutation<
+      CreateTaskListResponse,
+      CreateTaskListRequest
+    >({
+      query: ({ boardId, ...data }) => ({
+        url: makePath(['task-boards', boardId], ['task-lists']),
+        method: 'POST',
+        data,
+      }),
+      // cf. https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#pessimistic-updates
+      onQueryStarted: async ({ boardId }, { dispatch, queryFulfilled }) => {
+        try {
+          const {
+            data: { data: newTaskList },
+          } = await queryFulfilled;
+
+          // Adds new data to the per-board cache instead of invalidating the `LIST` cache.
+          dispatch(
+            api.util.updateQueryData('getTaskLists', { boardId }, (draft) => {
+              draft.data.push(newTaskList);
+            })
+          );
+        } catch (e) {
+          //
+        }
+      },
+    }),
   }),
 });
 
-export const { useGetTaskListsQuery } = api;
+export const { useGetTaskListsQuery, useCreateTaskListMutation } = api;

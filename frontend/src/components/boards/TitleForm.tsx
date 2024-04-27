@@ -18,9 +18,10 @@ import {
 } from '@/utils/api/errors';
 import {
   useCreateTaskBoardMutation,
+  useCreateTaskListMutation,
   useUpdateTaskBoardMutation,
 } from '@/store/api';
-import { createTaskList, updateTaskList } from '@/store/thunks/lists';
+import { updateTaskList } from '@/store/thunks/lists';
 import { createTaskCard, updateTaskCard } from '@/store/thunks/cards';
 import { pushFlash } from '@/store/slices';
 
@@ -42,6 +43,8 @@ const TitleForm = memo(function TitleForm(props: FormProps): JSX.Element {
     useCreateTaskBoardMutation();
   const [updateTaskBoard, { isLoading: isLoadingToUpdateBoard }] =
     useUpdateTaskBoardMutation();
+  const [createTaskList, { isLoading: isLoadingToCreateList }] =
+    useCreateTaskListMutation();
   const [apiError, setApiError] = useState('');
   const dispatch = useAppDispatch();
   const submitRef = useRef<HTMLInputElement>(null);
@@ -55,8 +58,10 @@ const TitleForm = memo(function TitleForm(props: FormProps): JSX.Element {
   });
 
   const isLoading = useMemo((): boolean => {
-    return isLoadingToCreateBoard || isLoadingToUpdateBoard;
-  }, [isLoadingToCreateBoard, isLoadingToUpdateBoard]);
+    return (
+      isLoadingToCreateBoard || isLoadingToUpdateBoard || isLoadingToCreateList
+    );
+  }, [isLoadingToCreateBoard, isLoadingToUpdateBoard, isLoadingToCreateList]);
 
   const handleDispatch = useCallback(
     async <
@@ -93,7 +98,7 @@ const TitleForm = memo(function TitleForm(props: FormProps): JSX.Element {
               }
               case 'list': {
                 const boardId = props.parent.id;
-                handleDispatch(createTaskList, { boardId, ...data });
+                createTaskList({ boardId, ...data });
                 break;
               }
               case 'card': {
@@ -146,6 +151,7 @@ const TitleForm = memo(function TitleForm(props: FormProps): JSX.Element {
     },
     [
       createTaskBoard,
+      createTaskList,
       handleClose,
       handleDispatch,
       method,

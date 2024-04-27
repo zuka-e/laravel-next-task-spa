@@ -61,8 +61,9 @@ const initialize = () => {
   if (db.exists('taskLists')) return;
 
   const guestUserBoards = db.where('taskBoards', 'userId', guestUser.id);
-  guestUserBoards.forEach((board) => {
-    runSeeder({ count: 20, belongsTo: { user: guestUser, board: board } });
+  guestUserBoards.forEach((board, i) => {
+    const count = i === 0 ? 50 : 2;
+    runSeeder({ count, belongsTo: { user: guestUser, board: board } });
   });
 
   const otherUserBoards = db.where('taskBoards', 'userId', otherUser.id);

@@ -129,9 +129,9 @@ export type CreateTaskListResponse = ApiResponse<{
   data: TaskList;
 }>;
 
-export type CreateTaskListRequest = Partial<
-  Pick<TaskList, 'title' | 'description'>
->;
+export type CreateTaskListRequest = {
+  boardId: TaskBoard['id'];
+} & Partial<Pick<TaskList, 'title' | 'description'>>;
 
 export type UpdateTaskListResponse = ApiResponse<{
   data: TaskList;
