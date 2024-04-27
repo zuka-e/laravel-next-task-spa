@@ -137,9 +137,8 @@ export type UpdateTaskListResponse = ApiResponse<{
   data: TaskList;
 }>;
 
-export type UpdateTaskListRequest = Partial<
-  Pick<TaskList, 'title' | 'description'>
->;
+export type UpdateTaskListRequest = Pick<TaskList, 'id'> &
+  Partial<Pick<TaskList, 'title' | 'description'>>;
 
 export type DestroyTaskListResponse = ApiResponse<{
   data: TaskList;

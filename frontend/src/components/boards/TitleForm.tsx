@@ -20,8 +20,8 @@ import {
   useCreateTaskBoardMutation,
   useCreateTaskListMutation,
   useUpdateTaskBoardMutation,
+  useUpdateTaskListMutation,
 } from '@/store/api';
-import { updateTaskList } from '@/store/thunks/lists';
 import { createTaskCard, updateTaskCard } from '@/store/thunks/cards';
 import { pushFlash } from '@/store/slices';
 
@@ -45,6 +45,8 @@ const TitleForm = memo(function TitleForm(props: FormProps): JSX.Element {
     useUpdateTaskBoardMutation();
   const [createTaskList, { isLoading: isLoadingToCreateList }] =
     useCreateTaskListMutation();
+  const [updateTaskList, { isLoading: isLoadingToUpdateList }] =
+    useUpdateTaskListMutation();
   const [apiError, setApiError] = useState('');
   const dispatch = useAppDispatch();
   const submitRef = useRef<HTMLInputElement>(null);
@@ -59,9 +61,17 @@ const TitleForm = memo(function TitleForm(props: FormProps): JSX.Element {
 
   const isLoading = useMemo((): boolean => {
     return (
-      isLoadingToCreateBoard || isLoadingToUpdateBoard || isLoadingToCreateList
+      isLoadingToCreateBoard ||
+      isLoadingToUpdateBoard ||
+      isLoadingToCreateList ||
+      isLoadingToUpdateList
     );
-  }, [isLoadingToCreateBoard, isLoadingToUpdateBoard, isLoadingToCreateList]);
+  }, [
+    isLoadingToCreateBoard,
+    isLoadingToUpdateBoard,
+    isLoadingToCreateList,
+    isLoadingToUpdateList,
+  ]);
 
   const handleDispatch = useCallback(
     async <
@@ -117,9 +127,7 @@ const TitleForm = memo(function TitleForm(props: FormProps): JSX.Element {
                 break;
               }
               case 'list': {
-                const id = props.data.id;
-                const boardId = props.data.boardId;
-                handleDispatch(updateTaskList, { id, boardId, ...data });
+                updateTaskList({ id: props.data.id, ...data });
                 break;
               }
               case 'card': {
@@ -158,6 +166,7 @@ const TitleForm = memo(function TitleForm(props: FormProps): JSX.Element {
       model,
       props,
       updateTaskBoard,
+      updateTaskList,
     ]
   );
 

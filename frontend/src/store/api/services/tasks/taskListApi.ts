@@ -5,6 +5,8 @@ import type {
   CreateTaskListResponse,
   FetchTaskListsRequest,
   FetchTaskListsResponse,
+  UpdateTaskListRequest,
+  UpdateTaskListResponse,
 } from './types';
 
 /**
@@ -73,7 +75,39 @@ const api = baseApi.injectEndpoints({
         }
       },
     }),
+    updateTaskList: builder.mutation<
+      UpdateTaskListResponse,
+      UpdateTaskListRequest
+    >({
+      query: ({ id, ...data }) => ({
+        url: makePath(['task-lists', id]),
+        method: 'PATCH',
+        data,
+      }),
+      onQueryStarted: async (_req, { dispatch, queryFulfilled }) => {
+        const {
+          data: { data: updatedTaskList },
+        } = await queryFulfilled;
+        const { boardId } = updatedTaskList;
+
+        // Replace cache instead of invalidating the cache.
+        dispatch(
+          api.util.updateQueryData('getTaskLists', { boardId }, (draft) => {
+            const current = draft.data.find(
+              (list) => list.id === updatedTaskList.id
+            );
+
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            Object.assign(current!, updatedTaskList);
+          })
+        );
+      },
+    }),
   }),
 });
 
-export const { useGetTaskListsQuery, useCreateTaskListMutation } = api;
+export const {
+  useGetTaskListsQuery,
+  useCreateTaskListMutation,
+  useUpdateTaskListMutation,
+} = api;
