@@ -8,9 +8,8 @@ import {
 } from '@mui/icons-material';
 
 import { TaskList } from '@/models';
-import { useAppDispatch } from '@/utils/hooks';
-import { openInfoBox } from '@/store/slices/taskBoardSlice';
 import { DeleteTaskDialog, PopoverControl } from '@/templates';
+import { showTaskListDetails } from '@/components/boards/InfoBox/InfoBox';
 import { SortSelect } from '..';
 
 const menuItem = {
@@ -25,21 +24,20 @@ type ListMenuProps = {
 
 const ListMenu = memo(function ListMenu(props: ListMenuProps): JSX.Element {
   const { list } = props;
-  const dispatch = useAppDispatch();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   const handleClick = useCallback(
     (key: keyof typeof menuItem): void => {
       switch (key) {
         case 'info':
-          dispatch(openInfoBox({ model: 'list', data: list }));
+          showTaskListDetails(list.id);
           break;
         case 'delete':
           setOpenDeleteDialog(true);
           break;
       }
     },
-    [dispatch, list]
+    [list.id]
   );
 
   const handleCloseDeleteDialog = useCallback((): void => {

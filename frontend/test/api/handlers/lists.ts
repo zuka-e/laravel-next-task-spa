@@ -9,6 +9,8 @@ import type {
   DestroyTaskListRequest,
   FetchTaskListsRequest,
   FetchTaskListsResponse,
+  FetchTaskListRequest,
+  FetchTaskListResponse,
 } from '@/store/api';
 import { API_ROUTE } from '@/config/api';
 import { makePath } from '@/utils/api';
@@ -57,6 +59,27 @@ export const handlers = [
         },
         { status: 201 }
       );
+    })
+  ),
+
+  http.get(
+    API_ROUTE + makePath(['task-lists', ':listId']),
+    withMiddleware<
+      TaskListParams,
+      FetchTaskListRequest,
+      FetchTaskListResponse
+    >()(async ({ params }) => {
+      const taskList = taskListController.show(params['listId']);
+
+      if (!taskList) {
+        return notFoundErrorResponse();
+      }
+
+      return HttpResponse.json({
+        severity: 'info',
+        message: 'タスクリストを取得しました。',
+        data: taskList,
+      });
     })
   ),
 

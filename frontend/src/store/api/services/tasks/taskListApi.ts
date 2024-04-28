@@ -3,6 +3,8 @@ import baseApi from './baseApi';
 import type {
   CreateTaskListRequest,
   CreateTaskListResponse,
+  FetchTaskListRequest,
+  FetchTaskListResponse,
   FetchTaskListsRequest,
   FetchTaskListsResponse,
   UpdateTaskListRequest,
@@ -75,6 +77,14 @@ const api = baseApi.injectEndpoints({
         }
       },
     }),
+    getTaskList: builder.query<FetchTaskListResponse, FetchTaskListRequest>({
+      query: ({ id }) => ({
+        url: makePath(['task-lists', id]),
+      }),
+      providesTags: (res, _err, _req) => {
+        return [{ type: 'TaskList', id: res?.data.id }];
+      },
+    }),
     updateTaskList: builder.mutation<
       UpdateTaskListResponse,
       UpdateTaskListRequest
@@ -102,6 +112,9 @@ const api = baseApi.injectEndpoints({
           })
         );
       },
+      invalidatesTags: (_res, _err, req) => {
+        return [{ type: 'TaskList', id: req.id }];
+      },
     }),
   }),
 });
@@ -109,5 +122,6 @@ const api = baseApi.injectEndpoints({
 export const {
   useGetTaskListsQuery,
   useCreateTaskListMutation,
+  useGetTaskListQuery,
   useUpdateTaskListMutation,
 } = api;

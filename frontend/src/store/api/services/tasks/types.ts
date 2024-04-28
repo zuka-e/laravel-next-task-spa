@@ -133,6 +133,12 @@ export type CreateTaskListRequest = {
   boardId: TaskBoard['id'];
 } & Partial<Pick<TaskList, 'title' | 'description'>>;
 
+export type FetchTaskListResponse = ApiResponse<{
+  data: TaskList;
+}>;
+
+export type FetchTaskListRequest = Pick<TaskList, 'id'>;
+
 export type UpdateTaskListResponse = ApiResponse<{
   data: TaskList;
 }>;

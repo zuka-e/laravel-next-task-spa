@@ -33,6 +33,14 @@ export const store = (
   return response;
 };
 
+export const show = (id: TaskList['id']) => {
+  const list = db.where('taskLists', 'id', id)[0];
+
+  if (!list) return;
+
+  return list as unknown as TaskList;
+};
+
 export const update = (
   id: TaskList['id'],
   params: Partial<Omit<TaskList, 'id' | 'boardId'>>
