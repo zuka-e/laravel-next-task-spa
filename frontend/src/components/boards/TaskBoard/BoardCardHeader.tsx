@@ -19,7 +19,7 @@ const BoardCardHeader = memo(function BoardCardHeader(
   const { board } = props;
 
   const Title = () => (
-    <EditableTitle method="PATCH" model="board" data={board} disableMargin />
+    <EditableTitle method="PATCH" model="board" data={board} />
   );
 
   const Subheader = () => (

@@ -18,15 +18,7 @@ const ListCardHeader = memo(function ListCardHeader(
 ): JSX.Element {
   const { list } = props;
 
-  const Title = () => (
-    <EditableTitle
-      method="PATCH"
-      model="list"
-      data={list}
-      disableMargin
-      inputStyle="text-white"
-    />
-  );
+  const Title = () => <EditableTitle method="PATCH" model="list" data={list} />;
 
   const Subheader = () => (
     <Typography color="textSecondary" variant="body2">

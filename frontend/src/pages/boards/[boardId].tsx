@@ -107,13 +107,7 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
             {board ? (
               <>
                 <Grid item className="mx-4 my-2 flex-auto">
-                  <EditableTitle
-                    method="PATCH"
-                    model="board"
-                    data={board}
-                    disableMargin
-                    inputStyle="text-2xl"
-                  />
+                  <EditableTitle method="PATCH" model="board" data={board} />
                 </Grid>
                 <Grid item>
                   <SearchField />
