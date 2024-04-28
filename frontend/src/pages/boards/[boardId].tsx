@@ -66,7 +66,7 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
     );
 
   if (board?.isDeleted) {
-    router.replace(sessionStorage.getItem('previousUrl') ?? '/');
+    router.replace('/boards');
   }
 
   const nextListRef = useIntersectionObserver((): void => {
