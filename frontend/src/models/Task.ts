@@ -17,6 +17,7 @@ export type TaskList = {
   title: string;
   description: string;
   cards: TaskCard[];
+  isDeleted?: boolean;
 } & DocumentBase;
 
 export type TaskListsCollection = CollectionBase<TaskList>;

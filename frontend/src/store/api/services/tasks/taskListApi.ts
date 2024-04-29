@@ -3,6 +3,8 @@ import baseApi from './baseApi';
 import type {
   CreateTaskListRequest,
   CreateTaskListResponse,
+  DestroyTaskListRequest,
+  DestroyTaskListResponse,
   FetchTaskListRequest,
   FetchTaskListResponse,
   FetchTaskListsRequest,
@@ -116,6 +118,37 @@ const api = baseApi.injectEndpoints({
         return [{ type: 'TaskList', id: req.id }];
       },
     }),
+    destroyTaskList: builder.mutation<
+      DestroyTaskListResponse,
+      DestroyTaskListRequest
+    >({
+      query: ({ id }) => ({
+        url: makePath(['task-lists', id]),
+        method: 'DELETE',
+      }),
+      onQueryStarted: async ({ id }, { dispatch, queryFulfilled }) => {
+        // cf. https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#pessimistic-updates
+        // (`invalidateTags` behavior appears to be pessimistic)
+        const {
+          data: { data: deletedTaskList },
+        } = await queryFulfilled;
+        const { boardId } = deletedTaskList;
+
+        dispatch(
+          api.util.updateQueryData('getTaskLists', { boardId }, (draft) => {
+            const i = draft.data.findIndex((list) => list.id === id);
+            draft.data.splice(i, 1);
+          })
+        );
+
+        // Don't invalidate tag to avoid unintended refetching resulting in 404.
+        dispatch(
+          api.util.updateQueryData('getTaskList', { id }, (draft) => {
+            draft.data.isDeleted = true;
+          })
+        );
+      },
+    }),
   }),
 });
 
@@ -124,4 +157,5 @@ export const {
   useCreateTaskListMutation,
   useGetTaskListQuery,
   useUpdateTaskListMutation,
+  useDestroyTaskListMutation,
 } = api;

@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 
 import {
   Dialog,
@@ -11,9 +11,11 @@ import {
 
 import { DeleteAction } from '@/store/slices';
 import { useAppDispatch } from '@/utils/hooks';
-import { destroyTaskList } from '@/store/thunks/lists';
 import { destroyTaskCard } from '@/store/thunks/cards';
-import { useDestroyTaskBoardMutation } from '@/store/api';
+import {
+  useDestroyTaskBoardMutation,
+  useDestroyTaskListMutation,
+} from '@/store/api';
 
 type DeleteTaskDialogProps = DeleteAction & {
   open: boolean;
@@ -24,8 +26,15 @@ const DeleteTaskDialog = memo(function DeleteTaskDialog(
   props: DeleteTaskDialogProps
 ): JSX.Element {
   const { open, onClose } = props;
-  const [destroyTaskBoard, { isLoading }] = useDestroyTaskBoardMutation();
+  const [destroyTaskBoard, { isLoading: isLoadingBoard }] =
+    useDestroyTaskBoardMutation();
+  const [destroyTaskList, { isLoading: isLoadingList }] =
+    useDestroyTaskListMutation();
   const dispatch = useAppDispatch();
+
+  const isLoading = useMemo(() => {
+    return isLoadingBoard || isLoadingList;
+  }, [isLoadingBoard, isLoadingList]);
 
   const renderTitle = () => {
     switch (props.model) {
@@ -61,11 +70,11 @@ const DeleteTaskDialog = memo(function DeleteTaskDialog(
       case 'board':
         return destroyTaskBoard(props.data);
       case 'list':
-        return await dispatch(destroyTaskList(props.data));
+        return destroyTaskList(props.data);
       case 'card':
         return await dispatch(destroyTaskCard(props.data));
     }
-  }, [destroyTaskBoard, dispatch, props.data, props.model]);
+  }, [destroyTaskBoard, destroyTaskList, dispatch, props.data, props.model]);
 
   return (
     <Dialog
