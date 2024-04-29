@@ -134,7 +134,7 @@ export type CreateTaskListRequest = {
 } & Partial<Pick<TaskList, 'title' | 'description'>>;
 
 export type FetchTaskListResponse = ApiResponse<{
-  data: TaskList;
+  data: TaskList & SoftDelete;
 }>;
 
 export type FetchTaskListRequest = Pick<TaskList, 'id'>;

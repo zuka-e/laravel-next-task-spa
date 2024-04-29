@@ -1,5 +1,4 @@
 import { memo, useCallback } from 'react';
-import { useRouter } from 'next/router';
 
 import * as yup from 'yup';
 import dayjs from 'dayjs';
@@ -30,15 +29,10 @@ const TaskListDetails = memo(function TaskListDetails(
   props: TaskListDetailsProps
 ): JSX.Element {
   const { list } = props;
-  const router = useRouter();
   const { data: { data: board } = {} } = useGetTaskBoardQuery({
     id: list.boardId,
   });
   const [updateTaskList, { isLoading }] = useUpdateTaskListMutation();
-
-  if (list.isDeleted) {
-    router.replace(`/boards/${list.boardId}`);
-  }
 
   const handleSubmitText = useCallback(
     (text: string): void => {
