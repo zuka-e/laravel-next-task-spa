@@ -63,20 +63,16 @@ const api = baseApi.injectEndpoints({
       }),
       // cf. https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#pessimistic-updates
       onQueryStarted: async ({ boardId }, { dispatch, queryFulfilled }) => {
-        try {
-          const {
-            data: { data: newTaskList },
-          } = await queryFulfilled;
+        const {
+          data: { data: newTaskList },
+        } = await queryFulfilled;
 
-          // Adds new data to the per-board cache instead of invalidating the `LIST` cache.
-          dispatch(
-            api.util.updateQueryData('getTaskLists', { boardId }, (draft) => {
-              draft.data.push(newTaskList);
-            })
-          );
-        } catch (e) {
-          //
-        }
+        // Adds new data to the per-board cache instead of invalidating the `LIST` cache.
+        dispatch(
+          api.util.updateQueryData('getTaskLists', { boardId }, (draft) => {
+            draft.data.push(newTaskList);
+          })
+        );
       },
     }),
     getTaskList: builder.query<FetchTaskListResponse, FetchTaskListRequest>({
@@ -127,13 +123,12 @@ const api = baseApi.injectEndpoints({
         method: 'DELETE',
       }),
       onQueryStarted: async ({ id }, { dispatch, queryFulfilled }) => {
-        // cf. https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#pessimistic-updates
-        // (`invalidateTags` behavior appears to be pessimistic)
         const {
           data: { data: deletedTaskList },
         } = await queryFulfilled;
         const { boardId } = deletedTaskList;
 
+        // Replace cache instead of invalidating the cache.
         dispatch(
           api.util.updateQueryData('getTaskLists', { boardId }, (draft) => {
             const i = draft.data.findIndex((list) => list.id === id);

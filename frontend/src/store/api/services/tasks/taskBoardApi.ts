@@ -108,22 +108,16 @@ const api = baseApi.injectEndpoints({
       }),
       // Invalidates only listed data.
       invalidatesTags: () => getTagsForPartialList(undefined, 'TaskBoard'),
-      onQueryStarted: async ({ id }, { queryFulfilled, dispatch }) => {
-        // cf. https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#pessimistic-updates
-        // (`invalidateTags` behavior appears to be pessimistic)
-        try {
-          await queryFulfilled;
+      // cf. https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#pessimistic-updates
+      onQueryStarted: async ({ id }, { dispatch, queryFulfilled }) => {
+        await queryFulfilled;
 
-          // Don't invalidate the tag to avoid immediate refetching resulting in 404.
-          // todo: consider a better approach.
-          dispatch(
-            api.util.updateQueryData('getTaskBoard', { id }, (draft) => {
-              draft.data.isDeleted = true;
-            })
-          );
-        } catch (e) {
-          //
-        }
+        // Don't invalidate tag to avoid unintended refetching resulting in 404.
+        dispatch(
+          api.util.updateQueryData('getTaskBoard', { id }, (draft) => {
+            draft.data.isDeleted = true;
+          })
+        );
       },
     }),
   }),
