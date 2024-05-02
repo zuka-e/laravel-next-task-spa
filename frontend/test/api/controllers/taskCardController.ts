@@ -1,6 +1,22 @@
+import { type DefaultBodyType, type StrictRequest } from 'msw';
+
 import type { TaskCard, TaskList } from '@/models';
 import type { TaskCardDocument } from '@test/api/models';
 import { db } from '@test/api/database';
+import { paginate } from '@test/utils/paginate';
+
+export const index = (
+  listId: TaskList['id'],
+  request: StrictRequest<DefaultBodyType>
+) => {
+  const cards = db.where(
+    'taskCards',
+    'listId',
+    listId
+  ) as unknown as TaskCard[];
+
+  return paginate({ request, allData: cards });
+};
 
 export const store = (
   listId: TaskList['id'],

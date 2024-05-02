@@ -67,10 +67,11 @@ const initialize = () => {
   if (db.exists('taskCards')) return;
 
   const guestUserBoards = db.where('taskBoards', 'userId', guestUser.id);
-  guestUserBoards.forEach((board) => {
+  guestUserBoards.forEach((board, i) => {
     const guestUserLists = db.where('taskLists', 'boardId', board.id);
-    guestUserLists.forEach((list) => {
-      runSeeder({ count: 2, belongsTo: { user: guestUser, list: list } });
+    guestUserLists.forEach((list, j) => {
+      const count = !i && !j ? 50 : 2;
+      runSeeder({ count, belongsTo: { user: guestUser, list: list } });
     });
   });
 

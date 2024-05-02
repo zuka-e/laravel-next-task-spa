@@ -7,6 +7,8 @@ import type {
   UpdateTaskCardResponse,
   DestroyTaskCardRequest,
   DestroyTaskCardResponse,
+  FetchTaskCardsRequest,
+  FetchTaskCardsResponse,
 } from '@/store/api';
 import { API_ROUTE } from '@/config/api';
 import { makePath } from '@/utils/api';
@@ -20,6 +22,23 @@ type TaskCardParams = {
 };
 
 export const handlers = [
+  http.get(
+    API_ROUTE + makePath(['task-lists', ':listId'], ['task-cards']),
+    withMiddleware<
+      Pick<TaskCardParams, 'listId'>,
+      FetchTaskCardsRequest,
+      FetchTaskCardsResponse
+    >()(async ({ params, request }) => {
+      const paginated = taskCardController.index(params.listId, request);
+
+      return HttpResponse.json({
+        severity: 'info',
+        message: 'タスクカード一覧を取得しました。',
+        ...paginated,
+      });
+    })
+  ),
+
   http.post(
     API_ROUTE + makePath(['task-lists', ':listId'], ['task-cards']),
     withMiddleware<

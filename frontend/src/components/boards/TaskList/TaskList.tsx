@@ -1,14 +1,27 @@
 import { memo, useCallback, useMemo, useState } from 'react';
 
 import { useDrop } from 'react-dnd';
-import { Card, CardActions, Grid, Chip } from '@mui/material';
+import {
+  Card,
+  CardActions,
+  Grid,
+  Chip,
+  Skeleton,
+  CircularProgress,
+} from '@mui/material';
 import type { SelectProps } from '@mui/material';
 
 import * as Model from '@/models';
+import { repeatMap } from '@/utils';
 import { draggableItem, DragItem } from '@/utils/dnd';
-import { useAppDispatch, useAppSelector } from '@/utils/hooks';
+import {
+  useAppDispatch,
+  useAppSelector,
+  useIntersectionObserver,
+} from '@/utils/hooks';
 import { moveCard } from '@/store/slices';
 import { updateTaskCardRelationships } from '@/store/thunks/cards';
+import { useGetTaskCardsQuery } from '@/store/api';
 import { LabeledSelect } from '@/templates';
 import { AddTaskButton } from '..';
 import { TaskCard } from '../TaskCard';
@@ -16,7 +29,7 @@ import { ListCardHeader } from '.';
 
 const cardFilter = {
   ALL: 'All',
-  TODO: 'Incompleted',
+  TODO: 'Incomplete',
   DONE: 'Completed',
 } as const;
 
@@ -29,9 +42,16 @@ type TaskListProps = {
 
 const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
   const { list, listIndex } = props;
+  const [page, setPage] = useState(1);
+  const { data: paginatedCard, isLoading: isLoadingCard } =
+    useGetTaskCardsQuery({ listId: list.id, page, limit: 20 });
   const selectedId = useAppSelector((state) => state.boards.infoBox.data?.id);
   const dispatch = useAppDispatch();
   const [filterValue, setFilterValue] = useState<FilterName>(cardFilter.ALL);
+
+  const nextCardRef = useIntersectionObserver(() => {
+    setPage((paginatedCard?.meta.current_page || 0) + 1);
+  });
 
   /** リスト間のカードの移動を司る */
   const [, drop] = useDrop({
@@ -78,12 +98,12 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
   }, [list.id, selectedId]);
 
   const filteredCards = useMemo((): Model.TaskCard[] => {
-    return (list.cards ?? []).filter((card) => {
+    return (paginatedCard?.data ?? []).filter((card) => {
       if (filterValue === cardFilter.TODO) return !card.done;
       else if (filterValue === cardFilter.DONE) return card.done;
       else return true;
     });
-  }, [filterValue, list.cards]);
+  }, [filterValue, paginatedCard?.data]);
 
   const handleChange = useCallback<NonNullable<SelectProps['onChange']>>(
     (event): void => {
@@ -122,14 +142,23 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
 
       <div className="max-h-[90vh] overflow-y-auto p-2">
         <div className="flex flex-col gap-2">
-          {filteredCards.map((card, i) => (
-            <TaskCard
-              key={card.id}
-              card={card}
-              cardIndex={i}
-              listIndex={listIndex}
-            />
-          ))}
+          {isLoadingCard
+            ? repeatMap(3, (i) => (
+                <Skeleton key={i} variant="rectangular" height={40} />
+              ))
+            : filteredCards.map((card, i) => (
+                <TaskCard
+                  key={card.id}
+                  card={card}
+                  cardIndex={i}
+                  listIndex={listIndex}
+                />
+              ))}
+          {paginatedCard?.links.next && (
+            <div className="my-2 text-center">
+              <CircularProgress ref={nextCardRef} />
+            </div>
+          )}
         </div>
       </div>
 

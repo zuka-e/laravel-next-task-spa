@@ -152,6 +152,12 @@ export type DestroyTaskListResponse = ApiResponse<{
 
 export type DestroyTaskListRequest = Pick<TaskList, 'id'>;
 
+export type FetchTaskCardsResponse = ApiResponse<PaginationResponse<TaskCard>>;
+
+export type FetchTaskCardsRequest = PaginationRequest<{
+  listId: TaskList['id'];
+}>;
+
 export type CreateTaskCardResponse = ApiResponse<{
   data: TaskCard;
 }>;
