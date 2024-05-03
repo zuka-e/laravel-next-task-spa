@@ -2,11 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { TaskBoard, TaskBoardsCollection, TaskCard, TaskList } from '@/models';
 import { compare, SortOperation } from '@/utils/sort';
-import {
-  createTaskCard,
-  updateTaskCard,
-  destroyTaskCard,
-} from '@/store/thunks/cards';
+import { updateTaskCard, destroyTaskCard } from '@/store/thunks/cards';
 import { updateTaskCardRelationships } from '@/store/thunks/cards/updateTaskCardRelationships';
 
 export type FormAction =
@@ -97,29 +93,6 @@ export const taskBoardSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(createTaskCard.pending, (state, _action) => {
-      state.loading = true;
-    });
-
-    builder.addCase(createTaskCard.fulfilled, (state, action) => {
-      const newCard = action.payload.data;
-      const boardId = action.payload.boardId;
-      const listId = newCard.listId;
-
-      newCard.boardId = boardId;
-      const list = state.docs[boardId].lists.find((list) => list.id === listId);
-
-      if (!list) throw new Error();
-
-      list.cards = [...list.cards, { ...newCard }];
-
-      state.loading = false;
-    });
-
-    builder.addCase(createTaskCard.rejected, (state, _action) => {
-      state.loading = false;
-    });
-
     builder.addCase(updateTaskCard.pending, (state, _action) => {
       state.loading = true;
     });

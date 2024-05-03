@@ -1,6 +1,11 @@
 import { makePath } from '@/utils/api';
 import baseApi from './baseApi';
-import type { FetchTaskCardsRequest, FetchTaskCardsResponse } from './types';
+import type {
+  CreateTaskCardRequest,
+  CreateTaskCardResponse,
+  FetchTaskCardsRequest,
+  FetchTaskCardsResponse,
+} from './types';
 
 /**
  * @see https://redux-toolkit.js.org/rtk-query/api/created-api/code-splitting
@@ -41,7 +46,30 @@ const api = baseApi.injectEndpoints({
         return currentArg !== previousArg;
       },
     }),
+    createTaskCard: builder.mutation<
+      CreateTaskCardResponse,
+      CreateTaskCardRequest
+    >({
+      query: ({ listId, ...data }) => ({
+        url: makePath(['task-lists', listId], ['task-cards']),
+        method: 'POST',
+        data,
+      }),
+      // cf. https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#pessimistic-updates
+      onQueryStarted: async ({ listId }, { dispatch, queryFulfilled }) => {
+        const {
+          data: { data: newTaskCard },
+        } = await queryFulfilled;
+
+        // Adds new data to the per-board cache instead of invalidating the `LIST` cache.
+        dispatch(
+          api.util.updateQueryData('getTaskCards', { listId }, (draft) => {
+            draft.data.push(newTaskCard);
+          })
+        );
+      },
+    }),
   }),
 });
 
-export const { useGetTaskCardsQuery } = api;
+export const { useGetTaskCardsQuery, useCreateTaskCardMutation } = api;

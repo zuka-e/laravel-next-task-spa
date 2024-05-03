@@ -162,7 +162,9 @@ export type CreateTaskCardResponse = ApiResponse<{
   data: TaskCard;
 }>;
 
-export type CreateTaskCardRequest = Pick<TaskCard, 'title'> &
+export type CreateTaskCardRequest = {
+  listId: TaskList['id'];
+} & Pick<TaskCard, 'title'> &
   Partial<Pick<TaskCard, 'content' | 'deadline' | 'done'>>;
 
 export type UpdateTaskCardResponse = ApiResponse<{

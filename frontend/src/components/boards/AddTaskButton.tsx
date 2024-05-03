@@ -11,6 +11,7 @@ import { FormAction } from '@/store/slices/taskBoardSlice';
 import {
   useCreateTaskBoardMutation,
   useCreateTaskListMutation,
+  useCreateTaskCardMutation,
 } from '@/store/api';
 import {
   isApiError,
@@ -38,6 +39,8 @@ const AddTaskButton = memo(function AddTaskButton(
     useCreateTaskBoardMutation();
   const [createTaskList, { isLoading: isLoadingToCreateList }] =
     useCreateTaskListMutation();
+  const [createTaskCard, { isLoading: isLoadingToCreateCard }] =
+    useCreateTaskCardMutation();
   const [apiError, setApiError] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const {
@@ -50,8 +53,10 @@ const AddTaskButton = memo(function AddTaskButton(
   });
 
   const isLoading = useMemo((): boolean => {
-    return isLoadingToCreateBoard || isLoadingToCreateList;
-  }, [isLoadingToCreateBoard, isLoadingToCreateList]);
+    return (
+      isLoadingToCreateBoard || isLoadingToCreateList || isLoadingToCreateCard
+    );
+  }, [isLoadingToCreateBoard, isLoadingToCreateList, isLoadingToCreateCard]);
 
   const onSubmit = useCallback(
     async (data: FormData): Promise<void> => {
@@ -71,6 +76,8 @@ const AddTaskButton = memo(function AddTaskButton(
             break;
           }
           case 'card': {
+            const listId = props.parent.id;
+            createTaskCard({ listId, ...data });
             break;
           }
         }
@@ -84,7 +91,7 @@ const AddTaskButton = memo(function AddTaskButton(
         }
       }
     },
-    [createTaskBoard, createTaskList, method, model, props]
+    [createTaskBoard, createTaskList, createTaskCard, method, model, props]
   );
 
   return (
