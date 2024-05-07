@@ -6,11 +6,15 @@ import { CardContent, IconButton, Skeleton, Stack } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { clsx } from 'clsx';
 
-import type { TaskBoard, TaskList } from '@/models';
-import { useGetTaskBoardQuery, useGetTaskListQuery } from '@/store/api';
+import type { TaskBoard, TaskCard, TaskList } from '@/models';
+import {
+  useGetTaskBoardQuery,
+  useGetTaskListQuery,
+  useGetTaskCardQuery,
+} from '@/store/api';
 import { repeatMap } from '@/utils';
 import { useRoute } from '@/utils/hooks';
-import { TaskBoardDetails, TaskListDetails } from '.';
+import { TaskBoardDetails, TaskCardDetails, TaskListDetails } from '.';
 
 /** The key of the query parameter that specifies.  */
 const QUERY_KEY = 'details' as const;
@@ -50,6 +54,13 @@ export const showTaskListDetails = (id: TaskList['id']): void => {
 };
 
 /**
+ * Show the details of the specified task data by setting a query parameter.
+ */
+export const showTaskCardDetails = (id: TaskCard['id']): void => {
+  setTaskDetailsQuery('c', id);
+};
+
+/**
  * Hide the details of tasks by removing the query parameter.
  */
 const hideTaskDetails = (): void => {
@@ -77,12 +88,15 @@ const useGetTaskDetailsQuery = () => {
 
   const boardQuery = useGetTaskBoardQuery(type === 'b' ? { id } : skipToken);
   const listQuery = useGetTaskListQuery(type === 'l' ? { id } : skipToken);
+  const cardQuery = useGetTaskCardQuery(type === 'c' ? { id } : skipToken);
 
   switch (type) {
     case 'b':
       return { type, id, ...boardQuery };
     case 'l':
       return { type, id, ...listQuery };
+    case 'c':
+      return { type, id, ...cardQuery };
     default:
       return undefined;
   }
@@ -119,6 +133,12 @@ const InfoBox = memo(function InfoBox(props: JSX.IntrinsicElements['div']) {
           return <></>;
         }
         return <TaskListDetails list={data.data} />;
+      case 'c':
+        if (isDeleted) {
+          router.replace(`/boards/${data.data.boardId}`);
+          return <></>;
+        }
+        return <TaskCardDetails card={data.data} />;
       default:
         throw new Error('Unexpected Error.');
     }

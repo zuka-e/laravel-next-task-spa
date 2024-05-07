@@ -167,6 +167,12 @@ export type CreateTaskCardRequest = {
 } & Pick<TaskCard, 'title'> &
   Partial<Pick<TaskCard, 'content' | 'deadline' | 'done'>>;
 
+export type FetchTaskCardResponse = ApiResponse<{
+  data: TaskCard & SoftDelete;
+}>;
+
+export type FetchTaskCardRequest = Pick<TaskCard, 'id'>;
+
 export type UpdateTaskCardResponse = ApiResponse<{
   data: TaskCard;
 }>;

@@ -3,6 +3,8 @@ import baseApi from './baseApi';
 import type {
   CreateTaskCardRequest,
   CreateTaskCardResponse,
+  FetchTaskCardRequest,
+  FetchTaskCardResponse,
   FetchTaskCardsRequest,
   FetchTaskCardsResponse,
 } from './types';
@@ -69,7 +71,19 @@ const api = baseApi.injectEndpoints({
         );
       },
     }),
+    getTaskCard: builder.query<FetchTaskCardResponse, FetchTaskCardRequest>({
+      query: ({ id }) => ({
+        url: makePath(['task-cards', id]),
+      }),
+      providesTags: (res, _err, _req) => {
+        return [{ type: 'TaskCard', id: res?.data.id }];
+      },
+    }),
   }),
 });
 
-export const { useGetTaskCardsQuery, useCreateTaskCardMutation } = api;
+export const {
+  useGetTaskCardsQuery,
+  useCreateTaskCardMutation,
+  useGetTaskCardQuery,
+} = api;

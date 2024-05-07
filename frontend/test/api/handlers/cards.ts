@@ -9,6 +9,8 @@ import type {
   DestroyTaskCardResponse,
   FetchTaskCardsRequest,
   FetchTaskCardsResponse,
+  FetchTaskCardRequest,
+  FetchTaskCardResponse,
 } from '@/store/api';
 import { API_ROUTE } from '@/config/api';
 import { makePath } from '@/utils/api';
@@ -57,6 +59,27 @@ export const handlers = [
         },
         { status: 201 }
       );
+    })
+  ),
+
+  http.get(
+    API_ROUTE + makePath(['task-cards', ':cardId']),
+    withMiddleware<
+      TaskCardParams,
+      FetchTaskCardRequest,
+      FetchTaskCardResponse
+    >()(async ({ params }) => {
+      const taskCard = taskCardController.show(params['cardId']);
+
+      if (!taskCard) {
+        return notFoundErrorResponse();
+      }
+
+      return HttpResponse.json({
+        severity: 'info',
+        message: 'タスクカードを取得しました。',
+        data: taskCard,
+      });
     })
   ),
 

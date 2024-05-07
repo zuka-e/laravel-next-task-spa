@@ -6,7 +6,8 @@ import { Card, Typography } from '@mui/material';
 import * as Model from '@/models';
 import { draggableItem, DragItem } from '@/utils/dnd';
 import { useAppDispatch, useAppSelector } from '@/utils/hooks';
-import { moveCard, openInfoBox } from '@/store/slices/taskBoardSlice';
+import { moveCard } from '@/store/slices/taskBoardSlice';
+import { showTaskCardDetails } from '@/components/boards/InfoBox/InfoBox';
 
 type TaskCardProps = {
   card: Model.TaskCard;
@@ -70,8 +71,8 @@ const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
   }, [card.id, selectedId]);
 
   const handleClick = useCallback((): void => {
-    dispatch(openInfoBox({ model: 'card', data: card }));
-  }, [card, dispatch]);
+    showTaskCardDetails(card.id);
+  }, [card.id]);
 
   return (
     <Card

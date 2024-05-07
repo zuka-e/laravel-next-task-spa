@@ -34,6 +34,14 @@ export const store = (
   return response;
 };
 
+export const show = (id: TaskCard['id']) => {
+  const card = db.where('taskCards', 'id', id)[0];
+
+  if (!card) return;
+
+  return card as unknown as TaskCard;
+};
+
 export const update = (
   id: TaskCard['id'],
   params: Partial<Omit<TaskCard, 'id' | 'listId'>>
