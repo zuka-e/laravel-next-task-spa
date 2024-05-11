@@ -46,6 +46,7 @@ const AddTaskButton = memo(function AddTaskButton(
   const {
     register,
     handleSubmit,
+    resetField,
     formState: { errors },
   } = useForm<FormData>({
     mode: 'onBlur',
@@ -81,6 +82,9 @@ const AddTaskButton = memo(function AddTaskButton(
             break;
           }
         }
+
+        setIsEditing(false);
+        resetField('title');
       } catch (e) {
         if (!isApiError(e)) {
           throw e;
@@ -91,7 +95,15 @@ const AddTaskButton = memo(function AddTaskButton(
         }
       }
     },
-    [createTaskBoard, createTaskList, createTaskCard, method, model, props]
+    [
+      resetField,
+      createTaskBoard,
+      createTaskList,
+      createTaskCard,
+      method,
+      model,
+      props,
+    ]
   );
 
   return (
