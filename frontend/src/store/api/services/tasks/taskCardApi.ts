@@ -7,6 +7,8 @@ import type {
   FetchTaskCardResponse,
   FetchTaskCardsRequest,
   FetchTaskCardsResponse,
+  UpdateTaskCardRequest,
+  UpdateTaskCardResponse,
 } from './types';
 
 /**
@@ -79,6 +81,37 @@ const api = baseApi.injectEndpoints({
         return [{ type: 'TaskCard', id: res?.data.id }];
       },
     }),
+    updateTaskCard: builder.mutation<
+      UpdateTaskCardResponse,
+      UpdateTaskCardRequest
+    >({
+      query: ({ id, ...data }) => ({
+        url: makePath(['task-cards', id]),
+        method: 'PATCH',
+        data,
+      }),
+      onQueryStarted: async (_req, { dispatch, queryFulfilled }) => {
+        const {
+          data: { data: updatedTaskCard },
+        } = await queryFulfilled;
+        const { listId } = updatedTaskCard;
+
+        // Replace cache instead of invalidating the cache.
+        dispatch(
+          api.util.updateQueryData('getTaskCards', { listId }, (draft) => {
+            const current = draft.data.find(
+              (card) => card.id === updatedTaskCard.id
+            );
+
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            Object.assign(current!, updatedTaskCard);
+          })
+        );
+      },
+      invalidatesTags: (_res, _err, req) => {
+        return [{ type: 'TaskCard', id: req.id }];
+      },
+    }),
   }),
 });
 
@@ -86,4 +119,5 @@ export const {
   useGetTaskCardsQuery,
   useCreateTaskCardMutation,
   useGetTaskCardQuery,
+  useUpdateTaskCardMutation,
 } = api;

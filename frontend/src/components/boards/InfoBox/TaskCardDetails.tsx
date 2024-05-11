@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 
 import * as yup from 'yup';
 import dayjs from 'dayjs';
@@ -10,21 +10,17 @@ import {
   CardActions,
   FormControlLabel,
   Checkbox,
-  IconButton,
   Typography,
   Breadcrumbs,
 } from '@mui/material';
 import {
-  Close as CloseIcon,
   ListAlt as ListAltIcon,
   Assignment as AssignmentIcon,
   Delete as DeleteIcon,
 } from '@mui/icons-material';
 
 import { TaskCard } from '@/models';
-import { useAppDispatch } from '@/utils/hooks';
-import { closeInfoBox } from '@/store/slices/taskBoardSlice';
-import { updateTaskCard } from '@/store/thunks/cards';
+import { useUpdateTaskCardMutation } from '@/store/api';
 import {
   DatetimeInput,
   DeleteTaskDialog,
@@ -43,48 +39,26 @@ const TaskCardDetails = memo(function TaskCardDetails(
   props: TaskCardDetailsProps
 ): JSX.Element {
   const { card } = props;
-  const dispatch = useAppDispatch();
   const { data: { data: list } = {} } = useGetTaskListQuery({
     id: card.listId,
   });
-  const [checked, setChecked] = useState(card.done);
+  const [updateTaskCard, { isLoading }] = useUpdateTaskCardMutation();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
-  // 表示するデータが変更された場合に値を初期化する
-  useEffect(() => {
-    setChecked(card.done);
-  }, [card.done]);
-
   const handleCheckbox = useCallback((): void => {
-    setChecked(!checked);
-    dispatch(
-      updateTaskCard({
-        id: card.id,
-        boardId: card.boardId,
-        listId: card.listId,
-        done: !card.done,
-      })
-    );
-  }, [card.boardId, card.done, card.id, card.listId, checked, dispatch]);
-
-  const handleClose = useCallback((): void => {
-    dispatch(closeInfoBox());
-  }, [dispatch]);
+    updateTaskCard({ id: card.id, done: !card.done });
+  }, [card.done, card.id, updateTaskCard]);
 
   const handleDateChange = useCallback<
     NonNullable<DatetimeInputProps['onAccept']>
   >(
     (date): void => {
-      dispatch(
-        updateTaskCard({
-          id: card.id,
-          boardId: card.boardId,
-          listId: card.listId,
-          deadline: date?.toISOString(),
-        })
-      );
+      updateTaskCard({
+        id: card.id,
+        deadline: date?.toISOString(),
+      });
     },
-    [card.boardId, card.id, card.listId, dispatch]
+    [card.id, updateTaskCard]
   );
 
   const handleDelete = useCallback((): void => {
@@ -97,16 +71,12 @@ const TaskCardDetails = memo(function TaskCardDetails(
 
   const handleSubmitText = useCallback(
     (text: string): void => {
-      dispatch(
-        updateTaskCard({
-          id: card.id,
-          boardId: card.boardId,
-          listId: card.listId,
-          content: text,
-        })
-      );
+      updateTaskCard({
+        id: card.id,
+        content: text,
+      });
     },
-    [card.boardId, card.id, card.listId, dispatch]
+    [card.id, updateTaskCard]
   );
 
   return (
@@ -132,13 +102,6 @@ const TaskCardDetails = memo(function TaskCardDetails(
             {'Card'}
           </Typography>
         </Breadcrumbs>
-        <IconButton
-          aria-label="close"
-          onClick={handleClose}
-          className="ml-auto"
-        >
-          <CloseIcon />
-        </IconButton>
       </CardActions>
       <div className="overflow-y-auto">
         <CardHeader
@@ -147,7 +110,7 @@ const TaskCardDetails = memo(function TaskCardDetails(
         />
         <CardContent className="flex flex-col gap-3 py-0">
           <FormControlLabel
-            label={card.done ? 'Completed' : 'Incompleted'}
+            label={card.done ? 'Completed' : 'Incomplete'}
             className="w-fit"
             control={
               <Checkbox
@@ -197,6 +160,7 @@ const TaskCardDetails = memo(function TaskCardDetails(
               content: yup.string().label('Content').min(20),
             })}
             defaultValue={card.content}
+            isLoading={isLoading}
           />
         </CardContent>
 

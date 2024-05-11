@@ -177,9 +177,8 @@ export type UpdateTaskCardResponse = ApiResponse<{
   data: TaskCard;
 }>;
 
-export type UpdateTaskCardRequest = Partial<
-  Pick<TaskCard, 'listId' | 'title' | 'content' | 'deadline' | 'done'>
->;
+export type UpdateTaskCardRequest = Pick<TaskCard, 'id'> &
+  Partial<Pick<TaskCard, 'listId' | 'title' | 'content' | 'deadline' | 'done'>>;
 
 export type DestroyTaskCardResponse = ApiResponse<{
   data: TaskCard;

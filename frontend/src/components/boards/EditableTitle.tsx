@@ -1,14 +1,11 @@
 import { forwardRef, memo, useCallback, useMemo, useState } from 'react';
 
-import type { AsyncThunk } from '@reduxjs/toolkit';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { TextField, TextFieldProps } from '@mui/material';
 
 import type { FormAction } from '@/store/slices/taskBoardSlice';
-import type { AsyncThunkConfig } from '@/store/thunks/config';
-import { useAppDispatch } from '@/utils/hooks';
 import {
   isApiError,
   isInvalidRequest,
@@ -17,9 +14,8 @@ import {
 import {
   useUpdateTaskBoardMutation,
   useUpdateTaskListMutation,
+  useUpdateTaskCardMutation,
 } from '@/store/api';
-import { updateTaskCard } from '@/store/thunks/cards';
-import { pushFlash } from '@/store/slices';
 
 type FormData = {
   title: string;
@@ -40,9 +36,10 @@ const EditableTitle = memo(function EditableTitle(
     useUpdateTaskBoardMutation();
   const [updateTaskList, { isLoading: isLoadingToUpdateList }] =
     useUpdateTaskListMutation();
+  const [updateTaskCard, { isLoading: isLoadingToUpdateCard }] =
+    useUpdateTaskCardMutation();
   const [isEditing, setIsEditing] = useState(false);
   const [apiError, setApiError] = useState('');
-  const dispatch = useAppDispatch();
   const {
     register,
     handleSubmit,
@@ -53,31 +50,10 @@ const EditableTitle = memo(function EditableTitle(
   });
 
   const isLoading = useMemo((): boolean => {
-    return isLoadingToUpdateBoard || isLoadingToUpdateList;
-  }, [isLoadingToUpdateBoard, isLoadingToUpdateList]);
-
-  const handleDispatch = useCallback(
-    async <
-      T extends AsyncThunk<
-        Parameters<T['fulfilled']>[0],
-        Parameters<T>[0],
-        AsyncThunkConfig
-      >
-    >(
-      thunk: T,
-      payload: Parameters<T>[0]
-    ) => {
-      const response = await dispatch(thunk(payload));
-      if (thunk.rejected.match(response)) {
-        const errorMessage =
-          response.payload?.error.message || 'Unexpected Error';
-        dispatch(pushFlash({ severity: 'error', message: errorMessage }));
-      } else {
-        setIsEditing(false);
-      }
-    },
-    [dispatch]
-  );
+    return (
+      isLoadingToUpdateBoard || isLoadingToUpdateList || isLoadingToUpdateCard
+    );
+  }, [isLoadingToUpdateBoard, isLoadingToUpdateList, isLoadingToUpdateCard]);
 
   const onSubmit = useCallback(
     async (data: FormData): Promise<void> => {
@@ -94,15 +70,7 @@ const EditableTitle = memo(function EditableTitle(
             break;
           }
           case 'card': {
-            const id = props.data.id;
-            const boardId = props.data.boardId;
-            const listId = props.data.listId;
-            handleDispatch(updateTaskCard, {
-              id,
-              boardId,
-              listId,
-              ...data,
-            });
+            updateTaskCard({ id: props.data.id, ...data });
             break;
           }
         }
@@ -116,7 +84,7 @@ const EditableTitle = memo(function EditableTitle(
         }
       }
     },
-    [handleDispatch, method, model, props, updateTaskBoard, updateTaskList]
+    [method, model, props, updateTaskBoard, updateTaskList, updateTaskCard]
   );
 
   return (

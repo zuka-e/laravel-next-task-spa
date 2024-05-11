@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { TaskBoard, TaskBoardsCollection, TaskCard, TaskList } from '@/models';
 import { compare, SortOperation } from '@/utils/sort';
-import { updateTaskCard, destroyTaskCard } from '@/store/thunks/cards';
+import { destroyTaskCard } from '@/store/thunks/cards';
 import { updateTaskCardRelationships } from '@/store/thunks/cards/updateTaskCardRelationships';
 
 export type FormAction =
@@ -93,33 +93,6 @@ export const taskBoardSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(updateTaskCard.pending, (state, _action) => {
-      state.loading = true;
-    });
-
-    builder.addCase(updateTaskCard.fulfilled, (state, action) => {
-      const updatedCard = action.payload.data;
-      const boardId = action.payload.boardId;
-      const board = state.docs[boardId];
-      const list = board.lists.find((list) => list.id === updatedCard.listId);
-      const currentCard = list?.cards.find(
-        (card) => card.id === updatedCard.id
-      );
-
-      if (!currentCard) throw new Error();
-
-      Object.assign(currentCard, updatedCard);
-
-      if (currentCard?.id === state.infoBox.data?.id)
-        state.infoBox.data = { ...state.infoBox.data, ...updatedCard };
-
-      state.loading = false;
-    });
-
-    builder.addCase(updateTaskCard.rejected, (state, _action) => {
-      state.loading = false;
-    });
-
     builder.addCase(updateTaskCardRelationships.pending, (state, _action) => {
       state.loading = true;
     });
