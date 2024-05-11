@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import Router, { useRouter } from 'next/router';
+import Router from 'next/router';
 
 import { skipToken } from '@reduxjs/toolkit/query';
 import { CardContent, IconButton, Skeleton, Stack } from '@mui/material';
@@ -104,7 +104,6 @@ const useGetTaskDetailsQuery = () => {
 
 const InfoBox = memo(function InfoBox(props: JSX.IntrinsicElements['div']) {
   const { className, ...divProps } = props;
-  const router = useRouter();
   const taskDetailsQuery = useGetTaskDetailsQuery();
 
   if (!taskDetailsQuery) {
@@ -120,24 +119,16 @@ const InfoBox = memo(function InfoBox(props: JSX.IntrinsicElements['div']) {
 
     const { isDeleted } = data.data;
 
+    if (isDeleted) {
+      hideTaskDetails();
+    }
+
     switch (type) {
       case 'b':
-        if (isDeleted) {
-          router.replace('/boards');
-          return <></>;
-        }
         return <TaskBoardDetails board={data.data} />;
       case 'l':
-        if (isDeleted) {
-          router.replace(`/boards/${data.data.boardId}`);
-          return <></>;
-        }
         return <TaskListDetails list={data.data} />;
       case 'c':
-        if (isDeleted) {
-          router.replace(`/boards/${data.data.boardId}`);
-          return <></>;
-        }
         return <TaskCardDetails card={data.data} />;
       default:
         throw new Error('Unexpected Error.');
