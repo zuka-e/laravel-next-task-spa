@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { TaskBoard, TaskBoardsCollection, TaskCard, TaskList } from '@/models';
 import { compare, SortOperation } from '@/utils/sort';
-import { destroyTaskCard } from '@/store/thunks/cards';
 import { updateTaskCardRelationships } from '@/store/thunks/cards/updateTaskCardRelationships';
 
 export type FormAction =
@@ -102,29 +101,6 @@ export const taskBoardSlice = createSlice({
     });
 
     builder.addCase(updateTaskCardRelationships.rejected, (state, _action) => {
-      state.loading = false;
-    });
-
-    builder.addCase(destroyTaskCard.pending, (state, _action) => {
-      state.loading = true;
-    });
-
-    builder.addCase(destroyTaskCard.fulfilled, (state, action) => {
-      const deletedCard = action.payload.data;
-      const boardId = action.payload.boardId;
-      const board = state.docs[boardId];
-      const list = board.lists.find((list) => list.id === deletedCard.listId);
-
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      list!.cards = list!.cards.filter((card) => card.id !== deletedCard.id);
-
-      if (deletedCard.id === state.infoBox.data?.id)
-        state.infoBox = initialState.infoBox;
-
-      state.loading = false;
-    });
-
-    builder.addCase(destroyTaskCard.rejected, (state, _action) => {
       state.loading = false;
     });
   },

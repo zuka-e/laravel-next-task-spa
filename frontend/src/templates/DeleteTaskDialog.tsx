@@ -10,11 +10,10 @@ import {
 } from '@mui/material';
 
 import { DeleteAction } from '@/store/slices';
-import { useAppDispatch } from '@/utils/hooks';
-import { destroyTaskCard } from '@/store/thunks/cards';
 import {
   useDestroyTaskBoardMutation,
   useDestroyTaskListMutation,
+  useDestroyTaskCardMutation,
 } from '@/store/api';
 
 type DeleteTaskDialogProps = DeleteAction & {
@@ -30,11 +29,12 @@ const DeleteTaskDialog = memo(function DeleteTaskDialog(
     useDestroyTaskBoardMutation();
   const [destroyTaskList, { isLoading: isLoadingList }] =
     useDestroyTaskListMutation();
-  const dispatch = useAppDispatch();
+  const [destroyTaskCard, { isLoading: isLoadingCard }] =
+    useDestroyTaskCardMutation();
 
   const isLoading = useMemo(() => {
-    return isLoadingBoard || isLoadingList;
-  }, [isLoadingBoard, isLoadingList]);
+    return isLoadingBoard || isLoadingList || isLoadingCard;
+  }, [isLoadingBoard, isLoadingList, isLoadingCard]);
 
   const renderTitle = () => {
     switch (props.model) {
@@ -72,9 +72,15 @@ const DeleteTaskDialog = memo(function DeleteTaskDialog(
       case 'list':
         return destroyTaskList(props.data);
       case 'card':
-        return await dispatch(destroyTaskCard(props.data));
+        return destroyTaskCard(props.data);
     }
-  }, [destroyTaskBoard, destroyTaskList, dispatch, props.data, props.model]);
+  }, [
+    destroyTaskBoard,
+    destroyTaskList,
+    destroyTaskCard,
+    props.data,
+    props.model,
+  ]);
 
   return (
     <Dialog

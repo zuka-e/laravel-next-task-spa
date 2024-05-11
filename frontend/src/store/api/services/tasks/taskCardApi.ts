@@ -3,6 +3,8 @@ import baseApi from './baseApi';
 import type {
   CreateTaskCardRequest,
   CreateTaskCardResponse,
+  DestroyTaskCardRequest,
+  DestroyTaskCardResponse,
   FetchTaskCardRequest,
   FetchTaskCardResponse,
   FetchTaskCardsRequest,
@@ -112,6 +114,36 @@ const api = baseApi.injectEndpoints({
         return [{ type: 'TaskCard', id: req.id }];
       },
     }),
+    destroyTaskCard: builder.mutation<
+      DestroyTaskCardResponse,
+      DestroyTaskCardRequest
+    >({
+      query: ({ id }) => ({
+        url: makePath(['task-cards', id]),
+        method: 'DELETE',
+      }),
+      onQueryStarted: async ({ id }, { dispatch, queryFulfilled }) => {
+        const {
+          data: { data: deletedTaskCard },
+        } = await queryFulfilled;
+        const { listId } = deletedTaskCard;
+
+        // Replace cache instead of invalidating the cache.
+        dispatch(
+          api.util.updateQueryData('getTaskCards', { listId }, (draft) => {
+            const i = draft.data.findIndex((card) => card.id === id);
+            draft.data.splice(i, 1);
+          })
+        );
+
+        // Don't invalidate tag to avoid unintended refetching resulting in 404.
+        dispatch(
+          api.util.updateQueryData('getTaskCard', { id }, (draft) => {
+            draft.data.isDeleted = true;
+          })
+        );
+      },
+    }),
   }),
 });
 
@@ -120,4 +152,5 @@ export const {
   useCreateTaskCardMutation,
   useGetTaskCardQuery,
   useUpdateTaskCardMutation,
+  useDestroyTaskCardMutation,
 } = api;
