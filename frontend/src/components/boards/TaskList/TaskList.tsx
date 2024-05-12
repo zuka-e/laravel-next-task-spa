@@ -1,5 +1,6 @@
 import { memo, useCallback, useMemo, useState } from 'react';
 
+import clsx from 'clsx';
 import { useDrop } from 'react-dnd';
 import {
   Card,
@@ -14,11 +15,8 @@ import type { SelectProps } from '@mui/material';
 import * as Model from '@/models';
 import { repeatMap } from '@/utils';
 import { draggableItem, DragItem } from '@/utils/dnd';
-import {
-  useAppDispatch,
-  useAppSelector,
-  useIntersectionObserver,
-} from '@/utils/hooks';
+import { useAppDispatch, useIntersectionObserver } from '@/utils/hooks';
+import { useTaskDetails } from '@/lib/hooks';
 import { moveCard } from '@/store/slices';
 import { updateTaskCardRelationships } from '@/store/thunks/cards';
 import { useGetTaskCardsQuery } from '@/store/api';
@@ -45,7 +43,7 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
   const [page, setPage] = useState(1);
   const { data: paginatedCard, isLoading: isLoadingCard } =
     useGetTaskCardsQuery({ listId: list.id, page, limit: 20 });
-  const selectedId = useAppSelector((state) => state.boards.infoBox.data?.id);
+  const { isTaskSelected } = useTaskDetails();
   const dispatch = useAppDispatch();
   const [filterValue, setFilterValue] = useState<FilterName>(cardFilter.ALL);
 
@@ -93,10 +91,6 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
     },
   });
 
-  const isSelected = useCallback((): boolean => {
-    return list.id === selectedId;
-  }, [list.id, selectedId]);
-
   const filteredCards = useMemo((): Model.TaskCard[] => {
     return (paginatedCard?.data ?? []).filter((card) => {
       if (filterValue === cardFilter.TODO) return !card.done;
@@ -116,10 +110,12 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
     <Card
       ref={drop}
       elevation={7}
-      className={
-        'bg-secondary text-white' +
-        (isSelected() ? ' bg-secondary-dark outline outline-primary' : '')
-      }
+      className={clsx(
+        'text-white',
+        isTaskSelected('l', list.id)
+          ? 'bg-secondary-dark outline outline-primary'
+          : 'bg-secondary'
+      )}
     >
       <ListCardHeader list={list} />
 

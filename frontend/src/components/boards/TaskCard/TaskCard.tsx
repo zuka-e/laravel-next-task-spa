@@ -1,13 +1,14 @@
 import { memo, useCallback, useRef } from 'react';
 
+import clsx from 'clsx';
 import { useDrag, useDrop } from 'react-dnd';
 import { Card, Typography } from '@mui/material';
 
 import * as Model from '@/models';
 import { draggableItem, DragItem } from '@/utils/dnd';
-import { useAppDispatch, useAppSelector } from '@/utils/hooks';
+import { useAppDispatch } from '@/utils/hooks';
+import { useTaskDetails } from '@/lib/hooks';
 import { moveCard } from '@/store/slices/taskBoardSlice';
-import { showTaskCardDetails } from '@/components/boards/InfoBox/InfoBox';
 
 type TaskCardProps = {
   card: Model.TaskCard;
@@ -17,8 +18,8 @@ type TaskCardProps = {
 
 const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
   const { card, cardIndex, listIndex } = props;
-  const selectedId = useAppSelector((state) => state.boards.infoBox.data?.id);
   const dispatch = useAppDispatch();
+  const { showTaskDetails, isTaskSelected } = useTaskDetails();
   const ref = useRef<HTMLDivElement>(null);
 
   const [, drag] = useDrag<DragItem, unknown, unknown>({
@@ -66,23 +67,19 @@ const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
 
   drag(drop(ref));
 
-  const isSelected = useCallback((): boolean => {
-    return card.id === selectedId;
-  }, [card.id, selectedId]);
-
   const handleClick = useCallback((): void => {
-    showTaskCardDetails(card.id);
-  }, [card.id]);
+    showTaskDetails('c', card.id);
+  }, [card.id, showTaskDetails]);
 
   return (
     <Card
       ref={ref}
       onClick={handleClick}
-      className={
-        'cursor-pointer hover:opacity-80' +
-        (isSelected() ? ' opacity-80 outline outline-primary ' : ' ') +
-        (isOver ? 'opacity-0' : '')
-      }
+      className={clsx(
+        'cursor-pointer hover:opacity-80',
+        isTaskSelected('c', card.id) && 'opacity-80 outline outline-primary',
+        isOver && 'opacity-0'
+      )}
     >
       <Typography
         title={card.title}

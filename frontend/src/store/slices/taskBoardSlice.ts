@@ -31,20 +31,13 @@ type MoveCardAction = {
   listId?: string;
 };
 
-type InfoBoxAction =
-  | { model: 'board'; data: TaskBoard }
-  | { model: 'list'; data: TaskList }
-  | { model: 'card'; data: TaskCard };
-
 type TaskBoardState = {
   loading: boolean;
-  infoBox: { open: boolean } & InfoBoxAction;
   docs: TaskBoardsCollection;
 };
 
 const initialState = {
   loading: false,
-  infoBox: {} as TaskBoardState['infoBox'],
   docs: {},
   data: [],
 } as TaskBoardState;
@@ -53,17 +46,6 @@ export const taskBoardSlice = createSlice({
   name: 'taskBoard',
   initialState,
   reducers: {
-    openInfoBox(state, action: PayloadAction<InfoBoxAction>) {
-      state.infoBox.open = true;
-      state.infoBox.model = action.payload.model;
-      state.infoBox.data = action.payload.data;
-    },
-    closeInfoBox(state) {
-      state.infoBox.open = false;
-    },
-    removeInfoBox(state) {
-      state.infoBox = initialState.infoBox;
-    },
     moveCard(state, action: PayloadAction<MoveCardAction>) {
       const { dragListIndex, hoverListIndex, dragIndex, hoverIndex, boardId } =
         action.payload;
@@ -106,11 +88,4 @@ export const taskBoardSlice = createSlice({
   },
 });
 
-export const {
-  openInfoBox,
-  closeInfoBox,
-  removeInfoBox,
-  sortList,
-  sortCard,
-  moveCard,
-} = taskBoardSlice.actions;
+export const { sortList, sortCard, moveCard } = taskBoardSlice.actions;

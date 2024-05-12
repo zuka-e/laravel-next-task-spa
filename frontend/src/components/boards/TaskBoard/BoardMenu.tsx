@@ -9,8 +9,8 @@ import {
 
 import { TaskBoard } from '@/models';
 import { useRoute } from '@/utils/hooks';
+import { useTaskDetails } from '@/lib/hooks';
 import { PopoverControl, DeleteTaskDialog } from '@/templates';
-import { showTaskBoardDetails } from '@/components/boards/InfoBox/InfoBox';
 import { SortSelect } from '..';
 
 const menuItem = {
@@ -27,19 +27,20 @@ const BoardMenu = memo(function BoardMenu(props: BoardMenuProps): JSX.Element {
   const { board } = props;
   const { pathParams } = useRoute();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const { showTaskDetails } = useTaskDetails();
 
   const handleClick = useCallback(
     (key: keyof typeof menuItem): void => {
       switch (key) {
         case 'info':
-          showTaskBoardDetails(board.id);
+          showTaskDetails('b', board.id);
           break;
         case 'delete':
           setOpenDeleteDialog(true);
           break;
       }
     },
-    [board.id]
+    [board.id, showTaskDetails]
   );
 
   const handleCloseDeleteDialog = useCallback((): void => {
