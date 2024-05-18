@@ -19,7 +19,7 @@ import { useAppDispatch, useIntersectionObserver } from '@/utils/hooks';
 import { useTaskDetails } from '@/lib/hooks';
 import { moveCard } from '@/store/slices';
 import { updateTaskCardRelationships } from '@/store/thunks/cards';
-import { useGetTaskCardsQuery } from '@/store/api';
+import { useCreateTaskCardMutation, useGetTaskCardsQuery } from '@/store/api';
 import { LabeledSelect } from '@/templates';
 import { AddTaskButton } from '..';
 import { TaskCard } from '../TaskCard';
@@ -50,6 +50,8 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
   const nextCardRef = useIntersectionObserver(() => {
     setPage((paginatedCard?.meta.current_page || 0) + 1);
   });
+
+  const [createTaskCard, { isLoading, error }] = useCreateTaskCardMutation();
 
   /** リスト間のカードの移動を司る */
   const [, drop] = useDrop({
@@ -159,7 +161,11 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
       </div>
 
       <CardActions>
-        <AddTaskButton method="POST" model="card" parent={list} transparent />
+        <AddTaskButton
+          disabled={isLoading}
+          error={error}
+          onSubmit={(data) => createTaskCard({ listId: list.id, ...data })}
+        />
       </CardActions>
     </Card>
   );

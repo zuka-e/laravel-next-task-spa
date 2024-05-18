@@ -18,6 +18,7 @@ import { repeatMap } from '@/utils';
 import { makeIndexMap } from '@/utils/dnd';
 import { useIntersectionObserver, useRoute } from '@/utils/hooks';
 import {
+  useCreateTaskListMutation,
   useGetTaskBoardQuery,
   useGetTaskListsQuery,
   useUpdateTaskBoardMutation,
@@ -51,7 +52,14 @@ export const getStaticProps: GetStaticProps<TaskBoardProps> = async () => {
 const TaskBoard = memo(function TaskBoard(): JSX.Element {
   const router = useRouter();
   const { pathParams } = useRoute();
-  const [updateTaskBoard] = useUpdateTaskBoardMutation();
+  const [
+    createTaskList,
+    { isLoading: isLoadingToCreate, error: creationError },
+  ] = useCreateTaskListMutation();
+  const [
+    updateTaskBoard,
+    { isLoading: isLoadingToUpdate, error: updateError },
+  ] = useUpdateTaskBoardMutation();
   const [page, setPage] = useState(1);
 
   const { data: { data: board } = {} } = useGetTaskBoardQuery(
@@ -107,7 +115,14 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
             {board ? (
               <>
                 <Grid item className="mx-4 my-2 flex-auto">
-                  <EditableTitle method="PATCH" model="board" data={board} />
+                  <EditableTitle
+                    defaultValue={board.title}
+                    disabled={isLoadingToUpdate}
+                    error={updateError}
+                    onSubmit={(data) =>
+                      updateTaskBoard({ id: board.id, ...data })
+                    }
+                  />
                 </Grid>
                 <Grid item>
                   <SearchField />
@@ -156,7 +171,13 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
               )}
               {board && (
                 <Grid item>
-                  <AddTaskButton method="POST" model="list" parent={board} />
+                  <AddTaskButton
+                    disabled={isLoadingToCreate}
+                    error={creationError}
+                    onSubmit={(data) =>
+                      createTaskList({ boardId: board.id, ...data })
+                    }
+                  />
                 </Grid>
               )}
             </Grid>

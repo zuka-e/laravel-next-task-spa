@@ -32,7 +32,7 @@ const TaskListDetails = memo(function TaskListDetails(
   const { data: { data: board } = {} } = useGetTaskBoardQuery({
     id: list.boardId,
   });
-  const [updateTaskList, { isLoading }] = useUpdateTaskListMutation();
+  const [updateTaskList, { isLoading, error }] = useUpdateTaskListMutation();
 
   const handleSubmitText = useCallback(
     (text: string): void => {
@@ -69,7 +69,14 @@ const TaskListDetails = memo(function TaskListDetails(
       </CardActions>
       <div className="overflow-y-auto">
         <CardHeader
-          title={<EditableTitle method="PATCH" model="list" data={list} />}
+          title={
+            <EditableTitle
+              defaultValue={list.title}
+              disabled={isLoading}
+              error={error}
+              onSubmit={(data) => updateTaskList({ id: list.id, ...data })}
+            />
+          }
           disableTypography
           className="pb-0"
         />

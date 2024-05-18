@@ -1,21 +1,11 @@
-import { forwardRef, memo, useCallback, useMemo, useState } from 'react';
+import { forwardRef, memo, useMemo, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { TextField, TextFieldProps } from '@mui/material';
 
-import type { FormAction } from '@/store/slices/taskBoardSlice';
-import {
-  isApiError,
-  isInvalidRequest,
-  makeErrorMessageFrom,
-} from '@/utils/api/errors';
-import {
-  useUpdateTaskBoardMutation,
-  useUpdateTaskListMutation,
-  useUpdateTaskCardMutation,
-} from '@/store/api';
+import { getInputErrorMessage } from '@/utils/api/errors';
 
 type FormData = {
   title: string;
@@ -25,21 +15,18 @@ const schema = yup.object().shape({
   title: yup.string().label('Title').min(1).max(255),
 });
 
-type EditableTitleProps = FormAction;
+type EditableTitleProps = {
+  defaultValue: string;
+  disabled: boolean;
+  error: unknown;
+  onSubmit: (data: FormData) => void;
+};
 
 const EditableTitle = memo(function EditableTitle(
   props: EditableTitleProps
 ): JSX.Element {
-  const { method, model } = props;
-  const defaultValue = method === 'PATCH' ? props.data.title : undefined;
-  const [updateTaskBoard, { isLoading: isLoadingToUpdateBoard }] =
-    useUpdateTaskBoardMutation();
-  const [updateTaskList, { isLoading: isLoadingToUpdateList }] =
-    useUpdateTaskListMutation();
-  const [updateTaskCard, { isLoading: isLoadingToUpdateCard }] =
-    useUpdateTaskCardMutation();
+  const { defaultValue, disabled, error, onSubmit } = props;
   const [isEditing, setIsEditing] = useState(false);
-  const [apiError, setApiError] = useState('');
   const {
     register,
     handleSubmit,
@@ -49,43 +36,9 @@ const EditableTitle = memo(function EditableTitle(
     resolver: yupResolver(schema),
   });
 
-  const isLoading = useMemo((): boolean => {
-    return (
-      isLoadingToUpdateBoard || isLoadingToUpdateList || isLoadingToUpdateCard
-    );
-  }, [isLoadingToUpdateBoard, isLoadingToUpdateList, isLoadingToUpdateCard]);
-
-  const onSubmit = useCallback(
-    async (data: FormData): Promise<void> => {
-      if (method !== 'PATCH') return;
-
-      try {
-        switch (model) {
-          case 'board': {
-            updateTaskBoard({ id: props.data.id, ...data });
-            break;
-          }
-          case 'list': {
-            updateTaskList({ id: props.data.id, ...data });
-            break;
-          }
-          case 'card': {
-            updateTaskCard({ id: props.data.id, ...data });
-            break;
-          }
-        }
-      } catch (e) {
-        if (!isApiError(e)) {
-          throw e;
-        }
-
-        if (isInvalidRequest(e)) {
-          setApiError(makeErrorMessageFrom(e));
-        }
-      }
-    },
-    [method, model, props, updateTaskBoard, updateTaskList, updateTaskCard]
-  );
+  const errorMessage = useMemo(() => {
+    return getInputErrorMessage(error, 'title') || errors?.title?.message;
+  }, [error, errors?.title?.message]);
 
   return (
     <>
@@ -98,9 +51,9 @@ const EditableTitle = memo(function EditableTitle(
             id="title"
             defaultValue={defaultValue}
             autoFocus
-            disabled={isLoading}
-            helperText={apiError || errors?.title?.message}
-            error={!!apiError || !!errors?.title}
+            disabled={disabled}
+            helperText={errorMessage}
+            error={!!error || !!errors?.title}
             {...register('title')}
           />
         </form>

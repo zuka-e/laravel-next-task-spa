@@ -42,7 +42,7 @@ const TaskCardDetails = memo(function TaskCardDetails(
   const { data: { data: list } = {} } = useGetTaskListQuery({
     id: card.listId,
   });
-  const [updateTaskCard, { isLoading }] = useUpdateTaskCardMutation();
+  const [updateTaskCard, { isLoading, error }] = useUpdateTaskCardMutation();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   const handleCheckbox = useCallback((): void => {
@@ -105,7 +105,14 @@ const TaskCardDetails = memo(function TaskCardDetails(
       </CardActions>
       <div className="overflow-y-auto">
         <CardHeader
-          title={<EditableTitle method="PATCH" model="card" data={card} />}
+          title={
+            <EditableTitle
+              defaultValue={card.title}
+              disabled={isLoading}
+              error={error}
+              onSubmit={(data) => updateTaskCard({ id: card.id, ...data })}
+            />
+          }
           className="pb-0"
         />
         <CardContent className="flex flex-col gap-3 py-0">

@@ -5,6 +5,7 @@ import { CardHeader, Typography, IconButton } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 
 import { TaskList } from '@/models';
+import { useUpdateTaskListMutation } from '@/store/api';
 import { PopoverControl } from '@/templates';
 import { EditableTitle } from '..';
 import { ListMenu } from '.';
@@ -18,7 +19,16 @@ const ListCardHeader = memo(function ListCardHeader(
 ): JSX.Element {
   const { list } = props;
 
-  const Title = () => <EditableTitle method="PATCH" model="list" data={list} />;
+  const [updateTaskList, { isLoading, error }] = useUpdateTaskListMutation();
+
+  const Title = () => (
+    <EditableTitle
+      defaultValue={list.title}
+      disabled={isLoading}
+      error={error}
+      onSubmit={(data) => updateTaskList({ id: list.id, ...data })}
+    />
+  );
 
   const Subheader = () => (
     <Typography color="textSecondary" variant="body2">

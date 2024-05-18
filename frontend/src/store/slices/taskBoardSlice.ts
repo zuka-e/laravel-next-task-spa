@@ -4,14 +4,6 @@ import { TaskBoard, TaskBoardsCollection, TaskCard, TaskList } from '@/models';
 import { compare, SortOperation } from '@/utils/sort';
 import { updateTaskCardRelationships } from '@/store/thunks/cards/updateTaskCardRelationships';
 
-export type FormAction =
-  | { method: 'POST'; model: 'board' }
-  | { method: 'POST'; model: 'list'; parent: TaskBoard }
-  | { method: 'POST'; model: 'card'; parent: TaskList }
-  | { method: 'PATCH'; model: 'board'; data: TaskBoard }
-  | { method: 'PATCH'; model: 'list'; data: TaskList }
-  | { method: 'PATCH'; model: 'card'; data: TaskCard };
-
 export type DeleteAction =
   | { model: 'board'; data: TaskBoard }
   | { model: 'list'; data: TaskList }

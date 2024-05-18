@@ -1,5 +1,4 @@
 import { memo, useCallback, useMemo, useState } from 'react';
-import Router from 'next/router';
 
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -7,17 +6,7 @@ import * as yup from 'yup';
 import { Button, TextField } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 
-import { FormAction } from '@/store/slices/taskBoardSlice';
-import {
-  useCreateTaskBoardMutation,
-  useCreateTaskListMutation,
-  useCreateTaskCardMutation,
-} from '@/store/api';
-import {
-  isApiError,
-  isInvalidRequest,
-  makeErrorMessageFrom,
-} from '@/utils/api/errors';
+import { getInputErrorMessage } from '@/utils/api/errors';
 
 type FormData = {
   title: string;
@@ -27,21 +16,16 @@ const schema = yup.object().shape({
   title: yup.string().label('Title').min(1).max(255),
 });
 
-type AddTaskButtonProps = FormAction & {
-  transparent?: boolean;
+type AddTaskButtonProps = {
+  disabled: boolean;
+  error: unknown;
+  onSubmit: (data: FormData) => void;
 };
 
 const AddTaskButton = memo(function AddTaskButton(
   props: AddTaskButtonProps
 ): JSX.Element {
-  const { method, model } = props;
-  const [createTaskBoard, { isLoading: isLoadingToCreateBoard }] =
-    useCreateTaskBoardMutation();
-  const [createTaskList, { isLoading: isLoadingToCreateList }] =
-    useCreateTaskListMutation();
-  const [createTaskCard, { isLoading: isLoadingToCreateCard }] =
-    useCreateTaskCardMutation();
-  const [apiError, setApiError] = useState('');
+  const { disabled, error, onSubmit } = props;
   const [isEditing, setIsEditing] = useState(false);
   const {
     register,
@@ -53,70 +37,30 @@ const AddTaskButton = memo(function AddTaskButton(
     resolver: yupResolver(schema),
   });
 
-  const isLoading = useMemo((): boolean => {
-    return (
-      isLoadingToCreateBoard || isLoadingToCreateList || isLoadingToCreateCard
-    );
-  }, [isLoadingToCreateBoard, isLoadingToCreateList, isLoadingToCreateCard]);
-
-  const onSubmit = useCallback(
+  const onValid = useCallback(
     async (data: FormData): Promise<void> => {
-      if (method !== 'POST') return;
-
-      try {
-        switch (model) {
-          case 'board': {
-            const response = await createTaskBoard(data).unwrap();
-            const taskBoard = response.data;
-            Router.push(`/boards/${taskBoard.id}`);
-            break;
-          }
-          case 'list': {
-            const boardId = props.parent.id;
-            createTaskList({ boardId, ...data });
-            break;
-          }
-          case 'card': {
-            const listId = props.parent.id;
-            createTaskCard({ listId, ...data });
-            break;
-          }
-        }
-
-        setIsEditing(false);
-        resetField('title');
-      } catch (e) {
-        if (!isApiError(e)) {
-          throw e;
-        }
-
-        if (isInvalidRequest(e)) {
-          setApiError(makeErrorMessageFrom(e));
-        }
-      }
+      onSubmit(data);
+      setIsEditing(false);
+      resetField('title');
     },
-    [
-      resetField,
-      createTaskBoard,
-      createTaskList,
-      createTaskCard,
-      method,
-      model,
-      props,
-    ]
+    [onSubmit, resetField]
   );
+
+  const errorMessage = useMemo(() => {
+    return getInputErrorMessage(error, 'title') || errors?.title?.message;
+  }, [error, errors?.title?.message]);
 
   return (
     <>
       {isEditing ? (
         <form
           onBlur={() => setIsEditing(false)}
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onValid)}
           className="w-full"
         >
           <TextField
             id="title"
-            disabled={isLoading}
+            disabled={disabled}
             autoFocus
             placeholder="Enter a title"
             fullWidth
@@ -125,8 +69,8 @@ const AddTaskButton = memo(function AddTaskButton(
               className: 'font-bold',
             }}
             InputLabelProps={{ margin: 'dense' }}
-            helperText={apiError || errors?.title?.message}
-            error={!!apiError || !!errors?.title}
+            helperText={errorMessage}
+            error={!!error || !!errors?.title}
             {...register('title')}
           />
         </form>
@@ -139,7 +83,7 @@ const AddTaskButton = memo(function AddTaskButton(
           onClick={() => setIsEditing(true)}
           className="justify-start backdrop-brightness-90 hover:backdrop-brightness-75"
         >
-          Add new {props.model}
+          Add
         </Button>
       )}
     </>

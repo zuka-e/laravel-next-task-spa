@@ -29,7 +29,7 @@ const TaskBoardDetails = memo(function TaskBoardDetails(
 ): JSX.Element {
   const { board } = props;
 
-  const [updateTaskBoard, { isLoading }] = useUpdateTaskBoardMutation();
+  const [updateTaskBoard, { isLoading, error }] = useUpdateTaskBoardMutation();
 
   const totalList = useMemo((): number => {
     return board.lists.reduce((acc, current) => acc + current.cards.length, 0);
@@ -82,7 +82,14 @@ const TaskBoardDetails = memo(function TaskBoardDetails(
         <CardHeader
           className="pb-0"
           disableTypography
-          title={<EditableTitle method="PATCH" model="board" data={board} />}
+          title={
+            <EditableTitle
+              defaultValue={board.title}
+              disabled={isLoading}
+              error={error}
+              onSubmit={(data) => updateTaskBoard({ id: board.id, ...data })}
+            />
+          }
         />
         <CardContent className="flex flex-col gap-3 py-0">
           <Grid container className="items-center">

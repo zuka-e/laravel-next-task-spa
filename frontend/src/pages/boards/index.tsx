@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 import Head from 'next/head';
 import Router from 'next/router';
 import type { GetStaticProps } from 'next';
@@ -6,7 +6,7 @@ import type { GetStaticProps } from 'next';
 import { Container, Grid, Card, Divider, Typography } from '@mui/material';
 import { Pagination } from '@mui/material';
 
-import { useGetTaskBoardsQuery } from '@/store/api';
+import { useCreateTaskBoardMutation, useGetTaskBoardsQuery } from '@/store/api';
 import { useRoute } from '@/utils/hooks';
 import { BaseLayout, StandbyScreen } from '@/layouts';
 import { Link } from '@/templates';
@@ -36,6 +36,15 @@ const TaskBoardIndex = memo(function TaskBoardIndex(): JSX.Element {
     { page: queryParams?.page?.toString() },
     { skip: !pathParams || !queryParams }
   );
+
+  const [createTaskBoard, { isLoading, data: response, error }] =
+    useCreateTaskBoardMutation();
+
+  useEffect(() => {
+    if (response) {
+      Router.push(`/boards/${response.data.id}`);
+    }
+  }, [response]);
 
   const handleChange = useCallback(
     (_e: React.ChangeEvent<unknown>, page: number): void => {
@@ -71,7 +80,11 @@ const TaskBoardIndex = memo(function TaskBoardIndex(): JSX.Element {
               </Grid>
             ))}
             <Grid item md={4} sm={6} xs={12}>
-              <AddTaskButton method="POST" model="board" />
+              <AddTaskButton
+                disabled={isLoading}
+                error={error}
+                onSubmit={(data) => createTaskBoard({ ...data })}
+              />
             </Grid>
           </Grid>
         </Container>

@@ -5,6 +5,7 @@ import { CardHeader, Typography, Tooltip, IconButton } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 
 import { TaskBoard } from '@/models';
+import { useUpdateTaskBoardMutation } from '@/store/api';
 import { PopoverControl } from '@/templates';
 import { EditableTitle } from '..';
 import { BoardMenu } from '.';
@@ -18,8 +19,15 @@ const BoardCardHeader = memo(function BoardCardHeader(
 ): JSX.Element {
   const { board } = props;
 
+  const [updateTaskBoard, { isLoading, error }] = useUpdateTaskBoardMutation();
+
   const Title = () => (
-    <EditableTitle method="PATCH" model="board" data={board} />
+    <EditableTitle
+      defaultValue={board.title}
+      disabled={isLoading}
+      error={error}
+      onSubmit={(data) => updateTaskBoard({ id: board.id, ...data })}
+    />
   );
 
   const Subheader = () => (
