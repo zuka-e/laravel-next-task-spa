@@ -110,8 +110,8 @@ const api = baseApi.injectEndpoints({
           })
         );
       },
-      invalidatesTags: (_res, _err, req) => {
-        return [{ type: 'TaskList', id: req.id }];
+      invalidatesTags: (res) => {
+        return res ? [{ type: 'TaskList', id: res.data.id }] : [];
       },
     }),
     destroyTaskList: builder.mutation<

@@ -96,7 +96,9 @@ const api = baseApi.injectEndpoints({
         method: 'PATCH',
         data,
       }),
-      invalidatesTags: (_res, _err, req) => [{ type: 'TaskBoard', id: req.id }],
+      invalidatesTags: (res) => {
+        return res ? [{ type: 'TaskBoard', id: res.data.id }] : [];
+      },
     }),
     destroyTaskBoard: builder.mutation<
       DestroyTaskBoardResponse,
