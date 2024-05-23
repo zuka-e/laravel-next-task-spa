@@ -14,15 +14,6 @@ type SortListAction = Pick<TaskList, 'boardId'> & SortOperation<TaskList>;
 type SortCardAction = Pick<TaskCard, 'boardId' | 'listId'> &
   SortOperation<TaskCard>;
 
-type MoveCardAction = {
-  dragListIndex: number;
-  hoverListIndex: number;
-  dragIndex: number;
-  hoverIndex: number;
-  boardId: string;
-  listId?: string;
-};
-
 type TaskBoardState = {
   loading: boolean;
   docs: TaskBoardsCollection;
@@ -38,19 +29,6 @@ export const taskBoardSlice = createSlice({
   name: 'taskBoard',
   initialState,
   reducers: {
-    moveCard(state, action: PayloadAction<MoveCardAction>) {
-      const { dragListIndex, hoverListIndex, dragIndex, hoverIndex, boardId } =
-        action.payload;
-
-      const sortedLists = state.docs[boardId].lists;
-      const dragged = sortedLists[dragListIndex].cards[dragIndex];
-
-      if (action.payload.listId) dragged.listId = action.payload.listId;
-
-      sortedLists[dragListIndex].cards.splice(dragIndex, 1);
-      sortedLists[hoverListIndex].cards.splice(hoverIndex, 0, dragged);
-    },
-
     sortList(state, action: PayloadAction<SortListAction>) {
       const { boardId, column, direction } = action.payload;
       const board = state.docs[boardId];
@@ -80,4 +58,4 @@ export const taskBoardSlice = createSlice({
   },
 });
 
-export const { sortList, sortCard, moveCard } = taskBoardSlice.actions;
+export const { sortList, sortCard } = taskBoardSlice.actions;

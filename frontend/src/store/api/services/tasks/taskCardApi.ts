@@ -16,7 +16,7 @@ import type {
 /**
  * @see https://redux-toolkit.js.org/rtk-query/api/created-api/code-splitting
  */
-const api = baseApi.injectEndpoints({
+export const taskCardApi = baseApi.injectEndpoints({
   // cf. https://redux-toolkit.js.org/rtk-query/usage/code-splitting
   overrideExisting: false,
   endpoints: (builder) => ({
@@ -69,9 +69,13 @@ const api = baseApi.injectEndpoints({
 
         // Adds new data to the per-board cache instead of invalidating the `LIST` cache.
         dispatch(
-          api.util.updateQueryData('getTaskCards', { listId }, (draft) => {
-            draft.data.push(newTaskCard);
-          })
+          taskCardApi.util.updateQueryData(
+            'getTaskCards',
+            { listId },
+            (draft) => {
+              draft.data.push(newTaskCard);
+            }
+          )
         );
       },
     }),
@@ -100,14 +104,18 @@ const api = baseApi.injectEndpoints({
 
         // Replace cache instead of invalidating the cache.
         dispatch(
-          api.util.updateQueryData('getTaskCards', { listId }, (draft) => {
-            const current = draft.data.find(
-              (card) => card.id === updatedTaskCard.id
-            );
+          taskCardApi.util.updateQueryData(
+            'getTaskCards',
+            { listId },
+            (draft) => {
+              const current = draft.data.find(
+                (card) => card.id === updatedTaskCard.id
+              );
 
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            Object.assign(current!, updatedTaskCard);
-          })
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              Object.assign(current!, updatedTaskCard);
+            }
+          )
         );
       },
       invalidatesTags: (res) => {
@@ -130,15 +138,19 @@ const api = baseApi.injectEndpoints({
 
         // Replace cache instead of invalidating the cache.
         dispatch(
-          api.util.updateQueryData('getTaskCards', { listId }, (draft) => {
-            const i = draft.data.findIndex((card) => card.id === id);
-            draft.data.splice(i, 1);
-          })
+          taskCardApi.util.updateQueryData(
+            'getTaskCards',
+            { listId },
+            (draft) => {
+              const i = draft.data.findIndex((card) => card.id === id);
+              draft.data.splice(i, 1);
+            }
+          )
         );
 
         // Don't invalidate tag to avoid unintended refetching resulting in 404.
         dispatch(
-          api.util.updateQueryData('getTaskCard', { id }, (draft) => {
+          taskCardApi.util.updateQueryData('getTaskCard', { id }, (draft) => {
             draft.data.isDeleted = true;
           })
         );
@@ -153,4 +165,4 @@ export const {
   useGetTaskCardQuery,
   useUpdateTaskCardMutation,
   useDestroyTaskCardMutation,
-} = api;
+} = taskCardApi;

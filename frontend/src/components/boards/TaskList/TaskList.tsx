@@ -1,7 +1,6 @@
 import { memo, useCallback, useMemo, useState } from 'react';
 
 import clsx from 'clsx';
-import { useDrop } from 'react-dnd';
 import {
   Card,
   CardActions,
@@ -14,11 +13,8 @@ import type { SelectProps } from '@mui/material';
 
 import * as Model from '@/models';
 import { repeatMap } from '@/utils';
-import { draggableItem, DragItem } from '@/utils/dnd';
-import { useAppDispatch, useIntersectionObserver } from '@/utils/hooks';
+import { useIntersectionObserver } from '@/utils/hooks';
 import { useTaskDetails } from '@/lib/hooks';
-import { moveCard } from '@/store/slices';
-import { updateTaskCardRelationships } from '@/store/thunks/cards';
 import { useCreateTaskCardMutation, useGetTaskCardsQuery } from '@/store/api';
 import { LabeledSelect } from '@/templates';
 import { AddTaskButton } from '..';
@@ -44,7 +40,6 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
   const { data: paginatedCard, isLoading: isLoadingCard } =
     useGetTaskCardsQuery({ listId: list.id, page, limit: 20 });
   const { isTaskSelected } = useTaskDetails();
-  const dispatch = useAppDispatch();
   const [filterValue, setFilterValue] = useState<FilterName>(cardFilter.ALL);
 
   const nextCardRef = useIntersectionObserver(() => {
@@ -52,46 +47,6 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
   });
 
   const [createTaskCard, { isLoading, error }] = useCreateTaskCardMutation();
-
-  /** リスト間のカードの移動を司る */
-  const [, drop] = useDrop({
-    accept: draggableItem.card,
-    hover: (item: DragItem) => {
-      const dragListIndex = item.listIndex;
-      const hoverListIndex = listIndex;
-      const dragIndex = item.index;
-      const hoverIndex = 0;
-
-      // 位置不変の場合
-      if (dragListIndex === hoverListIndex) return;
-
-      const boardId = list.boardId;
-      dispatch(
-        moveCard({
-          dragListIndex,
-          hoverListIndex,
-          dragIndex,
-          hoverIndex,
-          boardId,
-          listId: list.id,
-        })
-      );
-
-      item.index = hoverIndex;
-      item.listIndex = hoverListIndex;
-    },
-    drop: (item: DragItem) => {
-      /**リスト間移動が行われた場合 */
-      if (item.listId !== list.id) {
-        dispatch(
-          updateTaskCardRelationships({
-            data: { id: item.id, listId: item.listId },
-            body: { listId: list.id },
-          })
-        );
-      }
-    },
-  });
 
   const filteredCards = useMemo((): Model.TaskCard[] => {
     return (paginatedCard?.data ?? []).filter((card) => {
@@ -110,7 +65,6 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
 
   return (
     <Card
-      ref={drop}
       elevation={7}
       className={clsx(
         'text-white',

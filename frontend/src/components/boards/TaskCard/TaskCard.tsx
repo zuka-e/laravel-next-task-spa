@@ -8,7 +8,7 @@ import * as Model from '@/models';
 import { draggableItem, DragItem } from '@/utils/dnd';
 import { useAppDispatch } from '@/utils/hooks';
 import { useTaskDetails } from '@/lib/hooks';
-import { moveCard } from '@/store/slices/taskBoardSlice';
+import { taskCardApi } from '@/store/api';
 
 type TaskCardProps = {
   card: Model.TaskCard;
@@ -25,8 +25,7 @@ const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
   const [, drag] = useDrag<DragItem, unknown, unknown>({
     type: draggableItem.card,
     item: {
-      id: card.id,
-      listId: card.listId,
+      ...card,
       index: cardIndex,
       listIndex: listIndex,
     },
@@ -43,22 +42,50 @@ const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
       const dragIndex = item.index;
       const hoverIndex = cardIndex;
 
-      // 位置不変の場合
-      if (dragIndex === hoverIndex && dragListIndex === hoverListIndex) return;
+      item.index = hoverIndex;
 
-      const boardId = card.boardId;
+      // 位置不変の場合
+      if (dragListIndex === hoverListIndex) {
+        if (dragIndex === hoverIndex) {
+          return;
+        }
+
+        dispatch(
+          taskCardApi.util.updateQueryData(
+            'getTaskCards',
+            { listId: item.listId },
+            (draft) => {
+              draft.data.splice(dragIndex, 1);
+              draft.data.splice(hoverIndex, 0, { ...item });
+            }
+          )
+        );
+
+        return;
+      }
+
       dispatch(
-        moveCard({
-          dragListIndex,
-          hoverListIndex,
-          dragIndex,
-          hoverIndex,
-          boardId,
-        })
+        taskCardApi.util.updateQueryData(
+          'getTaskCards',
+          { listId: item.listId },
+          (draft) => {
+            draft.data.splice(dragIndex, 1);
+          }
+        )
       );
 
-      item.index = hoverIndex;
+      item.listId = card.listId;
       item.listIndex = hoverListIndex;
+
+      dispatch(
+        taskCardApi.util.updateQueryData(
+          'getTaskCards',
+          { listId: item.listId },
+          (draft) => {
+            draft.data.splice(hoverIndex, 0, { ...item });
+          }
+        )
+      );
     },
     collect: (monitor) => ({
       isOver: monitor.isOver(),
