@@ -1,3 +1,7 @@
+import { type Recipe } from '@reduxjs/toolkit/dist/query/core/buildThunks';
+
+import type { TaskCard } from '@/models';
+import { useAppDispatch } from '@/utils/hooks';
 import { makePath } from '@/utils/api';
 import baseApi from './baseApi';
 import type {
@@ -16,7 +20,7 @@ import type {
 /**
  * @see https://redux-toolkit.js.org/rtk-query/api/created-api/code-splitting
  */
-export const taskCardApi = baseApi.injectEndpoints({
+const api = baseApi.injectEndpoints({
   // cf. https://redux-toolkit.js.org/rtk-query/usage/code-splitting
   overrideExisting: false,
   endpoints: (builder) => ({
@@ -69,13 +73,9 @@ export const taskCardApi = baseApi.injectEndpoints({
 
         // Adds new data to the per-board cache instead of invalidating the `LIST` cache.
         dispatch(
-          taskCardApi.util.updateQueryData(
-            'getTaskCards',
-            { listId },
-            (draft) => {
-              draft.data.push(newTaskCard);
-            }
-          )
+          updateTaskCards(listId, (draft) => {
+            draft.data.push(newTaskCard);
+          })
         );
       },
     }),
@@ -104,18 +104,14 @@ export const taskCardApi = baseApi.injectEndpoints({
 
         // Replace cache instead of invalidating the cache.
         dispatch(
-          taskCardApi.util.updateQueryData(
-            'getTaskCards',
-            { listId },
-            (draft) => {
-              const current = draft.data.find(
-                (card) => card.id === updatedTaskCard.id
-              );
+          updateTaskCards(listId, (draft) => {
+            const current = draft.data.find(
+              (card) => card.id === updatedTaskCard.id
+            );
 
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              Object.assign(current!, updatedTaskCard);
-            }
-          )
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            Object.assign(current!, updatedTaskCard);
+          })
         );
       },
       invalidatesTags: (res) => {
@@ -138,19 +134,15 @@ export const taskCardApi = baseApi.injectEndpoints({
 
         // Replace cache instead of invalidating the cache.
         dispatch(
-          taskCardApi.util.updateQueryData(
-            'getTaskCards',
-            { listId },
-            (draft) => {
-              const i = draft.data.findIndex((card) => card.id === id);
-              draft.data.splice(i, 1);
-            }
-          )
+          updateTaskCards(listId, (draft) => {
+            const i = draft.data.findIndex((card) => card.id === id);
+            draft.data.splice(i, 1);
+          })
         );
 
         // Don't invalidate tag to avoid unintended refetching resulting in 404.
         dispatch(
-          taskCardApi.util.updateQueryData('getTaskCard', { id }, (draft) => {
+          api.util.updateQueryData('getTaskCard', { id }, (draft) => {
             draft.data.isDeleted = true;
           })
         );
@@ -159,10 +151,62 @@ export const taskCardApi = baseApi.injectEndpoints({
   }),
 });
 
+/**
+ * Create an action to update task cards
+ *
+ * @param listId Parent list ID
+ * @param recipe Callback to update task cards
+ * @returns Action
+ */
+const updateTaskCards = (
+  listId: FetchTaskCardsRequest['listId'],
+  recipe: Recipe<FetchTaskCardsResponse>
+) => {
+  return api.util.updateQueryData('getTaskCards', { listId }, recipe);
+};
+
 export const {
   useGetTaskCardsQuery,
   useCreateTaskCardMutation,
   useGetTaskCardQuery,
   useUpdateTaskCardMutation,
   useDestroyTaskCardMutation,
-} = taskCardApi;
+} = api;
+
+export const useMoveCard = () => {
+  const dispatch = useAppDispatch();
+
+  const moveCard = (
+    data: TaskCard,
+    srcListId: TaskCard['listId'],
+    destListId: TaskCard['listId'],
+    srcIndex: number,
+    destIndex: number
+  ) => {
+    if (srcListId === destListId) {
+      if (srcIndex === destIndex) {
+        return;
+      }
+
+      const move = updateTaskCards(destListId, (draft) => {
+        draft.data.splice(srcIndex, 1);
+        draft.data.splice(destIndex, 0, { ...data });
+      });
+
+      dispatch(move);
+    } else {
+      const remove = updateTaskCards(srcListId, (draft) => {
+        draft.data.splice(srcIndex, 1);
+      });
+
+      const add = updateTaskCards(destListId, (draft) => {
+        draft.data.splice(destIndex, 0, { ...data });
+      });
+
+      dispatch(remove);
+      dispatch(add);
+    }
+  };
+
+  return { moveCard };
+};

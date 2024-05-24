@@ -10,12 +10,18 @@ import {
   CircularProgress,
 } from '@mui/material';
 import type { SelectProps } from '@mui/material';
+import { useDrop } from 'react-dnd';
 
 import * as Model from '@/models';
 import { repeatMap } from '@/utils';
 import { useIntersectionObserver } from '@/utils/hooks';
+import { type DragItem, draggableItem } from '@/utils/dnd';
 import { useTaskDetails } from '@/lib/hooks';
-import { useCreateTaskCardMutation, useGetTaskCardsQuery } from '@/store/api';
+import {
+  useCreateTaskCardMutation,
+  useGetTaskCardsQuery,
+  useMoveCard,
+} from '@/store/api';
 import { LabeledSelect } from '@/templates';
 import { AddTaskButton } from '..';
 import { TaskCard } from '../TaskCard';
@@ -48,6 +54,22 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
 
   const [createTaskCard, { isLoading, error }] = useCreateTaskCardMutation();
 
+  const { moveCard } = useMoveCard();
+
+  const [, drop] = useDrop({
+    accept: draggableItem.card,
+    hover: (item: DragItem) => {
+      const dragListId = item.listId;
+      const dragIndex = item.index;
+
+      item.index = 0;
+      item.listIndex = listIndex;
+      item.listId = list.id;
+
+      moveCard(item, dragListId, list.id, dragIndex, 0);
+    },
+  });
+
   const filteredCards = useMemo((): Model.TaskCard[] => {
     return (paginatedCard?.data ?? []).filter((card) => {
       if (filterValue === cardFilter.TODO) return !card.done;
@@ -65,6 +87,7 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
 
   return (
     <Card
+      ref={drop}
       elevation={7}
       className={clsx(
         'text-white',

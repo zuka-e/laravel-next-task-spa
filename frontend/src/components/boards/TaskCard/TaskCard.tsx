@@ -5,10 +5,9 @@ import { useDrag, useDrop } from 'react-dnd';
 import { Card, Typography } from '@mui/material';
 
 import * as Model from '@/models';
+import { useMoveCard } from '@/store/api';
 import { draggableItem, DragItem } from '@/utils/dnd';
-import { useAppDispatch } from '@/utils/hooks';
 import { useTaskDetails } from '@/lib/hooks';
-import { taskCardApi } from '@/store/api';
 
 type TaskCardProps = {
   card: Model.TaskCard;
@@ -18,8 +17,8 @@ type TaskCardProps = {
 
 const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
   const { card, cardIndex, listIndex } = props;
-  const dispatch = useAppDispatch();
   const { showTaskDetails, isTaskSelected } = useTaskDetails();
+  const { moveCard } = useMoveCard();
   const ref = useRef<HTMLDivElement>(null);
 
   const [, drag] = useDrag<DragItem, unknown, unknown>({
@@ -31,61 +30,15 @@ const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
     },
   });
 
-  /** リスト内のカードの移動を司る */
   const [{ isOver }, drop] = useDrop({
     accept: draggableItem.card,
     hover: (item: DragItem) => {
-      if (!ref.current) return;
-
-      const dragListIndex = item.listIndex;
-      const hoverListIndex = listIndex;
+      const dragListId = item.listId;
       const dragIndex = item.index;
-      const hoverIndex = cardIndex;
 
-      item.index = hoverIndex;
+      item.index = cardIndex;
 
-      // 位置不変の場合
-      if (dragListIndex === hoverListIndex) {
-        if (dragIndex === hoverIndex) {
-          return;
-        }
-
-        dispatch(
-          taskCardApi.util.updateQueryData(
-            'getTaskCards',
-            { listId: item.listId },
-            (draft) => {
-              draft.data.splice(dragIndex, 1);
-              draft.data.splice(hoverIndex, 0, { ...item });
-            }
-          )
-        );
-
-        return;
-      }
-
-      dispatch(
-        taskCardApi.util.updateQueryData(
-          'getTaskCards',
-          { listId: item.listId },
-          (draft) => {
-            draft.data.splice(dragIndex, 1);
-          }
-        )
-      );
-
-      item.listId = card.listId;
-      item.listIndex = hoverListIndex;
-
-      dispatch(
-        taskCardApi.util.updateQueryData(
-          'getTaskCards',
-          { listId: item.listId },
-          (draft) => {
-            draft.data.splice(hoverIndex, 0, { ...item });
-          }
-        )
-      );
+      moveCard(item, dragListId, card.listId, dragIndex, cardIndex);
     },
     collect: (monitor) => ({
       isOver: monitor.isOver(),
