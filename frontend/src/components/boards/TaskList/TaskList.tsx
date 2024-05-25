@@ -21,6 +21,7 @@ import {
   useCreateTaskCardMutation,
   useGetTaskCardsQuery,
   useMoveCard,
+  useUpdateTaskCardMutation,
 } from '@/store/api';
 import { LabeledSelect } from '@/templates';
 import { AddTaskButton } from '..';
@@ -53,6 +54,7 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
   });
 
   const [createTaskCard, { isLoading, error }] = useCreateTaskCardMutation();
+  const [updateTaskCard] = useUpdateTaskCardMutation();
 
   const { moveCard } = useMoveCard();
 
@@ -67,6 +69,9 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
       item.listId = list.id;
 
       moveCard(item, dragListId, list.id, dragIndex, 0);
+    },
+    drop: (item) => {
+      updateTaskCard({ id: item.id, listId: item.listId, index: item.index });
     },
   });
 

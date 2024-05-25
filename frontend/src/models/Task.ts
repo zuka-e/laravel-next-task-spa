@@ -1,13 +1,10 @@
 import type { CollectionBase, DocumentBase } from '@/models';
-import type { IndexMap } from '@/utils/dnd';
 
 export type TaskBoard = {
   userId: string;
   title: string;
   description: string;
   lists: TaskList[];
-  listIndexMap: IndexMap;
-  cardIndexMap: IndexMap;
 } & DocumentBase;
 
 export type TaskBoardsCollection = CollectionBase<TaskBoard>;
@@ -23,9 +20,9 @@ export type TaskListsCollection = CollectionBase<TaskList>;
 
 export type TaskCard = {
   listId: string;
-  boardId: string;
   title: string;
   content: string;
   deadline: string;
   done: boolean;
+  sequence: number;
 } & DocumentBase;

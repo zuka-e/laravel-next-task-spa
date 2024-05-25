@@ -1,6 +1,7 @@
 import { type DefaultBodyType, type StrictRequest } from 'msw';
 
 import type { TaskCard, TaskList } from '@/models';
+import { type UpdateTaskCardRequest } from '@/store/api';
 import type { TaskCardDocument } from '@test/api/models';
 import { db } from '@test/api/database';
 import { paginate } from '@test/utils/paginate';
@@ -9,11 +10,11 @@ export const index = (
   listId: TaskList['id'],
   request: StrictRequest<DefaultBodyType>
 ) => {
-  const cards = db.where(
-    'taskCards',
-    'listId',
-    listId
-  ) as unknown as TaskCard[];
+  const cards = db.where('taskCards', 'listId', listId).sort((a, b) => {
+    if (a.sequence < b.sequence) return -1;
+    if (a.sequence > b.sequence) return 1;
+    return 0;
+  }) as unknown as TaskCard[];
 
   return paginate({ request, allData: cards });
 };
@@ -22,14 +23,13 @@ export const store = (
   listId: TaskList['id'],
   params: Partial<Omit<TaskCard, 'id' | 'listId'>>
 ) => {
-  const parent = db.where('taskLists', 'id', listId)[0];
   const newCard = db.create('taskCards', {
     ...({} as TaskCardDocument),
     listId,
     ...params,
   });
 
-  const response: TaskCard = { ...newCard, boardId: parent.boardId };
+  const response: TaskCard = { ...newCard };
 
   return response;
 };
@@ -43,23 +43,54 @@ export const show = (id: TaskCard['id']) => {
 };
 
 export const update = (
-  id: TaskCard['id'],
-  params: Partial<Omit<TaskCard, 'id' | 'listId'>>
+  id: UpdateTaskCardRequest['id'],
+  params: Omit<UpdateTaskCardRequest, 'id'>
 ) => {
   const card = db.where('taskCards', 'id', id)[0];
 
   if (!card) return;
 
+  if (typeof params.index === 'number') {
+    const listId = params.listId ?? card.listId;
+    const cards = db.where('taskCards', 'listId', listId).sort((a, b) => {
+      if (a.sequence < b.sequence) return -1;
+      if (a.sequence > b.sequence) return 1;
+      return 0;
+    });
+    const prevCardSequence =
+      params.index > 0 ? cards[params.index - 1]?.sequence : 0;
+    const nextCardSequence = cards[params.index]?.sequence;
+    let sequence = Math.round(
+      nextCardSequence
+        ? ((prevCardSequence ?? 0) + (nextCardSequence ?? 0)) / 2
+        : 2 ** 10
+    );
+
+    // Reorder if duplicated
+    if ([prevCardSequence, nextCardSequence].includes(sequence)) {
+      cards.forEach((card, i) => {
+        card.sequence = (i + 1) * 2 ** 10;
+        db.update('taskCards', { ...card });
+      });
+
+      // Recalculate sequence
+      const prevCardSequence =
+        params.index > 0 ? cards[params.index - 1]?.sequence : 0;
+      const nextCardSequence = cards[params.index]?.sequence;
+
+      sequence = Math.round(
+        nextCardSequence
+          ? ((prevCardSequence ?? 0) + (nextCardSequence ?? 0)) / 2
+          : 2 ** 10
+      );
+    }
+
+    params.sequence = sequence;
+  }
+
   const updated = db.update('taskCards', { ...card, ...params });
 
-  const parent = db.whereIn('taskLists', 'id', [
-    params.boardId,
-    updated.listId,
-  ])[0];
-  const response: TaskCard = {
-    ...updated,
-    boardId: parent.boardId,
-  };
+  const response: TaskCard = { ...updated };
 
   return response;
 };
@@ -69,9 +100,7 @@ export const destroy = (id: TaskCard['id']) => {
 
   if (!deleted) return;
 
-  const parent = db.where('taskLists', 'id', deleted.listId)[0];
-  const boardId = parent.boardId;
-  const response: TaskCard = { ...deleted, boardId };
+  const response: TaskCard = { ...deleted };
 
   return response;
 };

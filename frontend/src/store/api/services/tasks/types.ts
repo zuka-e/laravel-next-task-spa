@@ -109,9 +109,7 @@ export type UpdateTaskBoardResponse = ApiResponse<{
 }>;
 
 export type UpdateTaskBoardRequest = Pick<TaskBoard, 'id'> &
-  Partial<
-    Pick<TaskBoard, 'title' | 'description' | 'listIndexMap' | 'cardIndexMap'>
-  >;
+  Partial<Pick<TaskBoard, 'title' | 'description'>>;
 
 export type DestroyTaskBoardResponse = ApiResponse<{
   data: TaskBoard;
@@ -178,7 +176,14 @@ export type UpdateTaskCardResponse = ApiResponse<{
 }>;
 
 export type UpdateTaskCardRequest = Pick<TaskCard, 'id'> &
-  Partial<Pick<TaskCard, 'listId' | 'title' | 'content' | 'deadline' | 'done'>>;
+  Partial<
+    Pick<
+      TaskCard,
+      'listId' | 'title' | 'content' | 'deadline' | 'done' | 'sequence'
+    >
+  > & {
+    index?: number;
+  };
 
 export type DestroyTaskCardResponse = ApiResponse<{
   data: TaskCard;

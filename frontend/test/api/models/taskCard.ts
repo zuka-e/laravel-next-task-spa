@@ -7,6 +7,7 @@ export type TaskCardDocument = {
   content: string;
   deadline: string;
   done: boolean;
+  sequence: number;
 } & DocumentBase;
 
 export type TaskCardsCollection = CollectionBase<TaskCardDocument>;

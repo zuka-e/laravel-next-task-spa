@@ -15,7 +15,6 @@ import {
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 
 import { repeatMap } from '@/utils';
-import { makeIndexMap } from '@/utils/dnd';
 import { useIntersectionObserver, useRoute } from '@/utils/hooks';
 import {
   useCreateTaskListMutation,
@@ -81,19 +80,6 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
     setPage((paginatedList?.meta.current_page || 0) + 1);
   });
 
-  const handleDrop = () => {
-    if (!board) {
-      return;
-    }
-
-    const listIndexMap = makeIndexMap(board.lists);
-    const cardIndexMap = board.lists.reduce((acc, list) => {
-      return { ...acc, ...makeIndexMap(list.cards) };
-    }, {});
-
-    updateTaskBoard({ id: board.id, listIndexMap, cardIndexMap });
-  };
-
   return (
     <>
       <Head>
@@ -149,7 +135,6 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
           <Grid container className="flex-auto flex-nowrap justify-between">
             <Grid
               container
-              onDrop={handleDrop}
               wrap="nowrap"
               className="overflow-x-auto [&>div]:w-80 [&>div]:flex-shrink-0 [&>div]:p-2"
             >

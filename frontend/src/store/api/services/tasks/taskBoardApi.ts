@@ -1,5 +1,4 @@
 import { makePath } from '@/utils/api';
-import { makeDocsWithIndex } from '@/utils/dnd';
 import { getTagsForPartialList } from '@/store/api/utils/caching';
 import baseApi from './baseApi';
 import type {
@@ -51,37 +50,6 @@ const api = baseApi.injectEndpoints({
       query: (arg) => ({
         url: makePath(['task-boards', arg.id]),
       }),
-      // cf. https://redux-toolkit.js.org/rtk-query/api/createApi#transformresponse
-      transformResponse: (response: FetchTaskBoardResponse) => {
-        const board = response.data;
-
-        /** `TaskList` (プロパティが存在しない場合は`[]`を設定) */
-        board.lists = board.lists ? board.lists : [];
-
-        /** `TaskCard` (`boardId`及び`index`プロパティを設定)*/
-        board.lists.forEach((list) => {
-          if (!list.cards) {
-            list.cards = [];
-            return;
-          }
-
-          const cardsWithIndex = makeDocsWithIndex(
-            list.cards,
-            board.cardIndexMap
-          );
-          const cards = cardsWithIndex.map((card) => ({
-            ...card,
-            boardId: board.id,
-          }));
-
-          /** `index`プロパティに従って並び替え */
-          list.cards = cards.slice().sort((a, b) => a.index - b.index);
-        });
-
-        return {
-          data: board,
-        };
-      },
       // cf. https://redux-toolkit.js.org/rtk-query/usage/mutations#revalidation-example
       providesTags: (res, _err, _req) => [
         { type: 'TaskBoard', id: res?.data.id },
