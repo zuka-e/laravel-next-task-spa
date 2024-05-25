@@ -44,7 +44,7 @@ const runSeeder = (props: SeederProps) => {
 
   [...Array(props.count)].forEach(() => {
     db.create('taskLists', {
-      id: faker.string.faker.string.uuid(),
+      id: faker.string.uuid(),
       userId: props.belongsTo.user.id,
       boardId: props.belongsTo.board.id,
       title: `${faker.hacker.adjective()} ${faker.hacker.verb()}`,

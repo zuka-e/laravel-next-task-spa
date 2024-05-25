@@ -35,7 +35,7 @@ export const handlers = [
 
       return HttpResponse.json({
         severity: 'info',
-        message: 'タスクボード一覧を取得しました。',
+        message: 'タスクリスト一覧を取得しました。',
         ...paginated,
       });
     })

@@ -209,14 +209,7 @@ interface Model {
    *
    * @param  doc - `Document`から`DocumentBase`を除外した型
    */
-  create<T extends keyof DB>(
-    model: T,
-    doc: Partial<Omit<Doc<T>, keyof DocumentBase>>
-  ): Doc<T>;
-  /**
-   * 指定された`SessionCollection`に引数の`Document`を新たに作成
-   */
-  create<T extends 'sessions'>(model: T, doc: Partial<Doc<T>>): Doc<T>;
+  create<T extends keyof DB>(model: T, doc: Partial<Doc<T>>): Doc<T>;
   /**
    * 指定された`value`をプロパティ(`column`)の値として持つ`Document`を検索
    *

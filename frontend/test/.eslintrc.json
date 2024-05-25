@@ -1,0 +1,8 @@
+// https://eslint.org/docs/user-guide/getting-started#installation-and-usage
+// https://eslint.org/docs/user-guide/configuring/configuration-files
+// https://eslint.org/docs/latest/use/configure/configuration-files#cascading-and-hierarchy
+{
+  "rules": {
+    "@typescript-eslint/no-non-null-assertion": "off"
+  }
+}
