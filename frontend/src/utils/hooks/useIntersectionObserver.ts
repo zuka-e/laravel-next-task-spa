@@ -1,38 +1,45 @@
-import { type MutableRefObject, useEffect, useRef } from 'react';
+import { type Ref, useEffect, useState, useRef } from 'react';
 
 /**
  * Execute the specified callback if the returned `ref` appears on viewport.
  *
  * @param onIntersect - Callback function to be executed on intersecting.
- * @returns Mutable ref object that can be assigned to the target element.
+ * @returns `ref` for the element to observe.
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
  */
 const useIntersectionObserver = <T extends HTMLElement>(
   onIntersect: (entry: IntersectionObserverEntry) => void
-): MutableRefObject<T | null> => {
-  const ref = useRef<T | null>(null);
+): Ref<T | null> => {
+  // cf. https://usehooks-ts.com/react-hook/use-intersection-observer
+  // cf. https://github.com/thebuilder/react-intersection-observer
+
+  const [ref, setRef] = useState<T | null>(null);
+  // Prevent rerendering by being added to `useEffect` dependencies.
+  const onIntersectRef = useRef(onIntersect);
+  // Reflect the updated value (when rerendered).
+  onIntersectRef.current = onIntersect;
 
   useEffect(() => {
-    if (!ref.current) {
+    if (!ref) {
       return;
     }
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          onIntersect(entry);
-        }
-      });
+    // `entries` will have only one element as long as `setRef` is used for `ref` attr,
+    // as there is just one observed `ref` object.
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        onIntersectRef.current(entry);
+      }
     });
 
-    observer.observe(ref.current);
+    observer.observe(ref);
 
-    return function cleanup() {
+    return () => {
       observer.disconnect();
     };
-  }, [onIntersect]);
+  }, [ref]);
 
-  return ref;
+  return setRef;
 };
 
 export default useIntersectionObserver;
