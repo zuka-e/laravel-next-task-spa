@@ -53,7 +53,7 @@ const api = baseApi.injectEndpoints({
           return false;
         }
 
-        return currentArg !== previousArg;
+        return JSON.stringify(currentArg) !== JSON.stringify(previousArg);
       },
     }),
     createTaskCard: builder.mutation<
