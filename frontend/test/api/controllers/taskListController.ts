@@ -15,7 +15,7 @@ export const index = (
     boardId
   ) as unknown as TaskList[];
 
-  return paginate({ request, allData: lists });
+  return paginate({ request, filtered: lists });
 };
 
 export const store = (

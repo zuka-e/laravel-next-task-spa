@@ -8,7 +8,7 @@ import { getUser } from '../auth';
 export const index = (request: StrictRequest<DefaultBodyType>) => {
   const userId = getUser()?.id;
   const boards = db.where('taskBoards', 'userId', userId) as TaskBoard[];
-  const response = paginate({ request, allData: boards });
+  const response = paginate({ request, filtered: boards });
 
   return response;
 };

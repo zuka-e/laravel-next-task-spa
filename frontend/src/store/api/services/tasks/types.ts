@@ -17,6 +17,23 @@ export type ApiResponse<
 } & { [K in keyof T]: T[K] };
 
 /**
+ * Cursor-paginated response
+ */
+export type CursorPaginationResponse<T> = {
+  data: T[];
+  links: {
+    next: string | null;
+    prev: string | null;
+  };
+  meta: {
+    path: string;
+    perPage: number;
+    nextCursor: string | null;
+    prevCursor: string | null;
+  };
+};
+
+/**
  * Validation error
  */
 export type ValidationError = {

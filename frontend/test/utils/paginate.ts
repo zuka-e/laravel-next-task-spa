@@ -1,15 +1,16 @@
 import { type DefaultBodyType, type StrictRequest } from 'msw';
 
 import type { DocumentBase } from '@/models';
+import { type CursorPaginationResponse } from '@/store/api';
 import { type PaginationResponse } from '@/utils/api';
 
 type PaginateProps<T> = {
   request: StrictRequest<DefaultBodyType>;
-  allData: T[];
+  filtered: T[];
 };
 
 export const paginate = <T extends DocumentBase>(props: PaginateProps<T>) => {
-  const { request, allData } = props;
+  const { request, filtered } = props;
   const url = new URL(request.url);
 
   /** APIエンドポイントの内クエリパラメータ (`?page=`) を除外した部分 */
@@ -24,7 +25,8 @@ export const paginate = <T extends DocumentBase>(props: PaginateProps<T>) => {
   /** 一度に返却するデータ数 (任意の値) */
   const perPage = query.limit;
   /** `perPage`に収まらない分だけページ数を増加 (データが存在しない場合 `1`) */
-  const lastPage = allData.length > 0 ? Math.ceil(allData.length / perPage) : 1;
+  const lastPage =
+    filtered.length > 0 ? Math.ceil(filtered.length / perPage) : 1;
   /** `0`以下が指定された場合 `0` */
   const currentPage = query.page <= 0 ? 0 : query.page;
   /** `currentPage`で表示するデータの先頭インデックス (始点: `1`) */
@@ -33,7 +35,7 @@ export const paginate = <T extends DocumentBase>(props: PaginateProps<T>) => {
   const to = perPage * currentPage;
 
   const response: PaginationResponse<T> = {
-    data: allData.slice(from - 1, to),
+    data: filtered.slice(from - 1, to),
     links: {
       first: path + '?page=' + 1,
       last: path + '?page=' + lastPage,
@@ -48,7 +50,7 @@ export const paginate = <T extends DocumentBase>(props: PaginateProps<T>) => {
       last_page: lastPage,
       from: from,
       to: to,
-      total: allData.length,
+      total: filtered.length,
       per_page: perPage,
       path: path,
       links: [],
@@ -88,4 +90,65 @@ const addMetaLinks = (props: PaginationResponse<DocumentBase>) => {
         });
       }
     });
+};
+
+export const cursorPaginate = <T extends DocumentBase>(
+  props: PaginateProps<T>
+): CursorPaginationResponse<T> => {
+  const { request, filtered } = props;
+
+  const url = new URL(request.url);
+  const query = {
+    sort: url.searchParams.get('sort'),
+    direction: url.searchParams.get('direction'),
+    limit: url.searchParams.get('limit'),
+    cursor: url.searchParams.get('cursor'),
+  } as const;
+
+  const column = (query.sort || 'id') as keyof T;
+  const direction = query.direction || 'asc';
+  const perPage = parseInt(query.limit ?? '') || 20;
+
+  const sorted = filtered.sort((a, b) => {
+    if (a[column] < b[column]) return direction === 'desc' ? 1 : -1;
+    if (a[column] > b[column]) return direction === 'desc' ? -1 : 1;
+    return 0;
+  });
+
+  const from = query.cursor
+    ? Math.max(
+        sorted.findIndex((item) => String(item[column]) === query.cursor),
+        0
+      )
+    : 0;
+  const to = from + perPage;
+
+  const nextCursor =
+    from + perPage < sorted.length
+      ? String(sorted[from + perPage][column])
+      : null;
+  const prevCursor =
+    from > 0 ? String(sorted[Math.max(from - perPage, 0)][column]) : null;
+  const nextLink = nextCursor ? getUrlWithCursor(url, nextCursor) : null;
+  const prevLink = prevCursor ? getUrlWithCursor(url, prevCursor) : null;
+
+  return {
+    data: sorted.slice(from, to),
+    links: {
+      next: nextLink,
+      prev: prevLink,
+    },
+    meta: {
+      path: url.origin + url.pathname,
+      perPage,
+      nextCursor,
+      prevCursor,
+    },
+  };
+};
+
+const getUrlWithCursor = (url: URL, cursor: string) => {
+  const newUrl = new URL(url);
+  newUrl.searchParams.set('cursor', cursor);
+  return newUrl.toString();
 };

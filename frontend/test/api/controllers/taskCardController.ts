@@ -16,7 +16,7 @@ export const index = (
     return 0;
   }) as unknown as TaskCard[];
 
-  return paginate({ request, allData: cards });
+  return paginate({ request, filtered: cards });
 };
 
 export const store = (
