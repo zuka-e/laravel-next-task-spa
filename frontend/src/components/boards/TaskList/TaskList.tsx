@@ -88,6 +88,10 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
       const dragListId = item.listId;
       const dragIndex = item.index;
 
+      if (dragListId == list.id) {
+        return;
+      }
+
       item.index = 0;
       item.listIndex = listIndex;
       item.listId = list.id;

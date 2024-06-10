@@ -33,6 +33,10 @@ const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
   const [{ isOver }, drop] = useDrop({
     accept: draggableItem.card,
     hover: (item: DragItem) => {
+      if (item.id === card.id) {
+        return;
+      }
+
       const dragListId = item.listId;
       const dragIndex = item.index;
 
