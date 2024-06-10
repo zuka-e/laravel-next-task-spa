@@ -132,11 +132,14 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
             )}
           </Grid>
           <Divider />
-          <Grid container className="flex-auto flex-nowrap justify-between">
+          <Grid
+            container
+            className="relative flex-auto flex-nowrap justify-between"
+          >
             <Grid
               container
               wrap="nowrap"
-              className="overflow-x-auto [&>div]:w-80 [&>div]:flex-shrink-0 [&>div]:p-2"
+              className="absolute inset-0 overflow-x-auto [&>div]:w-80 [&>div]:flex-shrink-0 [&>div]:p-2"
             >
               {isLoadingLists
                 ? repeatMap(5, (i) => (
@@ -166,7 +169,7 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
                 </Grid>
               )}
             </Grid>
-            <InfoBox className="max-md:flex-shrink-0" />
+            <InfoBox />
           </Grid>
         </Container>
       </BaseLayout>

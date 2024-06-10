@@ -119,7 +119,7 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
       ref={drop}
       elevation={7}
       className={clsx(
-        'text-white',
+        'flex max-h-full flex-col text-white',
         isTaskSelected('l', list.id)
           ? 'bg-secondary-dark outline outline-primary'
           : 'bg-secondary'

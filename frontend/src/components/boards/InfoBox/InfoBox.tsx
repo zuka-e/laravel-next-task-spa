@@ -1,20 +1,18 @@
 import { memo } from 'react';
 
-import { CardContent, IconButton, Skeleton, Stack } from '@mui/material';
+import { Card, CardContent, IconButton, Skeleton, Stack } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
-import { clsx } from 'clsx';
 
 import { repeatMap } from '@/utils';
 import { useGetTaskDetailsQuery, useTaskDetails } from '@/lib/hooks';
 import { TaskBoardDetails, TaskCardDetails, TaskListDetails } from '.';
 
-const InfoBox = memo(function InfoBox(props: JSX.IntrinsicElements['div']) {
-  const { className, ...divProps } = props;
+const InfoBox = memo(function InfoBox() {
   const taskDetailsQuery = useGetTaskDetailsQuery();
   const { hideTaskDetails } = useTaskDetails();
 
   if (!taskDetailsQuery) {
-    return <div className="w-0" />;
+    return <Card className="w-0" />;
   }
 
   const { type, data, isFetching } = taskDetailsQuery;
@@ -43,12 +41,9 @@ const InfoBox = memo(function InfoBox(props: JSX.IntrinsicElements['div']) {
   };
 
   return (
-    <div
-      className={clsx('sticky top-16 w-full shadow transition-all', className)}
-      {...divProps}
-    >
-      <CardContent className="absolute h-full w-full">
-        <div className="absolute right-2 top-2 z-20 w-fit rounded bg-white p-1">
+    <Card elevation={7} className="ml-auto w-full transition-all md:w-6/12">
+      <CardContent className="sticky top-16 z-10 h-full max-h-screen bg-white">
+        <div className="absolute right-2 top-2 z-20 w-fit rounded p-1">
           <IconButton aria-label="close" onClick={hideTaskDetails}>
             <CloseIcon />
           </IconButton>
@@ -63,7 +58,7 @@ const InfoBox = memo(function InfoBox(props: JSX.IntrinsicElements['div']) {
           renderInfoBox()
         )}
       </CardContent>
-    </div>
+    </Card>
   );
 });
 
