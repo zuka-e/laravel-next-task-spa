@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
 
 import clsx from 'clsx';
 import {
@@ -18,6 +18,7 @@ import {
   useAppDispatch,
   useDeepEqualSelector,
   useIntersectionObserver,
+  useScrollPosition,
 } from '@/utils/hooks';
 import { type DragItem, draggableItem } from '@/utils/dnd';
 import { useTaskDetails } from '@/lib/hooks';
@@ -75,6 +76,13 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
         setCursorByList({ id: list.id, cursor: paginatedCard.meta.nextCursor })
       );
     }
+  });
+
+  const cardBoxRef = useRef<HTMLDivElement>(null);
+
+  useScrollPosition(cardBoxRef, {
+    on: !!paginatedCard?.meta.prevCursor,
+    threshold: 150,
   });
 
   const [createTaskCard, { isLoading, error }] = useCreateTaskCardMutation();
@@ -148,7 +156,7 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
         </Grid>
       </CardActions>
 
-      <div className="max-h-[90vh] overflow-y-auto p-2">
+      <div ref={cardBoxRef} className="overflow-y-auto p-2">
         <div className="flex flex-col gap-2">
           {paginatedCard?.meta.prevCursor && (
             <div className="my-2 text-center">
