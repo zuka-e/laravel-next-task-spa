@@ -4,19 +4,19 @@ import type { TaskCard, TaskList } from '@/models';
 import { type UpdateTaskCardRequest } from '@/store/api';
 import type { TaskCardDocument } from '@test/api/models';
 import { db } from '@test/api/database';
-import { paginate } from '@test/utils/paginate';
+import { cursorPaginate } from '@test/utils/paginate';
 
 export const index = (
   listId: TaskList['id'],
   request: StrictRequest<DefaultBodyType>
 ) => {
-  const cards = db.where('taskCards', 'listId', listId).sort((a, b) => {
-    if (a.sequence < b.sequence) return -1;
-    if (a.sequence > b.sequence) return 1;
-    return 0;
-  }) as unknown as TaskCard[];
+  const cards = db.where(
+    'taskCards',
+    'listId',
+    listId
+  ) as unknown as TaskCard[];
 
-  return paginate({ request, filtered: cards });
+  return cursorPaginate({ request, filtered: cards });
 };
 
 export const store = (

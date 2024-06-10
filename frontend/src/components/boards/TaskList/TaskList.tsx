@@ -14,7 +14,11 @@ import { useDrop } from 'react-dnd';
 
 import * as Model from '@/models';
 import { repeatMap } from '@/utils';
-import { useIntersectionObserver } from '@/utils/hooks';
+import {
+  useAppDispatch,
+  useDeepEqualSelector,
+  useIntersectionObserver,
+} from '@/utils/hooks';
 import { type DragItem, draggableItem } from '@/utils/dnd';
 import { useTaskDetails } from '@/lib/hooks';
 import {
@@ -23,6 +27,7 @@ import {
   useMoveCard,
   useUpdateTaskCardMutation,
 } from '@/store/api';
+import { setCursorByList } from '@/store/slices';
 import { LabeledSelect } from '@/templates';
 import { AddTaskButton } from '..';
 import { TaskCard } from '../TaskCard';
@@ -43,14 +48,33 @@ type TaskListProps = {
 
 const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
   const { list, listIndex } = props;
-  const [page, setPage] = useState(1);
+  const dispatch = useAppDispatch();
+  const searchState = useDeepEqualSelector(
+    (state) => state.taskList.data[list.id]?.search
+  );
   const { data: paginatedCard, isLoading: isLoadingCard } =
-    useGetTaskCardsQuery({ listId: list.id, page, limit: 20 });
+    useGetTaskCardsQuery({
+      listId: list.id,
+      cursor: searchState?.cursor,
+      limit: 20,
+    });
   const { isTaskSelected } = useTaskDetails();
   const [filterValue, setFilterValue] = useState<FilterName>(cardFilter.ALL);
 
+  const prevCardRef = useIntersectionObserver(() => {
+    if (paginatedCard?.meta.prevCursor) {
+      dispatch(
+        setCursorByList({ id: list.id, cursor: paginatedCard.meta.prevCursor })
+      );
+    }
+  });
+
   const nextCardRef = useIntersectionObserver(() => {
-    setPage((paginatedCard?.meta.current_page || 0) + 1);
+    if (paginatedCard?.meta.nextCursor) {
+      dispatch(
+        setCursorByList({ id: list.id, cursor: paginatedCard.meta.nextCursor })
+      );
+    }
   });
 
   const [createTaskCard, { isLoading, error }] = useCreateTaskCardMutation();
@@ -122,6 +146,11 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
 
       <div className="max-h-[90vh] overflow-y-auto p-2">
         <div className="flex flex-col gap-2">
+          {paginatedCard?.meta.prevCursor && (
+            <div className="my-2 text-center">
+              <CircularProgress ref={prevCardRef} />
+            </div>
+          )}
           {isLoadingCard
             ? repeatMap(3, (i) => (
                 <Skeleton key={i} variant="rectangular" height={40} />
@@ -134,7 +163,7 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
                   listIndex={listIndex}
                 />
               ))}
-          {paginatedCard?.links.next && (
+          {paginatedCard?.meta.nextCursor && (
             <div className="my-2 text-center">
               <CircularProgress ref={nextCardRef} />
             </div>

@@ -6,15 +6,27 @@ import {
 
 import { envIs } from '@/utils/app';
 import { logger } from './middleware';
-import { appSlice, authSlice, taskBoardSlice, flushAllStates } from './slices';
+import {
+  appSlice,
+  authSlice,
+  taskBoardSlice,
+  flushAllStates,
+  taskListSlice,
+} from './slices';
 import { deleteAccount } from './thunks/auth';
 import { apiResponseNotification } from './api/middleware';
 import { api as taskApi } from './api/services/tasks';
 
 // cf. https://redux-toolkit.js.org/api/combineSlices
-const combinedReducer = combineSlices(appSlice, authSlice, taskApi, {
-  boards: taskBoardSlice.reducer,
-});
+const combinedReducer = combineSlices(
+  appSlice,
+  authSlice,
+  taskListSlice,
+  taskApi,
+  {
+    boards: taskBoardSlice.reducer,
+  }
+);
 
 export type RootState = ReturnType<typeof combinedReducer>;
 

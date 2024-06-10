@@ -60,6 +60,16 @@ type PaginationRequest<
   limit?: number;
 } & { [K in keyof T]: T[K] };
 
+/**
+ * Request params expecting cursor-paginated response
+ */
+type CursorPaginationRequest<
+  T extends Record<string, unknown> = Record<never, never>
+> = {
+  cursor?: string;
+  limit?: number;
+} & { [K in keyof T]: T[K] };
+
 export type FetchSessionResponse = ApiResponse<{
   user: User | null;
 }>;
@@ -167,9 +177,11 @@ export type DestroyTaskListResponse = ApiResponse<{
 
 export type DestroyTaskListRequest = Pick<TaskList, 'id'>;
 
-export type FetchTaskCardsResponse = ApiResponse<PaginationResponse<TaskCard>>;
+export type FetchTaskCardsResponse = ApiResponse<
+  CursorPaginationResponse<TaskCard>
+>;
 
-export type FetchTaskCardsRequest = PaginationRequest<{
+export type FetchTaskCardsRequest = CursorPaginationRequest<{
   listId: TaskList['id'];
 }>;
 

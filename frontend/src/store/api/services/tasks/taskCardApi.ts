@@ -26,9 +26,9 @@ const api = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     /** Gets task cards belonging to the specified list */
     getTaskCards: builder.query<FetchTaskCardsResponse, FetchTaskCardsRequest>({
-      query: ({ listId, page, limit }) => ({
+      query: ({ listId, cursor, limit }) => ({
         url: makePath(['task-lists', listId], ['task-cards']),
-        params: { page, limit },
+        params: { cursor, limit },
       }),
       // cf. https://redux-toolkit.js.org/rtk-query/api/createApi#merge
       serializeQueryArgs: ({ endpointName, queryArgs }) => {
@@ -38,12 +38,31 @@ const api = baseApi.injectEndpoints({
         return `${endpointName}(${JSON.stringify({ listId })})`;
       },
       // cf. https://redux-toolkit.js.org/rtk-query/api/createApi#merge
-      merge: (current, incoming) => {
-        // While task data are merged, the rest are replaced.
-        return {
-          ...incoming,
-          data: [...current.data, ...incoming.data],
-        };
+      merge: (current, incoming, { arg: req }) => {
+        // Replace all unless the incoming data is adjacent one.
+        if (!req.cursor) {
+          return incoming;
+        }
+
+        if (req.cursor === current.meta.nextCursor) {
+          return {
+            ...incoming,
+            data: [...current.data, ...incoming.data],
+            links: { ...incoming.links, prev: current.links.prev },
+            meta: { ...incoming.meta, prevCursor: current.meta.prevCursor },
+          };
+        }
+
+        if (req.cursor === current.meta.prevCursor) {
+          return {
+            ...incoming,
+            data: [...incoming.data, ...current.data],
+            links: { ...incoming.links, next: current.links.next },
+            meta: { ...incoming.meta, nextCursor: current.meta.nextCursor },
+          };
+        }
+
+        return incoming;
       },
       // cf. https://redux-toolkit.js.org/rtk-query/api/createApi#merge
       // cf. https://redux-toolkit.js.org/rtk-query/api/createApi#forcerefetch
