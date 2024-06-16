@@ -58,6 +58,8 @@ type PaginationRequest<
 > = {
   page?: number;
   limit?: number;
+  sort?: string;
+  direction?: string;
 } & { [K in keyof T]: T[K] };
 
 /**
@@ -68,6 +70,8 @@ type CursorPaginationRequest<
 > = {
   cursor?: string;
   limit?: number;
+  sort?: string;
+  direction?: string;
 } & { [K in keyof T]: T[K] };
 
 export type FetchSessionResponse = ApiResponse<{

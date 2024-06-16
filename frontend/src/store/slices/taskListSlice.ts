@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import type { TaskList } from '@/models';
+import type { TaskCard, TaskList } from '@/models';
+import { type Sort } from '@/utils/sort';
 
 type State = {
   data: Record<
@@ -8,6 +9,7 @@ type State = {
     {
       search: {
         cursor?: string;
+        sort?: Partial<Sort<TaskCard>>;
       };
     }
   >;
@@ -38,7 +40,24 @@ export const taskListSlice = createSlice({
         search: { ...state.data[id]?.search, cursor },
       };
     },
+    /**
+     * Set sort values for the list's cards.
+     */
+    setSortByList(
+      state,
+      action: PayloadAction<{
+        id: TaskList['id'];
+        sort: Partial<Sort<TaskCard>>;
+      }>
+    ) {
+      const { id, sort } = action.payload;
+
+      state.data[id] = {
+        ...state.data[id],
+        search: { sort, cursor: undefined },
+      };
+    },
   },
 });
 
-export const { setCursorByList } = taskListSlice.actions;
+export const { setCursorByList, setSortByList } = taskListSlice.actions;

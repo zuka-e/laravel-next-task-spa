@@ -1,107 +1,94 @@
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback } from 'react';
 
 import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { Check as CheckIcon } from '@mui/icons-material';
 
-import { DocumentBase, TaskCard, TaskList } from '@/models';
-import { SortOperation } from '@/utils/sort';
-import { useAppDispatch } from '@/utils/hooks';
-import { sortCard, sortList } from '@/store/slices/taskBoardSlice';
+import type { TaskCard, TaskList } from '@/models';
+import { useAppDispatch, useAppSelector } from '@/utils/hooks';
+import { setSortByList } from '@/store/slices';
+// import { type Sort } from '@/utils/sort';
 
+// type Option = Record<string, Sort<TaskCard> & { label: string }>;
+// todo: satisfies
 const options = {
-  createdAtAsc: '作成日時 (昇順)',
-  createdAtDesc: '作成日時 (降順)',
-  updatedAtAsc: '更新日時 (昇順)',
-  updatedAtDesc: '更新日時 (降順)',
-  custom: 'カスタム',
+  'title-asc': {
+    label: 'タイトル (昇順)',
+    key: 'title',
+    direction: 'asc',
+  },
+  'title-desc': {
+    label: 'タイトル (降順)',
+    key: 'title',
+    direction: 'desc',
+  },
+  'createdAt-asc': {
+    label: '作成日時 (昇順)',
+    key: 'createdAt',
+    direction: 'asc',
+  },
+  'createdAt-desc': {
+    label: '作成日時 (降順)',
+    key: 'createdAt',
+    direction: 'desc',
+  },
+  'updatedAt-asc': {
+    label: '更新日時 (昇順)',
+    key: 'updatedAt',
+    direction: 'asc',
+  },
+  'updatedAt-desc': {
+    label: '更新日時 (降順)',
+    key: 'updatedAt',
+    direction: 'desc',
+  },
+  'sequence-asc': {
+    label: 'カスタム',
+    key: 'sequence',
+    direction: 'asc',
+  },
 } as const;
 
-type SortOption = keyof typeof options;
-
 type SortSelectProps =
-  | { model: 'list'; boardId: TaskList['boardId'] }
-  | { model: 'card'; boardId: TaskCard['boardId']; listId: TaskCard['listId'] };
+  | { boardId?: TaskList['boardId'] }
+  | { listId?: TaskCard['listId'] };
 
 const SortSelect = memo(function SortSelect(
   props: SortSelectProps
 ): JSX.Element {
-  const boardId = props.boardId;
-  const listId = props.model === 'card' ? props.listId : undefined;
-  const dispatch = useAppDispatch();
-  const [currentValue, setCurrentValue] = useState<SortOption>();
+  // const boardId = 'boardId' in props ? props.boardId : undefined
+  const listId = 'listId' in props ? props.listId : undefined;
 
-  const order = useMemo<Record<SortOption, SortOperation<DocumentBase>>>(() => {
-    return {
-      createdAtAsc: { column: 'createdAt' },
-      createdAtDesc: { column: 'createdAt', direction: 'desc' },
-      updatedAtAsc: { column: 'updatedAt' },
-      updatedAtDesc: { column: 'updatedAt', direction: 'desc' },
-      custom: { column: 'index' },
-    };
-  }, []);
+  const dispatch = useAppDispatch();
+
+  const currentValue = useAppSelector((state) =>
+    listId
+      ? state.taskList.data[listId]?.search.sort ?? options['sequence-asc']
+      : undefined
+  );
 
   const handleClick = useCallback(
-    (key: SortOption): void => {
-      switch (key) {
-        case 'createdAtAsc':
-          setCurrentValue('createdAtAsc');
-          if (listId)
-            dispatch(sortCard({ boardId, listId, ...order.createdAtAsc }));
-          else dispatch(sortList({ boardId, ...order.createdAtAsc }));
-          break;
-
-        case 'createdAtDesc':
-          setCurrentValue('createdAtDesc');
-          if (listId)
-            dispatch(sortCard({ boardId, listId, ...order.createdAtDesc }));
-          else dispatch(sortList({ boardId, ...order.createdAtDesc }));
-          break;
-
-        case 'updatedAtAsc':
-          setCurrentValue('updatedAtAsc');
-          if (listId)
-            dispatch(sortCard({ boardId, listId, ...order.updatedAtAsc }));
-          else dispatch(sortList({ boardId, ...order.updatedAtAsc }));
-          break;
-
-        case 'updatedAtDesc':
-          setCurrentValue('updatedAtDesc');
-          if (listId)
-            dispatch(sortCard({ boardId, listId, ...order.updatedAtDesc }));
-          else dispatch(sortList({ boardId, ...order.updatedAtDesc }));
-          break;
-
-        case 'custom':
-          setCurrentValue('custom');
-          if (listId) dispatch(sortCard({ boardId, listId, ...order.custom }));
-          else dispatch(sortList({ boardId, ...order.custom }));
-          break;
+    (key: keyof typeof options): void => {
+      if (listId) {
+        dispatch(setSortByList({ id: listId, sort: options[key] }));
       }
     },
-    [
-      boardId,
-      dispatch,
-      listId,
-      order.createdAtAsc,
-      order.createdAtDesc,
-      order.custom,
-      order.updatedAtAsc,
-      order.updatedAtDesc,
-    ]
+    [dispatch, listId]
   );
 
   return (
     <List aria-label="sort-select" dense>
-      {(Object.keys(options) as SortOption[]).map((option) => (
-        <ListItem key={option} button onClick={() => handleClick(option)}>
-          <ListItemText primary={options[option]} />
-          {currentValue === option && (
-            <ListItemIcon>
-              <CheckIcon />
-            </ListItemIcon>
-          )}
-        </ListItem>
-      ))}
+      {(Object.keys(options) as unknown as (keyof typeof options)[]).map(
+        (key) => (
+          <ListItem key={key} button onClick={() => handleClick(key)}>
+            <ListItemText primary={options[key].label} />
+            {`${currentValue?.key}-${currentValue?.direction}` === key && (
+              <ListItemIcon>
+                <CheckIcon />
+              </ListItemIcon>
+            )}
+          </ListItem>
+        )
+      )}
     </List>
   );
 });

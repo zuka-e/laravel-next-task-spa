@@ -58,7 +58,7 @@ const ListMenu = memo(function ListMenu(props: ListMenuProps): JSX.Element {
           </ListItem>
         }
       >
-        <SortSelect model="card" boardId={list.boardId} listId={list.id} />
+        <SortSelect listId={list.id} />
       </PopoverControl>
       <ListItem
         button

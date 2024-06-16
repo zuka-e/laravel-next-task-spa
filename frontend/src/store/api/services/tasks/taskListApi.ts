@@ -22,9 +22,9 @@ const api = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     /** Gets task lists belonging to the specified board */
     getTaskLists: builder.query<FetchTaskListsResponse, FetchTaskListsRequest>({
-      query: ({ boardId, page, limit }) => ({
+      query: ({ boardId, page, limit, sort, direction }) => ({
         url: makePath(['task-boards', boardId], ['task-lists']),
-        params: { page, limit },
+        params: { page, limit, sort, direction },
       }),
       // cf. https://redux-toolkit.js.org/rtk-query/api/createApi#merge
       serializeQueryArgs: ({ endpointName, queryArgs }) => {

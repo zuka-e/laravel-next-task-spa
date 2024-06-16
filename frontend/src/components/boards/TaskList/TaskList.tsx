@@ -58,6 +58,8 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
       listId: list.id,
       cursor: searchState?.cursor,
       limit: 20,
+      sort: searchState?.sort?.key || 'sequence',
+      direction: searchState?.sort?.direction,
     });
   const { isTaskSelected } = useTaskDetails();
   const [filterValue, setFilterValue] = useState<FilterName>(cardFilter.ALL);

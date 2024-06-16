@@ -26,9 +26,9 @@ const api = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     /** Gets task cards belonging to the specified list */
     getTaskCards: builder.query<FetchTaskCardsResponse, FetchTaskCardsRequest>({
-      query: ({ listId, cursor, limit }) => ({
+      query: ({ listId, cursor, limit, sort, direction }) => ({
         url: makePath(['task-lists', listId], ['task-cards']),
-        params: { cursor, limit },
+        params: { cursor, limit, sort, direction },
       }),
       // cf. https://redux-toolkit.js.org/rtk-query/api/createApi#merge
       serializeQueryArgs: ({ endpointName, queryArgs }) => {
@@ -67,9 +67,11 @@ const api = baseApi.injectEndpoints({
       // cf. https://redux-toolkit.js.org/rtk-query/api/createApi#merge
       // cf. https://redux-toolkit.js.org/rtk-query/api/createApi#forcerefetch
       forceRefetch({ currentArg, previousArg }) {
-        // Prevents from fetching duplicate data.
-        if ((currentArg?.page ?? 0) <= (previousArg?.page ?? 0)) {
-          return false;
+        if (
+          currentArg?.sort !== previousArg?.sort ||
+          currentArg?.direction !== previousArg?.direction
+        ) {
+          return true;
         }
 
         return JSON.stringify(currentArg) !== JSON.stringify(previousArg);
