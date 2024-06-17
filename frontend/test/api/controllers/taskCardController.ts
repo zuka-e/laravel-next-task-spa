@@ -52,11 +52,15 @@ export const update = (
 
   if (typeof params.index === 'number') {
     const listId = params.listId ?? card.listId;
-    const cards = db.where('taskCards', 'listId', listId).sort((a, b) => {
-      if (a.sequence < b.sequence) return -1;
-      if (a.sequence > b.sequence) return 1;
-      return 0;
-    });
+    const cards = db
+      .where('taskCards', 'listId', listId)
+      .filter((data) => data.id !== card.id)
+      .sort((a, b) => {
+        if (a.sequence < b.sequence) return -1;
+        if (a.sequence > b.sequence) return 1;
+        return 0;
+      });
+
     const prevCardSequence =
       params.index > 0 ? cards[params.index - 1]?.sequence : 0;
     const nextCardSequence = cards[params.index]?.sequence;
