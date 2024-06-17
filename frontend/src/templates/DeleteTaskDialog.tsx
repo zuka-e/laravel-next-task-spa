@@ -9,12 +9,17 @@ import {
   Button,
 } from '@mui/material';
 
-import { DeleteAction } from '@/store/slices';
+import type { TaskBoard, TaskCard, TaskList } from '@/models';
 import {
   useDestroyTaskBoardMutation,
   useDestroyTaskListMutation,
   useDestroyTaskCardMutation,
 } from '@/store/api';
+
+type DeleteAction =
+  | { model: 'board'; data: TaskBoard }
+  | { model: 'list'; data: TaskList }
+  | { model: 'card'; data: TaskCard };
 
 type DeleteTaskDialogProps = DeleteAction & {
   open: boolean;

@@ -1,25 +1,63 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { TaskBoard, TaskBoardsCollection, TaskCard, TaskList } from '@/models';
+import type { TaskBoard, TaskList } from '@/models';
+import { type Sort } from '@/utils/sort';
 
-export type DeleteAction =
-  | { model: 'board'; data: TaskBoard }
-  | { model: 'list'; data: TaskList }
-  | { model: 'card'; data: TaskCard };
-
-type TaskBoardState = {
-  loading: boolean;
-  docs: TaskBoardsCollection;
+type State = {
+  data: Record<
+    TaskBoard['id'],
+    {
+      search: {
+        cursor?: string;
+        sort?: Partial<Sort<TaskList>>;
+      };
+    }
+  >;
 };
 
-const initialState = {
-  loading: false,
-  docs: {},
-  data: [],
-} as TaskBoardState;
+const initialState: State = {
+  data: {},
+};
 
 export const taskBoardSlice = createSlice({
   name: 'taskBoard',
   initialState,
-  reducers: {},
+  reducers: {
+    /**
+     * Set pagination cursor for the board's lists to fetch the next.
+     */
+    setCursorByBoard(
+      state,
+      action: PayloadAction<{
+        id: TaskBoard['id'];
+        cursor?: string;
+      }>
+    ) {
+      const { id, cursor } = action.payload;
+
+      state.data[id] = {
+        ...state.data[id],
+        search: { ...state.data[id]?.search, cursor },
+      };
+    },
+    /**
+     * Set sort values for the board's lists.
+     */
+    setSortByBoard(
+      state,
+      action: PayloadAction<{
+        id: TaskBoard['id'];
+        sort: Partial<Sort<TaskList>>;
+      }>
+    ) {
+      const { id, sort } = action.payload;
+
+      state.data[id] = {
+        ...state.data[id],
+        search: { sort, cursor: undefined },
+      };
+    },
+  },
 });
+
+export const { setCursorByBoard, setSortByBoard } = taskBoardSlice.actions;

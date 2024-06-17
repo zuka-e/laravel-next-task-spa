@@ -3,7 +3,7 @@ import { type DefaultBodyType, type StrictRequest } from 'msw';
 import type { TaskBoard, TaskList } from '@/models';
 import type { TaskListDocument } from '@test/api/models';
 import { db } from '@test/api/database';
-import { paginate } from '@test/utils/paginate';
+import { cursorPaginate } from '@test/utils/paginate';
 
 export const index = (
   boardId: TaskBoard['id'],
@@ -15,7 +15,7 @@ export const index = (
     boardId
   ) as unknown as TaskList[];
 
-  return paginate({ request, filtered: lists });
+  return cursorPaginate({ request, filtered: lists });
 };
 
 export const store = (

@@ -5,7 +5,7 @@ import { Check as CheckIcon } from '@mui/icons-material';
 
 import type { TaskCard, TaskList } from '@/models';
 import { useAppDispatch, useAppSelector } from '@/utils/hooks';
-import { setSortByList } from '@/store/slices';
+import { setSortByBoard, setSortByList } from '@/store/slices';
 // import { type Sort } from '@/utils/sort';
 
 // type Option = Record<string, Sort<TaskCard> & { label: string }>;
@@ -55,24 +55,30 @@ type SortSelectProps =
 const SortSelect = memo(function SortSelect(
   props: SortSelectProps
 ): JSX.Element {
-  // const boardId = 'boardId' in props ? props.boardId : undefined
+  const boardId = 'boardId' in props ? props.boardId : undefined;
   const listId = 'listId' in props ? props.listId : undefined;
 
   const dispatch = useAppDispatch();
 
-  const currentValue = useAppSelector((state) =>
-    listId
-      ? state.taskList.data[listId]?.search.sort ?? options['sequence-asc']
-      : undefined
-  );
+  const currentValue = useAppSelector((state) => {
+    const sort = boardId
+      ? state.taskBoard.data[boardId]?.search.sort
+      : listId
+      ? state.taskList.data[listId]?.search.sort
+      : undefined;
+
+    return sort ?? options['sequence-asc'];
+  });
 
   const handleClick = useCallback(
     (key: keyof typeof options): void => {
-      if (listId) {
+      if (boardId) {
+        dispatch(setSortByBoard({ id: boardId, sort: options[key] }));
+      } else if (listId) {
         dispatch(setSortByList({ id: listId, sort: options[key] }));
       }
     },
-    [dispatch, listId]
+    [dispatch, boardId, listId]
   );
 
   return (

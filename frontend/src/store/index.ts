@@ -22,10 +22,8 @@ const combinedReducer = combineSlices(
   appSlice,
   authSlice,
   taskListSlice,
-  taskApi,
-  {
-    boards: taskBoardSlice.reducer,
-  }
+  taskBoardSlice,
+  taskApi
 );
 
 export type RootState = ReturnType<typeof combinedReducer>;

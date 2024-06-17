@@ -61,7 +61,7 @@ const BoardMenu = memo(function BoardMenu(props: BoardMenuProps): JSX.Element {
             </ListItem>
           }
         >
-          <SortSelect model="list" boardId={board.id} />
+          <SortSelect boardId={board.id} />
         </PopoverControl>
       )}
       {pathParams?.boardId && (

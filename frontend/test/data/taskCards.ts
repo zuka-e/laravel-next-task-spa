@@ -12,7 +12,7 @@ export const cardOfGuestUser: TaskCardDocument = {
   content: 'ゲストユーザーが所有するTaskCard',
   deadline: new Date().toISOString(),
   done: true,
-  sequence: 2 ** 10,
+  sequence: 2 ** 10 / 2,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
 };
@@ -25,7 +25,7 @@ export const cardOfOtherUser: TaskCardDocument = {
   content: '他のユーザーが所有するTaskCard',
   deadline: new Date().toISOString(),
   done: false,
-  sequence: 2 ** 10,
+  sequence: 2 ** 10 / 2,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
 };

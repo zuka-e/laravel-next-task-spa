@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next';
@@ -15,13 +15,19 @@ import {
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 
 import { repeatMap } from '@/utils';
-import { useIntersectionObserver, useRoute } from '@/utils/hooks';
+import {
+  useAppDispatch,
+  useDeepEqualSelector,
+  useIntersectionObserver,
+  useRoute,
+} from '@/utils/hooks';
 import {
   useCreateTaskListMutation,
   useGetTaskBoardQuery,
   useGetTaskListsQuery,
   useUpdateTaskBoardMutation,
 } from '@/store/api';
+import { setCursorByBoard } from '@/store/slices';
 import { BaseLayout } from '@/layouts';
 import { PopoverControl } from '@/templates';
 import { AddTaskButton, EditableTitle, SearchField } from '@/components/boards';
@@ -49,8 +55,12 @@ export const getStaticProps: GetStaticProps<TaskBoardProps> = async () => {
 };
 
 const TaskBoard = memo(function TaskBoard(): JSX.Element {
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const { pathParams } = useRoute();
+  const searchState = useDeepEqualSelector(
+    (state) => state.taskBoard.data[pathParams?.['boardId'] ?? '']?.search
+  );
   const [
     createTaskList,
     { isLoading: isLoadingToCreate, error: creationError },
@@ -59,7 +69,6 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
     updateTaskBoard,
     { isLoading: isLoadingToUpdate, error: updateError },
   ] = useUpdateTaskBoardMutation();
-  const [page, setPage] = useState(1);
 
   const { data: { data: board } = {} } = useGetTaskBoardQuery(
     pathParams ? { id: pathParams['boardId'] ?? '' } : skipToken
@@ -68,7 +77,13 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
   const { data: paginatedList, isLoading: isLoadingLists } =
     useGetTaskListsQuery(
       pathParams
-        ? { boardId: pathParams['boardId'], page, limit: 10 }
+        ? {
+            boardId: pathParams['boardId'],
+            cursor: searchState?.cursor,
+            limit: 10,
+            sort: searchState?.sort?.key || 'sequence',
+            direction: searchState?.sort?.direction,
+          }
         : skipToken
     );
 
@@ -76,8 +91,15 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
     router.replace('/boards');
   }
 
-  const nextListRef = useIntersectionObserver((): void => {
-    setPage((paginatedList?.meta.current_page || 0) + 1);
+  const nextListRef = useIntersectionObserver(() => {
+    if (board && paginatedList?.meta.nextCursor) {
+      dispatch(
+        setCursorByBoard({
+          id: board.id,
+          cursor: paginatedList.meta.nextCursor,
+        })
+      );
+    }
   });
 
   return (

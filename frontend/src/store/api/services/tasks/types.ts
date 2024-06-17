@@ -117,9 +117,7 @@ export type FetchTaskBoardsResponse = ApiResponse<
   PaginationResponse<TaskBoard>
 >;
 
-export type FetchTaskBoardsRequest = {
-  page?: string;
-};
+export type FetchTaskBoardsRequest = PaginationRequest;
 
 export type CreateTaskBoardResponse = ApiResponse<{
   data: TaskBoard;
@@ -148,9 +146,11 @@ export type DestroyTaskBoardResponse = ApiResponse<{
 
 export type DestroyTaskBoardRequest = Pick<TaskBoard, 'id'>;
 
-export type FetchTaskListsResponse = ApiResponse<PaginationResponse<TaskList>>;
+export type FetchTaskListsResponse = ApiResponse<
+  CursorPaginationResponse<TaskList>
+>;
 
-export type FetchTaskListsRequest = PaginationRequest<{
+export type FetchTaskListsRequest = CursorPaginationRequest<{
   boardId: TaskBoard['id'];
 }>;
 

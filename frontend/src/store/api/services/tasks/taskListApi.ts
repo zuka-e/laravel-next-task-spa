@@ -22,9 +22,9 @@ const api = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     /** Gets task lists belonging to the specified board */
     getTaskLists: builder.query<FetchTaskListsResponse, FetchTaskListsRequest>({
-      query: ({ boardId, page, limit, sort, direction }) => ({
+      query: ({ boardId, cursor, limit, sort, direction }) => ({
         url: makePath(['task-boards', boardId], ['task-lists']),
-        params: { page, limit, sort, direction },
+        params: { cursor, limit, sort, direction },
       }),
       // cf. https://redux-toolkit.js.org/rtk-query/api/createApi#merge
       serializeQueryArgs: ({ endpointName, queryArgs }) => {
@@ -34,22 +34,43 @@ const api = baseApi.injectEndpoints({
         return `${endpointName}(${JSON.stringify({ boardId })})`;
       },
       // cf. https://redux-toolkit.js.org/rtk-query/api/createApi#merge
-      merge: (current, incoming) => {
-        // While task data are merged, the rest are replaced.
-        return {
-          ...incoming,
-          data: [...current.data, ...incoming.data],
-        };
+      merge: (current, incoming, { arg: req }) => {
+        // Replace all unless the incoming data is adjacent one.
+        if (!req.cursor) {
+          return incoming;
+        }
+
+        if (req.cursor === current.meta.nextCursor) {
+          return {
+            ...incoming,
+            data: [...current.data, ...incoming.data],
+            links: { ...incoming.links, prev: current.links.prev },
+            meta: { ...incoming.meta, prevCursor: current.meta.prevCursor },
+          };
+        }
+
+        if (req.cursor === current.meta.prevCursor) {
+          return {
+            ...incoming,
+            data: [...incoming.data, ...current.data],
+            links: { ...incoming.links, next: current.links.next },
+            meta: { ...incoming.meta, nextCursor: current.meta.nextCursor },
+          };
+        }
+
+        return incoming;
       },
       // cf. https://redux-toolkit.js.org/rtk-query/api/createApi#merge
       // cf. https://redux-toolkit.js.org/rtk-query/api/createApi#forcerefetch
       forceRefetch({ currentArg, previousArg }) {
-        // Prevents from fetching duplicate data.
-        if ((currentArg?.page ?? 0) <= (previousArg?.page ?? 0)) {
-          return false;
+        if (
+          currentArg?.sort !== previousArg?.sort ||
+          currentArg?.direction !== previousArg?.direction
+        ) {
+          return true;
         }
 
-        return currentArg !== previousArg;
+        return JSON.stringify(currentArg) !== JSON.stringify(previousArg);
       },
     }),
     createTaskList: builder.mutation<

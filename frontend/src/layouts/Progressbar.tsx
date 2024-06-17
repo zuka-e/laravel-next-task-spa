@@ -8,9 +8,7 @@ const Progressbar = memo(function Progressbar({
   className,
   ...props
 }: LinearProgressProps): JSX.Element {
-  const loading = useAppSelector(
-    (state) => state.auth.loading || state.boards.loading
-  );
+  const loading = useAppSelector((state) => state.auth.loading);
 
   if (loading)
     return (

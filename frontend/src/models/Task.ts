@@ -14,6 +14,7 @@ export type TaskList = {
   title: string;
   description: string;
   cards: TaskCard[];
+  sequence: number;
 } & DocumentBase;
 
 export type TaskListsCollection = CollectionBase<TaskList>;

@@ -5,6 +5,7 @@ export type TaskListDocument = {
   boardId: string;
   title: string;
   description: string;
+  sequence: number;
 } & DocumentBase;
 
 export type TaskListsCollection = CollectionBase<TaskListDocument>;

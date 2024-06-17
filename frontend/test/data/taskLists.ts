@@ -10,6 +10,7 @@ export const listOfGuestUser: TaskListDocument = {
   boardId: boardOfGuestUser.id,
   title: 'ゲストユーザーのTaskList',
   description: 'ゲストユーザーが所有するTaskList',
+  sequence: 2 ** 10 / 2,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
 };
@@ -20,6 +21,7 @@ export const listOfOtherUser: TaskListDocument = {
   boardId: boardOfOtherUser.id,
   title: '他のユーザーのTaskList',
   description: '他のユーザーが所有するTaskList',
+  sequence: 2 ** 10 / 2,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
 };
@@ -42,13 +44,14 @@ const runSeeder = (props: SeederProps) => {
     db.create('taskLists', list);
   });
 
-  [...Array(props.count)].forEach(() => {
+  [...Array(props.count)].forEach((_, i) => {
     db.create('taskLists', {
       id: faker.string.uuid(),
       userId: props.belongsTo.user.id,
       boardId: props.belongsTo.board.id,
       title: `${faker.hacker.adjective()} ${faker.hacker.verb()}`,
       description: faker.hacker.phrase(),
+      sequence: (i + 1) * 2 ** 10,
       createdAt: faker.date.past().toISOString(),
       updatedAt: faker.date.recent().toISOString(),
     });
