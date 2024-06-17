@@ -63,7 +63,7 @@ export const update = (
     let sequence = Math.round(
       nextCardSequence
         ? ((prevCardSequence ?? 0) + (nextCardSequence ?? 0)) / 2
-        : 2 ** 10
+        : (cards.at(-1)?.sequence ?? 0) + 2 ** 10
     );
 
     // Reorder if duplicated
