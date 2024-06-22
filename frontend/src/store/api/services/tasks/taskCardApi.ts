@@ -13,6 +13,8 @@ import type {
   FetchTaskCardResponse,
   FetchTaskCardsRequest,
   FetchTaskCardsResponse,
+  SearchTasksByBoardRequest,
+  SearchTasksByBoardResponse,
   UpdateTaskCardRequest,
   UpdateTaskCardResponse,
 } from './types';
@@ -169,6 +171,15 @@ const api = baseApi.injectEndpoints({
         );
       },
     }),
+    SearchTaskCardsByBoard: builder.query<
+      SearchTasksByBoardResponse,
+      SearchTasksByBoardRequest
+    >({
+      query: ({ boardId, q }) => ({
+        url: makePath(['task-boards', boardId]) + '/search',
+        params: { q },
+      }),
+    }),
   }),
 });
 
@@ -192,6 +203,7 @@ export const {
   useGetTaskCardQuery,
   useUpdateTaskCardMutation,
   useDestroyTaskCardMutation,
+  useSearchTaskCardsByBoardQuery,
 } = api;
 
 export const useMoveCard = () => {

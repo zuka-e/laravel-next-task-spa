@@ -11,6 +11,8 @@ import type {
   FetchTaskCardsResponse,
   FetchTaskCardRequest,
   FetchTaskCardResponse,
+  SearchTasksByBoardRequest,
+  SearchTasksByBoardResponse,
 } from '@/store/api';
 import { API_ROUTE } from '@/config/api';
 import { makePath } from '@/utils/api';
@@ -19,6 +21,7 @@ import { notFoundErrorResponse } from '@test/api/handlers/utils/responses';
 import { withMiddleware } from '@test/api/handlers/middleware/utils/withMiddleware';
 
 type TaskCardParams = {
+  boardId: string;
   listId: string;
   cardId: string;
 };
@@ -122,6 +125,25 @@ export const handlers = [
         severity: 'warning',
         message: 'タスクカードを削除しました。',
         data: deleted,
+      });
+    })
+  ),
+
+  http.get(
+    API_ROUTE + makePath(['task-boards', ':boardId']) + '/search',
+    withMiddleware<
+      Pick<TaskCardParams, 'boardId'>,
+      SearchTasksByBoardRequest,
+      SearchTasksByBoardResponse
+    >()(async ({ params, request }) => {
+      const url = new URL(request.url);
+      const q = url.searchParams.get('q');
+      const searched = taskCardController.search(params['boardId'], q ?? '');
+
+      return HttpResponse.json({
+        severity: 'info',
+        message: 'タスクカードを検索しました。',
+        data: searched,
       });
     })
   ),

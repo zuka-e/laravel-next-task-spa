@@ -181,6 +181,15 @@ export type DestroyTaskListResponse = ApiResponse<{
 
 export type DestroyTaskListRequest = Pick<TaskList, 'id'>;
 
+export type SearchTasksByBoardResponse = ApiResponse<{
+  data: TaskCard[];
+}>;
+
+export type SearchTasksByBoardRequest = {
+  boardId: TaskBoard['id'];
+  q: string;
+};
+
 export type FetchTaskCardsResponse = ApiResponse<
   CursorPaginationResponse<TaskCard>
 >;

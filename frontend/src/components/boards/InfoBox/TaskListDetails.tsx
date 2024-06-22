@@ -19,6 +19,7 @@ import {
 import { TaskList } from '@/models';
 import { useGetTaskBoardQuery, useUpdateTaskListMutation } from '@/store/api';
 import { Link, MarkdownEditor } from '@/templates';
+import { useTaskDetails } from '@/lib/hooks';
 import { EditableTitle } from '..';
 
 type TaskListDetailsProps = {
@@ -29,6 +30,8 @@ const TaskListDetails = memo(function TaskListDetails(
   props: TaskListDetailsProps
 ): JSX.Element {
   const { list } = props;
+  const { getTaskDetailsLink } = useTaskDetails();
+
   const { data: { data: board } = {} } = useGetTaskBoardQuery({
     id: list.boardId,
   });
@@ -56,15 +59,15 @@ const TaskListDetails = memo(function TaskListDetails(
           }}
         >
           <Tooltip title={board?.title}>
-            <Typography>
+            <Link href={getTaskDetailsLink('b', list.boardId)} shallow={true}>
               <FolderOpenIcon className="mr-1 h-6 w-6" />
               {'Board'}
-            </Typography>
+            </Link>
           </Tooltip>
-          <Link href={`#${list?.id}`} title={list.title}>
+          <Typography>
             <ListAltIcon className="mr-1 h-6 w-6" />
             {list.title}
-          </Link>
+          </Typography>
         </Breadcrumbs>
       </CardActions>
       <div className="overflow-y-auto">

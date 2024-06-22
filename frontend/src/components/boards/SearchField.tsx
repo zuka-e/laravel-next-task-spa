@@ -77,7 +77,7 @@ const SearchField = memo(function SearchField(): JSX.Element {
           open={popperOpen}
           anchorEl={anchorEl}
           placement="bottom-end"
-          className="!top-1 rounded outline outline-primary"
+          className="!top-1 z-10 rounded outline outline-primary"
         >
           <Card
             className="max-h-96 w-80 overflow-y-auto"

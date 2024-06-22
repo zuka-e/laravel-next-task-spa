@@ -1,6 +1,6 @@
 import { type DefaultBodyType, type StrictRequest } from 'msw';
 
-import type { TaskCard, TaskList } from '@/models';
+import type { TaskBoard, TaskCard, TaskList } from '@/models';
 import { type UpdateTaskCardRequest } from '@/store/api';
 import type { TaskCardDocument } from '@test/api/models';
 import { db } from '@test/api/database';
@@ -107,4 +107,16 @@ export const destroy = (id: TaskCard['id']) => {
   const response: TaskCard = { ...deleted };
 
   return response;
+};
+
+export const search = (id: TaskBoard['id'], q: string) => {
+  const listIds = db.where('taskLists', 'boardId', id).map((list) => list.id);
+
+  return db
+    .whereIn('taskCards', 'listId', listIds)
+    .filter(
+      (card) =>
+        new RegExp(q, 'i').test(card.title) ||
+        new RegExp(q, 'i').test(card.content)
+    );
 };

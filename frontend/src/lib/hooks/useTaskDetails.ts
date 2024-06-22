@@ -22,6 +22,18 @@ export const useTaskDetails = () => {
   const router = useRouter();
 
   /**
+   * Get the link for the details of the specified task data.
+   */
+  const getTaskDetailsLink = (type: QueryType, id: string): string => {
+    const queryParams = new URLSearchParams({
+      ...router.query,
+      [QUERY_KEY]: `${type}:${id}`,
+    });
+
+    return `${router.pathname}?${queryParams.toString()}`;
+  };
+
+  /**
    * Show the details of the specified task data by setting a query parameter.
    */
   const showTaskDetails = (type: QueryType, id: string): void => {
@@ -62,6 +74,7 @@ export const useTaskDetails = () => {
   };
 
   return {
+    getTaskDetailsLink,
     showTaskDetails,
     hideTaskDetails,
     isTaskSelected,

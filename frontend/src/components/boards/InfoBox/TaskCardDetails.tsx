@@ -30,6 +30,7 @@ import {
 import { EditableTitle } from '..';
 import type { DatetimeInputProps } from '@/templates/DatetimeInput';
 import { useGetTaskListQuery } from '@/store/api';
+import { useTaskDetails } from '@/lib/hooks';
 
 type TaskCardDetailsProps = {
   card: TaskCard;
@@ -39,6 +40,8 @@ const TaskCardDetails = memo(function TaskCardDetails(
   props: TaskCardDetailsProps
 ): JSX.Element {
   const { card } = props;
+  const { getTaskDetailsLink } = useTaskDetails();
+
   const { data: { data: list } = {} } = useGetTaskListQuery({
     id: card.listId,
   });
@@ -93,7 +96,7 @@ const TaskCardDetails = memo(function TaskCardDetails(
             li: '[&>*]:flex [&>*]:items-center',
           }}
         >
-          <Link href={`#${list?.id}`}>
+          <Link href={getTaskDetailsLink('l', card.listId)} shallow={true}>
             <ListAltIcon className="mr-1 h-6 w-6" />
             {list?.title}
           </Link>

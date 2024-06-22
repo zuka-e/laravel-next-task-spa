@@ -1,15 +1,44 @@
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo } from 'react';
 
+import { skipToken } from '@reduxjs/toolkit/query';
 import {
   List,
-  ListSubheader,
   ListItem,
   ListItemText,
   CardContent,
+  Stack,
+  Skeleton,
 } from '@mui/material';
 
-import { useAppDispatch, useDeepEqualSelector, useRoute } from '@/utils/hooks';
-import { openInfoBox } from '@/store/slices';
+import { useSearchTaskCardsByBoardQuery } from '@/store/api';
+import { useRoute } from '@/utils/hooks';
+import { repeatMap } from '@/utils';
+import { useTaskDetails } from '@/lib/hooks';
+
+/**
+ * Highlight the matched text.
+ */
+const highlightText = (text: string, query: string): JSX.Element => {
+  if (!query) {
+    return <span>{text}</span>;
+  }
+
+  const parts = text.split(new RegExp(`(${query})`, 'gi'));
+
+  return (
+    <>
+      {parts.map((part, i) =>
+        part.toLowerCase() === query.toLowerCase() ? (
+          <span key={i} className="bg-yellow-400">
+            {part}
+          </span>
+        ) : (
+          <span key={i}>{part}</span>
+        )
+      )}
+    </>
+  );
+};
 
 type SearchResultProps = {
   input: string;
@@ -19,121 +48,54 @@ const SearchResult = memo(function SearchResult(
   props: SearchResultProps
 ): JSX.Element {
   const { input } = props;
-  const route = useRoute();
-  const dispatch = useAppDispatch();
-  const lists = useDeepEqualSelector(
-    (state) => state.boards.docs[route.pathParams?.boardId || ''].lists
+  const { pathParams } = useRoute();
+  const { showTaskDetails } = useTaskDetails();
+
+  const { data, isFetching } = useSearchTaskCardsByBoardQuery(
+    pathParams ? { boardId: pathParams['boardId' ?? ''], q: input } : skipToken
   );
-  // `useMemo`: `useEffect`依存配列による無限ループを防止
-  const cards = useMemo(() => {
-    return lists.reduce(
-      (prev: typeof lists[0]['cards'], current) => [...prev, ...current.cards],
-      []
+
+  if (!input) {
+    return (
+      <CardContent>{'Search results will be displayed here.'}</CardContent>
     );
-  }, [lists]);
+  }
 
-  // 検索に合致したデータ
-  const [results, setResults] = useState({
-    lists: [] as typeof lists,
-    cards: [] as typeof cards,
-  });
+  if (isFetching) {
+    return (
+      <Stack spacing={2} className="m-4">
+        {repeatMap(5, (i) => (
+          <Skeleton key={i} variant="rectangular" height={40} />
+        ))}
+      </Stack>
+    );
+  }
 
-  useEffect(() => {
-    if (!input) {
-      setResults({ lists: [], cards: [] });
-      return;
-    }
-
-    const queryParam = input.toLowerCase();
-
-    setResults({
-      lists: lists.filter(
-        (list) =>
-          (list.title || '').toLowerCase().indexOf(queryParam) !== -1 ||
-          (list.description || '').toLowerCase().indexOf(queryParam) !== -1
-      ),
-      cards: cards.filter(
-        (card) =>
-          (card.title || '').toLowerCase().indexOf(queryParam) !== -1 ||
-          (card.content || '').toLowerCase().indexOf(queryParam) !== -1
-      ),
-    });
-  }, [cards, lists, input]);
-
-  const handleClick = useCallback(
-    (payload: Parameters<typeof openInfoBox>[0]) => (): void => {
-      dispatch(openInfoBox(payload));
-    },
-    [dispatch]
-  );
-
-  if (Object.values(results).every((result) => result.length === 0))
-    return <CardContent>{'ここに検索結果が表示されます。'}</CardContent>;
+  if (!data?.data.length) {
+    return <CardContent>{'No results.'}</CardContent>;
+  }
 
   return (
-    <>
-      {results.lists.length > 0 && (
-        <List
-          dense
-          className="p-0"
-          subheader={
-            <ListSubheader className="border border-l-4 border-r-0 border-solid border-primary py-2 leading-5">
-              {'リスト'}
-            </ListSubheader>
-          }
+    <List dense className="p-0">
+      {data?.data.map((card) => (
+        <ListItem
+          key={card.id}
+          button
+          onClick={() => showTaskDetails('c', card.id)}
         >
-          {results.lists.map((list) => (
-            <ListItem
-              key={list.id}
-              button
-              onClick={handleClick({ model: 'list', data: list })}
-            >
-              <ListItemText
-                primary={list.title}
-                secondary={list.description}
-                primaryTypographyProps={{
-                  className: 'font-bold',
-                }}
-                secondaryTypographyProps={{
-                  className: 'line-clamp-5',
-                }}
-              />
-            </ListItem>
-          ))}
-        </List>
-      )}
-
-      {results.cards.length > 0 && (
-        <List
-          dense
-          className="p-0"
-          subheader={
-            <ListSubheader className="border border-l-4 border-r-0 border-solid border-primary py-2 leading-5">
-              {'カード'}
-            </ListSubheader>
-          }
-        >
-          {results.cards.map((card) => (
-            <ListItem
-              key={card.id}
-              button
-              onClick={handleClick({ model: 'card', data: card })}
-            >
-              <ListItemText
-                primary={card.title}
-                secondary={card.content}
-                primaryTypographyProps={{
-                  className: 'font-bold',
-                }}
-                secondaryTypographyProps={{
-                  className: 'line-clamp-5',
-                }}
-              />
-            </ListItem>
-          ))}
-        </List>
-      )}
-    </>
+          <ListItemText
+            primary={highlightText(card.title, input)}
+            secondary={highlightText(card.content, input)}
+            primaryTypographyProps={{
+              className: 'font-bold',
+            }}
+            secondaryTypographyProps={{
+              className: 'line-clamp-5',
+            }}
+          />
+        </ListItem>
+      ))}
+    </List>
   );
 });
 
