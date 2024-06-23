@@ -1,9 +1,9 @@
-import { TaskBoardDocument } from '@test/api/models';
+import type { TaskBoard } from '@/models';
 import { db, type Doc } from '@test/api/database';
 import { faker } from '@test/utils/faker';
 import { guestUser, otherUser, unverifiedUser } from './users';
 
-export const boardOfGuestUser: TaskBoardDocument = {
+export const boardOfGuestUser: TaskBoard = {
   id: faker.string.uuid(),
   userId: guestUser.id,
   title: 'ゲストユーザーのBoard',
@@ -12,7 +12,7 @@ export const boardOfGuestUser: TaskBoardDocument = {
   updatedAt: new Date().toISOString(),
 };
 
-export const boardOfOtherUser: TaskBoardDocument = {
+export const boardOfOtherUser: TaskBoard = {
   id: faker.string.uuid(),
   userId: otherUser.id,
   title: '他のユーザーのBoard',
@@ -21,7 +21,7 @@ export const boardOfOtherUser: TaskBoardDocument = {
   updatedAt: new Date().toISOString(),
 };
 
-export const boardOfUnverifiedUser: TaskBoardDocument = {
+export const boardOfUnverifiedUser: TaskBoard = {
   id: faker.string.uuid(),
   userId: unverifiedUser.id,
   title: '未認証ユーザーのBoard',
@@ -30,7 +30,7 @@ export const boardOfUnverifiedUser: TaskBoardDocument = {
   updatedAt: new Date().toISOString(),
 };
 
-const initialBoards: TaskBoardDocument[] = [
+const initialBoards: TaskBoard[] = [
   boardOfGuestUser,
   boardOfOtherUser,
   boardOfUnverifiedUser,

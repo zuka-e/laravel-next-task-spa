@@ -12,7 +12,6 @@ export interface DocumentBase {
   id: string;
   createdAt: string;
   updatedAt: string;
-  index?: number;
 }
 
 export * from './Task';

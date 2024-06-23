@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback } from 'react';
 
 import * as yup from 'yup';
 import dayjs from 'dayjs';
@@ -30,22 +30,6 @@ const TaskBoardDetails = memo(function TaskBoardDetails(
   const { board } = props;
 
   const [updateTaskBoard, { isLoading, error }] = useUpdateTaskBoardMutation();
-
-  const totalList = useMemo((): number => {
-    return board.lists.reduce((acc, current) => acc + current.cards.length, 0);
-    // ※ Although `board.lists` is an array, it's ok to be used as the dependencies.
-    //  `board.lists` has the same value between the re-renders in this case.
-  }, [board.lists]);
-
-  const totalCompletedCard = useMemo((): number => {
-    return board.lists.reduce((acc, list) => {
-      const totalCompletedCardForEachList = list.cards.reduce(
-        (acc, card) => (card.done ? acc + 1 : acc),
-        0
-      );
-      return acc + totalCompletedCardForEachList;
-    }, 0);
-  }, [board.lists]);
 
   const handleSubmitText = useCallback(
     (text: string): void => {
@@ -92,25 +76,6 @@ const TaskBoardDetails = memo(function TaskBoardDetails(
           }
         />
         <CardContent className="flex flex-col gap-3 py-0">
-          <Grid container className="items-center">
-            <Grid item className="mr-4 w-32">
-              <label>合計リスト</label>
-            </Grid>
-            <Grid item>{board.lists.length}</Grid>
-          </Grid>
-          <Grid container className="items-center">
-            <Grid item className="mr-4 w-32">
-              <label>
-                合計カード
-                <br />
-                (完了 / 未完了)
-              </label>
-            </Grid>
-            <Grid item>
-              {totalList}&nbsp; ({totalCompletedCard}&nbsp;/&nbsp;
-              {totalList - totalCompletedCard})
-            </Grid>
-          </Grid>
           <Grid container className="items-center">
             <Grid item className="mr-4 w-32">
               <label>作成日時</label>

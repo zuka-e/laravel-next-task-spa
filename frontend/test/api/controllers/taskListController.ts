@@ -1,7 +1,6 @@
 import { type DefaultBodyType, type StrictRequest } from 'msw';
 
 import type { TaskBoard, TaskList } from '@/models';
-import type { TaskListDocument } from '@test/api/models';
 import { db } from '@test/api/database';
 import { cursorPaginate } from '@test/utils/paginate';
 
@@ -23,12 +22,11 @@ export const store = (
   params: Partial<Omit<TaskList, 'id' | 'boardId'>>
 ) => {
   const newList = db.create('taskLists', {
-    ...({} as TaskListDocument),
     boardId,
     ...params,
   });
 
-  const response: TaskList = { ...newList, cards: [] };
+  const response: TaskList = { ...newList };
 
   return response;
 };
@@ -50,7 +48,7 @@ export const update = (
   if (!list) return;
 
   const updated = db.update('taskLists', { ...list, ...params });
-  const response: TaskList = { ...updated, cards: [] };
+  const response: TaskList = { ...updated };
 
   return response;
 };
@@ -60,7 +58,7 @@ export const destroy = (id: TaskList['id']) => {
 
   if (!deleted) return;
 
-  const response: TaskList = { ...deleted, cards: [] };
+  const response: TaskList = { ...deleted };
 
   return response;
 };

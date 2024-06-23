@@ -86,20 +86,6 @@ const TaskListDetails = memo(function TaskListDetails(
         <CardContent className="flex flex-col gap-3 py-0">
           <Grid container className="items-center">
             <Grid item className="mr-4 w-32">
-              <label>タスク総数</label>
-            </Grid>
-            <Grid item>{list.cards?.length ?? 0}</Grid>
-          </Grid>
-          <Grid container className="items-center">
-            <Grid item className="mr-4 w-32">
-              <label>(完了済)</label>
-            </Grid>
-            <Grid item>
-              {list.cards?.filter((card) => card.done).length ?? 0}
-            </Grid>
-          </Grid>
-          <Grid container className="items-center">
-            <Grid item className="mr-4 w-32">
               <label>作成日時</label>
             </Grid>
             <Grid item>{dayjs(list.createdAt).calendar()}</Grid>

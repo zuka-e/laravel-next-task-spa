@@ -2,7 +2,6 @@ import { type DefaultBodyType, type StrictRequest } from 'msw';
 
 import type { TaskBoard, TaskCard, TaskList } from '@/models';
 import { type UpdateTaskCardRequest } from '@/store/api';
-import type { TaskCardDocument } from '@test/api/models';
 import { db } from '@test/api/database';
 import { cursorPaginate } from '@test/utils/paginate';
 
@@ -24,7 +23,6 @@ export const store = (
   params: Partial<Omit<TaskCard, 'id' | 'listId'>>
 ) => {
   const newCard = db.create('taskCards', {
-    ...({} as TaskCardDocument),
     listId,
     ...params,
   });

@@ -4,7 +4,6 @@ export type TaskBoard = {
   userId: string;
   title: string;
   description: string;
-  lists: TaskList[];
 } & DocumentBase;
 
 export type TaskBoardsCollection = CollectionBase<TaskBoard>;
@@ -13,7 +12,6 @@ export type TaskList = {
   boardId: string;
   title: string;
   description: string;
-  cards: TaskCard[];
   sequence: number;
 } & DocumentBase;
 

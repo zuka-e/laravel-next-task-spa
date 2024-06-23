@@ -1,12 +1,11 @@
-import { TaskCardDocument } from '@test/api/models';
+import type { TaskCard } from '@/models';
 import { db, type Doc } from '@test/api/database';
 import { faker } from '@test/utils/faker';
 import { guestUser, otherUser } from './users';
 import { listOfGuestUser, listOfOtherUser } from './taskLists';
 
-export const cardOfGuestUser: TaskCardDocument = {
+export const cardOfGuestUser: TaskCard = {
   id: faker.string.uuid(),
-  userId: guestUser.id,
   listId: listOfGuestUser.id,
   title: 'ゲストユーザーのTaskCard',
   content: 'ゲストユーザーが所有するTaskCard',
@@ -17,9 +16,8 @@ export const cardOfGuestUser: TaskCardDocument = {
   updatedAt: new Date().toISOString(),
 };
 
-export const cardOfOtherUser: TaskCardDocument = {
+export const cardOfOtherUser: TaskCard = {
   id: faker.string.uuid(),
-  userId: otherUser.id,
   listId: listOfOtherUser.id,
   title: '他のユーザーのTaskCard',
   content: '他のユーザーが所有するTaskCard',
@@ -30,20 +28,16 @@ export const cardOfOtherUser: TaskCardDocument = {
   updatedAt: new Date().toISOString(),
 };
 
-const initialCards: TaskCardDocument[] = [cardOfGuestUser, cardOfOtherUser];
+const initialCards: TaskCard[] = [cardOfGuestUser, cardOfOtherUser];
 
 type SeederProps = {
   count: number;
   belongsTo: {
-    user: Doc<'users'>;
     list: Doc<'taskLists'>;
   };
 };
 
 const runSeeder = (props: SeederProps) => {
-  const user = db.where('users', 'id', props.belongsTo.user.id)[0];
-  if (!user) throw Error('The specified data does not exist');
-
   initialCards.forEach((card) => {
     db.create('taskCards', card);
   });
@@ -51,7 +45,6 @@ const runSeeder = (props: SeederProps) => {
   [...Array(props.count)].forEach((_, i) => {
     db.create('taskCards', {
       id: faker.string.uuid(),
-      userId: props.belongsTo.user.id,
       listId: props.belongsTo.list.id,
       title: `${faker.hacker.adjective()} ${faker.hacker.verb()}`,
       content: faker.hacker.phrase(),
@@ -74,7 +67,7 @@ const initialize = () => {
     const guestUserLists = db.where('taskLists', 'boardId', board.id);
     guestUserLists.forEach((list, j) => {
       const count = !i && !j ? 50 : 2;
-      runSeeder({ count, belongsTo: { user: guestUser, list: list } });
+      runSeeder({ count, belongsTo: { list } });
     });
   });
 
@@ -82,7 +75,7 @@ const initialize = () => {
   otherUserBoards.forEach((board) => {
     const otherUserLists = db.where('taskLists', 'boardId', board.id);
     otherUserLists.forEach((list) => {
-      runSeeder({ count: 2, belongsTo: { user: otherUser, list: list } });
+      runSeeder({ count: 2, belongsTo: { list } });
     });
   });
 };
