@@ -1,7 +1,6 @@
 import { type AxiosError } from 'axios';
 
 import type { TaskBoard, TaskCard, TaskList, User } from '@/models';
-import { type PaginationResponse } from '@/utils/api';
 import type { SoftDelete } from '@/store/api/types';
 
 type Severity = 'success' | 'info' | 'warning' | 'error';
@@ -15,6 +14,38 @@ export type ApiResponse<
   severity: Severity;
   message: string;
 } & { [K in keyof T]: T[K] };
+
+/**
+ * Paginated response
+ *
+ * @property {Object[]} data 受け取るデータ本体の配列
+ * @property {Object} links 隣り合うページ及び端のページのリンク
+ * @property {Object} meta 現在のページやデータ総数などの情報
+ * @see https://laravel.com/docs/eloquent-resources#pagination
+ */
+export type PaginationResponse<T> = {
+  data: T[];
+  links: {
+    first: string;
+    last: string;
+    next: string | null;
+    prev: string | null;
+  };
+  meta: {
+    currentPage: number;
+    lastPage: number;
+    from: number; // 表示中`data`の最初のインデックス
+    to: number; // 表示中`data`の最後のインデックス
+    total: number; // `data`総数
+    perPage: number; // 一度に表示するデータ数
+    path: string; // クエリ`?page=`を除いたURL
+    links: {
+      url: string; // 各ページへのURL ([0]は前ページ, [-1]は次ページ)
+      label: string; // ページ表示用に利用できる文字 (例: "Next &raquo;")
+      active: boolean; // 現在のページのみ`true`
+    }[];
+  };
+};
 
 /**
  * Cursor-paginated response

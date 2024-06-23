@@ -91,8 +91,8 @@ const TaskBoardIndex = memo(function TaskBoardIndex(): JSX.Element {
 
         {paginator.data.length > 0 && (
           <Pagination
-            count={paginator.meta.last_page}
-            page={paginator.meta.current_page}
+            count={paginator.meta.lastPage}
+            page={paginator.meta.currentPage}
             siblingCount={2}
             color="primary"
             size="large"

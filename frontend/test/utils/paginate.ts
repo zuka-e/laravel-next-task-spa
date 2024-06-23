@@ -1,8 +1,10 @@
 import { type DefaultBodyType, type StrictRequest } from 'msw';
 
 import type { DocumentBase } from '@/models';
-import { type CursorPaginationResponse } from '@/store/api';
-import { type PaginationResponse } from '@/utils/api';
+import {
+  type PaginationResponse,
+  type CursorPaginationResponse,
+} from '@/store/api';
 
 type PaginateProps<T> = {
   request: StrictRequest<DefaultBodyType>;
@@ -46,12 +48,12 @@ export const paginate = <T extends DocumentBase>(props: PaginateProps<T>) => {
       prev: 1 < currentPage ? path + '?page=' + (currentPage - 1) : null,
     },
     meta: {
-      current_page: currentPage,
-      last_page: lastPage,
+      currentPage,
+      lastPage,
       from: from,
       to: to,
       total: filtered.length,
-      per_page: perPage,
+      perPage,
       path: path,
       links: [],
     },
@@ -66,7 +68,7 @@ export const paginate = <T extends DocumentBase>(props: PaginateProps<T>) => {
  * `PaginationResponse`の`meta`に`links`を設定する
  * */
 const addMetaLinks = (props: PaginationResponse<DocumentBase>) => {
-  const count = props.meta.last_page + 2; // page総数 + 2 (prev, next);
+  const count = props.meta.lastPage + 2; // page総数 + 2 (prev, next);
   Array(count)
     .fill('_')
     .forEach((_, i) => {
@@ -86,7 +88,7 @@ const addMetaLinks = (props: PaginationResponse<DocumentBase>) => {
         props.meta.links.push({
           url: props.meta.path + '?page=' + i,
           label: String(i),
-          active: i === props.meta.current_page,
+          active: i === props.meta.currentPage,
         });
       }
     });
