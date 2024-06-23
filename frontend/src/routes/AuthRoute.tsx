@@ -5,6 +5,7 @@ import { memo, useEffect } from 'react';
 import Router from 'next/router';
 
 import { useGetSessionQuery } from '@/store/api';
+import { useRedirect } from '@/lib/hooks';
 import { Loading } from '@/layouts';
 
 export type AuthPage = {
@@ -21,6 +22,8 @@ type AuthRouteProps = {
 const AuthRoute = memo(function AuthRoute({
   children,
 }: AuthRouteProps): JSX.Element {
+  const { redirectIfIntended } = useRedirect();
+
   const { auth, isLoading, isUninitialized } = useGetSessionQuery(undefined, {
     selectFromResult: (result) => ({
       ...result,
@@ -37,13 +40,8 @@ const AuthRoute = memo(function AuthRoute({
       return;
     }
 
-    const intendedUrl = sessionStorage.getItem('intendedUrl');
-
-    if (intendedUrl) {
-      sessionStorage.removeItem('intendedUrl');
-      Router.replace(intendedUrl);
-    }
-  }, [guest]);
+    redirectIfIntended();
+  }, [guest, redirectIfIntended]);
 
   // Until initialized or the redirect completed.
   if (unresolved || guest) {

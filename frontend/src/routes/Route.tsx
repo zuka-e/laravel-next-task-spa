@@ -3,6 +3,7 @@ import type { AppProps } from 'next/app';
 import Router, { useRouter } from 'next/router';
 
 import { useAppDispatch, useAppSelector, useRoute } from '@/utils/hooks';
+import { setPreviousUrl } from '@/lib/routes';
 import { AuthRoute, GuestRoute } from '@/routes';
 import { useInvalidateSessionMutation } from '@/store/api';
 import { pushFlash } from '@/store/slices';
@@ -45,7 +46,7 @@ const Route = memo(function Route(
 
   useEffect((): (() => void) => {
     return function cleanup(): void {
-      sessionStorage.setItem('previousUrl', router.asPath);
+      setPreviousUrl(router.asPath);
     };
   }, [router.asPath]);
 

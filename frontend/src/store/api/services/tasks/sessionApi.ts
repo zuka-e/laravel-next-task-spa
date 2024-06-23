@@ -1,5 +1,3 @@
-import Router from 'next/router';
-
 import {
   SESSION_PATH,
   SIGNIN_PATH,
@@ -7,6 +5,7 @@ import {
   SIGNUP_PATH,
   VERIFY_EMAIL_PATH,
 } from '@/config/api';
+import { getPreviousUrl, setIntendedUrl } from '@/lib/routes';
 import baseApi from './baseApi';
 import type {
   FetchSessionRequest,
@@ -43,11 +42,7 @@ const api = baseApi.injectEndpoints({
       query: (data) => ({ url: SIGNIN_PATH, method: 'POST', data }),
       // cf. https://redux-toolkit.js.org/rtk-query/api/createApi#onquerystarted
       onQueryStarted() {
-        const previousUrl = sessionStorage.getItem('previousUrl');
-
-        if (previousUrl && previousUrl !== Router.asPath) {
-          sessionStorage.setItem('intendedUrl', previousUrl);
-        }
+        setIntendedUrl(getPreviousUrl() ?? '/');
       },
       invalidatesTags: ['Session', 'TaskBoard'],
     }),
@@ -55,7 +50,7 @@ const api = baseApi.injectEndpoints({
       query: () => ({ url: SIGNOUT_PATH, method: 'POST' }),
       // cf. https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#pessimistic-updates
       async onQueryStarted(_, { queryFulfilled, dispatch }) {
-        sessionStorage.setItem('intendedUrl', '/');
+        setIntendedUrl('/');
 
         try {
           await queryFulfilled;
@@ -74,7 +69,7 @@ const api = baseApi.injectEndpoints({
         data: { name: data.email, ...data },
       }),
       onQueryStarted() {
-        sessionStorage.setItem('intendedUrl', '/email-verification');
+        setIntendedUrl('/email-verification');
       },
       invalidatesTags: ['Session', 'TaskBoard'],
     }),

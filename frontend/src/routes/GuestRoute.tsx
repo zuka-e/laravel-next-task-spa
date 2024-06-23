@@ -1,9 +1,9 @@
 // cf. file://./AuthRoute.tsx
 
 import { memo, useEffect } from 'react';
-import { useRouter } from 'next/router';
 
 import { useGetSessionQuery } from '@/store/api';
+import { useRedirect } from '@/lib/hooks';
 import { Loading } from '@/layouts';
 
 export type GuestPage = {
@@ -20,7 +20,7 @@ type GuestRouteProps = {
 const GuestRoute = memo(function GuestRoute({
   children,
 }: GuestRouteProps): JSX.Element {
-  const router = useRouter();
+  const { redirectToIntended } = useRedirect();
 
   const { auth, isUninitialized } = useGetSessionQuery(undefined, {
     selectFromResult: (result) => ({
@@ -34,17 +34,8 @@ const GuestRoute = memo(function GuestRoute({
       return;
     }
 
-    const intendedUrl = sessionStorage.getItem('intendedUrl');
-
-    if (intendedUrl) {
-      sessionStorage.removeItem('intendedUrl');
-    }
-
-    const redirectUrl =
-      intendedUrl !== router.asPath ? intendedUrl || '/' : '/';
-
-    router.replace(redirectUrl);
-  }, [auth, router]);
+    redirectToIntended();
+  }, [auth, redirectToIntended]);
 
   // Until initialized or the redirect completed.
   if (isUninitialized || auth) {
