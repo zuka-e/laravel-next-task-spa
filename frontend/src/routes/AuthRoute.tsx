@@ -34,6 +34,14 @@ const AuthRoute = memo(function AuthRoute({
   useEffect(() => {
     if (guest) {
       Router.replace('/login');
+      return;
+    }
+
+    const intendedUrl = sessionStorage.getItem('intendedUrl');
+
+    if (intendedUrl) {
+      sessionStorage.removeItem('intendedUrl');
+      Router.replace(intendedUrl);
     }
   }, [guest]);
 

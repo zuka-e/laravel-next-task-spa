@@ -55,6 +55,8 @@ const api = baseApi.injectEndpoints({
       query: () => ({ url: SIGNOUT_PATH, method: 'POST' }),
       // cf. https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#pessimistic-updates
       async onQueryStarted(_, { queryFulfilled, dispatch }) {
+        sessionStorage.setItem('intendedUrl', '/');
+
         try {
           await queryFulfilled;
           // cf. https://redux-toolkit.js.org/rtk-query/api/created-api/api-slice-utils#resetapistate
