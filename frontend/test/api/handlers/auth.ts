@@ -1,5 +1,7 @@
 import { http, HttpResponse, type PathParams } from 'msw';
+import dayjs from 'dayjs';
 
+import { APP_URL } from '@/config/app';
 import type {
   SignInRequest,
   SignInResponse,
@@ -34,6 +36,7 @@ import {
   updatePasswordController,
   updateProfileController,
 } from '@test/api/controllers';
+import { hash, verifyHash } from '@test/utils/crypto';
 import { url } from '@test/utils/route';
 import {
   isUniqueEmail,
@@ -47,7 +50,6 @@ import {
   authorizationErrorResponse,
   validationErrorResponse,
 } from '@test/api/handlers/utils/responses';
-import { User } from '@/models';
 
 export const handlers = [
   http.post(
@@ -65,10 +67,19 @@ export const handlers = [
         });
       }
 
+      const user = createUserController.store(requestData);
+
+      // as if sending verification email
+      console.info({
+        'verification URL': `${APP_URL}/email/verify/${user.id}/${hash(
+          user.id
+        )}?expires=${dayjs().add(10, 'minute').valueOf()}&signature=xxx`,
+      });
+
       const data: RegisterResponse = {
         severity: 'success',
-        message: 'ユーザー登録が完了しました。',
-        user: createUserController.store(requestData),
+        message: '認証用メールを送信しました。',
+        user,
       };
 
       return HttpResponse.json(data, { status: 201 });
@@ -103,18 +114,24 @@ export const handlers = [
     url('VERIFICATION_NOTIFICATION_PATH'),
     withMiddleware<PathParams, undefined, SendEmailVerificationLinkResponse>()(
       () => {
-        const currentUser = getUser()!;
+        const user = getUser()!;
 
-        const data: SendEmailVerificationLinkResponse =
-          currentUser.emailVerifiedAt
-            ? {
-                severity: 'error',
-                message: '既に認証済みです。',
-              }
-            : {
-                severity: 'success',
-                message: '認証用メールを送信しました。',
-              };
+        // as if sending verification email
+        console.info({
+          'verification URL': `${APP_URL}/email/verify/${user.id}/${hash(
+            user.id
+          )}?expires=${dayjs().add(10, 'minute').valueOf()}&signature=xxx`,
+        });
+
+        const data: SendEmailVerificationLinkResponse = user.emailVerifiedAt
+          ? {
+              severity: 'error',
+              message: '既に認証済みです。',
+            }
+          : {
+              severity: 'success',
+              message: '認証用メールを送信しました。',
+            };
 
         return HttpResponse.json(data);
       }
@@ -147,30 +164,36 @@ export const handlers = [
   ),
 
   http.get(
-    `${url('VERIFY_EMAIL_PATH')}/:id/:hash`,
+    `${url('VERIFY_EMAIL_PATH')}/:token/:hash`,
     withMiddleware<
       PathParams,
       VerifyEmailRequest,
       VerifyEmailResponse | ApiResponse
     >([validateSignature])(({ params }) => {
-      /** `id` parameter representing the encrypted ID  */
-      const encryptedId = params['id'];
-      /** `hash` parameter representing the email hash */
-      const emailHash = params['hash'];
+      /** An unpredictable value like UUID */
+      const token = params['token'];
+      /** Token hash */
+      const hash = params['hash'];
 
-      /** As valid `id` parameter  */
-      const validEncryptedId = 'valid-enc-id';
-      /** As valid `hash` parameter */
-      const validEmailHash = 'email-hash-for-id';
-
-      if (encryptedId !== validEncryptedId || emailHash !== validEmailHash) {
+      if (!verifyHash(token?.toString() ?? '', hash?.toString() ?? '')) {
         return authorizationErrorResponse('Invalid Signature.');
       }
+
+      const user = db.where('users', 'id', token)[0];
+
+      if (!user || user.emailVerifiedAt) {
+        return authorizationErrorResponse('Invalid Signature.');
+      }
+
+      const updated = db.update('users', {
+        ...user,
+        emailVerifiedAt: dayjs().toISOString(),
+      });
 
       return HttpResponse.json({
         severity: 'info',
         message: '認証に成功しました。',
-        user: getUser() as User,
+        user: updated,
       });
     })
   ),

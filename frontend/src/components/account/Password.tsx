@@ -6,8 +6,9 @@ import * as yup from 'yup';
 import { Checkbox, FormControlLabel, Grid, TextField } from '@mui/material';
 
 import { UpdatePasswordRequest, updatePassword } from '@/store/thunks/auth';
+import { useGetSessionQuery } from '@/store/api';
 import { useAppDispatch } from '@/utils/hooks';
-import { isGuest } from '@/utils/auth';
+import { isGuest } from '@/lib/auth';
 import { AlertMessage, SubmitButton } from '@/templates';
 
 type FormData = UpdatePasswordRequest;
@@ -46,6 +47,7 @@ const schema = yup.object().shape({
 
 const Password = memo(function Password(): JSX.Element {
   const dispatch = useAppDispatch();
+  const { data: { user } = {} } = useGetSessionQuery();
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
   const {
@@ -73,6 +75,10 @@ const Password = memo(function Password(): JSX.Element {
     [dispatch, reset]
   );
 
+  if (!user) {
+    return <></>;
+  }
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
@@ -81,7 +87,7 @@ const Password = memo(function Password(): JSX.Element {
         </Grid>
         <Grid item md={6} xs={12}>
           <TextField
-            disabled={isGuest()}
+            disabled={isGuest(user)}
             variant="outlined"
             fullWidth
             id={formData.current_password.id}
@@ -97,7 +103,7 @@ const Password = memo(function Password(): JSX.Element {
       <Grid container spacing={2}>
         <Grid item md={6} xs={12}>
           <TextField
-            disabled={isGuest()}
+            disabled={isGuest(user)}
             variant="outlined"
             fullWidth
             id={formData.password.id}
@@ -111,7 +117,7 @@ const Password = memo(function Password(): JSX.Element {
         </Grid>
         <Grid item md={6} xs={12}>
           <TextField
-            disabled={isGuest()}
+            disabled={isGuest(user)}
             variant="outlined"
             fullWidth
             id={formData.password_confirmation.id}
@@ -137,7 +143,7 @@ const Password = memo(function Password(): JSX.Element {
         }
         className="mx-0 mb-4 block w-fit text-gray-600"
       />
-      {!isGuest() && <SubmitButton>パスワードを変更する</SubmitButton>}
+      {!isGuest(user) && <SubmitButton>パスワードを変更する</SubmitButton>}
     </form>
   );
 });

@@ -8,7 +8,7 @@ import { Grid, TextField } from '@mui/material';
 import { useGetSessionQuery } from '@/store/api';
 import { UpdateProfileRequest, updateProfile } from '@/store/thunks/auth';
 import { useAppDispatch } from '@/utils/hooks';
-import { isGuest } from '@/utils/auth';
+import { isGuest } from '@/lib/auth';
 import { AlertMessage, SubmitButton } from '@/templates';
 
 type FormData = UpdateProfileRequest;
@@ -30,12 +30,7 @@ const schema = yup.object().shape({
 });
 
 const UserProfile = memo(function UserProfile(): JSX.Element {
-  const { user } = useGetSessionQuery(undefined, {
-    selectFromResult: (result) => ({
-      ...result,
-      user: result.data?.user,
-    }),
-  });
+  const { data: { user } = {} } = useGetSessionQuery();
   const dispatch = useAppDispatch();
   const [message, setMessage] = useState<string | undefined>('');
   const {
@@ -69,6 +64,10 @@ const UserProfile = memo(function UserProfile(): JSX.Element {
     [dispatch, user]
   );
 
+  if (!user) {
+    return <></>;
+  }
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
@@ -77,7 +76,7 @@ const UserProfile = memo(function UserProfile(): JSX.Element {
         </Grid>
         <Grid item md={6} xs={12}>
           <TextField
-            disabled={isGuest()}
+            disabled={isGuest(user)}
             variant="outlined"
             fullWidth
             id={formData.name.id}
@@ -91,7 +90,7 @@ const UserProfile = memo(function UserProfile(): JSX.Element {
         </Grid>
         <Grid item md={6} xs={12}>
           <TextField
-            disabled={isGuest()}
+            disabled={isGuest(user)}
             variant="outlined"
             fullWidth
             id={formData.email.id}
@@ -103,7 +102,7 @@ const UserProfile = memo(function UserProfile(): JSX.Element {
             error={!!errors?.email}
           />
         </Grid>
-        {!isGuest() && (
+        {!isGuest(user) && (
           <Grid item>
             <SubmitButton>プロフィールを更新する</SubmitButton>
           </Grid>

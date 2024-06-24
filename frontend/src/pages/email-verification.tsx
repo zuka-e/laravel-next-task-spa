@@ -5,10 +5,12 @@ import type { GetStaticProps } from 'next';
 import { Container, Card, Grid, Typography, Button } from '@mui/material';
 
 import { sendEmailVerificationLink } from '@/store/thunks/auth';
-import { useAppDispatch, useAppSelector } from '@/utils/hooks';
+import { useGetSessionQuery } from '@/store/api';
+import { useAppDispatch } from '@/utils/hooks';
 import { BaseLayout } from '@/layouts';
 import { AlertMessage, LinkButton } from '@/templates';
 import type { AuthPage } from '@/routes';
+import { isVerified } from '@/lib/auth';
 
 type EmailVerificationProps = AuthPage;
 
@@ -25,13 +27,15 @@ export const getStaticProps: GetStaticProps<
 
 const EmailVerification = memo(function EmailVerification(): JSX.Element {
   const dispatch = useAppDispatch();
-  const verified = useAppSelector(
-    (state) => !!state.auth.user?.emailVerifiedAt
-  );
+  const { data: { user } = {} } = useGetSessionQuery();
 
   const handleClick = useCallback((): void => {
     dispatch(sendEmailVerificationLink());
   }, [dispatch]);
+
+  if (!user) {
+    return <></>;
+  }
 
   return (
     <>
@@ -45,15 +49,15 @@ const EmailVerification = memo(function EmailVerification(): JSX.Element {
           className="my-4 flex flex-col gap-4 sm:my-16"
         >
           <AlertMessage
-            severity={verified ? 'success' : 'warning'}
+            severity={isVerified(user) ? 'success' : 'warning'}
             elevation={2}
             className="font-bold"
           >
-            {verified
+            {isVerified(user)
               ? '認証済みです。'
               : '登録から24時間以内に認証を完了させなかった場合、一定時間経過後に登録が抹消されます。'}
           </AlertMessage>
-          {verified ? (
+          {isVerified(user) ? (
             <div>
               <LinkButton to={'/'} variant="contained" className="w-fit">
                 トップページへ

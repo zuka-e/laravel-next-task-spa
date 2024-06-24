@@ -80,10 +80,19 @@ const api = baseApi.injectEndpoints({
 
         return {
           url: `${VERIFY_EMAIL_PATH}/${path}?${queryString}`,
-          method: 'GET',
         };
       },
-      providesTags: ['Session'],
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        const {
+          data: { user },
+        } = await queryFulfilled;
+
+        dispatch(
+          api.util.updateQueryData('getSession', undefined, (draft) => {
+            draft.user = user;
+          })
+        );
+      },
     }),
     // cf. https://redux-toolkit.js.org/rtk-query/usage/automated-refetching#providing-errors-to-the-cache
     invalidateSession: builder.mutation<null, void>({

@@ -1,4 +1,5 @@
 import { type DefaultBodyType, type StrictRequest } from 'msw';
+import dayjs from 'dayjs';
 
 import type { Middleware } from './types';
 import { authorizationErrorResponse } from '@test/api/handlers/utils/responses';
@@ -28,17 +29,13 @@ const validateSignature: Middleware = (resolver) => {
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Routing/UrlGenerator.php#L402 - hasValidSignature()
  */
 const hasValidSignature = (req: StrictRequest<DefaultBodyType>): boolean => {
-  // const encryptedId = req.params['id'];
-  // const emailHash = req.params['hash'];
-  const signature = new URL(req.url).searchParams.get('signature');
+  const searchParams = new URL(req.url).searchParams;
+  const expires = parseInt(searchParams.get('expires') ?? '');
+  const signature = searchParams.get('signature');
 
   // While the URL validity will be determined by the backend in production,
   // the following value is considered to be valid here in testing.
-  return (
-    // encryptedId === 'enc-id' &&
-    // emailHash === 'email-hash' &&
-    signature === 'xxx'
-  );
+  return signature === 'xxx' && dayjs().valueOf() < expires;
 };
 
 export default validateSignature;
