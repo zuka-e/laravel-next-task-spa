@@ -1,7 +1,6 @@
 import { http, HttpResponse, type PathParams } from 'msw';
 import dayjs from 'dayjs';
 
-import { APP_URL } from '@/config/app';
 import type {
   SignInRequest,
   SignInResponse,
@@ -36,7 +35,7 @@ import {
   updatePasswordController,
   updateProfileController,
 } from '@test/api/controllers';
-import { hash, verifyHash } from '@test/utils/crypto';
+import { verifyHash } from '@test/utils/crypto';
 import { url } from '@test/utils/route';
 import {
   isUniqueEmail,
@@ -50,6 +49,7 @@ import {
   authorizationErrorResponse,
   validationErrorResponse,
 } from '@test/api/handlers/utils/responses';
+import { generateVerificationUrl } from '@test/api/handlers/utils/urls';
 
 export const handlers = [
   http.post(
@@ -71,9 +71,7 @@ export const handlers = [
 
       // as if sending verification email
       console.info({
-        'verification URL': `${APP_URL}/email/verify/${user.id}/${hash(
-          user.id
-        )}?expires=${dayjs().add(10, 'minute').valueOf()}&signature=xxx`,
+        'verification URL': generateVerificationUrl(user),
       });
 
       const data: RegisterResponse = {
@@ -118,9 +116,7 @@ export const handlers = [
 
         // as if sending verification email
         console.info({
-          'verification URL': `${APP_URL}/email/verify/${user.id}/${hash(
-            user.id
-          )}?expires=${dayjs().add(10, 'minute').valueOf()}&signature=xxx`,
+          'verification URL': generateVerificationUrl(user),
         });
 
         const data: SendEmailVerificationLinkResponse = user.emailVerifiedAt
@@ -171,11 +167,11 @@ export const handlers = [
       VerifyEmailResponse | ApiResponse
     >([validateSignature])(({ params }) => {
       /** An unpredictable value like UUID */
-      const token = params['token'];
+      const token = params['token']?.toString() ?? '';
       /** Token hash */
-      const hash = params['hash'];
+      const hash = params['hash']?.toString() ?? '';
 
-      if (!verifyHash(token?.toString() ?? '', hash?.toString() ?? '')) {
+      if (!verifyHash(token, hash)) {
         return authorizationErrorResponse('Invalid Signature.');
       }
 

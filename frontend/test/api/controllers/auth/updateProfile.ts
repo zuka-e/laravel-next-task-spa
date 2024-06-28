@@ -1,6 +1,7 @@
 import { type UpdateProfileRequest } from '@/store/thunks/auth';
 import { sanitizeUser, UserDocument } from '@test/api/models';
 import { db } from '@test/api/database';
+import { generateVerificationUrl } from '@test/api/handlers/utils/urls';
 
 type UpdateProfileProps = {
   currentUser: UserDocument;
@@ -19,6 +20,13 @@ export const update = (props: UpdateProfileProps) => {
   };
 
   db.update('users', newUserDoc);
+
+  if (IsEmailUpdated) {
+    // as if sending verification email
+    console.info({
+      'verification URL': generateVerificationUrl(newUserDoc),
+    });
+  }
 
   return sanitizeUser(newUserDoc);
 };
