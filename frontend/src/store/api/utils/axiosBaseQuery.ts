@@ -1,14 +1,14 @@
 import { type BaseQueryFn } from '@reduxjs/toolkit/query/react';
-import {
+import axios, {
   isAxiosError,
   type AxiosRequestConfig as BaseAxiosRequestConfig,
   type AxiosResponse,
   type AxiosError,
   type Method,
+  CreateAxiosDefaults,
 } from 'axios';
 
 import { GET_CSRF_TOKEN_PATH } from '@/config/api';
-import { apiClient } from '@/utils/api';
 import { setHttpStatus } from '@/store/slices';
 import isReadRequest from './isReadRequest';
 
@@ -41,18 +41,28 @@ type SerializableAxiosError = Pick<AxiosError, 'isAxiosError'> & {
  * @see https://redux-toolkit.js.org/rtk-query/usage/customizing-queries
  * @see https://redux-toolkit.js.org/rtk-query/usage-with-typescript#typing-a-basequery
  */
-const axiosBaseQuery =
-  (): BaseQueryFn<
-    AxiosRequestConfig,
-    AxiosResponse<Record<string, unknown>>['data'],
-    SerializableAxiosError
-  > =>
-  async (config, api) => {
+const axiosBaseQuery = (
+  defaultConfig?: CreateAxiosDefaults
+): BaseQueryFn<
+  AxiosRequestConfig,
+  AxiosResponse<Record<string, unknown>>['data'],
+  SerializableAxiosError
+> => {
+  const apiClient = axios.create({
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    withCredentials: true,
+    ...defaultConfig,
+  });
+
+  return async (config, api) => {
     try {
       if (!isReadRequest(config.method ?? 'GET')) {
-        await apiClient({ apiRoute: false }).get(GET_CSRF_TOKEN_PATH);
+        await apiClient.get(GET_CSRF_TOKEN_PATH);
       }
-      const response = await apiClient().request(config);
+      const response = await apiClient.request(config);
       return { data: response.data };
     } catch (error) {
       if (!isAxiosError(error)) {
@@ -75,5 +85,6 @@ const axiosBaseQuery =
       };
     }
   };
+};
 
 export default axiosBaseQuery;

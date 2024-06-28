@@ -1,5 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 
+import { API_ROUTE } from '@/config/api';
 import { axiosBaseQuery } from '@/store/api/utils';
 
 /**
@@ -12,7 +13,7 @@ import { axiosBaseQuery } from '@/store/api/utils';
  * @see https://redux-toolkit.js.org/rtk-query/api/created-api/overview
  */
 const baseApi = createApi({
-  baseQuery: axiosBaseQuery(),
+  baseQuery: axiosBaseQuery({ baseURL: API_ROUTE }),
   reducerPath: 'taskApi',
   tagTypes: ['Session', 'TaskBoard', 'TaskList', 'TaskCard'],
   endpoints: () => ({}),
