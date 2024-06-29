@@ -1,22 +1,18 @@
-import { memo, useCallback } from 'react';
+import { memo } from 'react';
 
 import dayjs from 'dayjs';
 import { Button, Grid, Typography } from '@mui/material';
 
-import { useGetSessionQuery } from '@/store/api';
-import { sendEmailVerificationLink } from '@/store/thunks/auth';
-import { useAppDispatch } from '@/utils/hooks';
+import {
+  useGetSessionQuery,
+  useRequestVerificationEmailMutation,
+} from '@/store/api';
 import { isVerified } from '@/lib/auth';
 import { AlertMessage } from '@/templates';
 
 const UserStatus = memo(function UserProfile(): JSX.Element {
   const { data: { user } = {} } = useGetSessionQuery();
-
-  const dispatch = useAppDispatch();
-
-  const handleClick = useCallback((): void => {
-    dispatch(sendEmailVerificationLink());
-  }, [dispatch]);
+  const [requestVerificationEmail] = useRequestVerificationEmailMutation();
 
   if (!user) {
     return <></>;
@@ -43,7 +39,11 @@ const UserStatus = memo(function UserProfile(): JSX.Element {
       </Grid>
       {!isVerified(user) && (
         <Grid item>
-          <Button onClick={handleClick} variant="contained" color="secondary">
+          <Button
+            onClick={() => requestVerificationEmail()}
+            variant="contained"
+            color="secondary"
+          >
             メールを再送信する
           </Button>
         </Grid>

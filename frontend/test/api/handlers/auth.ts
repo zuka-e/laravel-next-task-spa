@@ -12,7 +12,6 @@ import type {
   ResetPasswordResponse,
   ForgotPasswordResponse,
   DeleteAccountResponse,
-  SendEmailVerificationLinkResponse,
   UpdatePasswordResponse,
 } from '@/store/thunks/auth';
 import type {
@@ -24,6 +23,8 @@ import type {
   ValidationErrorResponse,
   VerifyEmailRequest,
   VerifyEmailResponse,
+  RequestVerificationEmailRequest,
+  RequestVerificationEmailResponse,
 } from '@/store/api';
 import { sanitizeUser } from '@test/api/models';
 import { db } from '@test/api/database';
@@ -110,28 +111,30 @@ export const handlers = [
 
   http.post(
     url('VERIFICATION_NOTIFICATION_PATH'),
-    withMiddleware<PathParams, undefined, SendEmailVerificationLinkResponse>()(
-      () => {
-        const user = getUser()!;
+    withMiddleware<
+      PathParams,
+      RequestVerificationEmailRequest,
+      RequestVerificationEmailResponse | ValidationErrorResponse
+    >()(() => {
+      const user = getUser()!;
 
-        // as if sending verification email
-        console.info({
-          'verification URL': generateVerificationUrl(user),
-        });
+      // as if sending verification email
+      console.info({
+        'verification URL': generateVerificationUrl(user),
+      });
 
-        const data: SendEmailVerificationLinkResponse = user.emailVerifiedAt
-          ? {
-              severity: 'error',
-              message: '既に認証済みです。',
-            }
-          : {
-              severity: 'success',
-              message: '認証用メールを送信しました。',
-            };
+      const data: RequestVerificationEmailResponse = user.emailVerifiedAt
+        ? {
+            severity: 'error',
+            message: '既に認証済みです。',
+          }
+        : {
+            severity: 'success',
+            message: '認証用メールを送信しました。',
+          };
 
-        return HttpResponse.json(data);
-      }
-    )
+      return HttpResponse.json(data);
+    })
   ),
 
   http.post(

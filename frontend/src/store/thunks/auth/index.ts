@@ -1,4 +1,3 @@
-export * from './sendEmailVerificationLink';
 export * from './signInWithEmail';
 export * from './updateProfile';
 export * from './updatePassword';

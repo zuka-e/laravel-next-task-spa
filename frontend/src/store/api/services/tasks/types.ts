@@ -144,6 +144,10 @@ export type VerifyEmailRequest = {
   queryString: string;
 };
 
+export type RequestVerificationEmailResponse = ApiResponse;
+
+export type RequestVerificationEmailRequest = undefined;
+
 export type FetchTaskBoardsResponse = ApiResponse<
   PaginationResponse<TaskBoard>
 >;

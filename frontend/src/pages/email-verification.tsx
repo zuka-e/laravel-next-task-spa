@@ -1,12 +1,13 @@
-import { memo, useCallback } from 'react';
+import { memo } from 'react';
 import Head from 'next/head';
 import type { GetStaticProps } from 'next';
 
 import { Container, Card, Grid, Typography, Button } from '@mui/material';
 
-import { sendEmailVerificationLink } from '@/store/thunks/auth';
-import { useGetSessionQuery } from '@/store/api';
-import { useAppDispatch } from '@/utils/hooks';
+import {
+  useGetSessionQuery,
+  useRequestVerificationEmailMutation,
+} from '@/store/api';
 import { BaseLayout } from '@/layouts';
 import { AlertMessage, LinkButton } from '@/templates';
 import type { AuthPage } from '@/routes';
@@ -26,12 +27,8 @@ export const getStaticProps: GetStaticProps<
 };
 
 const EmailVerification = memo(function EmailVerification(): JSX.Element {
-  const dispatch = useAppDispatch();
   const { data: { user } = {} } = useGetSessionQuery();
-
-  const handleClick = useCallback((): void => {
-    dispatch(sendEmailVerificationLink());
-  }, [dispatch]);
+  const [requestVerificationEmail] = useRequestVerificationEmailMutation();
 
   if (!user) {
     return <></>;
@@ -78,7 +75,9 @@ const EmailVerification = memo(function EmailVerification(): JSX.Element {
                 <Button
                   variant="contained"
                   color="secondary"
-                  onClick={handleClick}
+                  onClick={() => {
+                    requestVerificationEmail();
+                  }}
                 >
                   {`メールを再送信する`}
                 </Button>
