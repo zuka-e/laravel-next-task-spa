@@ -146,7 +146,13 @@ export type VerifyEmailRequest = {
 
 export type RequestVerificationEmailResponse = ApiResponse;
 
-export type RequestVerificationEmailRequest = undefined;
+export type RequestVerificationEmailRequest = void;
+
+export type UpdateProfileResponse = ApiResponse<{
+  user: User;
+}>;
+
+export type UpdateProfileRequest = Pick<User, 'name' | 'email'>;
 
 export type FetchTaskBoardsResponse = ApiResponse<
   PaginationResponse<TaskBoard>

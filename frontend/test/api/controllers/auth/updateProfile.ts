@@ -1,4 +1,4 @@
-import { type UpdateProfileRequest } from '@/store/thunks/auth';
+import { type UpdateProfileRequest } from '@/store/api';
 import { sanitizeUser, UserDocument } from '@test/api/models';
 import { db } from '@test/api/database';
 import { generateVerificationUrl } from '@test/api/handlers/utils/urls';

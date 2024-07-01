@@ -1,15 +1,18 @@
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Grid, TextField } from '@mui/material';
 
-import { useGetSessionQuery } from '@/store/api';
-import { UpdateProfileRequest, updateProfile } from '@/store/thunks/auth';
-import { useAppDispatch } from '@/utils/hooks';
+import {
+  type UpdateProfileRequest,
+  useGetSessionQuery,
+  useUpdateProfileMutation,
+} from '@/store/api';
 import { isGuest } from '@/lib/auth';
 import { AlertMessage, SubmitButton } from '@/templates';
+import { isInvalidRequest, makeErrorMessageFrom } from '@/utils/api/errors';
 
 type FormData = UpdateProfileRequest;
 
@@ -31,13 +34,16 @@ const schema = yup.object().shape({
 
 const UserProfile = memo(function UserProfile(): JSX.Element {
   const { data: { user } = {} } = useGetSessionQuery();
-  const dispatch = useAppDispatch();
-  const [message, setMessage] = useState<string | undefined>('');
+  const [updateProfile, { error }] = useUpdateProfileMutation();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({ mode: 'onBlur', resolver: yupResolver(schema) });
+
+  const errorMessage = useMemo((): string | null => {
+    return isInvalidRequest(error) ? makeErrorMessageFrom(error) : null;
+  }, [error]);
 
   // エラー発生時はメッセージを表示する
   const onSubmit = useCallback(
@@ -52,16 +58,12 @@ const UserProfile = memo(function UserProfile(): JSX.Element {
 
       // 全ての項目で変更点がない場合はリクエストを送らない
       if (data.name === user?.name && data.email === user?.email) {
-        setMessage('プロフィールが変更されておりません');
         return;
       }
 
-      const response = await dispatch(updateProfile(data));
-      if (updateProfile.rejected.match(response))
-        setMessage(response.payload?.error?.message);
-      else setMessage('');
+      updateProfile(data);
     },
-    [dispatch, user]
+    [updateProfile, user]
   );
 
   if (!user) {
@@ -72,7 +74,9 @@ const UserProfile = memo(function UserProfile(): JSX.Element {
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          {message && <AlertMessage severity="error" body={message} />}
+          {errorMessage && (
+            <AlertMessage severity="error" body={errorMessage} />
+          )}
         </Grid>
         <Grid item md={6} xs={12}>
           <TextField

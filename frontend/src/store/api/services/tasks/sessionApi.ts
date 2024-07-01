@@ -3,6 +3,7 @@ import {
   SIGNIN_PATH,
   SIGNOUT_PATH,
   SIGNUP_PATH,
+  USER_INFO_PATH,
   VERIFICATION_NOTIFICATION_PATH,
   VERIFY_EMAIL_PATH,
 } from '@/config/api';
@@ -19,6 +20,8 @@ import type {
   RegisterResponse,
   RequestVerificationEmailRequest,
   RequestVerificationEmailResponse,
+  UpdateProfileRequest,
+  UpdateProfileResponse,
   VerifyEmailRequest,
   VerifyEmailResponse,
 } from './types';
@@ -103,6 +106,13 @@ const api = baseApi.injectEndpoints({
     >({
       query: () => ({ url: VERIFICATION_NOTIFICATION_PATH, method: 'POST' }),
     }),
+    updateProfile: builder.mutation<
+      UpdateProfileResponse,
+      UpdateProfileRequest
+    >({
+      query: (data) => ({ url: USER_INFO_PATH, method: 'PATCH', data }),
+      invalidatesTags: ['Session'],
+    }),
     // cf. https://redux-toolkit.js.org/rtk-query/usage/automated-refetching#providing-errors-to-the-cache
     invalidateSession: builder.mutation<null, void>({
       queryFn: () => ({ data: null }),
@@ -119,4 +129,5 @@ export const {
   useVerifyEmailQuery,
   useInvalidateSessionMutation,
   useRequestVerificationEmailMutation,
+  useUpdateProfileMutation,
 } = api;

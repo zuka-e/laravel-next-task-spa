@@ -4,8 +4,6 @@ import dayjs from 'dayjs';
 import type {
   SignInRequest,
   SignInResponse,
-  UpdateProfileRequest,
-  UpdateProfileResponse,
   UpdatePasswordRequest,
   ForgotPasswordRequest,
   ResetPasswordRequest,
@@ -23,8 +21,9 @@ import type {
   ValidationErrorResponse,
   VerifyEmailRequest,
   VerifyEmailResponse,
-  RequestVerificationEmailRequest,
   RequestVerificationEmailResponse,
+  UpdateProfileRequest,
+  UpdateProfileResponse,
 } from '@/store/api';
 import { sanitizeUser } from '@test/api/models';
 import { db } from '@test/api/database';
@@ -113,7 +112,7 @@ export const handlers = [
     url('VERIFICATION_NOTIFICATION_PATH'),
     withMiddleware<
       PathParams,
-      RequestVerificationEmailRequest,
+      undefined,
       RequestVerificationEmailResponse | ValidationErrorResponse
     >()(() => {
       const user = getUser()!;
@@ -197,7 +196,7 @@ export const handlers = [
     })
   ),
 
-  http.put(
+  http.patch(
     url('USER_INFO_PATH'),
     withMiddleware<
       PathParams,
@@ -212,16 +211,12 @@ export const handlers = [
         });
       }
 
-      const currentUser = getUser()!;
-      const user = updateProfileController.update({
-        currentUser: currentUser,
-        request: requestData,
-      });
+      const updated = updateProfileController.update(getUser()!, requestData);
 
       const data: UpdateProfileResponse = {
         severity: 'success',
         message: 'ユーザー情報を更新しました。',
-        user,
+        user: updated,
       };
 
       return HttpResponse.json(data);
