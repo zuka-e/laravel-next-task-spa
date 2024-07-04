@@ -26,6 +26,7 @@
     "@emotion/styled": "^11.10.4",
     "@faker-js/faker": "^8.4.1",
     "@hookform/resolvers": "^2.9.8",
+    "@mswjs/data": "^0.16.1",
     "@mui/base": "^5.0.0-alpha.87",
     "@mui/icons-material": "^5.14.3",
     "@mui/material": "^5.14.5",
