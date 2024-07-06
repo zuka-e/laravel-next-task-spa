@@ -1,4 +1,3 @@
-export * from './sessions';
 export * from './users';
 export * from './taskBoards';
 export * from './taskLists';

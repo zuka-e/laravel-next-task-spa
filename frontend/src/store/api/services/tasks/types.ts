@@ -152,7 +152,7 @@ export type UpdateProfileResponse = ApiResponse<{
   user: User;
 }>;
 
-export type UpdateProfileRequest = Pick<User, 'name' | 'email'>;
+export type UpdateProfileRequest = Partial<Pick<User, 'name' | 'email'>>;
 
 export type FetchTaskBoardsResponse = ApiResponse<
   PaginationResponse<TaskBoard>

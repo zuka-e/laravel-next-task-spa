@@ -1,34 +1,35 @@
-import type { TaskBoard } from '@/models';
-import { db, type Doc } from '@test/api/database';
 import { faker } from '@test/utils/faker';
+import type { TaskBoard, User } from '@test/api/database/models';
+import db from '@test/api/database/manager';
+import { timestamp } from '@test/api/database/definitions';
 import { guestUser, otherUser, unverifiedUser } from './users';
 
-export const boardOfGuestUser: TaskBoard = {
+export const boardOfGuestUser = {
   id: faker.string.uuid(),
   userId: guestUser.id,
   title: 'ゲストユーザーのBoard',
   description: 'ゲストユーザーが所有するTaskBoard',
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-};
+  createdAt: timestamp(),
+  updatedAt: timestamp(),
+} as TaskBoard;
 
-export const boardOfOtherUser: TaskBoard = {
+export const boardOfOtherUser = {
   id: faker.string.uuid(),
   userId: otherUser.id,
   title: '他のユーザーのBoard',
   description: '他のユーザーが所有するTaskBoard',
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-};
+  createdAt: timestamp(),
+  updatedAt: timestamp(),
+} as TaskBoard;
 
-export const boardOfUnverifiedUser: TaskBoard = {
+export const boardOfUnverifiedUser = {
   id: faker.string.uuid(),
   userId: unverifiedUser.id,
   title: '未認証ユーザーのBoard',
   description: '未認証ユーザーが所有するTaskBoard',
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-};
+  createdAt: timestamp(),
+  updatedAt: timestamp(),
+} as TaskBoard;
 
 const initialBoards: TaskBoard[] = [
   boardOfGuestUser,
@@ -38,19 +39,17 @@ const initialBoards: TaskBoard[] = [
 
 type SeederProps = {
   count: number;
-  belongsTo: { user: Doc<'users'> };
+  belongsTo: { user: User };
 };
 
-const runSeeder = (props: SeederProps) => {
-  const user = db.where('users', 'id', props.belongsTo.user.id)[0];
-  if (!user) throw Error('The specified data does not exist');
-
-  initialBoards.forEach((board) => {
-    db.create('taskBoards', board);
+const seed = (props: SeederProps) => {
+  const user = db.user.findFirst({
+    where: { id: { equals: props.belongsTo.user.id } },
+    strict: true,
   });
 
   [...Array(props.count)].forEach(() => {
-    db.create('taskBoards', {
+    db.taskBoard.create({
       userId: user.id,
       title: `${faker.hacker.adjective()} ${faker.hacker.verb()}`,
       description: faker.hacker.phrase(),
@@ -61,12 +60,16 @@ const runSeeder = (props: SeederProps) => {
 };
 
 const initialize = () => {
-  db.load('taskBoards');
+  if (db.taskBoard.count()) {
+    return;
+  }
 
-  if (db.exists('taskBoards')) return;
+  initialBoards.forEach((board) => {
+    db.taskBoard.create(board);
+  });
 
-  runSeeder({ count: 30, belongsTo: { user: guestUser } });
-  runSeeder({ count: 1, belongsTo: { user: otherUser } });
+  seed({ count: 30, belongsTo: { user: guestUser } });
+  seed({ count: 1, belongsTo: { user: otherUser } });
 };
 
 // 初期化実行

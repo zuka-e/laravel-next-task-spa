@@ -1,49 +1,46 @@
 import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
-import { UserDocument } from '@test/api/models';
-import { db } from '@test/api/database';
 import { faker } from '@test/utils/faker';
 import { digestText } from '@test/utils/crypto';
 import { repeatEach } from '@/utils';
+import type { User } from '@test/api/database/models';
+import db from '@test/api/database/manager';
+import { timestamp } from '@test/api/database/definitions';
 
-export const guestUser: UserDocument = {
+export const guestUser = {
   id: faker.string.uuid(),
   name: 'ゲストユーザー',
   email: GUEST_EMAIL,
-  emailVerifiedAt: new Date().toISOString(),
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
+  emailVerifiedAt: timestamp(),
+  createdAt: timestamp(),
+  updatedAt: timestamp(),
   password: digestText(GUEST_PASSWORD),
-};
+} as User;
 
-export const otherUser: UserDocument = {
+export const otherUser = {
   id: faker.string.uuid(),
   name: 'other_ユーザー',
   email: 'other_' + GUEST_EMAIL,
-  emailVerifiedAt: new Date().toISOString(),
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
+  emailVerifiedAt: timestamp(),
+  createdAt: timestamp(),
+  updatedAt: timestamp(),
   password: digestText(GUEST_PASSWORD),
-};
+} as User;
 
-export const unverifiedUser: UserDocument = {
+export const unverifiedUser = {
   id: faker.string.uuid(),
   name: '未認証ユーザー',
   email: 'unverified_' + GUEST_EMAIL,
   emailVerifiedAt: null,
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
+  createdAt: timestamp(),
+  updatedAt: timestamp(),
   password: digestText(GUEST_PASSWORD),
-};
+} as User;
 
-const initialUsers: UserDocument[] = [guestUser, otherUser, unverifiedUser];
+const initialUsers: User[] = [guestUser, otherUser, unverifiedUser];
 
-const runSeeder = (props: { count: number }) => {
-  initialUsers.forEach((user) => {
-    db.create('users', user);
-  });
-
+const seed = (props: { count: number }) => {
   repeatEach(props.count, () => {
-    db.create('users', {
+    db.user.create({
       name: `${faker.person.firstName()} ${faker.person.lastName()}`,
       email: faker.internet.exampleEmail(),
       emailVerifiedAt: faker.date.recent().toISOString(),
@@ -54,19 +51,16 @@ const runSeeder = (props: { count: number }) => {
   });
 };
 
-export const refresh = () => {
-  db.reset('users');
-  runSeeder({ count: 1 });
-};
-
 const initialize = () => {
-  try {
-    db.load('users');
-  } catch (e) {
-    console.log(e); // ignore SyntaxError at JSON.parse
+  if (db.user.count()) {
+    return;
   }
-  if (db.exists('users')) return;
-  else runSeeder({ count: 3 });
+
+  initialUsers.forEach((user) => {
+    db.user.create(user);
+  });
+
+  seed({ count: 3 });
 };
 
 // 初期化実行

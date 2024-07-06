@@ -2,14 +2,22 @@ import { type PathParams, type HttpResponseResolver } from 'msw';
 import { compose } from '@reduxjs/toolkit';
 
 import { type ApiResponse } from '@/store/api';
-import { startSession, verifyCsrfToken } from '@test/api/handlers/middleware';
+import {
+  preserveDb,
+  startSession,
+  verifyCsrfToken,
+} from '@test/api/handlers/middleware';
 import type { Middleware } from '@test/api/handlers/middleware/types';
 import { type ErrorResponse } from '@test/api/handlers/utils/responses';
 
 /**
  * Global middleware that will run for every request handler.
  */
-const globalMiddleware: Middleware[] = [startSession, verifyCsrfToken];
+const globalMiddleware: Middleware[] = [
+  preserveDb,
+  startSession,
+  verifyCsrfToken,
+];
 
 /**
  * Creates a higher-order resolver that composes multiple middleware

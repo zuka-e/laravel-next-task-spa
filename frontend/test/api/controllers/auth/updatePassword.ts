@@ -1,24 +1,20 @@
 import { type UpdatePasswordRequest } from '@/store/thunks/auth';
-import type { UserDocument } from '@test/api/models';
-import { db } from '@test/api/database';
+import type { User } from '@test/api/database/models';
+import db from '@test/api/database/manager';
+import { timestamp } from '@test/api/database/definitions';
 import { digestText } from '@test/utils/crypto';
 
-type UpdatePasswordProps = {
-  currentUser: UserDocument;
-  request: UpdatePasswordRequest;
-};
-
-export const update = (props: UpdatePasswordProps) => {
-  const { currentUser, request } = props;
-
+export const update = (user: User, request: UpdatePasswordRequest): User => {
   if (request.password !== request.password_confirmation)
     throw new Error('Passwords do not match');
 
-  const newUserDoc: UserDocument = {
-    ...currentUser,
-    updatedAt: new Date().toISOString(),
-    password: digestText(request.password),
-  };
-
-  db.update('users', newUserDoc);
+  return db.user.update({
+    where: { id: { equals: user.id } },
+    data: {
+      ...user,
+      password: digestText(request.password),
+      updatedAt: timestamp(),
+    },
+    strict: true,
+  });
 };

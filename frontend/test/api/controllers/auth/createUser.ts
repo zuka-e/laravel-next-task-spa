@@ -1,20 +1,17 @@
-import { type User } from '@/models/User';
-import { type SignUpRequest } from '@/store/thunks/auth';
-import { sanitizeUser, type UserDocument } from '@test/api/models/user';
-import { db } from '@test/api/database';
-import { login } from '@test/api/auth';
+import type { RegisterRequest } from '@/store/api';
 import { digestText } from '@test/utils/crypto';
+import type { User } from '@test/api/database/models';
+import db from '@test/api/database/manager';
+import { login } from '@test/api/auth';
 
-export const store = (request: SignUpRequest): User => {
-  const newUserDoc = {
+export const store = (request: RegisterRequest): User => {
+  const newUser = db.user.create({
     name: request.email,
     email: request.email,
-    emailVerifiedAt: null,
     password: digestText(request.password),
-  } as UserDocument;
+  });
 
-  const createdUser = db.create('users', newUserDoc);
-  login(createdUser);
+  login(newUser);
 
-  return sanitizeUser(createdUser);
+  return newUser;
 };

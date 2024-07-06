@@ -13,7 +13,6 @@ import type {
   UpdatePasswordResponse,
 } from '@/store/thunks/auth';
 import type {
-  ApiResponse,
   FetchSessionResponse,
   LogoutResponse,
   RegisterRequest,
@@ -25,8 +24,6 @@ import type {
   UpdateProfileRequest,
   UpdateProfileResponse,
 } from '@/store/api';
-import { sanitizeUser } from '@test/api/models';
-import { db } from '@test/api/database';
 import { getUser, logout } from '@test/api/auth';
 import {
   createUserController,
@@ -50,6 +47,13 @@ import {
   validationErrorResponse,
 } from '@test/api/handlers/utils/responses';
 import { generateVerificationUrl } from '@test/api/handlers/utils/urls';
+import db from '@test/api/database/manager';
+import { User } from '@test/api/database/models';
+
+const sanitizeUser = (user: User): Omit<User, 'password'> => {
+  const { password, ...visible } = user;
+  return visible;
+};
 
 export const handlers = [
   http.post(
@@ -67,17 +71,17 @@ export const handlers = [
         });
       }
 
-      const user = createUserController.store(requestData);
+      const newUser = createUserController.store(requestData);
 
       // as if sending verification email
       console.info({
-        'verification URL': generateVerificationUrl(user),
+        'verification URL': generateVerificationUrl(newUser),
       });
 
       const data: RegisterResponse = {
         severity: 'success',
         message: '認証用メールを送信しました。',
-        user,
+        user: sanitizeUser(newUser),
       };
 
       return HttpResponse.json(data, { status: 201 });
@@ -115,14 +119,14 @@ export const handlers = [
       undefined,
       RequestVerificationEmailResponse | ValidationErrorResponse
     >()(() => {
-      const user = getUser()!;
+      const currentUser = getUser()!;
 
       // as if sending verification email
       console.info({
-        'verification URL': generateVerificationUrl(user),
+        'verification URL': generateVerificationUrl(currentUser),
       });
 
-      const data: RequestVerificationEmailResponse = user.emailVerifiedAt
+      const data: RequestVerificationEmailResponse = currentUser.emailVerifiedAt
         ? {
             severity: 'error',
             message: '既に認証済みです。',
@@ -166,7 +170,7 @@ export const handlers = [
     withMiddleware<
       PathParams,
       VerifyEmailRequest,
-      VerifyEmailResponse | ApiResponse
+      VerifyEmailResponse | ValidationErrorResponse
     >([validateSignature])(({ params }) => {
       /** An unpredictable value like UUID */
       const token = params['token']?.toString() ?? '';
@@ -177,21 +181,22 @@ export const handlers = [
         return authorizationErrorResponse('Invalid Signature.');
       }
 
-      const user = db.where('users', 'id', token)[0];
+      const user = db.user.findFirst({ where: { id: { equals: token } } });
 
       if (!user || user.emailVerifiedAt) {
         return authorizationErrorResponse('Invalid Signature.');
       }
 
-      const updated = db.update('users', {
-        ...user,
-        emailVerifiedAt: dayjs().toISOString(),
+      const updatedUser = db.user.update({
+        where: { id: { equals: user.id } },
+        data: { ...user, emailVerifiedAt: dayjs().toISOString() },
+        strict: true,
       });
 
       return HttpResponse.json({
         severity: 'info',
         message: '認証に成功しました。',
-        user: updated,
+        user: sanitizeUser(updatedUser),
       });
     })
   ),
@@ -205,18 +210,21 @@ export const handlers = [
     >()(async ({ request }) => {
       const requestData = await request.json();
 
-      if (!isUniqueEmail(requestData.email)) {
+      if (requestData.email && !isUniqueEmail(requestData.email)) {
         return validationErrorResponse({
           email: ['このメールアドレスは既に使用されています。'],
         });
       }
 
-      const updated = updateProfileController.update(getUser()!, requestData);
+      const updatedUser = updateProfileController.update(
+        getUser()!,
+        requestData
+      );
 
       const data: UpdateProfileResponse = {
         severity: 'success',
         message: 'ユーザー情報を更新しました。',
-        user: updated,
+        user: sanitizeUser(updatedUser),
       };
 
       return HttpResponse.json(data);
@@ -239,10 +247,7 @@ export const handlers = [
           email: ['パスワードが間違っています。'],
         });
 
-      updatePasswordController.update({
-        currentUser: currentUser,
-        request: requestData,
-      });
+      updatePasswordController.update(currentUser, requestData);
 
       const data: UpdatePasswordResponse = {
         severity: 'success',
@@ -262,7 +267,9 @@ export const handlers = [
     >()(async ({ request }) => {
       const requestData = await request.json();
 
-      const requestedUser = db.where('users', 'email', requestData.email)[0];
+      const requestedUser = db.user.findFirst({
+        where: { email: { equals: requestData.email } },
+      });
 
       if (!requestedUser) {
         return validationErrorResponse({

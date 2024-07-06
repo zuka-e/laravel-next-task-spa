@@ -15,6 +15,7 @@ import type {
 import { API_ROUTE } from '@/config/api';
 import { makePath } from '@/utils/api';
 import { withMiddleware } from '@test/api/handlers/middleware/utils/withMiddleware';
+import { getUser } from '@test/api/auth';
 import { notFoundErrorResponse } from '@test/api/handlers/utils/responses';
 import { taskBoardController } from '@test/api/controllers';
 
@@ -31,7 +32,7 @@ export const handlers = [
       FetchTaskBoardsRequest,
       FetchTaskBoardsResponse
     >()(({ request }) => {
-      const paginated = taskBoardController.index(request);
+      const paginated = taskBoardController.index(getUser()!.id, request);
 
       return HttpResponse.json({
         severity: 'info',

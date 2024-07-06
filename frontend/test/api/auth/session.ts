@@ -1,20 +1,20 @@
-import type { UserDocument } from '@test/api/models';
-import { db } from '@test/api/database';
 import { getSession, migrateSession, putSession } from '@test/api/session';
+import type { User } from '@test/api/database/models';
+import db from '@test/api/database/manager';
 
 // /**
 //  * The currently authenticated user.
 //  *
 //  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Auth/GuardHelpers.php#L18 - user
 //  */
-// let user: UserDocument | null = null;
+// let user: User | null = null;
 
 /**
  * Get the currently authenticated user from the session.
  *
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Auth/SessionGuard.php#L141 - user()
  */
-export const getUser = (): UserDocument | null => {
+export const getUser = (): User | null => {
   // if (user) {
   //   return { ...user };
   // }
@@ -27,7 +27,7 @@ export const getUser = (): UserDocument | null => {
 //  *
 //  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Auth/GuardHelpers.php#L91 - setUser()
 //  */
-// const setUser = (userDoc: UserDocument): void => {
+// const setUser = (userDoc: User): void => {
 //   user = { ...userDoc };
 // };
 
@@ -45,9 +45,9 @@ export const getUser = (): UserDocument | null => {
  *
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Auth/SessionGuard.php#L493 - login()
  */
-export const login = (userDoc: UserDocument): void => {
-  updateSession(userDoc.id);
-  // setUser(userDoc);
+export const login = (user: User): void => {
+  updateSession(user.id);
+  // setUser(user);
 };
 
 /**
@@ -55,7 +55,7 @@ export const login = (userDoc: UserDocument): void => {
  *
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Auth/SessionGuard.php#L520 - updateSession()
  */
-const updateSession = (id: UserDocument['id']) => {
+const updateSession = (id: User['id']) => {
   putSession('userId', id);
   migrateSession(true);
 };
@@ -76,6 +76,10 @@ export const logout = (): void => {
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Auth/SessionGuard.php#L141 - user()
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Auth/EloquentUserProvider.php#L53 - retrieveById()
  */
-const getUserBySessionId = (): UserDocument | null => {
-  return db.where('users', 'id', getSession().userId)[0] ?? null;
+const getUserBySessionId = (): User | null => {
+  const userId = getSession().userId;
+
+  return userId
+    ? db.user.findFirst({ where: { id: { equals: userId } } })
+    : null;
 };

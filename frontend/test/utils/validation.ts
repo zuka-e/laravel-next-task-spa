@@ -1,9 +1,9 @@
 import { ResetPasswordRequest, SignInRequest } from '@/store/thunks/auth';
 import { generateRandomString } from '@/utils/generator';
 import { getUser, login } from '@test/api/auth';
-import { db } from '@test/api/database';
 import { digestText } from '@test/utils/crypto';
 import { GUEST_EMAIL } from '@/config/app';
+import db from '@test/api/database/manager';
 
 /**
  * リクエストされた`password`をハッシュ化し、`User`の`password`と比較
@@ -25,14 +25,15 @@ export const isValidPassword = (
  * @returns `email`が一致しない又は自身の`email`の場合 `true`
  */
 export const isUniqueEmail = (email: string) => {
-  const matchedUsers = Object.values(db.collection('users')).filter(
-    (user) => user.email === email
-  );
-  // 合致するデータがない場合`matchedUsers[0]`は`undefined`
-  const matchedEmail = matchedUsers[0]?.email;
-  const ownEmail = getUser()?.email;
+  const matchedUser = db.user.findFirst({
+    where: { email: { equals: email } },
+  });
 
-  return !matchedEmail || matchedEmail === ownEmail;
+  if (!matchedUser) {
+    return true;
+  }
+
+  return matchedUser.email === getUser()?.email;
 };
 
 /**
@@ -42,19 +43,17 @@ export const isUniqueEmail = (email: string) => {
  * @param request - {`email`, `password`,`remember?`}
  */
 export const authenticate = async (request: SignInRequest) => {
-  const matchedUsers = Object.values(db.collection('users')).filter(
-    (user) => user.email === request.email
-  );
-  const requestedUser = matchedUsers[0];
+  const user = db.user.findFirst({
+    where: { email: { equals: request.email } },
+  });
 
-  if (!requestedUser) return null;
-
-  if (isValidPassword(request.password, requestedUser.password)) {
-    login(requestedUser);
-    return requestedUser;
-  } else {
+  if (!user || !isValidPassword(request.password, user.password)) {
     return null;
   }
+
+  login(user);
+
+  return user;
 };
 
 /**

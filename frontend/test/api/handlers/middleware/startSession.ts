@@ -1,5 +1,4 @@
 import {
-  getSession,
   getSessionId,
   saveSession,
   setSessionId,
@@ -32,7 +31,7 @@ const startSession: Middleware = (resolver) => {
     setCookie(SESSION_COOKIE, getSessionId());
 
     /** @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Middleware/StartSession.php#L242 - saveSession() */
-    saveSession(getSession());
+    saveSession();
 
     return response;
   };

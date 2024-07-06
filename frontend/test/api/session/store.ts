@@ -1,6 +1,7 @@
 import { generateRandomString } from '@/utils/generator';
-import type { Session } from '@test/api/models';
-import { db } from '@test/api/database';
+import type { Session } from '@test/api/database/models';
+import db from '@test/api/database/manager';
+import { timestamp } from '@test/api/database/definitions';
 
 /**
  * The session ID.
@@ -14,12 +15,12 @@ let id: Session['id'] = '';
  *
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Store.php#L38 - attributes
  */
-let attributes: Partial<Session> = {};
+let attributes: Session['payload'] = {};
 
 /**
  * Set the session ID.
  *
- * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Store.php#L638 - setId()
+ * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Store.php#L649 - setId()
  */
 export const setSessionId = (sessionId?: Session['id']): void => {
   id = sessionId || generateSessionId();
@@ -28,7 +29,7 @@ export const setSessionId = (sessionId?: Session['id']): void => {
 /**
  * Get the current session ID.
  *
- * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Store.php#L627 - getId()
+ * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Store.php#L638 - getId()
  */
 export const getSessionId = (): Session['id'] => {
   return id;
@@ -37,7 +38,7 @@ export const getSessionId = (): Session['id'] => {
 /**
  * Get a new, random session ID.
  *
- * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Store.php#L659 - generateSessionId()
+ * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Store.php#L670 - generateSessionId()
  */
 export const generateSessionId = (): string => {
   return generateRandomString(32);
@@ -48,9 +49,8 @@ export const generateSessionId = (): string => {
  *
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Store.php#L232 - all()
  */
-export const getSession = (): Partial<Session> => {
-  const { id, ...session } = attributes;
-  return { ...session };
+export const getSession = (): Session['payload'] => {
+  return attributes;
 };
 
 /**
@@ -58,7 +58,7 @@ export const getSession = (): Partial<Session> => {
  *
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Store.php#L342 - replace()
  */
-export const setSession = (session: Partial<Session>): void => {
+export const setSession = (session: Session['payload']): void => {
   attributes = { ...session };
 };
 
@@ -67,9 +67,9 @@ export const setSession = (session: Partial<Session>): void => {
  *
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Store.php#L365 - put()
  */
-export const putSession = <K extends keyof Session>(
+export const putSession = <K extends keyof Session['payload']>(
   key: K,
-  value?: Session[K]
+  value?: Session['payload'][K]
 ): void => {
   const session = getSession();
 
@@ -88,23 +88,28 @@ export const putSession = <K extends keyof Session>(
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Store.php#L83 - start()
  */
 export const startSession = (): void => {
-  /**
-   * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Store.php#L99 - loadSession()
-   * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Store.php#L111 - readFromHandler()
-   */
-  const savedSession = db.where('sessions', 'id', getSessionId())[0];
+  loadSession();
 
-  if (!savedSession) {
-    setSessionId();
+  if (!getSession()._token) {
+    regenerateCsrfToken();
   }
+};
 
-  const session = savedSession ?? { id: getSessionId() };
+/**
+ * Load the session data from DB.
+ *
+ * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Store.php#L99 - loadSession()
+ * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Store.php#L111 - readFromHandler()
 
-  if (!session._token) {
-    session._token = regenerateCsrfToken();
+ */
+const loadSession = (): void => {
+  const session = db.session.findFirst({
+    where: { id: { equals: getSessionId() } },
+  });
+
+  if (session) {
+    setSession(session.payload);
   }
-
-  setSession(session);
 };
 
 /**
@@ -115,7 +120,7 @@ export const startSession = (): void => {
 export const migrateSession = (destroy = false): void => {
   if (destroy) {
     /** @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/DatabaseSessionHandler.php#L267 - destroy() */
-    db.remove('sessions', getSessionId());
+    db.session.delete({ where: { id: { equals: getSessionId() } } });
   }
 
   setSessionId();
@@ -127,13 +132,17 @@ export const migrateSession = (destroy = false): void => {
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Store.php#L166 - save()
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/DatabaseSessionHandler.php#L131 - write()
  */
-export const saveSession = (session: Partial<Session>): Session => {
-  const savedSession = db.where('sessions', 'id', getSessionId())[0];
-  const { id, ...fillable } = session;
+export const saveSession = (): Session => {
+  const exists =
+    db.session.count({ where: { id: { equals: getSessionId() } } }) > 0;
 
-  return savedSession
-    ? db.update('sessions', { ...savedSession, ...fillable })
-    : db.create('sessions', { ...session, id: getSessionId() });
+  return exists
+    ? db.session.update({
+        where: { id: { equals: getSessionId() } },
+        data: { payload: getSession(), updatedAt: timestamp },
+        strict: true,
+      })
+    : db.session.create({ id: getSessionId(), payload: getSession() });
 };
 
 /**
@@ -141,8 +150,8 @@ export const saveSession = (session: Partial<Session>): Session => {
  *
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Store.php#L692 - regenerateToken()
  */
-export const regenerateCsrfToken = (): string => {
-  return generateRandomString(32);
+export const regenerateCsrfToken = (): void => {
+  attributes._token = generateRandomString(32);
 };
 
 /**

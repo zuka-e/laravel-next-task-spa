@@ -1,32 +1,30 @@
 import { type UpdateProfileRequest } from '@/store/api';
-import { sanitizeUser, UserDocument } from '@test/api/models';
-import { db } from '@test/api/database';
-import { generateVerificationUrl } from '@test/api/handlers/utils/urls';
+import type { User } from '@test/api/database/models';
+import db from '@test/api/database/manager';
+import { timestamp } from '@test/api/database/definitions';
+import { generateVerificationUrl } from '@root/test/api/handlers/utils/urls';
 
-type UpdateProfileProps = {
-  currentUser: UserDocument;
-  request: UpdateProfileRequest;
-};
+export const update = (user: User, request: UpdateProfileRequest): User => {
+  const isEmailUpdated = user.email !== request.email;
 
-export const update = (props: UpdateProfileProps) => {
-  const { currentUser, request } = props;
-  const IsEmailUpdated = currentUser.email !== request.email;
-  const newUserDoc: UserDocument = {
-    ...currentUser,
-    name: request.name || currentUser.name,
-    email: request.email || currentUser.email,
-    emailVerifiedAt: IsEmailUpdated ? null : currentUser.emailVerifiedAt,
-    updatedAt: new Date().toISOString(),
-  };
+  const updated = db.user.update({
+    where: { id: { equals: user.id } },
+    data: {
+      ...user,
+      name: request.name || user.name,
+      email: request.email || user.email,
+      emailVerifiedAt: isEmailUpdated ? null : user.emailVerifiedAt,
+      updatedAt: timestamp(),
+    },
+    strict: true,
+  });
 
-  db.update('users', newUserDoc);
-
-  if (IsEmailUpdated) {
+  if (isEmailUpdated) {
     // as if sending verification email
     console.info({
-      'verification URL': generateVerificationUrl(newUserDoc),
+      'verification URL': generateVerificationUrl(updated),
     });
   }
 
-  return sanitizeUser(newUserDoc);
+  return updated;
 };

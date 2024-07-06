@@ -1,6 +1,5 @@
 import { type DefaultBodyType, type StrictRequest } from 'msw';
 
-import type { DocumentBase } from '@/models';
 import {
   type PaginationResponse,
   type CursorPaginationResponse,
@@ -11,7 +10,7 @@ type PaginateProps<T> = {
   filtered: T[];
 };
 
-export const paginate = <T extends DocumentBase>(props: PaginateProps<T>) => {
+export const paginate = <T>(props: PaginateProps<T>) => {
   const { request, filtered } = props;
   const url = new URL(request.url);
 
@@ -67,7 +66,7 @@ export const paginate = <T extends DocumentBase>(props: PaginateProps<T>) => {
 /**
  * `PaginationResponse`の`meta`に`links`を設定する
  * */
-const addMetaLinks = (props: PaginationResponse<DocumentBase>) => {
+const addMetaLinks = (props: PaginationResponse<unknown>) => {
   const count = props.meta.lastPage + 2; // page総数 + 2 (prev, next);
   Array(count)
     .fill('_')
@@ -94,7 +93,7 @@ const addMetaLinks = (props: PaginationResponse<DocumentBase>) => {
     });
 };
 
-export const cursorPaginate = <T extends DocumentBase>(
+export const cursorPaginate = <T>(
   props: PaginateProps<T>
 ): CursorPaginationResponse<T> => {
   const { request, filtered } = props;

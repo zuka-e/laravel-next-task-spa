@@ -3,9 +3,14 @@ import { nullable, primaryKey } from '@mswjs/data';
 import { faker } from '@test/utils/faker';
 
 /**
+ * Session key of CSRF token.
+ */
+const CSRF_TOKEN = '_token';
+
+/**
  * Timestamp definition.
  */
-const timestamp = () => new Date().toISOString();
+export const timestamp = () => new Date().toISOString();
 
 /**
  * Creation and update timestamp definitions
@@ -24,6 +29,15 @@ const timestamps = {
  * @see https://github.com/mswjs/data#recipes
  */
 export const modelDictionary = {
+  session: {
+    id: primaryKey(String),
+    userId: nullable<string>(() => null),
+    payload: {
+      userId: nullable<string>(() => null),
+      [CSRF_TOKEN]: String,
+    },
+    ...timestamps,
+  },
   user: {
     id: primaryKey(faker.string.uuid),
     name: String,

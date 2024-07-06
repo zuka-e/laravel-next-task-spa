@@ -1,19 +1,20 @@
 import { type DefaultBodyType, type StrictRequest } from 'msw';
 
-import type { TaskBoard, TaskCard, TaskList } from '@/models';
-import { type UpdateTaskCardRequest } from '@/store/api';
-import { db } from '@test/api/database';
+import type {
+  CursorPaginationResponse,
+  UpdateTaskCardRequest,
+} from '@/store/api';
+import type { TaskBoard, TaskCard, TaskList } from '@test/api/database/models';
+import db from '@test/api/database/manager';
 import { cursorPaginate } from '@test/utils/paginate';
 
 export const index = (
   listId: TaskList['id'],
   request: StrictRequest<DefaultBodyType>
-) => {
-  const cards = db.where(
-    'taskCards',
-    'listId',
-    listId
-  ) as unknown as TaskCard[];
+): CursorPaginationResponse<TaskCard> => {
+  const cards = db.taskCard.findMany({
+    where: { listId: { equals: listId } },
+  });
 
   return cursorPaginate({ request, filtered: cards });
 };
@@ -21,37 +22,30 @@ export const index = (
 export const store = (
   listId: TaskList['id'],
   params: Partial<Omit<TaskCard, 'id' | 'listId'>>
-) => {
-  const newCard = db.create('taskCards', {
-    listId,
-    ...params,
-  });
-
-  const response: TaskCard = { ...newCard };
-
-  return response;
+): TaskCard => {
+  return db.taskCard.create({ listId, ...params });
 };
 
-export const show = (id: TaskCard['id']) => {
-  const card = db.where('taskCards', 'id', id)[0];
-
-  if (!card) return;
-
-  return card as unknown as TaskCard;
+export const show = (id: TaskCard['id']): TaskCard | null => {
+  return db.taskCard.findFirst({ where: { id: { equals: id } } });
 };
 
 export const update = (
   id: UpdateTaskCardRequest['id'],
   params: Omit<UpdateTaskCardRequest, 'id'>
-) => {
-  const card = db.where('taskCards', 'id', id)[0];
+): TaskCard | null => {
+  const card = db.taskCard.findFirst({ where: { id: { equals: id } } });
 
-  if (!card) return;
+  if (!card) {
+    return null;
+  }
 
   if (typeof params.index === 'number') {
     const listId = params.listId ?? card.listId;
-    const cards = db
-      .where('taskCards', 'listId', listId)
+    const cards = db.taskCard
+      .findMany({
+        where: { listId: { equals: listId } },
+      })
       .filter((data) => data.id !== card.id)
       .sort((a, b) => {
         if (a.sequence < b.sequence) return -1;
@@ -72,7 +66,7 @@ export const update = (
     if ([prevCardSequence, nextCardSequence].includes(sequence)) {
       cards.forEach((card, i) => {
         card.sequence = (i + 1) * 2 ** 10;
-        db.update('taskCards', { ...card });
+        db.taskCard.update({ where: { id: { equals: card.id } }, data: card });
       });
 
       // Recalculate sequence
@@ -90,31 +84,25 @@ export const update = (
     params.sequence = sequence;
   }
 
-  const updated = db.update('taskCards', { ...card, ...params });
-
-  const response: TaskCard = { ...updated };
-
-  return response;
+  return db.taskCard.update({ where: { id: { equals: id } }, data: params });
 };
 
-export const destroy = (id: TaskCard['id']) => {
-  const deleted = db.remove('taskCards', id);
-
-  if (!deleted) return;
-
-  const response: TaskCard = { ...deleted };
-
-  return response;
+export const destroy = (id: TaskCard['id']): TaskCard | null => {
+  return db.taskCard.delete({ where: { id: { equals: id } } });
 };
 
-export const search = (id: TaskBoard['id'], q: string) => {
-  const listIds = db.where('taskLists', 'boardId', id).map((list) => list.id);
+export const search = (id: TaskBoard['id'], q: string): TaskCard[] => {
+  const listIds = db.taskList
+    .findMany({ where: { boardId: { equals: id } } })
+    .map((list) => list.id);
 
-  return db
-    .whereIn('taskCards', 'listId', listIds)
+  return db.taskCard
+    .findMany({
+      where: { listId: { in: listIds } },
+    })
     .filter(
       (card) =>
         new RegExp(q, 'i').test(card.title) ||
-        new RegExp(q, 'i').test(card.content)
+        new RegExp(q, 'i').test(card.content ?? '')
     );
 };
