@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { useDrag, useDrop } from 'react-dnd';
 import { Card, Typography } from '@mui/material';
 
-import * as Model from '@/models';
+import type * as Model from '@/store/api/services/tasks/models';
 import { useMoveCard } from '@/store/api';
 import { draggableItem, DragItem } from '@/utils/dnd';
 import { useTaskDetails } from '@/lib/hooks';

@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { AlertColor } from '@mui/material';
 
-import { User } from '@/models/User';
+import type { User } from '@/store/api/services/tasks/models';
 import { type RejectValue } from '@/store/thunks/config';
 import {
   signInWithEmail,

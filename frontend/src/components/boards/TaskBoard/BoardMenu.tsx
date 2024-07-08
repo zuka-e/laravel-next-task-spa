@@ -7,7 +7,7 @@ import {
   Delete as DeleteIcon,
 } from '@mui/icons-material';
 
-import { TaskBoard } from '@/models';
+import type { TaskBoard } from '@/store/api/services/tasks/models';
 import { useRoute } from '@/utils/hooks';
 import { useTaskDetails } from '@/lib/hooks';
 import { PopoverControl, DeleteTaskDialog } from '@/templates';

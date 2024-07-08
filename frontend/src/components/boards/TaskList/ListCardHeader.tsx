@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { CardHeader, Typography, IconButton } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 
-import { TaskList } from '@/models';
+import type { TaskList } from '@/store/api/services/tasks/models';
 import { useUpdateTaskListMutation } from '@/store/api';
 import { PopoverControl } from '@/templates';
 import { EditableTitle } from '..';

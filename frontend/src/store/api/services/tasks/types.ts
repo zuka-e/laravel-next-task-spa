@@ -1,7 +1,7 @@
 import { type AxiosError } from 'axios';
 
-import type { TaskBoard, TaskCard, TaskList, User } from '@/models';
 import type { SoftDelete } from '@/store/api/types';
+import type { TaskBoard, TaskCard, TaskList, User } from './models';
 
 type Severity = 'success' | 'info' | 'warning' | 'error';
 

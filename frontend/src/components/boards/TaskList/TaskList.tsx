@@ -12,7 +12,7 @@ import {
 import type { SelectProps } from '@mui/material';
 import { useDrop } from 'react-dnd';
 
-import * as Model from '@/models';
+import type * as Model from '@/store/api/services/tasks/models';
 import { repeatMap } from '@/utils';
 import {
   useAppDispatch,

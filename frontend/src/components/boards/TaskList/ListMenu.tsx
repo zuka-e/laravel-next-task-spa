@@ -7,7 +7,7 @@ import {
   Delete as DeleteIcon,
 } from '@mui/icons-material';
 
-import { TaskList } from '@/models';
+import type { TaskList } from '@/store/api/services/tasks/models';
 import { useTaskDetails } from '@/lib/hooks';
 import { DeleteTaskDialog, PopoverControl } from '@/templates';
 import { SortSelect } from '..';

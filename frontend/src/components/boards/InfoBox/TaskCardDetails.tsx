@@ -19,7 +19,7 @@ import {
   Delete as DeleteIcon,
 } from '@mui/icons-material';
 
-import { TaskCard } from '@/models';
+import type { TaskCard } from '@/store/api/services/tasks/models';
 import { useUpdateTaskCardMutation } from '@/store/api';
 import {
   DatetimeInput,

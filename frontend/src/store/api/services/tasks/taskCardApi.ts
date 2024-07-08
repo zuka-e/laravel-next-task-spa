@@ -1,6 +1,6 @@
 import { type Recipe } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 
-import type { TaskCard } from '@/models';
+import type { TaskCard } from '@/store/api/services/tasks/models';
 import { useAppDispatch } from '@/utils/hooks';
 import { makePath } from '@/utils/api';
 import baseApi from './baseApi';

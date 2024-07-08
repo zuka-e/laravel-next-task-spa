@@ -1,5 +1,5 @@
 import { GUEST_EMAIL } from '@/config/app';
-import type { User } from '@/models';
+import type { User } from '@/store/api/services/tasks/models';
 
 /**
  * Determine if the user is a guest user.

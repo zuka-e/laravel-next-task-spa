@@ -16,7 +16,7 @@ import {
   FolderOpen as FolderOpenIcon,
 } from '@mui/icons-material';
 
-import { TaskList } from '@/models';
+import type { TaskList } from '@/store/api/services/tasks/models';
 import { useGetTaskBoardQuery, useUpdateTaskListMutation } from '@/store/api';
 import { Link, MarkdownEditor } from '@/templates';
 import { useTaskDetails } from '@/lib/hooks';

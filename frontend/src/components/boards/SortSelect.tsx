@@ -3,7 +3,7 @@ import { memo, useCallback } from 'react';
 import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { Check as CheckIcon } from '@mui/icons-material';
 
-import type { TaskCard, TaskList } from '@/models';
+import type { TaskCard, TaskList } from '@/store/api/services/tasks/models';
 import { useAppDispatch, useAppSelector } from '@/utils/hooks';
 import { setSortByBoard, setSortByList } from '@/store/slices';
 // import { type Sort } from '@/utils/sort';

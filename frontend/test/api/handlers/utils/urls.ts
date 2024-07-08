@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 
 import { APP_URL } from '@/config/app';
 import { API_ROUTE } from '@/config/api';
-import type { User } from '@/models';
+import type { User } from '@/store/api/services/tasks/models';
 import { hash, verifyHash } from '@test/utils/crypto';
 
 /**

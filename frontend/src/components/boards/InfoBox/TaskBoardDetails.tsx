@@ -15,7 +15,7 @@ import {
   Folder as FolderIcon,
 } from '@mui/icons-material';
 
-import { TaskBoard } from '@/models';
+import type { TaskBoard } from '@/store/api/services/tasks/models';
 import { useUpdateTaskBoardMutation } from '@/store/api';
 import { Link, MarkdownEditor } from '@/templates';
 import { EditableTitle } from '..';

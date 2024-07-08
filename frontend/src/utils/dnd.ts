@@ -1,4 +1,4 @@
-import type { TaskCard } from '@/models';
+import type { TaskCard } from '@/store/api/services/tasks/models';
 
 export const draggableItem = {
   card: 'card',

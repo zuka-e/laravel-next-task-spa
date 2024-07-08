@@ -9,7 +9,11 @@ import {
   Button,
 } from '@mui/material';
 
-import type { TaskBoard, TaskCard, TaskList } from '@/models';
+import type {
+  TaskBoard,
+  TaskCard,
+  TaskList,
+} from '@/store/api/services/tasks/models';
 import {
   useDestroyTaskBoardMutation,
   useDestroyTaskListMutation,
