@@ -4,13 +4,11 @@ import dayjs from 'dayjs';
 import type {
   SignInRequest,
   SignInResponse,
-  UpdatePasswordRequest,
   ForgotPasswordRequest,
   ResetPasswordRequest,
   ResetPasswordResponse,
   ForgotPasswordResponse,
   DeleteAccountResponse,
-  UpdatePasswordResponse,
 } from '@/store/thunks/auth';
 import type {
   FetchSessionResponse,
@@ -23,6 +21,8 @@ import type {
   RequestVerificationEmailResponse,
   UpdateProfileRequest,
   UpdateProfileResponse,
+  UpdatePasswordRequest,
+  UpdatePasswordResponse,
 } from '@/store/api';
 import { getUser, logout } from '@test/api/auth';
 import {
@@ -231,7 +231,7 @@ export const handlers = [
     })
   ),
 
-  http.put(
+  http.patch(
     url('UPDATE_PASSWORD_PATH'),
     withMiddleware<
       PathParams,
@@ -242,7 +242,7 @@ export const handlers = [
 
       const currentUser = getUser()!;
 
-      if (!isValidPassword(requestData.current_password, currentUser.password))
+      if (!isValidPassword(requestData.currentPassword, currentUser.password))
         return validationErrorResponse({
           email: ['パスワードが間違っています。'],
         });

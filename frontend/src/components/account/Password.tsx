@@ -5,16 +5,19 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Checkbox, FormControlLabel, Grid, TextField } from '@mui/material';
 
-import { UpdatePasswordRequest, updatePassword } from '@/store/thunks/auth';
-import { useGetSessionQuery } from '@/store/api';
-import { useAppDispatch } from '@/utils/hooks';
+import {
+  UpdatePasswordRequest,
+  useGetSessionQuery,
+  useUpdatePasswordMutation,
+} from '@/store/api';
 import { isGuest } from '@/lib/auth';
 import { AlertMessage, SubmitButton } from '@/templates';
+import { isInvalidRequest, makeErrorMessageFrom } from '@/utils/api/errors';
 
 type FormData = UpdatePasswordRequest;
 
 const formData: Record<keyof FormData, { id: string; label: string }> = {
-  current_password: {
+  currentPassword: {
     id: 'current-password',
     label: 'Current Password',
   },
@@ -22,16 +25,16 @@ const formData: Record<keyof FormData, { id: string; label: string }> = {
     id: 'new-password',
     label: 'New Password',
   },
-  password_confirmation: {
+  passwordConfirmation: {
     id: 'password-confirmation',
     label: 'Password Confirmation',
   },
 };
 
 const schema = yup.object().shape({
-  current_password: yup
+  currentPassword: yup
     .string()
-    .label(formData.current_password.label)
+    .label(formData.currentPassword.label)
     .required(),
   password: yup
     .string()
@@ -39,15 +42,15 @@ const schema = yup.object().shape({
     .required()
     .min(8)
     .max(20),
-  password_confirmation: yup
+  passwordConfirmation: yup
     .string()
-    .label(formData.password_confirmation.label)
+    .label(formData.passwordConfirmation.label)
     .oneOf([yup.ref('password'), null], 'Passwords do not match'),
 });
 
 const Password = memo(function Password(): JSX.Element {
-  const dispatch = useAppDispatch();
   const { data: { user } = {} } = useGetSessionQuery();
+  const [updatePassword] = useUpdatePasswordMutation();
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
   const {
@@ -64,15 +67,18 @@ const Password = memo(function Password(): JSX.Element {
   // エラー発生時はメッセージを表示する
   const onSubmit = useCallback(
     async (data: FormData): Promise<void> => {
-      const response = await dispatch(updatePassword(data));
-      if (updatePassword.rejected.match(response)) {
-        setMessage(response.payload?.error?.message);
-      } else {
-        setMessage('');
-        reset(); // フォームの値 (エラー値含む) を消去
-      }
+      updatePassword(data)
+        .unwrap()
+        .then(() => {
+          reset();
+        })
+        .catch((error) => {
+          if (isInvalidRequest(error)) {
+            setMessage(makeErrorMessageFrom(error));
+          }
+        });
     },
-    [dispatch, reset]
+    [reset, updatePassword]
   );
 
   if (!user) {
@@ -90,13 +96,13 @@ const Password = memo(function Password(): JSX.Element {
             disabled={isGuest(user)}
             variant="outlined"
             fullWidth
-            id={formData.current_password.id}
-            label={formData.current_password.label}
+            id={formData.currentPassword.id}
+            label={formData.currentPassword.label}
             type={visiblePassword ? 'text' : 'password'}
-            autoComplete={formData.current_password.id}
-            {...register('current_password')}
-            helperText={errors?.current_password?.message || ' '}
-            error={!!errors?.current_password}
+            autoComplete={formData.currentPassword.id}
+            {...register('currentPassword')}
+            helperText={errors?.currentPassword?.message || ' '}
+            error={!!errors?.currentPassword}
           />
         </Grid>
       </Grid>
@@ -120,15 +126,15 @@ const Password = memo(function Password(): JSX.Element {
             disabled={isGuest(user)}
             variant="outlined"
             fullWidth
-            id={formData.password_confirmation.id}
-            label={formData.password_confirmation.label}
+            id={formData.passwordConfirmation.id}
+            label={formData.passwordConfirmation.label}
             type={visiblePassword ? 'text' : 'password'}
-            autoComplete={formData.password_confirmation.id}
-            {...register('password_confirmation')}
+            autoComplete={formData.passwordConfirmation.id}
+            {...register('passwordConfirmation')}
             helperText={
-              errors?.password_confirmation?.message || 'Retype password'
+              errors?.passwordConfirmation?.message || 'Retype password'
             }
-            error={!!errors?.password_confirmation}
+            error={!!errors?.passwordConfirmation}
           />
         </Grid>
       </Grid>

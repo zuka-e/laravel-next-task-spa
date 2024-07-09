@@ -154,6 +154,14 @@ export type UpdateProfileResponse = ApiResponse<{
 
 export type UpdateProfileRequest = Partial<Pick<User, 'name' | 'email'>>;
 
+export type UpdatePasswordResponse = ApiResponse;
+
+export type UpdatePasswordRequest = {
+  currentPassword: string;
+  password: string;
+  passwordConfirmation: string;
+};
+
 export type FetchTaskBoardsResponse = ApiResponse<
   PaginationResponse<TaskBoard>
 >;
