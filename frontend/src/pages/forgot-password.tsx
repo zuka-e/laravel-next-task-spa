@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react';
+import { memo } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticProps } from 'next';
@@ -8,8 +8,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Button, TextField, Divider, Grid } from '@mui/material';
 
-import { ForgotPasswordRequest, forgotPassword } from '@/store/thunks/auth';
-import { useAppDispatch } from '@/utils/hooks';
+import {
+  type ForgotPasswordRequest,
+  useForgotPasswordMutation,
+} from '@/store/api';
 import { FormLayout } from '@/layouts';
 import { SubmitButton } from '@/templates';
 import type { GuestPage } from '@/routes';
@@ -40,24 +42,12 @@ export const getStaticProps: GetStaticProps<ForgotPasswordProps> = async () => {
 
 const ForgotPassword = memo(function ForgotPassword(): JSX.Element {
   const router = useRouter();
-  const dispatch = useAppDispatch();
-  const [message, setMessage] = useState<string | undefined>('');
+  const [forgotPassword, { error }] = useForgotPasswordMutation();
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({ mode: 'onBlur', resolver: yupResolver(schema) });
-
-  // エラー発生時はメッセージを表示する
-  const onSubmit = useCallback(
-    async (data: FormData): Promise<void> => {
-      const response = await dispatch(forgotPassword(data));
-      if (forgotPassword.rejected.match(response))
-        setMessage(response.payload?.error?.message);
-      else setMessage('');
-    },
-    [dispatch]
-  );
 
   return (
     <>
@@ -66,9 +56,9 @@ const ForgotPassword = memo(function ForgotPassword(): JSX.Element {
       </Head>
       <FormLayout
         title={'Forgot Password?'}
-        error={message}
+        error={error}
         isLoading={isSubmitting}
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(forgotPassword)}
       >
         <TextField
           variant="outlined"

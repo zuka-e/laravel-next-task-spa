@@ -1,4 +1,5 @@
 import {
+  FORGOT_PASSWORD_PATH,
   SESSION_PATH,
   SIGNIN_PATH,
   SIGNOUT_PATH,
@@ -13,6 +14,8 @@ import baseApi from './baseApi';
 import type {
   FetchSessionRequest,
   FetchSessionResponse,
+  ForgotPasswordRequest,
+  ForgotPasswordResponse,
   LoginRequest,
   LoginResponse,
   LogoutRequest,
@@ -123,6 +126,12 @@ const api = baseApi.injectEndpoints({
       query: (data) => ({ url: UPDATE_PASSWORD_PATH, method: 'PATCH', data }),
       invalidatesTags: ['Session'],
     }),
+    forgotPassword: builder.mutation<
+      ForgotPasswordResponse,
+      ForgotPasswordRequest
+    >({
+      query: (data) => ({ url: FORGOT_PASSWORD_PATH, method: 'POST', data }),
+    }),
     // cf. https://redux-toolkit.js.org/rtk-query/usage/automated-refetching#providing-errors-to-the-cache
     invalidateSession: builder.mutation<null, void>({
       queryFn: () => ({ data: null }),
@@ -141,4 +150,5 @@ export const {
   useRequestVerificationEmailMutation,
   useUpdateProfileMutation,
   useUpdatePasswordMutation,
+  useForgotPasswordMutation,
 } = api;

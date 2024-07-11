@@ -38,6 +38,12 @@ export const modelDictionary = {
     },
     ...timestamps,
   },
+  passwordReset: {
+    id: primaryKey(faker.string.uuid),
+    email: String,
+    token: String,
+    ...timestamps,
+  },
   user: {
     id: primaryKey(faker.string.uuid),
     name: String,

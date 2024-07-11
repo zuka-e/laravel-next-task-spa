@@ -5,7 +5,6 @@ import type { User } from '@/store/api/services/tasks/models';
 import { type RejectValue } from '@/store/thunks/config';
 import {
   signInWithEmail,
-  forgotPassword,
   resetPassword,
   deleteAccount,
 } from '@/store/thunks/auth';
@@ -72,16 +71,6 @@ export const authSlice = createSlice({
       state.signedIn = false;
       state.loading = false;
       pushErrorFlash(state, action.payload);
-    });
-    builder.addCase(forgotPassword.pending, (state, _action) => {
-      state.loading = true;
-    });
-    builder.addCase(forgotPassword.fulfilled, (state, action) => {
-      state.loading = false;
-      state.flashes = [...state.flashes, { ...action.payload }];
-    });
-    builder.addCase(forgotPassword.rejected, (state, _action) => {
-      state.loading = false;
     });
     builder.addCase(resetPassword.pending, (state, _action) => {
       state.loading = true;

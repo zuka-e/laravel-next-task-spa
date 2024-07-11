@@ -4,10 +4,8 @@ import dayjs from 'dayjs';
 import type {
   SignInRequest,
   SignInResponse,
-  ForgotPasswordRequest,
   ResetPasswordRequest,
   ResetPasswordResponse,
-  ForgotPasswordResponse,
   DeleteAccountResponse,
 } from '@/store/thunks/auth';
 import type {
@@ -23,6 +21,8 @@ import type {
   UpdateProfileResponse,
   UpdatePasswordRequest,
   UpdatePasswordResponse,
+  ForgotPasswordRequest,
+  ForgotPasswordResponse,
 } from '@/store/api';
 import { getUser, logout } from '@test/api/auth';
 import {
@@ -46,7 +46,10 @@ import {
   authorizationErrorResponse,
   validationErrorResponse,
 } from '@test/api/handlers/utils/responses';
-import { generateVerificationUrl } from '@test/api/handlers/utils/urls';
+import {
+  generatePasswordResetUrl,
+  generateVerificationUrl,
+} from '@test/api/handlers/utils/urls';
 import db from '@test/api/database/manager';
 import { User } from '@test/api/database/models';
 
@@ -276,6 +279,11 @@ export const handlers = [
           email: ['指定されたメールアドレスは存在しません。'],
         });
       }
+
+      // as if sending password reset email
+      console.info({
+        'password reset URL': generatePasswordResetUrl(requestedUser),
+      });
 
       const data: ForgotPasswordResponse = {
         severity: 'success',

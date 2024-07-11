@@ -162,6 +162,12 @@ export type UpdatePasswordRequest = {
   passwordConfirmation: string;
 };
 
+export type ForgotPasswordResponse = ApiResponse;
+
+export type ForgotPasswordRequest = {
+  email: string;
+};
+
 export type FetchTaskBoardsResponse = ApiResponse<
   PaginationResponse<TaskBoard>
 >;

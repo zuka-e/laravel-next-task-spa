@@ -10,6 +10,8 @@ type Attributes<T extends keyof typeof modelDictionary> = NonNullable<
 
 export type Session = Attributes<'session'>;
 
+export type PasswordReset = Attributes<'passwordReset'>;
+
 export type User = Attributes<'user'>;
 
 export type TaskBoard = Attributes<'taskBoard'>;

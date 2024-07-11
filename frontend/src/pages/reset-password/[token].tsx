@@ -1,7 +1,7 @@
 import { memo, useCallback, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import type { GetStaticProps } from 'next';
+import type { GetStaticPaths, GetStaticProps } from 'next';
 
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -51,6 +51,13 @@ const schema = yup.object().shape({
     .oneOf([yup.ref('password'), null], 'Passwords do not match'),
 });
 
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
+};
+
 type ResetPasswordProps = GuestPage;
 
 export const getStaticProps: GetStaticProps<ResetPasswordProps> = async () => {
@@ -77,7 +84,7 @@ const ResetPassword = memo(function ResetPassword(): JSX.Element {
     resolver: yupResolver(schema),
     defaultValues: {
       email: route.queryParams?.email?.toString() ?? '',
-      token: route.queryParams?.token?.toString() ?? '',
+      token: route.pathParams?.token?.toString() ?? '',
     },
     // `defaultValues`はフォーム入力では変更不可
   });
