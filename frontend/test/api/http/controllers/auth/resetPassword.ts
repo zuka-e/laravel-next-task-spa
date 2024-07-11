@@ -1,27 +1,42 @@
-import { ResetPasswordRequest } from '@/store/thunks/auth';
-import { digestText } from '@test/utils/crypto';
+import { HttpResponse, StrictResponse } from 'msw';
+
+import { ResetPasswordResponse, type ResetPasswordRequest } from '@/store/api';
 import { login } from '@test/api/auth';
-import db from '@test/api/database/manager';
-import { timestamp } from '@test/api/database/definitions';
+import {
+  getUserByCredentials,
+  resetPassword,
+} from '@test/api/http/utils/passwords';
+import { validationErrorResponse } from '@test/api/http/responses';
 
-export const reset = (request: ResetPasswordRequest) => {
-  if (request.password !== request.password_confirmation)
-    throw new Error('Passwords do not match');
+/**
+ * Reset password.
+ *
+ * @see https://github.com/laravel/fortify/blob/1.x/src/Http/Controllers/NewPasswordController.php#L55 - store()
+ * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Auth/Passwords/PasswordBroker.php#L84 - reset()
+ */
+export const store = (
+  request: ResetPasswordRequest
+): StrictResponse<ResetPasswordResponse> => {
+  const user = getUserByCredentials(request);
 
-  const user = db.user.findFirst({
-    where: { email: { equals: request.email } },
-    strict: true,
-  });
+  if (typeof user === 'string') {
+    return validationErrorResponse({
+      email: [user],
+    });
+  }
 
-  db.user.update({
-    where: { id: { equals: user.id } },
-    data: {
-      ...user,
-      updatedAt: timestamp(),
-      password: digestText(request.password),
-    },
-    strict: true,
-  });
+  const updated = resetPassword(user, request);
+
+  if (typeof updated === 'string') {
+    return validationErrorResponse({
+      email: [updated],
+    });
+  }
 
   login(user);
+
+  return HttpResponse.json({
+    severity: 'success',
+    message: 'パスワードを再設定しました。',
+  });
 };

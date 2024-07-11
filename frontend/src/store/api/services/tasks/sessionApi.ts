@@ -1,5 +1,6 @@
 import {
   FORGOT_PASSWORD_PATH,
+  RESET_PASSWORD_PATH,
   SESSION_PATH,
   SIGNIN_PATH,
   SIGNOUT_PATH,
@@ -24,6 +25,8 @@ import type {
   RegisterResponse,
   RequestVerificationEmailRequest,
   RequestVerificationEmailResponse,
+  ResetPasswordRequest,
+  ResetPasswordResponse,
   UpdatePasswordRequest,
   UpdatePasswordResponse,
   UpdateProfileRequest,
@@ -132,6 +135,17 @@ const api = baseApi.injectEndpoints({
     >({
       query: (data) => ({ url: FORGOT_PASSWORD_PATH, method: 'POST', data }),
     }),
+    resetPassword: builder.mutation<
+      ResetPasswordResponse,
+      ResetPasswordRequest
+    >({
+      query: (data) => ({
+        url: `${RESET_PASSWORD_PATH}/${data.token}`,
+        method: 'POST',
+        data,
+      }),
+      invalidatesTags: ['Session'],
+    }),
     // cf. https://redux-toolkit.js.org/rtk-query/usage/automated-refetching#providing-errors-to-the-cache
     invalidateSession: builder.mutation<null, void>({
       queryFn: () => ({ data: null }),
@@ -151,4 +165,5 @@ export const {
   useUpdateProfileMutation,
   useUpdatePasswordMutation,
   useForgotPasswordMutation,
+  useResetPasswordMutation,
 } = api;

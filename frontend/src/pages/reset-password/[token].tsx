@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next';
@@ -16,11 +16,10 @@ import {
 } from '@mui/material';
 
 import {
-  ResetPasswordRequest,
-  resetPassword,
-  signInWithEmail,
-} from '@/store/thunks/auth';
-import { useAppDispatch, useRoute } from '@/utils/hooks';
+  type ResetPasswordRequest,
+  useResetPasswordMutation,
+} from '@/store/api';
+import { useRoute } from '@/utils/hooks';
 import { FormLayout } from '@/layouts';
 import { SubmitButton } from '@/templates';
 import type { GuestPage } from '@/routes';
@@ -32,7 +31,7 @@ const formData = {
     id: 'new-password',
     label: 'New Password',
   },
-  password_confirmation: {
+  passwordConfirmation: {
     id: 'password-confirmation',
     label: 'Password Confirmation',
   },
@@ -45,9 +44,9 @@ const schema = yup.object().shape({
     .required()
     .min(8)
     .max(20),
-  password_confirmation: yup
+  passwordConfirmation: yup
     .string()
-    .label(formData.password_confirmation.label)
+    .label(formData.passwordConfirmation.label)
     .oneOf([yup.ref('password'), null], 'Passwords do not match'),
 });
 
@@ -72,41 +71,29 @@ export const getStaticProps: GetStaticProps<ResetPasswordProps> = async () => {
 const ResetPassword = memo(function ResetPassword(): JSX.Element {
   const router = useRouter();
   const route = useRoute();
-  const dispatch = useAppDispatch();
+  const [resetPassword, { error }] = useResetPasswordMutation();
   const [visiblePassword, setVisiblePassword] = useState(false);
-  const [message, setMessage] = useState<string | undefined>('');
+
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     mode: 'onBlur',
     resolver: yupResolver(schema),
-    defaultValues: {
+  });
+
+  useEffect(() => {
+    reset({
       email: route.queryParams?.email?.toString() ?? '',
       token: route.pathParams?.token?.toString() ?? '',
-    },
-    // `defaultValues`はフォーム入力では変更不可
-  });
+    });
+  }, [reset, route.pathParams?.token, route.queryParams?.email]);
 
   const togglePasswordVisibility = useCallback((): void => {
     setVisiblePassword((prev) => !prev);
   }, []);
-
-  // エラー発生時はメッセージを表示する
-  const onSubmit = useCallback(
-    async (data: FormData): Promise<void> => {
-      const response = await dispatch(resetPassword(data));
-      if (resetPassword.rejected.match(response))
-        setMessage(response.payload?.error?.message);
-      // 認証成功時は自動ログイン
-      else
-        dispatch(
-          signInWithEmail({ email: data.email, password: data.password })
-        );
-    },
-    [dispatch]
-  );
 
   return (
     <>
@@ -115,9 +102,9 @@ const ResetPassword = memo(function ResetPassword(): JSX.Element {
       </Head>
       <FormLayout
         title={'Reset Password'}
-        error={message}
+        error={error}
         isLoading={isSubmitting}
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(resetPassword)}
       >
         <TextField
           variant="outlined"
@@ -137,15 +124,15 @@ const ResetPassword = memo(function ResetPassword(): JSX.Element {
           // margin='normal'
           required
           fullWidth
-          id={formData.password_confirmation.id}
-          label={formData.password_confirmation.label}
+          id={formData.passwordConfirmation.id}
+          label={formData.passwordConfirmation.label}
           type={visiblePassword ? 'text' : 'password'}
-          autoComplete={formData.password_confirmation.id}
-          {...register('password_confirmation')}
+          autoComplete={formData.passwordConfirmation.id}
+          {...register('passwordConfirmation')}
           helperText={
-            errors?.password_confirmation?.message || 'Retype password'
+            errors?.passwordConfirmation?.message || 'Retype password'
           }
-          error={!!errors?.password_confirmation}
+          error={!!errors?.passwordConfirmation}
         />
         <FormControlLabel
           label="Show Password"

@@ -3,11 +3,7 @@ import type { AlertColor } from '@mui/material';
 
 import type { User } from '@/store/api/services/tasks/models';
 import { type RejectValue } from '@/store/thunks/config';
-import {
-  signInWithEmail,
-  resetPassword,
-  deleteAccount,
-} from '@/store/thunks/auth';
+import { deleteAccount } from '@/store/thunks/auth';
 
 export type FlashNotificationProps = {
   severity: AlertColor;
@@ -56,35 +52,6 @@ export const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(signInWithEmail.pending, (state, _action) => {
-      state.loading = true;
-    });
-    builder.addCase(signInWithEmail.fulfilled, (state, action) => {
-      const { user, ...flash } = action.payload;
-
-      state.user = action.payload.user;
-      state.flashes = [...state.flashes, { ...flash }];
-      state.signedIn = true;
-      state.loading = false;
-    });
-    builder.addCase(signInWithEmail.rejected, (state, action) => {
-      state.signedIn = false;
-      state.loading = false;
-      pushErrorFlash(state, action.payload);
-    });
-    builder.addCase(resetPassword.pending, (state, _action) => {
-      state.loading = true;
-    });
-    builder.addCase(resetPassword.fulfilled, (state, action) => {
-      const { ...flash } = action.payload;
-
-      state.loading = false;
-      state.flashes = [...state.flashes, { ...flash }];
-    });
-    builder.addCase(resetPassword.rejected, (state, action) => {
-      state.loading = false;
-      pushErrorFlash(state, action.payload);
-    });
     builder.addCase(deleteAccount.pending, (state, _action) => {
       state.loading = true;
     });

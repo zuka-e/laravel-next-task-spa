@@ -1,8 +1,6 @@
-import { ResetPasswordRequest, SignInRequest } from '@/store/thunks/auth';
-import { generateRandomString } from '@/utils/generator';
+import { SignInRequest } from '@/store/thunks/auth';
 import { getUser, login } from '@test/api/auth';
 import { digestText } from '@test/utils/crypto';
-import { GUEST_EMAIL } from '@/config/app';
 import db from '@test/api/database/manager';
 
 /**
@@ -55,16 +53,3 @@ export const authenticate = async (request: SignInRequest) => {
 
   return user;
 };
-
-/**
- * パスワードリセット用のトークンを生成 (パスワードリセットリンクのパラメータにする)
- */
-export const validPasswordResetTokenOf = {
-  [GUEST_EMAIL]: generateRandomString(32),
-};
-
-/**
- * リクエストの`email`と`token`のセットが一致するか検証
- */
-export const isValidPasswordResetToken = (request: ResetPasswordRequest) =>
-  validPasswordResetTokenOf[request.email] === request.token;

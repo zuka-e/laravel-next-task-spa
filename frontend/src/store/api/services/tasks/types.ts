@@ -168,6 +168,15 @@ export type ForgotPasswordRequest = {
   email: string;
 };
 
+export type ResetPasswordResponse = ApiResponse;
+
+export type ResetPasswordRequest = {
+  email: string;
+  password: string;
+  passwordConfirmation: string;
+  token: string;
+};
+
 export type FetchTaskBoardsResponse = ApiResponse<
   PaginationResponse<TaskBoard>
 >;

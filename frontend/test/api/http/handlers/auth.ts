@@ -1,13 +1,7 @@
 import { http, HttpResponse, type PathParams } from 'msw';
 import dayjs from 'dayjs';
 
-import type {
-  SignInRequest,
-  SignInResponse,
-  ResetPasswordRequest,
-  ResetPasswordResponse,
-  DeleteAccountResponse,
-} from '@/store/thunks/auth';
+import type { DeleteAccountResponse } from '@/store/thunks/auth';
 import type {
   FetchSessionResponse,
   LogoutResponse,
@@ -23,6 +17,10 @@ import type {
   UpdatePasswordResponse,
   ForgotPasswordRequest,
   ForgotPasswordResponse,
+  ResetPasswordRequest,
+  ResetPasswordResponse,
+  LoginRequest,
+  LoginResponse,
 } from '@/store/api';
 import { getUser, logout } from '@test/api/auth';
 import {
@@ -38,7 +36,6 @@ import {
   isUniqueEmail,
   authenticate,
   isValidPassword,
-  isValidPasswordResetToken,
 } from '@test/api/http/utils/validation';
 import { generatePasswordResetUrl } from '@test/api/http/utils/passwords';
 import { generateVerificationUrl } from '@test/api/http/utils/verifications';
@@ -145,8 +142,8 @@ export const handlers = [
     url('SIGNIN_PATH'),
     withMiddleware<
       PathParams,
-      SignInRequest,
-      SignInResponse | ValidationErrorResponse
+      LoginRequest,
+      LoginResponse | ValidationErrorResponse
     >()(async ({ request }) => {
       const requestData = await request.json();
 
@@ -156,7 +153,7 @@ export const handlers = [
         return validationErrorResponse({ email: ['認証に失敗しました。'] });
       }
 
-      const data: SignInResponse = {
+      const data: LoginResponse = {
         severity: 'info',
         message: 'ログインしました。',
         user: sanitizeUser(user),
@@ -293,28 +290,16 @@ export const handlers = [
   ),
 
   http.post(
-    url('RESET_PASSWORD_PATH'),
+    `${url('RESET_PASSWORD_PATH')}/:token`,
     withMiddleware<
-      PathParams,
-      ResetPasswordRequest,
+      PathParams<'token'>,
+      Omit<ResetPasswordRequest, 'token'>,
       ResetPasswordResponse | ValidationErrorResponse
-    >()(async ({ request }) => {
+    >()(async ({ params, request }) => {
+      const token = params['token']?.toString() ?? '';
       const requestData = await request.json();
 
-      if (!isValidPasswordResetToken(requestData)) {
-        return validationErrorResponse({
-          email: ['認証に失敗しました。'],
-        });
-      }
-
-      resetPasswordController.reset(requestData);
-
-      const data: ResetPasswordResponse = {
-        severity: 'success',
-        message: 'パスワードを再設定しました。',
-      };
-
-      return HttpResponse.json(data);
+      return resetPasswordController.store({ token, ...requestData });
     })
   ),
 
