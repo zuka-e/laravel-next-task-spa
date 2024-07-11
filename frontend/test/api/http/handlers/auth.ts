@@ -40,16 +40,14 @@ import {
   isValidPassword,
   isValidPasswordResetToken,
 } from '@test/api/http/utils/validation';
+import { generatePasswordResetUrl } from '@test/api/http/utils/passwords';
+import { generateVerificationUrl } from '@test/api/http/utils/verifications';
 import { withMiddleware } from '@test/api/http/utils';
 import { validateSignature } from '@test/api/http/middleware';
 import {
   authorizationErrorResponse,
   validationErrorResponse,
 } from '@test/api/http/responses/errors';
-import {
-  generatePasswordResetUrl,
-  generateVerificationUrl,
-} from '@test/api/http/utils/urls';
 import db from '@test/api/database/manager';
 import { User } from '@test/api/database/models';
 

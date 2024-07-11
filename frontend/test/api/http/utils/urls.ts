@@ -3,10 +3,7 @@ import dayjs from 'dayjs';
 
 import { APP_URL } from '@/config/app';
 import { API_ROUTE } from '@/config/api';
-import type { User } from '@/store/api/services/tasks/models';
-import { generateRandomString } from '@/utils/generator';
 import { hash, verifyHash } from '@test/utils/crypto';
-import db from '@test/api/database/manager';
 
 /**
  * Generate a signed URL for a given path and query parameters.
@@ -51,36 +48,4 @@ export const hasValidSignature = (
   return (
     verifyHash(originalUrl.toString(), signature) && dayjs().unix() < expires
   );
-};
-
-/**
- * Generate a verification URL for a given user.
- *
- * @see https://laravel.com/docs/verification
- * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Auth/Notifications/VerifyEmail.php#L77 - verificationUrl()
- */
-export const generateVerificationUrl = (user: User): string => {
-  return generateSignedUrl('/email/verify', {
-    id: user.id,
-    hash: hash(user.id),
-  });
-};
-
-/**
- * Generate a password reset URL for a given user.
- *
- * @see https://laravel.com/docs/11.x/passwords#password-reset-link-handling-the-form-submission
- * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Auth/Passwords/PasswordBroker.php#L48 - sendResetLink()
- * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Auth/Passwords/DatabaseTokenRepository.php#L84 - create()
- */
-export const generatePasswordResetUrl = (user: User): string => {
-  const token = hash(generateRandomString(32));
-
-  db.passwordReset.create({ email: user.email, token });
-
-  const url = new URL(`/reset-password/${token}`, APP_URL);
-
-  url.searchParams.set('email', user.email);
-
-  return url.toString();
 };
