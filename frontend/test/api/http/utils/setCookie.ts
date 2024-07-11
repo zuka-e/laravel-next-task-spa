@@ -1,6 +1,6 @@
 import { serialize, type CookieSerializeOptions } from 'cookie';
 
-import config from '@test/api/handlers/config';
+import config from '@test/api/config';
 import { encrypt } from '@test/utils/crypto';
 
 /**
@@ -16,7 +16,7 @@ const setCookie = (
   options?: CookieSerializeOptions
 ): void => {
   document.cookie = serialize(name, encrypt(value), {
-    ...config.cookies.options,
+    ...config.cookie.options,
     ...options,
   });
 };

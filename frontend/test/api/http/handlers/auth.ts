@@ -31,7 +31,7 @@ import {
   resetPasswordController,
   updatePasswordController,
   updateProfileController,
-} from '@test/api/controllers';
+} from '@test/api/http/controllers';
 import { verifyHash } from '@test/utils/crypto';
 import { url } from '@test/utils/route';
 import {
@@ -40,16 +40,16 @@ import {
   isValidPassword,
   isValidPasswordResetToken,
 } from '@test/utils/validation';
-import { withMiddleware } from '@test/api/handlers/middleware/utils/withMiddleware';
-import { validateSignature } from '@test/api/handlers/middleware';
+import { withMiddleware } from '@test/api/http/utils';
+import { validateSignature } from '@test/api/http/middleware';
 import {
   authorizationErrorResponse,
   validationErrorResponse,
-} from '@test/api/handlers/utils/responses';
+} from '@test/api/http/utils/responses';
 import {
   generatePasswordResetUrl,
   generateVerificationUrl,
-} from '@test/api/handlers/utils/urls';
+} from '@test/api/http/utils/urls';
 import db from '@test/api/database/manager';
 import { User } from '@test/api/database/models';
 

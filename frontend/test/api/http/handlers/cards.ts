@@ -16,9 +16,9 @@ import type {
 } from '@/store/api';
 import { API_ROUTE } from '@/config/api';
 import { makePath } from '@/utils/api';
-import { taskCardController } from '@test/api/controllers';
-import { notFoundErrorResponse } from '@test/api/handlers/utils/responses';
-import { withMiddleware } from '@test/api/handlers/middleware/utils/withMiddleware';
+import { taskCardController } from '@test/api/http/controllers';
+import { notFoundErrorResponse } from '@test/api/http/utils/responses';
+import { withMiddleware } from '@test/api/http/utils';
 
 type TaskCardParams = {
   boardId: string;

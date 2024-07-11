@@ -1,6 +1,6 @@
 import type { Middleware } from './types';
-import { authorizationErrorResponse } from '@test/api/handlers/utils/responses';
-import { hasValidSignature } from '@test/api/handlers/utils/urls';
+import { authorizationErrorResponse } from '@test/api/http/utils/responses';
+import { hasValidSignature } from '@test/api/http/utils/urls';
 
 /**
  * Validate a signature for the requested URL.

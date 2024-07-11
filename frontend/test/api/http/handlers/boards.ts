@@ -14,10 +14,10 @@ import type {
 } from '@/store/api';
 import { API_ROUTE } from '@/config/api';
 import { makePath } from '@/utils/api';
-import { withMiddleware } from '@test/api/handlers/middleware/utils/withMiddleware';
+import { withMiddleware } from '@test/api/http/utils';
 import { getUser } from '@test/api/auth';
-import { notFoundErrorResponse } from '@test/api/handlers/utils/responses';
-import { taskBoardController } from '@test/api/controllers';
+import { notFoundErrorResponse } from '@test/api/http/utils/responses';
+import { taskBoardController } from '@test/api/http/controllers';
 
 type TaskBoardParams = {
   userId: string;

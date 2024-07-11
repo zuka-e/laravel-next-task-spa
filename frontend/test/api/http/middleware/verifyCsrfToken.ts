@@ -1,8 +1,8 @@
 import { HttpResponse, type DefaultBodyType, type StrictRequest } from 'msw';
 
 import { getCsrfTokenFromSession } from '@test/api/session/store';
-import { XSRF_TOKEN } from '@test/api/handlers/config/cookies';
-import { setCookie } from '@test/api/handlers/utils';
+import { XSRF_TOKEN } from '@test/api/config/cookie';
+import { setCookie } from '@test/api/http/utils';
 import { decrypt } from '@test/utils/crypto';
 import type { Middleware } from './types';
 
