@@ -8,7 +8,7 @@ import {
   verifyCsrfToken,
 } from '@test/api/http/middleware';
 import type { Middleware } from '@test/api/http/middleware/types';
-import { type ErrorResponse } from '@test/api/http/utils/responses';
+import { type ErrorResponse } from '@test/api/http/responses/errors';
 
 /**
  * Global middleware that will run for every request handler.

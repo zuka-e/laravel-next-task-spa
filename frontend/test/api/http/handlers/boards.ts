@@ -16,7 +16,7 @@ import { API_ROUTE } from '@/config/api';
 import { makePath } from '@/utils/api';
 import { withMiddleware } from '@test/api/http/utils';
 import { getUser } from '@test/api/auth';
-import { notFoundErrorResponse } from '@test/api/http/utils/responses';
+import { notFoundErrorResponse } from '@test/api/http/responses/errors';
 import { taskBoardController } from '@test/api/http/controllers';
 
 type TaskBoardParams = {

@@ -1,5 +1,5 @@
 import type { Middleware } from './types';
-import { authorizationErrorResponse } from '@test/api/http/utils/responses';
+import { authorizationErrorResponse } from '@test/api/http/responses/errors';
 import { hasValidSignature } from '@test/api/http/utils/urls';
 
 /**

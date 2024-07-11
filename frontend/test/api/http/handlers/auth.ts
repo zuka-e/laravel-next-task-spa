@@ -45,7 +45,7 @@ import { validateSignature } from '@test/api/http/middleware';
 import {
   authorizationErrorResponse,
   validationErrorResponse,
-} from '@test/api/http/utils/responses';
+} from '@test/api/http/responses/errors';
 import {
   generatePasswordResetUrl,
   generateVerificationUrl,

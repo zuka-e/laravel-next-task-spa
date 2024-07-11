@@ -17,7 +17,7 @@ import type {
 import { API_ROUTE } from '@/config/api';
 import { makePath } from '@/utils/api';
 import { taskCardController } from '@test/api/http/controllers';
-import { notFoundErrorResponse } from '@test/api/http/utils/responses';
+import { notFoundErrorResponse } from '@test/api/http/responses/errors';
 import { withMiddleware } from '@test/api/http/utils';
 
 type TaskCardParams = {
