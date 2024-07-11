@@ -4,7 +4,7 @@ import type { PaginationResponse } from '@/store/api';
 import { paginate } from '@test/api/http/responses/paginate';
 import { TaskBoard } from '@test/api/database/models';
 import db from '@test/api/database/manager';
-import { getUser } from '../auth';
+import { getUser } from '@test/api/auth';
 
 export const index = (
   userId: TaskBoard['userId'],
