@@ -6,7 +6,7 @@ import type {
 } from '@/store/api';
 import type { TaskBoard, TaskCard, TaskList } from '@test/api/database/models';
 import db from '@test/api/database/manager';
-import { cursorPaginate } from '@test/utils/paginate';
+import { cursorPaginate } from '@test/api/http/utils/paginate';
 
 export const index = (
   listId: TaskList['id'],

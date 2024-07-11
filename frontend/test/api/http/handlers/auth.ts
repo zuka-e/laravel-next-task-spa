@@ -33,13 +33,13 @@ import {
   updateProfileController,
 } from '@test/api/http/controllers';
 import { verifyHash } from '@test/utils/crypto';
-import { url } from '@test/utils/route';
+import { url } from '@test/api/http/utils/route';
 import {
   isUniqueEmail,
   authenticate,
   isValidPassword,
   isValidPasswordResetToken,
-} from '@test/utils/validation';
+} from '@test/api/http/utils/validation';
 import { withMiddleware } from '@test/api/http/utils';
 import { validateSignature } from '@test/api/http/middleware';
 import {

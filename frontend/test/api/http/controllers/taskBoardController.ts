@@ -1,7 +1,7 @@
 import { type DefaultBodyType, type StrictRequest } from 'msw';
 
 import type { PaginationResponse } from '@/store/api';
-import { paginate } from '@test/utils/paginate';
+import { paginate } from '@test/api/http/utils/paginate';
 import { TaskBoard } from '@test/api/database/models';
 import db from '@test/api/database/manager';
 import { getUser } from '../auth';
