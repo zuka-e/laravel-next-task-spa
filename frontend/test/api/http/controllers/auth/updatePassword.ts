@@ -2,7 +2,7 @@ import { type UpdatePasswordRequest } from '@/store/api';
 import type { User } from '@test/api/database/models';
 import db from '@test/api/database/manager';
 import { timestamp } from '@test/api/database/definitions';
-import { digestText } from '@test/utils/crypto';
+import { hash } from '@test/utils/crypto';
 
 export const update = (user: User, request: UpdatePasswordRequest): User => {
   if (request.password !== request.passwordConfirmation)
@@ -12,7 +12,7 @@ export const update = (user: User, request: UpdatePasswordRequest): User => {
     where: { id: { equals: user.id } },
     data: {
       ...user,
-      password: digestText(request.password),
+      password: hash(request.password),
       updatedAt: timestamp(),
     },
     strict: true,

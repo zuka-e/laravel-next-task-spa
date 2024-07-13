@@ -1,20 +1,7 @@
 import type { LoginRequest } from '@/store/api';
+import { verifyHash } from '@test/utils/crypto';
 import { getUser, loginWithSession } from '@test/api/auth';
-import { digestText } from '@test/utils/crypto';
 import db from '@test/api/database/manager';
-
-/**
- * リクエストされた`password`をハッシュ化し、`User`の`password`と比較
- */
-export const isValidPassword = (
-  requestPassword: string,
-  userPassword: string
-) => {
-  const digestedRequestPassword = digestText(requestPassword);
-  const digestedUserPassword = userPassword;
-
-  return digestedRequestPassword === digestedUserPassword;
-};
 
 /**
  * 1. 引数の`email`から`User`を検索
@@ -45,7 +32,7 @@ export const authenticate = async (request: LoginRequest) => {
     where: { email: { equals: request.email } },
   });
 
-  if (!user || !isValidPassword(request.password, user.password)) {
+  if (!user || !verifyHash(request.password, user.password)) {
     return null;
   }
 

@@ -1,6 +1,6 @@
 import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
 import { faker } from '@test/utils/faker';
-import { digestText } from '@test/utils/crypto';
+import { hash } from '@test/utils/crypto';
 import { repeatEach } from '@/utils';
 import type { User } from '@test/api/database/models';
 import db from '@test/api/database/manager';
@@ -13,7 +13,7 @@ export const guestUser = {
   emailVerifiedAt: timestamp(),
   createdAt: timestamp(),
   updatedAt: timestamp(),
-  password: digestText(GUEST_PASSWORD),
+  password: hash(GUEST_PASSWORD),
 } as User;
 
 export const otherUser = {
@@ -23,7 +23,7 @@ export const otherUser = {
   emailVerifiedAt: timestamp(),
   createdAt: timestamp(),
   updatedAt: timestamp(),
-  password: digestText(GUEST_PASSWORD),
+  password: hash(GUEST_PASSWORD),
 } as User;
 
 export const unverifiedUser = {
@@ -33,7 +33,7 @@ export const unverifiedUser = {
   emailVerifiedAt: null,
   createdAt: timestamp(),
   updatedAt: timestamp(),
-  password: digestText(GUEST_PASSWORD),
+  password: hash(GUEST_PASSWORD),
 } as User;
 
 const initialUsers: User[] = [guestUser, otherUser, unverifiedUser];
@@ -44,7 +44,7 @@ const seed = (props: { count: number }) => {
       name: `${faker.person.firstName()} ${faker.person.lastName()}`,
       email: faker.internet.exampleEmail(),
       emailVerifiedAt: faker.date.recent().toISOString(),
-      password: digestText(GUEST_PASSWORD),
+      password: hash(GUEST_PASSWORD),
       createdAt: faker.date.past().toISOString(),
       updatedAt: faker.date.recent().toISOString(),
     });

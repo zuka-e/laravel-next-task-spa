@@ -32,11 +32,7 @@ import {
 } from '@test/api/http/controllers';
 import { verifyHash } from '@test/utils/crypto';
 import { url } from '@test/api/http/utils/route';
-import {
-  isUniqueEmail,
-  authenticate,
-  isValidPassword,
-} from '@test/api/http/utils/validation';
+import { isUniqueEmail, authenticate } from '@test/api/http/utils/validation';
 import { generatePasswordResetUrl } from '@test/api/http/utils/passwords';
 import { generateVerificationUrl } from '@test/api/http/utils/verifications';
 import { withMiddleware } from '@test/api/http/utils';
@@ -240,7 +236,7 @@ export const handlers = [
 
       const currentUser = getUser()!;
 
-      if (!isValidPassword(requestData.currentPassword, currentUser.password))
+      if (!verifyHash(requestData.currentPassword, currentUser.password))
         return validationErrorResponse({
           email: ['パスワードが間違っています。'],
         });
