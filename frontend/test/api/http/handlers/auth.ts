@@ -1,7 +1,6 @@
 import { http, HttpResponse, type PathParams } from 'msw';
 import dayjs from 'dayjs';
 
-import type { DeleteAccountResponse } from '@/store/thunks/auth';
 import type {
   FetchSessionResponse,
   LogoutResponse,
@@ -21,6 +20,7 @@ import type {
   ResetPasswordResponse,
   LoginRequest,
   LoginResponse,
+  DeleteAccountResponse,
 } from '@/store/api';
 import { getUser, logout } from '@test/api/auth';
 import {

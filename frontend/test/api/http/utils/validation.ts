@@ -1,4 +1,4 @@
-import { SignInRequest } from '@/store/thunks/auth';
+import type { LoginRequest } from '@/store/api';
 import { getUser, login } from '@test/api/auth';
 import { digestText } from '@test/utils/crypto';
 import db from '@test/api/database/manager';
@@ -40,7 +40,7 @@ export const isUniqueEmail = (email: string) => {
  * 3. 成功時は認証ユーザーとして取得した`user`をセット
  * @param request - {`email`, `password`,`remember?`}
  */
-export const authenticate = async (request: SignInRequest) => {
+export const authenticate = async (request: LoginRequest) => {
   const user = db.user.findFirst({
     where: { email: { equals: request.email } },
   });

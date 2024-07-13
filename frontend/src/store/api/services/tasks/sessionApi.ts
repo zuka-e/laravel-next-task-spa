@@ -13,6 +13,8 @@ import {
 import { getPreviousUrl, setIntendedUrl } from '@/lib/routes';
 import baseApi from './baseApi';
 import type {
+  DeleteAccountRequest,
+  DeleteAccountResponse,
   FetchSessionRequest,
   FetchSessionResponse,
   ForgotPasswordRequest,
@@ -146,6 +148,13 @@ const api = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Session'],
     }),
+    deleteAccount: builder.mutation<
+      DeleteAccountResponse,
+      DeleteAccountRequest
+    >({
+      query: () => ({ url: SIGNUP_PATH, method: 'DELETE' }),
+      invalidatesTags: ['Session'],
+    }),
     // cf. https://redux-toolkit.js.org/rtk-query/usage/automated-refetching#providing-errors-to-the-cache
     invalidateSession: builder.mutation<null, void>({
       queryFn: () => ({ data: null }),
@@ -166,4 +175,5 @@ export const {
   useUpdatePasswordMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
+  useDeleteAccountMutation,
 } = api;

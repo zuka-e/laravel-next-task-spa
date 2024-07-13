@@ -1,28 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { AlertColor } from '@mui/material';
 
-import type { User } from '@/store/api/services/tasks/models';
-import { type RejectValue } from '@/store/thunks/config';
-import { deleteAccount } from '@/store/thunks/auth';
-
 export type FlashNotificationProps = {
   severity: AlertColor;
   message: string;
 };
 
 export type AuthState = {
-  user: User | null;
-  signedIn: boolean;
-  loading: boolean;
   flashes: FlashNotificationProps[];
-};
-
-/**
- * Push API error flash notification to the state
- */
-const pushErrorFlash = (state: AuthState, rejectValue?: RejectValue): void => {
-  const message = rejectValue?.error.message || 'Unexpected Error.';
-  state.flashes = [...state.flashes, { severity: 'error', message }];
 };
 
 export const initialAuthState = {
@@ -34,11 +19,6 @@ export const authSlice = createSlice({
   initialState: initialAuthState,
   // cf. https://redux-toolkit.js.org/usage/immer-reducers
   reducers: {
-    flushAllStates(state) {
-      // ※ It's supposed to remove all state beforehand in `rootReducer()`
-      state.signedIn = false;
-      state.user = null;
-    },
     /** Add new flash */
     pushFlash(state, action: PayloadAction<FlashNotificationProps>): void {
       state.flashes = [...state.flashes, { ...action.payload }];
@@ -47,28 +27,7 @@ export const authSlice = createSlice({
     shiftFlash(state): void {
       state.flashes = state.flashes.filter((_, i) => i !== 0);
     },
-    signIn(state) {
-      state.signedIn = true;
-    },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(deleteAccount.pending, (state, _action) => {
-      state.loading = true;
-    });
-    builder.addCase(deleteAccount.fulfilled, (state, action) => {
-      const { ...flash } = action.payload;
-
-      state.loading = false;
-      state.user = null;
-      state.signedIn = false;
-      state.flashes = [...state.flashes, { ...flash }];
-    });
-    builder.addCase(deleteAccount.rejected, (state, action) => {
-      state.loading = false;
-      pushErrorFlash(state, action.payload);
-    });
   },
 });
 
-export const { flushAllStates, pushFlash, shiftFlash, signIn } =
-  authSlice.actions;
+export const { pushFlash, shiftFlash } = authSlice.actions;

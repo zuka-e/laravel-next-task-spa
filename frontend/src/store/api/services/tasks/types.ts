@@ -177,6 +177,10 @@ export type ResetPasswordRequest = {
   token: string;
 };
 
+export type DeleteAccountResponse = ApiResponse;
+
+export type DeleteAccountRequest = void;
+
 export type FetchTaskBoardsResponse = ApiResponse<
   PaginationResponse<TaskBoard>
 >;

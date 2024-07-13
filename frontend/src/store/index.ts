@@ -6,14 +6,7 @@ import {
 
 import { envIs } from '@/utils/app';
 import { logger } from './middleware';
-import {
-  appSlice,
-  authSlice,
-  taskBoardSlice,
-  flushAllStates,
-  taskListSlice,
-} from './slices';
-import { deleteAccount } from './thunks/auth';
+import { appSlice, authSlice, taskBoardSlice, taskListSlice } from './slices';
 import { apiResponseNotification } from './api/middleware';
 import { api as taskApi } from './api/services/tasks';
 
@@ -32,14 +25,6 @@ export const rootReducer = (
   state: RootState | undefined,
   action: UnknownAction
 ) => {
-  const actionsWithReset = [
-    flushAllStates().type,
-    deleteAccount.fulfilled.type,
-  ];
-
-  if (actionsWithReset.includes(action.type)) {
-    state = undefined;
-  }
   return combinedReducer(state, action);
 };
 

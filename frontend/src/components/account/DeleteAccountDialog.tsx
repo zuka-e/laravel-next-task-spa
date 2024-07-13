@@ -9,8 +9,7 @@ import {
   Button,
 } from '@mui/material';
 
-import { deleteAccount } from '@/store/thunks/auth';
-import { useAppDispatch } from '@/utils/hooks';
+import { useDeleteAccountMutation } from '@/store/api';
 
 type DeleteAccountDialogProps = {
   trigger: JSX.Element;
@@ -20,7 +19,7 @@ const DeleteAccountDialog = memo(function DeleteAccountDialog(
   props: DeleteAccountDialogProps
 ): JSX.Element {
   const { trigger } = props;
-  const dispatch = useAppDispatch();
+  const [deleteAccount, { isLoading }] = useDeleteAccountMutation();
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = useCallback((): void => {
@@ -32,8 +31,8 @@ const DeleteAccountDialog = memo(function DeleteAccountDialog(
   }, []);
 
   const handleDelete = useCallback((): void => {
-    dispatch(deleteAccount());
-  }, [dispatch]);
+    deleteAccount();
+  }, [deleteAccount]);
 
   return (
     <>
@@ -55,10 +54,15 @@ const DeleteAccountDialog = memo(function DeleteAccountDialog(
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary" autoFocus>
+          <Button
+            disabled={isLoading}
+            onClick={handleClose}
+            color="primary"
+            autoFocus
+          >
             キャンセル
           </Button>
-          <Button onClick={handleDelete} color="error">
+          <Button disabled={isLoading} onClick={handleDelete} color="error">
             削除
           </Button>
         </DialogActions>
