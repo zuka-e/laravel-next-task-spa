@@ -57,6 +57,17 @@ export const login = (user: User): void => {
 };
 
 /**
+ * Log a user into the application.
+ *
+ * @see https://github.com/laravel/fortify/blob/1.x/src/Http/Controllers/AuthenticatedSessionController.php#L71 - loginPipeline()
+ * @see https://github.com/laravel/fortify/blob/1.x/src/Actions/PrepareAuthenticatedSession.php#L34 - handle()
+ */
+export const loginWithSession = (user: User): void => {
+  login(user);
+  regenerateCsrfToken();
+};
+
+/**
  * Update the session with the given ID.
  *
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Auth/SessionGuard.php#L520 - updateSession()

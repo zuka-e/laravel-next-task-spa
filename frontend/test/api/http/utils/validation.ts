@@ -1,5 +1,5 @@
 import type { LoginRequest } from '@/store/api';
-import { getUser, login } from '@test/api/auth';
+import { getUser, loginWithSession } from '@test/api/auth';
 import { digestText } from '@test/utils/crypto';
 import db from '@test/api/database/manager';
 
@@ -49,7 +49,7 @@ export const authenticate = async (request: LoginRequest) => {
     return null;
   }
 
-  login(user);
+  loginWithSession(user);
 
   return user;
 };

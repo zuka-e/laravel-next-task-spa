@@ -1,7 +1,7 @@
 import { HttpResponse, StrictResponse } from 'msw';
 
 import { ResetPasswordResponse, type ResetPasswordRequest } from '@/store/api';
-import { login } from '@test/api/auth';
+import { loginWithSession } from '@test/api/auth';
 import {
   getUserByCredentials,
   resetPassword,
@@ -33,7 +33,7 @@ export const store = (
     });
   }
 
-  login(user);
+  loginWithSession(user);
 
   return HttpResponse.json({
     severity: 'success',
