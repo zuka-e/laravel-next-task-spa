@@ -2,6 +2,7 @@ import { generateRandomString } from '@/utils/generator';
 import type { Session } from '@test/api/database/models';
 import db from '@test/api/database/manager';
 import { timestamp } from '@test/api/database/definitions';
+import { getUser } from '@test/api/auth';
 
 /**
  * The session ID.
@@ -152,16 +153,29 @@ export const migrateSession = (destroy = false): void => {
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/DatabaseSessionHandler.php#L131 - write()
  */
 export const saveSession = (): Session => {
-  const exists =
-    db.session.count({ where: { id: { equals: getSessionId() } } }) > 0;
+  const id = getSessionId();
+  const data = getDefaultPayload();
+  const exists = db.session.count({ where: { id: { equals: id } } }) > 0;
 
   return exists
     ? db.session.update({
-        where: { id: { equals: getSessionId() } },
-        data: { payload: getSession(), updatedAt: timestamp },
+        where: { id: { equals: id } },
+        data: { ...data, updatedAt: timestamp() },
         strict: true,
       })
-    : db.session.create({ id: getSessionId(), payload: getSession() });
+    : db.session.create({ id, ...data });
+};
+
+/**
+ * Get the default payload for the session.
+ *
+ * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/DatabaseSessionHandler.php#L182 - getDefaultPayload()
+ */
+const getDefaultPayload = () => {
+  return {
+    payload: attributes,
+    userId: getUser()?.id ?? null,
+  };
 };
 
 /**
