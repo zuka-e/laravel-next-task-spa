@@ -79,6 +79,25 @@ export const putSession = <K extends keyof Session['payload']>(
 };
 
 /**
+ * Remove all of the items from the session.
+ *
+ * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Store.php#L553 - flush()
+ */
+export const flushSession = (): void => {
+  attributes = {};
+};
+
+/**
+ * Flush the session data and regenerate the ID.
+ *
+ * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Store.php#L563 - invalidate()
+ */
+export const invalidateSession = (): void => {
+  flushSession();
+  migrateSession(true);
+};
+
+/**
  * Start the session, reading the data from a handler.
  *
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Middleware/StartSession.php#L157 - getSession()

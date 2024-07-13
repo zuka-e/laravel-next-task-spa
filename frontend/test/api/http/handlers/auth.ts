@@ -22,7 +22,7 @@ import type {
   LoginResponse,
   DeleteAccountResponse,
 } from '@/store/api';
-import { getUser, logout } from '@test/api/auth';
+import { getUser, logoutWithSession } from '@test/api/auth';
 import {
   createUserController,
   deleteAccountController,
@@ -306,7 +306,7 @@ export const handlers = [
   http.post(
     url('SIGNOUT_PATH'),
     withMiddleware<PathParams, undefined, LogoutResponse>()(() => {
-      logout();
+      logoutWithSession();
 
       const data: LogoutResponse = {
         severity: 'info',

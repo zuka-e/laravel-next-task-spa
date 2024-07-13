@@ -1,4 +1,10 @@
-import { getSession, migrateSession, putSession } from '@test/api/session';
+import {
+  getSession,
+  invalidateSession,
+  migrateSession,
+  putSession,
+  regenerateCsrfToken,
+} from '@test/api/session';
 import type { User } from '@test/api/database/models';
 import db from '@test/api/database/manager';
 
@@ -68,6 +74,18 @@ const updateSession = (id: User['id']) => {
 export const logout = (): void => {
   putSession('userId');
   // forgetUser();
+};
+
+/**
+ * Log the user out of the application and invalidate the session.
+ *
+ * @see https://laravel.com/docs/11.x/authentication#logging-out
+ * @see https://github.com/laravel/fortify/blob/1.x/src/Http/Controllers/AuthenticatedSessionController.php#L100
+ */
+export const logoutWithSession = (): void => {
+  logout();
+  invalidateSession();
+  regenerateCsrfToken();
 };
 
 /**
