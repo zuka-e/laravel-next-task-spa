@@ -6,7 +6,7 @@ import {
 } from '@reduxjs/toolkit';
 import { type UnknownAsyncThunkAction } from '@reduxjs/toolkit/dist/matchers';
 
-import { pushFlash } from '@/store/slices';
+import { pushNotification } from '@/store/slices';
 import { type ApiResponse } from '@/store/api/services/tasks';
 import { isApiResponse } from '@/store/api/services/tasks/utils';
 
@@ -44,7 +44,7 @@ const shouldNotify = (response: ApiResponse): boolean => {
  */
 const apiResponseNotification: Middleware = (api) => (next) => (action) => {
   if (isAsyncThunkActionResponse(action) && shouldNotify(action.payload)) {
-    api.dispatch(pushFlash(action.payload));
+    api.dispatch(pushNotification(action.payload));
   }
 
   return next(action);

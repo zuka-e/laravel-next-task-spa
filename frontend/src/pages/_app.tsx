@@ -19,7 +19,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { APP_NAME } from '@/config/app';
 import store from '@/store';
 import theme from '@/theme';
-import { FlashNotification, Loading } from '@/layouts';
+import { Notification, Loading } from '@/layouts';
 import { PageHandler } from '@/components/pages';
 
 import '@/styles/globals.css';
@@ -79,7 +79,7 @@ const App = memo(function App({ Component, pageProps }: AppProps): JSX.Element {
               <DndProvider backend={HTML5Backend}>
                 <CssBaseline />
                 <Loading />
-                <FlashNotification />
+                <Notification />
                 <PageHandler {...{ Component, pageProps }} />
               </DndProvider>
             </LocalizationProvider>

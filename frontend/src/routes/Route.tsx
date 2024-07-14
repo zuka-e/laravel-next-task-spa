@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector, useRoute } from '@/utils/hooks';
 import { setPreviousUrl } from '@/lib/routes';
 import { AuthRoute, GuestRoute } from '@/routes';
 import { useInvalidateSessionMutation } from '@/store/api';
-import { pushFlash } from '@/store/slices';
+import { pushNotification } from '@/store/slices';
 
 const Route = memo(function Route(
   props: Pick<AppProps<Record<string, unknown>>, 'Component' | 'pageProps'>
@@ -21,7 +21,10 @@ const Route = memo(function Route(
   useEffect(() => {
     if (httpStatus && [401, 419].includes(httpStatus)) {
       dispatch(
-        pushFlash({ severity: 'error', message: 'ログインしてください。' })
+        pushNotification({
+          severity: 'error',
+          message: 'ログインしてください。',
+        })
       );
 
       invalidateSession();

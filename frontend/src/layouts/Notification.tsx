@@ -4,30 +4,30 @@ import { memo, useCallback, useEffect, useState } from 'react';
 
 import { Snackbar, Alert } from '@mui/material';
 
-import { shiftFlash } from '@/store/slices';
+import { removeNotification } from '@/store/slices';
 import { useAppDispatch, useDeepEqualSelector } from '@/utils/hooks';
 
-const FlashNotification = memo(function FlashNotification(): JSX.Element {
-  const flashes = useDeepEqualSelector((state) => state.auth.flashes);
+const Notification = memo(function Notification(): JSX.Element {
+  const messages = useDeepEqualSelector((state) => state.app.messages);
   const [open, setOpen] = useState(false);
-  const [currentFlash, setCurrentFlash] = useState<
-    typeof flashes[0] | undefined
+  const [currentNotification, setCurrentNotification] = useState<
+    typeof messages[0] | undefined
   >();
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const newFlash = flashes.at(-1);
+    const newNotification = messages.at(-1);
 
-    if (newFlash && !currentFlash) {
+    if (newNotification && !currentNotification) {
       // Set a new snack when we don't have an active one
-      setCurrentFlash({ ...newFlash });
-      dispatch(shiftFlash());
+      setCurrentNotification({ ...newNotification });
+      dispatch(removeNotification());
       setOpen(true);
-    } else if (newFlash && currentFlash && open) {
+    } else if (newNotification && currentNotification && open) {
       // Close an active snack when a new one is added
       setOpen(false);
     }
-  }, [flashes, currentFlash, open, dispatch]);
+  }, [messages, currentNotification, open, dispatch]);
 
   const handleClose = useCallback(
     (_event?: React.SyntheticEvent | Event, reason?: string): void => {
@@ -38,10 +38,10 @@ const FlashNotification = memo(function FlashNotification(): JSX.Element {
   );
 
   const handleExited = useCallback((): void => {
-    setCurrentFlash(undefined);
+    setCurrentNotification(undefined);
   }, []);
 
-  if (!currentFlash?.message) {
+  if (!currentNotification?.message) {
     return <></>;
   }
 
@@ -52,18 +52,18 @@ const FlashNotification = memo(function FlashNotification(): JSX.Element {
       onClose={handleClose}
       TransitionProps={{ onExited: handleExited }}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      aria-label="flashes"
+      aria-label="messages"
     >
       <Alert
         onClose={handleClose}
-        severity={currentFlash.severity || 'info'}
+        severity={currentNotification.severity || 'info'}
         elevation={12}
         className="whitespace-pre-line"
       >
-        {currentFlash.message}
+        {currentNotification?.message}
       </Alert>
     </Snackbar>
   );
 });
 
-export default FlashNotification;
+export default Notification;

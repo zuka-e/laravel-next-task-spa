@@ -6,14 +6,13 @@ import {
 
 import { envIs } from '@/utils/app';
 import { logger } from './middleware';
-import { appSlice, authSlice, taskBoardSlice, taskListSlice } from './slices';
+import { appSlice, taskBoardSlice, taskListSlice } from './slices';
 import { apiResponseNotification } from './api/middleware';
 import { api as taskApi } from './api/services/tasks';
 
 // cf. https://redux-toolkit.js.org/api/combineSlices
 const combinedReducer = combineSlices(
   appSlice,
-  authSlice,
   taskListSlice,
   taskBoardSlice,
   taskApi
