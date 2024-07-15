@@ -20,7 +20,7 @@ const startSession: Middleware = (resolver) => {
     const { cookies } = input;
 
     /** @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Middleware/StartSession.php#L157-L160 - getSession() */
-    setSessionId(decrypt(cookies[SESSION_COOKIE]) || undefined);
+    setSessionId(decrypt(cookies[SESSION_COOKIE] ?? '') || undefined);
 
     /** @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Session/Middleware/StartSession.php#L142 - startSession() */
     startSessionStore();

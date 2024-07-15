@@ -70,17 +70,16 @@ export const encrypt = (text: string): string => {
  */
 export const decrypt = (text: string): string | null => {
   // cf. https://nodejs.org/api/crypto.html#class-decipher - Example: Using the decipher.update() and decipher.final() methods
+  const encrypted = Buffer.from(text, 'hex');
+
+  const authTagSize = 16; // bytes
+  const authTagPos = encrypted.length - authTagSize;
+
+  const iv = encrypted.subarray(0, IV_SIZE);
+  const encryptedText = encrypted.subarray(IV_SIZE, authTagPos);
+  const authTag = encrypted.subarray(authTagPos);
 
   try {
-    const encrypted = Buffer.from(text, 'hex');
-
-    const authTagSize = 16; // bytes
-    const authTagPos = encrypted.length - authTagSize;
-
-    const iv = encrypted.subarray(0, IV_SIZE);
-    const encryptedText = encrypted.subarray(IV_SIZE, authTagPos);
-    const authTag = encrypted.subarray(authTagPos);
-
     const decipher = createDecipheriv(CIPHER_ALGORITHM, CIPHER_KEY, iv);
 
     decipher.setAuthTag(authTag);
