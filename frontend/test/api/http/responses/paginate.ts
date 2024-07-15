@@ -4,6 +4,7 @@ import {
   type PaginationResponse,
   type CursorPaginationResponse,
 } from '@/store/api';
+import { base64UrlEncode, base64UrlDecode } from '@test/api/http/utils/base64';
 
 type PaginateProps<T> = {
   request: StrictRequest<DefaultBodyType>;
@@ -93,7 +94,7 @@ const addMetaLinks = (props: PaginationResponse<unknown>) => {
     });
 };
 
-export const cursorPaginate = <T>(
+export const cursorPaginate = <T extends { id: string }>(
   props: PaginateProps<T>
 ): CursorPaginationResponse<T> => {
   const { request, filtered } = props;
@@ -113,23 +114,42 @@ export const cursorPaginate = <T>(
   const sorted = filtered.sort((a, b) => {
     if (a[column] < b[column]) return direction === 'desc' ? 1 : -1;
     if (a[column] > b[column]) return direction === 'desc' ? -1 : 1;
+    if (a.id < b.id) return direction === 'desc' ? 1 : -1;
+    if (a.id > b.id) return direction === 'desc' ? -1 : 1;
     return 0;
   });
 
-  const from = query.cursor
-    ? Math.max(
-        sorted.findIndex((item) => String(item[column]) === query.cursor),
-        0
-      )
+  // cf. https://github.com/laravel/framework/blob/11.x/src/Illuminate/Pagination/Cursor.php#L114 - fromEncoded()
+  const cursor = query.cursor ? base64UrlDecode(query.cursor) : null;
+
+  const from = cursor
+    ? sorted.findIndex((item) => {
+        return (
+          String(item[column]) === String(cursor[column]) &&
+          item.id === cursor.id
+        );
+      })
     : 0;
   const to = from + perPage;
 
+  if (from < 0) {
+    throw new Error(`Unexpected cursor. "${JSON.stringify(cursor)}"`);
+  }
+
   const nextCursor =
     from + perPage < sorted.length
-      ? String(sorted[from + perPage][column])
+      ? base64UrlEncode({
+          id: sorted[from + perPage].id,
+          [column]: sorted[from + perPage][column],
+        })
       : null;
   const prevCursor =
-    from > 0 ? String(sorted[Math.max(from - perPage, 0)][column]) : null;
+    from > 0
+      ? base64UrlEncode({
+          id: sorted[Math.max(from - perPage, 0)].id,
+          [column]: sorted[Math.max(from - perPage, 0)][column],
+        })
+      : null;
   const nextLink = nextCursor ? getUrlWithCursor(url, nextCursor) : null;
   const prevLink = prevCursor ? getUrlWithCursor(url, prevCursor) : null;
 
