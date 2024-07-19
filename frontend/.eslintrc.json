@@ -54,11 +54,9 @@
     {
       "files": [
         "**/__tests__/**/*.[jt]s?(x)",
-        "**/?(*.)+(spec|test).[jt]s?(x)",
-        "jest.setup.[jt]s?(x)"
+        "**/?(*.)+(spec|test).[jt]s?(x)"
       ],
       "excludedFiles": "**/e2e/**/*",
-      "env": { "jest": true },
       "extends": ["plugin:testing-library/react"]
     }
   ]
