@@ -1,6 +1,6 @@
 import type { ThemeOptions } from '@mui/material/styles';
 
-import tailwindConfig from '@root/tailwind.config';
+import tailwindConfig from '../../tailwind.config';
 
 const { colors } = tailwindConfig.theme.extend;
 

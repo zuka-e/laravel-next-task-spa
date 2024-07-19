@@ -53,8 +53,8 @@
     // https://github.com/testing-library/eslint-plugin-testing-library#run-the-plugin-only-against-test-files
     {
       "files": [
-        "**/__tests__/**/*.[jt]s?(x)",
-        "**/?(*.)+(spec|test).[jt]s?(x)"
+        "src/**/__tests__/**/*.[jt]s?(x)",
+        "src/**/?(*.)+(spec|test).[jt]s?(x)"
       ],
       "excludedFiles": "**/e2e/**/*",
       "extends": ["plugin:testing-library/react"]

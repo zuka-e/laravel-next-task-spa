@@ -23,11 +23,10 @@
     // ※ Module resolution generally depends on compiler.
     "paths": {
       "@/*": ["src/*"],
-      "@root/*": ["./*"],
       "@test/*": ["test/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "**/*.d.ts"],
   // > It is not a mechanism that prevents a file from being included in the codebase
   // > https://www.typescriptlang.org/tsconfig/#exclude
   // e.g. imports "excluded" module in an "included" file.
