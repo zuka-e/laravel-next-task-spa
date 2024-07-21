@@ -54,6 +54,7 @@ const axiosBaseQuery = (
       'Content-Type': 'application/json',
     },
     withCredentials: true,
+    withXSRFToken: true,
     ...defaultConfig,
   });
 
