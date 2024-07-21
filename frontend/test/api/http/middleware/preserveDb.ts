@@ -8,7 +8,7 @@ import type { Middleware } from './types';
  */
 const preserveDb: Middleware = (resolver) => {
   return async (input) => {
-    initialize();
+    await initialize();
 
     const response = await resolver(input);
 
@@ -21,12 +21,12 @@ const preserveDb: Middleware = (resolver) => {
 /**
  * Initialize the DB state from local storage and set it to `db` instance.
  */
-const initialize = (): void => {
+const initialize = async (): Promise<void> => {
   if (db[isInitialized]) {
     return;
   }
 
-  restore() || seed();
+  restore() || (await seed());
 
   db[isInitialized] = true;
 };
@@ -57,8 +57,8 @@ const restore = (): boolean => {
 /**
  * Seed the DB.
  */
-const seed = (): void => {
-  require('@test/data');
+const seed = async (): Promise<void> => {
+  await import('@test/data');
 };
 
 /**
