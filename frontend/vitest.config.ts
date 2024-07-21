@@ -13,6 +13,7 @@ export default defineConfig({
     env: dotenv.config({ path: '.env.test' }).parsed,
     environment: 'jsdom',
     setupFiles: ['./test/vitest.setup.ts'],
+    include: ['./test/__tests__/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     alias: {
       '@': resolve(__dirname, './src'),
       '@test': resolve(__dirname, './test'),
