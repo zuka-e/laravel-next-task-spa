@@ -61,7 +61,7 @@ const FormLayout = memo(function FormLayout(
             <Typography component="h1" variant="h5" gutterBottom>
               {title}
             </Typography>
-            <form onSubmit={onSubmit} className="w-full">
+            <form onSubmit={onSubmit} aria-label={title} className="w-full">
               <Fieldset disabled={disabled || isLoading}>{children}</Fieldset>
             </form>
           </Grid>
