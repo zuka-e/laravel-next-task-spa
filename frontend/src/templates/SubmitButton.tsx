@@ -1,19 +1,13 @@
+import { memo } from 'react';
+
 import { Button, ButtonProps } from '@mui/material';
 
-import { useAppSelector } from '@/utils/hooks';
-
-const SubmitButton = (props: ButtonProps) => {
-  const loading = useAppSelector((state) => state.auth.loading);
-
+const SubmitButton = memo(function SubmitButton(
+  props: ButtonProps
+): JSX.Element {
   return (
-    <Button
-      disabled={loading}
-      type="submit"
-      variant="contained"
-      color="primary"
-      {...props}
-    />
+    <Button type="submit" variant="contained" color="primary" {...props} />
   );
-};
+});
 
 export default SubmitButton;

@@ -1,5 +1,6 @@
 export { default as AlertMessage } from './AlertMessage';
 export { default as DatetimeInput } from './DatetimeInput';
+export { default as Fieldset } from './Fieldset';
 export { default as LabeledSelect } from './LabeledSelect';
 export { default as Markdown } from './Markdown';
 export { default as MarkdownEditor } from './MarkdownEditor';

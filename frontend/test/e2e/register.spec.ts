@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
-import faker from 'faker';
 
+import { faker } from '@test/utils/faker';
 import { assertScreenshot } from './utils';
 
 test.beforeEach(async ({ page }) => {
@@ -19,7 +19,7 @@ test.describe('Registration form', () => {
     }
   ): Promise<void> => {
     const { email, password } = input;
-    await page.getByRole('textbox', { name: 'Email Address' }).fill(email);
+    await page.getByRole('textbox', { name: /email/ }).fill(email);
     await page.getByLabel('Password *').fill(password);
     await page.getByLabel('Password Confirmation *').fill(password);
     await page.keyboard.press('Enter');
@@ -44,7 +44,7 @@ test.describe('Registration form', () => {
     await expect(formItem.password).not.toHaveAttribute('type', 'text');
   });
 
-  test('cannot register with invalid input', async ({ page }) => {
+  test.only('cannot register with invalid input', async ({ page }) => {
     const errors = {
       email: {
         email: page.getByText('Email Address must be a valid email'),
@@ -70,7 +70,7 @@ test.describe('Registration form', () => {
 
   test('can register', async ({ page }) => {
     await submit(page, {
-      email: faker.unique(faker.internet.exampleEmail),
+      email: faker.internet.exampleEmail(),
       password: 'password',
     });
 

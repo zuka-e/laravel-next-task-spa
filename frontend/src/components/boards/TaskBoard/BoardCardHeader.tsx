@@ -1,8 +1,11 @@
+import { memo } from 'react';
+
 import dayjs from 'dayjs';
 import { CardHeader, Typography, Tooltip, IconButton } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 
-import { TaskBoard } from '@/models';
+import type { TaskBoard } from '@/store/api/services/tasks/models';
+import { useUpdateTaskBoardMutation } from '@/store/api';
 import { PopoverControl } from '@/templates';
 import { EditableTitle } from '..';
 import { BoardMenu } from '.';
@@ -11,11 +14,20 @@ type BoardCardHeaderProps = {
   board: TaskBoard;
 };
 
-const BoardCardHeader = (props: BoardCardHeaderProps) => {
+const BoardCardHeader = memo(function BoardCardHeader(
+  props: BoardCardHeaderProps
+): JSX.Element {
   const { board } = props;
 
+  const [updateTaskBoard, { isLoading, error }] = useUpdateTaskBoardMutation();
+
   const Title = () => (
-    <EditableTitle method="PATCH" model="board" data={board} disableMargin />
+    <EditableTitle
+      defaultValue={board.title}
+      disabled={isLoading}
+      error={error}
+      onSubmit={(data) => updateTaskBoard({ id: board.id, ...data })}
+    />
   );
 
   const Subheader = () => (
@@ -48,6 +60,6 @@ const BoardCardHeader = (props: BoardCardHeaderProps) => {
       classes={{ action: 'self-end' }}
     />
   );
-};
+});
 
 export default BoardCardHeader;

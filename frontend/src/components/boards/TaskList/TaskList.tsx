@@ -1,14 +1,34 @@
-import { useState } from 'react';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
 
-import { useDrop } from 'react-dnd';
-import { Card, CardActions, Grid, Chip } from '@mui/material';
+import clsx from 'clsx';
+import {
+  Card,
+  CardActions,
+  Grid,
+  Chip,
+  Skeleton,
+  CircularProgress,
+} from '@mui/material';
 import type { SelectProps } from '@mui/material';
+import { useDrop } from 'react-dnd';
 
-import * as Model from '@/models';
-import { draggableItem, DragItem } from '@/utils/dnd';
-import { useAppDispatch, useAppSelector } from '@/utils/hooks';
-import { moveCard } from '@/store/slices';
-import { updateTaskCardRelationships } from '@/store/thunks/cards';
+import type * as Model from '@/store/api/services/tasks/models';
+import { repeatMap } from '@/utils';
+import {
+  useAppDispatch,
+  useDeepEqualSelector,
+  useIntersectionObserver,
+  useScrollPosition,
+} from '@/utils/hooks';
+import { type DragItem, draggableItem } from '@/utils/dnd';
+import { useTaskDetails } from '@/lib/hooks';
+import {
+  useCreateTaskCardMutation,
+  useGetTaskCardsQuery,
+  useMoveCard,
+  useUpdateTaskCardMutation,
+} from '@/store/api';
+import { setCursorByList } from '@/store/slices';
 import { LabeledSelect } from '@/templates';
 import { AddTaskButton } from '..';
 import { TaskCard } from '../TaskCard';
@@ -16,7 +36,7 @@ import { ListCardHeader } from '.';
 
 const cardFilter = {
   ALL: 'All',
-  TODO: 'Incompleted',
+  TODO: 'Incomplete',
   DONE: 'Completed',
 } as const;
 
@@ -27,72 +47,97 @@ type TaskListProps = {
   listIndex: number;
 };
 
-const TaskList = (props: TaskListProps) => {
+const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
   const { list, listIndex } = props;
-  const selectedId = useAppSelector((state) => state.boards.infoBox.data?.id);
   const dispatch = useAppDispatch();
+  const searchState = useDeepEqualSelector(
+    (state) => state.taskList.data[list.id]?.search
+  );
+  const { data: paginatedCard, isLoading: isLoadingCard } =
+    useGetTaskCardsQuery({
+      listId: list.id,
+      cursor: searchState?.cursor,
+      limit: 20,
+      sort: searchState?.sort?.key || 'sequence',
+      direction: searchState?.sort?.direction,
+    });
+  const { isTaskSelected } = useTaskDetails();
   const [filterValue, setFilterValue] = useState<FilterName>(cardFilter.ALL);
 
-  /** リスト間のカードの移動を司る */
+  const prevCardRef = useIntersectionObserver(() => {
+    if (paginatedCard?.meta.prevCursor) {
+      dispatch(
+        setCursorByList({ id: list.id, cursor: paginatedCard.meta.prevCursor })
+      );
+    }
+  });
+
+  const nextCardRef = useIntersectionObserver(() => {
+    if (paginatedCard?.meta.nextCursor) {
+      dispatch(
+        setCursorByList({ id: list.id, cursor: paginatedCard.meta.nextCursor })
+      );
+    }
+  });
+
+  const cardBoxRef = useRef<HTMLDivElement>(null);
+
+  useScrollPosition(cardBoxRef, {
+    on: !!paginatedCard?.meta.prevCursor,
+    threshold: 150,
+  });
+
+  const [createTaskCard, { isLoading, error }] = useCreateTaskCardMutation();
+  const [updateTaskCard] = useUpdateTaskCardMutation();
+
+  const { moveCard } = useMoveCard();
+
   const [, drop] = useDrop({
     accept: draggableItem.card,
     hover: (item: DragItem) => {
-      const dragListIndex = item.listIndex;
-      const hoverListIndex = listIndex;
+      const dragListId = item.listId;
       const dragIndex = item.index;
-      const hoverIndex = 0;
 
-      // 位置不変の場合
-      if (dragListIndex === hoverListIndex) return;
-
-      const boardId = list.boardId;
-      dispatch(
-        moveCard({
-          dragListIndex,
-          hoverListIndex,
-          dragIndex,
-          hoverIndex,
-          boardId,
-          listId: list.id,
-        })
-      );
-
-      item.index = hoverIndex;
-      item.listIndex = hoverListIndex;
-    },
-    drop: (item: DragItem) => {
-      /**リスト間移動が行われた場合 */
-      if (item.listId !== list.id) {
-        dispatch(
-          updateTaskCardRelationships({
-            data: { id: item.id, listId: item.listId },
-            body: { listId: list.id },
-          })
-        );
+      if (dragListId == list.id) {
+        return;
       }
+
+      item.index = 0;
+      item.listIndex = listIndex;
+      item.listId = list.id;
+
+      moveCard(item, dragListId, list.id, dragIndex, 0);
+    },
+    drop: (item) => {
+      updateTaskCard({ id: item.id, listId: item.listId, index: item.index });
     },
   });
 
-  const isSelected = () => list.id === selectedId;
+  const filteredCards = useMemo((): Model.TaskCard[] => {
+    return (paginatedCard?.data ?? []).filter((card) => {
+      if (filterValue === cardFilter.TODO) return !card.done;
+      else if (filterValue === cardFilter.DONE) return card.done;
+      else return true;
+    });
+  }, [filterValue, paginatedCard?.data]);
 
-  const filteredCards = list.cards.filter((card) => {
-    if (filterValue === cardFilter.TODO) return !card.done;
-    else if (filterValue === cardFilter.DONE) return card.done;
-    else return true;
-  });
-
-  const handleChange: SelectProps['onChange'] = (event) => {
-    setFilterValue(event.target.value as FilterName); // unknown型から変換
-  };
+  const handleChange = useCallback<NonNullable<SelectProps['onChange']>>(
+    (event): void => {
+      setFilterValue(event.target.value as FilterName); // unknown型から変換
+    },
+    []
+  );
 
   return (
     <Card
       ref={drop}
       elevation={7}
-      className={
-        'bg-secondary text-white' +
-        (isSelected() ? ' bg-secondary-dark outline outline-primary' : '')
-      }
+      className={clsx(
+        'flex max-h-full flex-col text-white',
+        isTaskSelected('l', list.id)
+          ? 'bg-secondary-dark outline outline-primary'
+          : 'bg-secondary'
+      )}
     >
       <ListCardHeader list={list} />
 
@@ -113,24 +158,42 @@ const TaskList = (props: TaskListProps) => {
         </Grid>
       </CardActions>
 
-      <div className="max-h-[90vh] overflow-y-auto p-2">
+      <div ref={cardBoxRef} className="overflow-y-auto p-2">
         <div className="flex flex-col gap-2">
-          {filteredCards.map((card, i) => (
-            <TaskCard
-              key={card.id}
-              card={card}
-              cardIndex={i}
-              listIndex={listIndex}
-            />
-          ))}
+          {paginatedCard?.meta.prevCursor && (
+            <div className="my-2 text-center">
+              <CircularProgress ref={prevCardRef} />
+            </div>
+          )}
+          {isLoadingCard
+            ? repeatMap(3, (i) => (
+                <Skeleton key={i} variant="rectangular" height={40} />
+              ))
+            : filteredCards.map((card, i) => (
+                <TaskCard
+                  key={card.id}
+                  card={card}
+                  cardIndex={i}
+                  listIndex={listIndex}
+                />
+              ))}
+          {paginatedCard?.meta.nextCursor && (
+            <div className="my-2 text-center">
+              <CircularProgress ref={nextCardRef} />
+            </div>
+          )}
         </div>
       </div>
 
       <CardActions>
-        <AddTaskButton method="POST" model="card" parent={list} transparent />
+        <AddTaskButton
+          disabled={isLoading}
+          error={error}
+          onSubmit={(data) => createTaskCard({ listId: list.id, ...data })}
+        />
       </CardActions>
     </Card>
   );
-};
+});
 
 export default TaskList;

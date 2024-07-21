@@ -3,8 +3,8 @@
 
 const colors = require('tailwindcss/colors');
 
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+/** @satisfies {import('tailwindcss').Config} */
+const config = {
   content: ['./src/**/*.{ts,tsx}'],
   important: '#__next',
   theme: {
@@ -41,10 +41,8 @@ module.exports = {
     // Remove Tailwind CSS's preflight style so it can use the MUI's preflight instead (CssBaseline).
     preflight: false,
   },
-  plugins: [
-    // cf. https://github.com/tailwindlabs/tailwindcss-line-clamp
-    require('@tailwindcss/line-clamp'),
-  ],
 };
+
+module.exports = { ...config };
 
 // ※ If CSS isn't applied after `yarn dev`, maybe `.next/` should be removed.

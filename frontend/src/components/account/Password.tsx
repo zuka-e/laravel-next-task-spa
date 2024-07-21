@@ -1,19 +1,23 @@
-import { useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Checkbox, FormControlLabel, Grid, TextField } from '@mui/material';
 
-import { UpdatePasswordRequest, updatePassword } from '@/store/thunks/auth';
-import { useAppDispatch } from '@/utils/hooks';
-import { isGuest } from '@/utils/auth';
+import {
+  UpdatePasswordRequest,
+  useGetSessionQuery,
+  useUpdatePasswordMutation,
+} from '@/store/api';
+import { isGuest } from '@/lib/auth';
 import { AlertMessage, SubmitButton } from '@/templates';
+import { isInvalidRequest, makeErrorMessageFrom } from '@/utils/api/errors';
 
 type FormData = UpdatePasswordRequest;
 
 const formData: Record<keyof FormData, { id: string; label: string }> = {
-  current_password: {
+  currentPassword: {
     id: 'current-password',
     label: 'Current Password',
   },
@@ -21,16 +25,16 @@ const formData: Record<keyof FormData, { id: string; label: string }> = {
     id: 'new-password',
     label: 'New Password',
   },
-  password_confirmation: {
+  passwordConfirmation: {
     id: 'password-confirmation',
     label: 'Password Confirmation',
   },
 };
 
 const schema = yup.object().shape({
-  current_password: yup
+  currentPassword: yup
     .string()
-    .label(formData.current_password.label)
+    .label(formData.currentPassword.label)
     .required(),
   password: yup
     .string()
@@ -38,14 +42,15 @@ const schema = yup.object().shape({
     .required()
     .min(8)
     .max(20),
-  password_confirmation: yup
+  passwordConfirmation: yup
     .string()
-    .label(formData.password_confirmation.label)
+    .label(formData.passwordConfirmation.label)
     .oneOf([yup.ref('password'), null], 'Passwords do not match'),
 });
 
-const Password = () => {
-  const dispatch = useAppDispatch();
+const Password = memo(function Password(): JSX.Element {
+  const { data: { user } = {} } = useGetSessionQuery();
+  const [updatePassword] = useUpdatePasswordMutation();
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
   const {
@@ -55,20 +60,30 @@ const Password = () => {
     formState: { errors },
   } = useForm<FormData>({ mode: 'onBlur', resolver: yupResolver(schema) });
 
-  const togglePasswordVisibility = () => {
-    setVisiblePassword(!visiblePassword);
-  };
+  const togglePasswordVisibility = useCallback((): void => {
+    setVisiblePassword((prev) => !prev);
+  }, []);
 
   // エラー発生時はメッセージを表示する
-  const onSubmit = async (data: FormData) => {
-    const response = await dispatch(updatePassword(data));
-    if (updatePassword.rejected.match(response)) {
-      setMessage(response.payload?.error?.message);
-    } else {
-      setMessage('');
-      reset(); // フォームの値 (エラー値含む) を消去
-    }
-  };
+  const onSubmit = useCallback(
+    async (data: FormData): Promise<void> => {
+      updatePassword(data)
+        .unwrap()
+        .then(() => {
+          reset();
+        })
+        .catch((error) => {
+          if (isInvalidRequest(error)) {
+            setMessage(makeErrorMessageFrom(error));
+          }
+        });
+    },
+    [reset, updatePassword]
+  );
+
+  if (!user) {
+    return <></>;
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -78,23 +93,23 @@ const Password = () => {
         </Grid>
         <Grid item md={6} xs={12}>
           <TextField
-            disabled={isGuest()}
+            disabled={isGuest(user)}
             variant="outlined"
             fullWidth
-            id={formData.current_password.id}
-            label={formData.current_password.label}
+            id={formData.currentPassword.id}
+            label={formData.currentPassword.label}
             type={visiblePassword ? 'text' : 'password'}
-            autoComplete={formData.current_password.id}
-            {...register('current_password')}
-            helperText={errors?.current_password?.message || ' '}
-            error={!!errors?.current_password}
+            autoComplete={formData.currentPassword.id}
+            {...register('currentPassword')}
+            helperText={errors?.currentPassword?.message || ' '}
+            error={!!errors?.currentPassword}
           />
         </Grid>
       </Grid>
       <Grid container spacing={2}>
         <Grid item md={6} xs={12}>
           <TextField
-            disabled={isGuest()}
+            disabled={isGuest(user)}
             variant="outlined"
             fullWidth
             id={formData.password.id}
@@ -108,18 +123,18 @@ const Password = () => {
         </Grid>
         <Grid item md={6} xs={12}>
           <TextField
-            disabled={isGuest()}
+            disabled={isGuest(user)}
             variant="outlined"
             fullWidth
-            id={formData.password_confirmation.id}
-            label={formData.password_confirmation.label}
+            id={formData.passwordConfirmation.id}
+            label={formData.passwordConfirmation.label}
             type={visiblePassword ? 'text' : 'password'}
-            autoComplete={formData.password_confirmation.id}
-            {...register('password_confirmation')}
+            autoComplete={formData.passwordConfirmation.id}
+            {...register('passwordConfirmation')}
             helperText={
-              errors?.password_confirmation?.message || 'Retype password'
+              errors?.passwordConfirmation?.message || 'Retype password'
             }
-            error={!!errors?.password_confirmation}
+            error={!!errors?.passwordConfirmation}
           />
         </Grid>
       </Grid>
@@ -132,11 +147,11 @@ const Password = () => {
             size="small"
           />
         }
-        className="mx-0 mb-4 block text-gray-600"
+        className="mx-0 mb-4 block w-fit text-gray-600"
       />
-      {!isGuest() && <SubmitButton>パスワードを変更する</SubmitButton>}
+      {!isGuest(user) && <SubmitButton>パスワードを変更する</SubmitButton>}
     </form>
   );
-};
+});
 
 export default Password;

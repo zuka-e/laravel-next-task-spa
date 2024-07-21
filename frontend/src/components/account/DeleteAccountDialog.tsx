@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 
 import {
   Dialog,
@@ -9,25 +9,30 @@ import {
   Button,
 } from '@mui/material';
 
-import { deleteAccount } from '@/store/thunks/auth';
-import { useAppDispatch } from '@/utils/hooks';
+import { useDeleteAccountMutation } from '@/store/api';
 
 type DeleteAccountDialogProps = {
   trigger: JSX.Element;
 };
 
-const DeleteAccountDialog = (props: DeleteAccountDialogProps) => {
+const DeleteAccountDialog = memo(function DeleteAccountDialog(
+  props: DeleteAccountDialogProps
+): JSX.Element {
   const { trigger } = props;
-  const dispatch = useAppDispatch();
+  const [deleteAccount, { isLoading }] = useDeleteAccountMutation();
   const [open, setOpen] = useState(false);
 
-  const handleClickOpen = () => setOpen(true);
+  const handleClickOpen = useCallback((): void => {
+    setOpen(true);
+  }, []);
 
-  const handleClose = () => setOpen(false);
+  const handleClose = useCallback((): void => {
+    setOpen(false);
+  }, []);
 
-  const handleDelete = () => {
-    dispatch(deleteAccount());
-  };
+  const handleDelete = useCallback((): void => {
+    deleteAccount();
+  }, [deleteAccount]);
 
   return (
     <>
@@ -49,16 +54,21 @@ const DeleteAccountDialog = (props: DeleteAccountDialogProps) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary" autoFocus>
+          <Button
+            disabled={isLoading}
+            onClick={handleClose}
+            color="primary"
+            autoFocus
+          >
             キャンセル
           </Button>
-          <Button onClick={handleDelete} color="error">
+          <Button disabled={isLoading} onClick={handleDelete} color="error">
             削除
           </Button>
         </DialogActions>
       </Dialog>
     </>
   );
-};
+});
 
 export default DeleteAccountDialog;

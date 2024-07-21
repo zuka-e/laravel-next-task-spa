@@ -1,3 +1,5 @@
+import { memo, useCallback, useMemo } from 'react';
+
 import {
   Dialog,
   DialogContent,
@@ -7,18 +9,41 @@ import {
   Button,
 } from '@mui/material';
 
-import { DeleteAction } from '@/store/slices';
-import { useAppDispatch } from '@/utils/hooks';
-import { destroyTaskBoard } from '@/store/thunks/boards';
-import { destroyTaskList } from '@/store/thunks/lists';
-import { destroyTaskCard } from '@/store/thunks/cards';
+import type {
+  TaskBoard,
+  TaskCard,
+  TaskList,
+} from '@/store/api/services/tasks/models';
+import {
+  useDestroyTaskBoardMutation,
+  useDestroyTaskListMutation,
+  useDestroyTaskCardMutation,
+} from '@/store/api';
+
+type DeleteAction =
+  | { model: 'board'; data: TaskBoard }
+  | { model: 'list'; data: TaskList }
+  | { model: 'card'; data: TaskCard };
 
 type DeleteTaskDialogProps = DeleteAction & {
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  open: boolean;
+  onClose: () => void;
 };
 
-const DeleteTaskDialog = (props: DeleteTaskDialogProps) => {
-  const dispatch = useAppDispatch();
+const DeleteTaskDialog = memo(function DeleteTaskDialog(
+  props: DeleteTaskDialogProps
+): JSX.Element {
+  const { open, onClose } = props;
+  const [destroyTaskBoard, { isLoading: isLoadingBoard }] =
+    useDestroyTaskBoardMutation();
+  const [destroyTaskList, { isLoading: isLoadingList }] =
+    useDestroyTaskListMutation();
+  const [destroyTaskCard, { isLoading: isLoadingCard }] =
+    useDestroyTaskCardMutation();
+
+  const isLoading = useMemo(() => {
+    return isLoadingBoard || isLoadingList || isLoadingCard;
+  }, [isLoadingBoard, isLoadingList, isLoadingCard]);
 
   const renderTitle = () => {
     switch (props.model) {
@@ -45,22 +70,30 @@ const DeleteTaskDialog = (props: DeleteTaskDialogProps) => {
     }
   };
 
-  const handleClose = () => props.setOpen(false);
+  const handleClose = useCallback((): void => {
+    onClose();
+  }, [onClose]);
 
-  const handleDelete = async () => {
+  const handleDelete = useCallback(async () => {
     switch (props.model) {
       case 'board':
-        return await dispatch(destroyTaskBoard(props.data));
+        return destroyTaskBoard(props.data);
       case 'list':
-        return await dispatch(destroyTaskList(props.data));
+        return destroyTaskList(props.data);
       case 'card':
-        return await dispatch(destroyTaskCard(props.data));
+        return destroyTaskCard(props.data);
     }
-  };
+  }, [
+    destroyTaskBoard,
+    destroyTaskList,
+    destroyTaskCard,
+    props.data,
+    props.model,
+  ]);
 
   return (
     <Dialog
-      open={true}
+      open={open}
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
@@ -75,12 +108,12 @@ const DeleteTaskDialog = (props: DeleteTaskDialogProps) => {
         <Button onClick={handleClose} color="primary" autoFocus>
           キャンセル
         </Button>
-        <Button onClick={handleDelete} color="error">
+        <Button disabled={isLoading} onClick={handleDelete} color="error">
           削除
         </Button>
       </DialogActions>
     </Dialog>
   );
-};
+});
 
 export default DeleteTaskDialog;

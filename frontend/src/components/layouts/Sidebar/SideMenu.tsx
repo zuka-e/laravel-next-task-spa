@@ -1,4 +1,5 @@
-import { useRouter } from 'next/router';
+import { memo, useCallback, useMemo } from 'react';
+import Router from 'next/router';
 
 import { ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import {
@@ -12,25 +13,43 @@ import {
 
 import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
 import { makeEmail } from '@/utils/generator';
-import { useAppSelector, useAppDispatch } from '@/utils/hooks';
-import { createUser, signInWithEmail, signOut } from '@/store/thunks/auth';
+import {
+  useGetSessionQuery,
+  useLoginMutation,
+  useLogoutMutation,
+  useRegisterMutation,
+} from '@/store/api';
+import { Fieldset } from '@/templates';
 
-const SideMenu = () => {
-  const router = useRouter();
-  const userId = useAppSelector((state) => state.auth.user?.id);
-  const dispatch = useAppDispatch();
+const SideMenu = memo(function SideMenu(): JSX.Element {
+  const { userId } = useGetSessionQuery(undefined, {
+    selectFromResult: (result) => ({
+      ...result,
+      userId: result.data?.user?.id,
+    }),
+  });
 
-  const menuItem = userId
-    ? ({
-        boards: 'ボードを表示',
-        logout: 'ログアウト',
-      } as const)
-    : ({
-        register: '登録',
-        login: 'ログイン',
-        guestRegister: 'ゲストとして登録',
-        guestLogin: 'ゲストログイン',
-      } as const);
+  const [login, { isLoading: isLoginLoading }] = useLoginMutation();
+  const [logout, { isLoading: isLogoutLoading }] = useLogoutMutation();
+  const [register, { isLoading: isRegisterLoading }] = useRegisterMutation();
+
+  const isLoading = useMemo((): boolean => {
+    return isLoginLoading || isLogoutLoading || isRegisterLoading;
+  }, [isLoginLoading, isLogoutLoading, isRegisterLoading]);
+
+  const menuItem = useMemo(() => {
+    return userId
+      ? ({
+          boards: 'ボードを表示',
+          logout: 'ログアウト',
+        } as const)
+      : ({
+          register: '登録',
+          login: 'ログイン',
+          guestRegister: 'ゲストとして登録',
+          guestLogin: 'ゲストログイン',
+        } as const);
+  }, [userId]);
 
   const renderIcon = (key: keyof typeof menuItem) => {
     if (key === 'boards') return <FolderIcon />;
@@ -42,49 +61,48 @@ const SideMenu = () => {
     if (key === 'guestLogin') return <AccountCircleIcon />;
   };
 
-  const handleClick = (key: keyof typeof menuItem) => () => {
-    switch (key) {
-      case 'boards':
-        router.push(`/users/${userId}/boards`);
-        break;
-      case 'logout':
-        dispatch(signOut());
-        break;
+  const handleClick = useCallback(
+    async (key: keyof typeof menuItem): Promise<void> => {
+      switch (key) {
+        case 'boards':
+          Router.push('/boards');
+          break;
+        case 'logout':
+          logout();
+          break;
 
-      case 'register':
-        router.push('register');
-        break;
-      case 'login':
-        router.push('login');
-        break;
-      case 'guestRegister':
-        router.push('/register'); // `EmailVerification`を表示するため
-        dispatch(
-          createUser({
+        case 'register':
+          Router.push('register');
+          break;
+        case 'login':
+          Router.push('login');
+          break;
+        case 'guestRegister':
+          await Router.push('/register');
+          register({
             email: makeEmail(),
             password: GUEST_PASSWORD,
             password_confirmation: GUEST_PASSWORD,
-          })
-        );
-        break;
-      case 'guestLogin':
-        dispatch(
-          signInWithEmail({ email: GUEST_EMAIL, password: GUEST_PASSWORD })
-        );
-        break;
-    }
-  };
+          });
+          break;
+        case 'guestLogin':
+          login({ email: GUEST_EMAIL, password: GUEST_PASSWORD });
+          break;
+      }
+    },
+    [login, logout, register]
+  );
 
   return (
-    <>
+    <Fieldset disabled={isLoading}>
       {(Object.keys(menuItem) as (keyof typeof menuItem)[]).map((key) => (
-        <ListItem key={key} button onClick={handleClick(key)}>
+        <ListItem key={key} button onClick={() => handleClick(key)}>
           <ListItemIcon>{renderIcon(key)}</ListItemIcon>
           <ListItemText primary={menuItem[key]} />
         </ListItem>
       ))}
-    </>
+    </Fieldset>
   );
-};
+});
 
 export default SideMenu;

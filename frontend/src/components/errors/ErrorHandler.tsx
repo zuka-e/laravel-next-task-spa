@@ -1,17 +1,17 @@
 // cf. https://nextjs.org/docs/advanced-features/custom-error-page
 
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Error from 'next/error';
 
 import { useAppSelector } from '@/utils/hooks';
-import BadRequest from '@/pages/400';
-import Forbidden from '@/pages/403';
+import BadRequest from '@/components/errors/400';
+import Forbidden from '@/components/errors/403';
 import NotFound from '@/pages/404';
-import PageExpired from '@/pages/419';
-import TooManyRequests from '@/pages/429';
+import PageExpired from '@/components/errors/419';
+import TooManyRequests from '@/components/errors/429';
 import InternalServerError from '@/pages/500';
-import ServiceUnavailable from '@/pages/503';
+import ServiceUnavailable from '@/components/errors/503';
 import { clearHttpStatus } from '@/store/slices';
 import { useAppDispatch } from '@/utils/hooks';
 
@@ -28,7 +28,9 @@ const isRenderableError = (httpStatus: number): boolean => {
   return isHttpError(httpStatus) && !excluded.includes(httpStatus);
 };
 
-const ErrorHandler = ({ children }: ErrorHandlerProps) => {
+const ErrorHandler = memo(function ErrorHandler({
+  children,
+}: ErrorHandlerProps): JSX.Element {
   const httpStatus = useAppSelector((state) => state.app.httpStatus);
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -37,7 +39,7 @@ const ErrorHandler = ({ children }: ErrorHandlerProps) => {
     return function cleanup() {
       dispatch(clearHttpStatus());
     };
-  }, [dispatch, router.asPath]);
+  }, [dispatch, router]);
 
   if (!httpStatus || !isRenderableError(httpStatus)) {
     return <>{children}</>;
@@ -62,6 +64,6 @@ const ErrorHandler = ({ children }: ErrorHandlerProps) => {
     default:
       return <Error statusCode={httpStatus} />;
   }
-};
+});
 
 export default ErrorHandler;

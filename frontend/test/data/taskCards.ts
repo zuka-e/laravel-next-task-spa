@@ -1,61 +1,53 @@
-import faker from 'faker';
-
-import { Doc, db, TaskCardDocument } from '@test/api/models';
-import { uuid } from '@test/utils/uuid';
+import { faker } from '@test/utils/faker';
+import type { TaskCard, TaskList } from '@test/api/database/models';
+import db from '@test/api/database/manager';
+import { timestamp } from '@test/api/database/definitions';
 import { guestUser, otherUser } from './users';
 import { listOfGuestUser, listOfOtherUser } from './taskLists';
 
-export const cardOfGuestUser: TaskCardDocument = {
-  id: uuid(),
-  userId: guestUser.id,
+export const cardOfGuestUser = {
+  id: faker.string.uuid(),
   listId: listOfGuestUser.id,
   title: 'ゲストユーザーのTaskCard',
   content: 'ゲストユーザーが所有するTaskCard',
-  deadline: new Date().toISOString(),
+  deadline: timestamp(),
   done: true,
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-};
+  sequence: 2 ** 10 / 2,
+  createdAt: timestamp(),
+  updatedAt: timestamp(),
+} as TaskCard;
 
-export const cardOfOtherUser: TaskCardDocument = {
-  id: uuid(),
-  userId: otherUser.id,
+export const cardOfOtherUser = {
+  id: faker.string.uuid(),
   listId: listOfOtherUser.id,
   title: '他のユーザーのTaskCard',
   content: '他のユーザーが所有するTaskCard',
-  deadline: new Date().toISOString(),
+  deadline: timestamp(),
   done: false,
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-};
+  sequence: 2 ** 10 / 2,
+  createdAt: timestamp(),
+  updatedAt: timestamp(),
+} as TaskCard;
 
-const initialCards: TaskCardDocument[] = [cardOfGuestUser, cardOfOtherUser];
+const initialCards: TaskCard[] = [cardOfGuestUser, cardOfOtherUser];
 
 type SeederProps = {
   count: number;
   belongsTo: {
-    user: Doc<'users'>;
-    list: Doc<'taskLists'>;
+    list: TaskList;
   };
 };
 
-const runSeeder = (props: SeederProps) => {
-  const user = db.where('users', 'id', props.belongsTo.user.id)[0];
-  if (!user) throw Error('The specified data does not exist');
-
-  initialCards.forEach((card) => {
-    db.create('taskCards', card);
-  });
-
-  [...Array(props.count)].forEach(() => {
-    db.create('taskCards', {
-      id: faker.datatype.uuid(),
-      userId: props.belongsTo.user.id,
+const seed = (props: SeederProps) => {
+  [...Array(props.count)].forEach((_, i) => {
+    db.taskCard.create({
+      id: faker.string.uuid(),
       listId: props.belongsTo.list.id,
       title: `${faker.hacker.adjective()} ${faker.hacker.verb()}`,
       content: faker.hacker.phrase(),
       done: Math.floor(Math.random() * 10) % 3 === 0,
       deadline: faker.date.future().toISOString(),
+      sequence: (i + 1) * 2 ** 10,
       createdAt: faker.date.past().toISOString(),
       updatedAt: faker.date.recent().toISOString(),
     });
@@ -63,25 +55,36 @@ const runSeeder = (props: SeederProps) => {
 };
 
 const initialize = () => {
-  db.load('taskCards');
+  if (db.taskCard.count()) {
+    return;
+  }
 
-  if (db.exists('taskCards')) return;
-
-  const guestUserBoards = db.where('taskBoards', 'userId', guestUser.id);
-  guestUserBoards.forEach((board) => {
-    const guestUserLists = db.where('taskLists', 'boardId', board.id);
-    guestUserLists.forEach((list) => {
-      runSeeder({ count: 2, belongsTo: { user: guestUser, list: list } });
-    });
+  initialCards.forEach((card) => {
+    db.taskCard.create(card);
   });
 
-  const otherUserBoards = db.where('taskBoards', 'userId', otherUser.id);
-  otherUserBoards.forEach((board) => {
-    const otherUserLists = db.where('taskLists', 'boardId', board.id);
-    otherUserLists.forEach((list) => {
-      runSeeder({ count: 2, belongsTo: { user: otherUser, list: list } });
+  db.taskBoard
+    .findMany({
+      where: { userId: { equals: guestUser.id } },
+    })
+    .forEach((board, i) => {
+      db.taskList
+        .findMany({ where: { boardId: { equals: board.id } } })
+        .forEach((list, j) => {
+          const count = !i && !j ? 50 : 2;
+          seed({ count, belongsTo: { list } });
+        });
     });
-  });
+
+  db.taskBoard
+    .findMany({ where: { userId: { equals: otherUser.id } } })
+    .forEach((board) => {
+      db.taskList
+        .findMany({ where: { boardId: { equals: board.id } } })
+        .forEach((list) => {
+          seed({ count: 2, belongsTo: { list } });
+        });
+    });
 };
 
 // 初期化実行

@@ -1,60 +1,57 @@
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import type { AppProps } from 'next/app';
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 
 import { useAppDispatch, useAppSelector, useRoute } from '@/utils/hooks';
+import { setPreviousUrl } from '@/lib/routes';
 import { AuthRoute, GuestRoute } from '@/routes';
-import { clearIntendedUrl, pushFlash } from '@/store/slices';
-import { Loading } from '@/layouts';
+import { useInvalidateSessionMutation } from '@/store/api';
+import { pushNotification } from '@/store/slices';
 
-const Route = (
+const Route = memo(function Route(
   props: Pick<AppProps<Record<string, unknown>>, 'Component' | 'pageProps'>
-) => {
+): JSX.Element {
   const { Component, pageProps } = props;
   const router = useRouter();
   const route = useRoute();
+  const [invalidateSession] = useInvalidateSessionMutation();
   const httpStatus = useAppSelector((state) => state.app.httpStatus);
-  const intendedUrl = useAppSelector((state) => state.app.intendedUrl);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (httpStatus && [401, 419].includes(httpStatus)) {
       dispatch(
-        pushFlash({ severity: 'error', message: 'ログインしてください。' })
+        pushNotification({
+          severity: 'error',
+          message: 'ログインしてください。',
+        })
       );
 
-      router.replace('/login');
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [httpStatus]);
+      invalidateSession();
 
+      Router.replace('/login');
+    }
+  }, [dispatch, httpStatus, invalidateSession]);
+
+  // > Resist adding unrelated logic to your Effect only because this logic needs to run at the same time as an Effect you already wrote.
+  // > ...
+  // > On the other hand, if you split up a cohesive piece of logic into separate Effects, the code may look “cleaner” but will be more difficult to maintain.
+  // >> https://react.dev/learn/lifecycle-of-reactive-effects#each-effect-represents-a-separate-synchronization-process
+  // cf. https://react.dev/learn/you-might-not-need-an-effect#chains-of-computations
   useEffect((): void => {
     (async (): Promise<void> => {
-      if (intendedUrl) {
-        await router.push(intendedUrl);
-        return;
-      }
-
       if (route.queryParams?.['verified']?.toString()) {
-        await router.replace('/email-verification');
+        await Router.replace('/email-verification');
         return;
       }
     })();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [route.queryParams]);
+  }, [dispatch, route.queryParams]);
 
   useEffect((): (() => void) => {
     return function cleanup(): void {
-      dispatch(clearIntendedUrl());
-      sessionStorage.setItem('previousUrl', router.asPath);
+      setPreviousUrl(router.asPath);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.asPath]);
-
-  if (intendedUrl) {
-    return <Loading open={true} />;
-  }
 
   return (
     <>
@@ -72,6 +69,6 @@ const Route = (
       )}
     </>
   );
-};
+});
 
 export default Route;

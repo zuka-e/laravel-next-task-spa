@@ -1,14 +1,19 @@
 // https://nextjs.org/docs/migrating/from-create-react-app#search-engine-optimization
 
+import { memo, useCallback } from 'react';
 import Head from 'next/head';
 
 import { APP_URL, APP_NAME } from '@/config/app';
 
-const SEO = (props: { title: string; description: string }) => {
+const SEO = memo(function SEO(props: {
+  title: string;
+  description: string;
+}): JSX.Element {
   const { title, description } = props;
 
-  const formatTitle = (title: string) =>
-    title ? `${title} | ${APP_NAME}` : APP_NAME;
+  const formatTitle = useCallback((title: string): string => {
+    return title ? `${title} | ${APP_NAME}` : APP_NAME;
+  }, []);
 
   return (
     <Head>
@@ -25,6 +30,6 @@ const SEO = (props: { title: string; description: string }) => {
       <meta property="twitter:description" content={description} />
     </Head>
   );
-};
+});
 
 export default SEO;

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticProps } from 'next';
@@ -15,14 +15,13 @@ import {
   Checkbox,
 } from '@mui/material';
 
-import { SignUpRequest, createUser } from '@/store/thunks/auth';
-import { useAppDispatch } from '@/utils/hooks';
+import { useRegisterMutation, type RegisterRequest } from '@/store/api';
 import { FormLayout } from '@/layouts';
 import { SubmitButton } from '@/templates';
 import type { GuestPage } from '@/routes';
 
 // Input items
-type FormData = SignUpRequest;
+type FormData = RegisterRequest;
 
 const formData: Record<keyof FormData, { id: string; label: string }> = {
   email: {
@@ -65,11 +64,10 @@ export const getStaticProps: GetStaticProps<RegisterProps> = async () => {
   };
 };
 
-const SignUp = () => {
+const SignUp = memo(function SignUp(): JSX.Element {
   const router = useRouter();
-  const dispatch = useAppDispatch();
+  const [signUp, { isLoading, error }] = useRegisterMutation();
   const [visiblePassword, setVisiblePassword] = useState(false);
-  const [message, setMessage] = useState<string | undefined>('');
   const {
     register, // 入力項目の登録
     handleSubmit, // 用意された`handleSubmit`
@@ -79,17 +77,9 @@ const SignUp = () => {
     resolver: yupResolver(schema),
   });
 
-  const togglePasswordVisibility = () => {
-    setVisiblePassword(!visiblePassword);
-  };
-
-  // エラー発生時はメッセージを表示する
-  const onSubmit = async (data: FormData) => {
-    const response = await dispatch(createUser(data));
-    if (createUser.rejected.match(response)) {
-      setMessage(response.payload?.error?.message);
-    }
-  };
+  const togglePasswordVisibility = useCallback((): void => {
+    setVisiblePassword((prev) => !prev);
+  }, []);
 
   return (
     <>
@@ -98,8 +88,9 @@ const SignUp = () => {
       </Head>
       <FormLayout
         title={'Create an account'}
-        message={message}
-        onSubmit={handleSubmit(onSubmit)}
+        error={error}
+        isLoading={isLoading}
+        onSubmit={handleSubmit(signUp)}
       >
         <TextField
           variant="outlined"
@@ -172,6 +163,6 @@ const SignUp = () => {
       </FormLayout>
     </>
   );
-};
+});
 
 export default SignUp;

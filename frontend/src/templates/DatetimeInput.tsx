@@ -1,19 +1,21 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
-import dayjs from 'dayjs';
-import type { Dayjs } from 'dayjs';
-import { TextField } from '@mui/material';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import type { DateTimePickerProps } from '@mui/x-date-pickers/DateTimePicker';
+import dayjs, { type Dayjs } from 'dayjs';
+import {
+  DateTimePicker,
+  type DateTimePickerProps,
+} from '@mui/x-date-pickers/DateTimePicker';
 
 export type DatetimeInputProps = {
-  initialValue?: DateTimePickerProps<Dayjs, Dayjs>['value'];
-} & Partial<DateTimePickerProps<Dayjs, Dayjs>>;
+  initialValue?: DateTimePickerProps<Dayjs>['value'];
+} & Partial<DateTimePickerProps<Dayjs>>;
 
 /**
  * @see https://mui.com/x/react-date-pickers/date-time-picker
  */
-const DatetimeInput = (props: DatetimeInputProps) => {
+const DatetimeInput = memo(function DatetimeInput(
+  props: DatetimeInputProps
+): JSX.Element {
   const { initialValue } = props;
 
   const [datetime, setDatetime] = useState<Dayjs | null>(
@@ -27,8 +29,8 @@ const DatetimeInput = (props: DatetimeInputProps) => {
 
   return (
     <DateTimePicker
-      renderInput={(params) => <TextField {...params} />}
-      inputFormat="YYYY/MM/DD/ HH:mm"
+      slotProps={{ textField: {} }}
+      format="YYYY/MM/DD/ HH:mm"
       ampm={false}
       minDateTime={dayjs()}
       minutesStep={5}
@@ -38,6 +40,6 @@ const DatetimeInput = (props: DatetimeInputProps) => {
       {...props}
     />
   );
-};
+});
 
 export default DatetimeInput;

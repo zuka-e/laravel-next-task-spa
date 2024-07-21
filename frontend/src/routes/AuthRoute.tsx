@@ -1,10 +1,11 @@
 // cf. https://dev.to/ivandotv/protecting-static-pages-in-next-js-application-1e50
 // cf. https://github.com/ivandotv/nextjs-client-signin-logic
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { memo, useEffect } from 'react';
+import Router from 'next/router';
 
-import { useAuth } from '@/utils/hooks';
+import { useGetSessionQuery } from '@/store/api';
+import { useRedirect } from '@/lib/hooks';
 import { Loading } from '@/layouts';
 
 export type AuthPage = {
@@ -18,23 +19,36 @@ type AuthRouteProps = {
 /**
  * Redirect to the login form unless authenticated.
  */
-const AuthRoute = ({ children }: AuthRouteProps) => {
-  const router = useRouter();
-  const { auth, guest } = useAuth();
+const AuthRoute = memo(function AuthRoute({
+  children,
+}: AuthRouteProps): JSX.Element {
+  const { redirectIfIntended } = useRedirect();
+
+  const { auth, isLoading, isUninitialized } = useGetSessionQuery(undefined, {
+    selectFromResult: (result) => ({
+      ...result,
+      auth: !!result.data?.user?.id,
+    }),
+  });
+
+  const unresolved = isLoading || isUninitialized;
+  const guest = unresolved ? undefined : !auth;
 
   useEffect(() => {
     if (guest) {
-      router.replace('/login');
+      Router.replace('/login');
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [guest]);
+
+    redirectIfIntended();
+  }, [guest, redirectIfIntended]);
 
   // Until initialized or the redirect completed.
-  if (!auth) {
+  if (unresolved || guest) {
     return <Loading open={true} />;
   }
 
   return <>{children}</>;
-};
+});
 
 export default AuthRoute;

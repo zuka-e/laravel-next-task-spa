@@ -1,5 +1,5 @@
-export type SortOperation<T> = {
-  column: keyof T;
+export type Sort<T> = {
+  key: keyof T;
   direction?: 'asc' | 'desc';
 };
 

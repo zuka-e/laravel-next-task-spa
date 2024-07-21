@@ -1,14 +1,18 @@
-import { useState } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Grid, TextField } from '@mui/material';
 
-import { UpdateProfileRequest, updateProfile } from '@/store/thunks/auth';
-import { useAppDispatch, useAppSelector } from '@/utils/hooks';
-import { isGuest } from '@/utils/auth';
+import {
+  type UpdateProfileRequest,
+  useGetSessionQuery,
+  useUpdateProfileMutation,
+} from '@/store/api';
+import { isGuest } from '@/lib/auth';
 import { AlertMessage, SubmitButton } from '@/templates';
+import { isInvalidRequest, makeErrorMessageFrom } from '@/utils/api/errors';
 
 type FormData = UpdateProfileRequest;
 
@@ -28,49 +32,55 @@ const schema = yup.object().shape({
   email: yup.string().label(formData.email.label).email().max(255),
 });
 
-const UserProfile = () => {
-  const user = {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    name: useAppSelector((state) => state.auth.user!.name),
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    email: useAppSelector((state) => state.auth.user!.email),
-  };
-  const dispatch = useAppDispatch();
-  const [message, setMessage] = useState<string | undefined>('');
+const UserProfile = memo(function UserProfile(): JSX.Element {
+  const { data: { user } = {} } = useGetSessionQuery();
+  const [updateProfile, { error }] = useUpdateProfileMutation();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({ mode: 'onBlur', resolver: yupResolver(schema) });
 
+  const errorMessage = useMemo((): string | null => {
+    return isInvalidRequest(error) ? makeErrorMessageFrom(error) : null;
+  }, [error]);
+
   // エラー発生時はメッセージを表示する
-  const onSubmit = async (data: FormData) => {
-    // フォーカスを当てていない場合`defaultValue`でなく`undefined`となる
-    // その場合変更点がないので現在の値をセットする
-    if (!data.name) data.name = user.name;
-    if (!data.email) data.email = user.email;
+  const onSubmit = useCallback(
+    async (data: FormData): Promise<void> => {
+      if (!user) {
+        return;
+      }
+      // フォーカスを当てていない場合`defaultValue`でなく`undefined`となる
+      // その場合変更点がないので現在の値をセットする
+      if (!data.name) data.name = user.name;
+      if (!data.email) data.email = user.email;
 
-    // 全ての項目で変更点がない場合はリクエストを送らない
-    if (data.name === user?.name && data.email === user?.email) {
-      setMessage('プロフィールが変更されておりません');
-      return;
-    }
+      // 全ての項目で変更点がない場合はリクエストを送らない
+      if (data.name === user?.name && data.email === user?.email) {
+        return;
+      }
 
-    const response = await dispatch(updateProfile(data));
-    if (updateProfile.rejected.match(response))
-      setMessage(response.payload?.error?.message);
-    else setMessage('');
-  };
+      updateProfile(data);
+    },
+    [updateProfile, user]
+  );
+
+  if (!user) {
+    return <></>;
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          {message && <AlertMessage severity="error" body={message} />}
+          {errorMessage && (
+            <AlertMessage severity="error" body={errorMessage} />
+          )}
         </Grid>
         <Grid item md={6} xs={12}>
           <TextField
-            disabled={isGuest()}
+            disabled={isGuest(user)}
             variant="outlined"
             fullWidth
             id={formData.name.id}
@@ -84,7 +94,7 @@ const UserProfile = () => {
         </Grid>
         <Grid item md={6} xs={12}>
           <TextField
-            disabled={isGuest()}
+            disabled={isGuest(user)}
             variant="outlined"
             fullWidth
             id={formData.email.id}
@@ -96,7 +106,7 @@ const UserProfile = () => {
             error={!!errors?.email}
           />
         </Grid>
-        {!isGuest() && (
+        {!isGuest(user) && (
           <Grid item>
             <SubmitButton>プロフィールを更新する</SubmitButton>
           </Grid>
@@ -104,6 +114,6 @@ const UserProfile = () => {
       </Grid>
     </form>
   );
-};
+});
 
 export default UserProfile;

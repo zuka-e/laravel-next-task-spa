@@ -1,58 +1,93 @@
-import { useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 
-import { ClickAwayListener, Card, CardActions, Button } from '@mui/material';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { Button, TextField } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 
-import { FormAction } from '@/store/slices/taskBoardSlice';
-import { TitleForm } from '.';
+import { getInputErrorMessage } from '@/utils/api/errors';
 
-type AddTaskButtonProps = FormAction & {
-  transparent?: boolean;
+type FormData = {
+  title: string;
 };
 
-const AddTaskButton = (props: AddTaskButtonProps) => {
-  const { transparent, ...formActionType } = props;
+const schema = yup.object().shape({
+  title: yup.string().label('Title').min(1).max(255),
+});
+
+type AddTaskButtonProps = {
+  disabled: boolean;
+  error: unknown;
+  onSubmit: (data: FormData) => void;
+};
+
+const AddTaskButton = memo(function AddTaskButton(
+  props: AddTaskButtonProps
+): JSX.Element {
+  const { disabled, error, onSubmit } = props;
   const [isEditing, setIsEditing] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    resetField,
+    formState: { errors },
+  } = useForm<FormData>({
+    mode: 'onBlur',
+    resolver: yupResolver(schema),
+  });
 
-  const toggleForm = () => {
-    setIsEditing(!isEditing);
-  };
+  const onValid = useCallback(
+    async (data: FormData): Promise<void> => {
+      onSubmit(data);
+      setIsEditing(false);
+      resetField('title');
+    },
+    [onSubmit, resetField]
+  );
 
-  const handleClickAway = () => {
-    setIsEditing(false);
-  };
+  const errorMessage = useMemo(() => {
+    return getInputErrorMessage(error, 'title') || errors?.title?.message;
+  }, [error, errors?.title?.message]);
 
   return (
-    <ClickAwayListener mouseEvent="onMouseDown" onClickAway={handleClickAway}>
+    <>
       {isEditing ? (
-        transparent ? (
-          <div className="w-full">
-            <TitleForm {...formActionType} handleClose={toggleForm} />
-          </div>
-        ) : (
-          <Card elevation={7}>
-            <CardActions className="block">
-              <TitleForm {...formActionType} handleClose={toggleForm} />
-            </CardActions>
-          </Card>
-        )
+        <form
+          onBlur={() => setIsEditing(false)}
+          onSubmit={handleSubmit(onValid)}
+          className="w-full"
+        >
+          <TextField
+            id="title"
+            disabled={disabled}
+            autoFocus
+            placeholder="Enter a title"
+            fullWidth
+            variant="outlined"
+            InputProps={{
+              className: 'font-bold',
+            }}
+            InputLabelProps={{ margin: 'dense' }}
+            helperText={errorMessage}
+            error={!!error || !!errors?.title}
+            {...register('title')}
+          />
+        </form>
       ) : (
         <Button
           // https://mui.com/material-ui/migration/v5-component-changes/✅-remove-default-color-prop
           color="inherit"
           fullWidth
           startIcon={<AddIcon />}
-          onClick={toggleForm}
-          className={
-            'justify-start hover:backdrop-brightness-75 ' +
-            (transparent ? 'shadow-none' : 'backdrop-brightness-90')
-          }
+          onClick={() => setIsEditing(true)}
+          className="justify-start backdrop-brightness-90 hover:backdrop-brightness-75"
         >
-          Add new {props.model}
+          Add
         </Button>
       )}
-    </ClickAwayListener>
+    </>
   );
-};
+});
 
 export default AddTaskButton;

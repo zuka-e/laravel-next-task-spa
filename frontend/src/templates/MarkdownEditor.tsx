@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 
 import { useForm, Controller } from 'react-hook-form';
@@ -11,7 +11,7 @@ import type { MDEditorProps, PreviewType } from '@uiw/react-md-editor';
 import type { MarkdownPreviewProps } from '@uiw/react-markdown-preview';
 
 import { mdCommands } from '@/config/mdEditor';
-import { SubmitButton } from '@/templates';
+import { Fieldset, SubmitButton } from '@/templates';
 
 // cf. https://github.com/uiwjs/react-md-editor/issues/52
 import '@uiw/react-md-editor/markdown-editor.css';
@@ -48,14 +48,23 @@ type MarkdownEditorProps = {
   schema: yup.ObjectSchema<ObjectShape>;
   onSubmit: (text: string) => void;
   defaultValue?: string;
+  isLoading: boolean;
 };
 
-const MarkdownEditor = (props: MarkdownEditorProps) => {
-  const { schema, defaultValue } = props;
-  const prop: keyof typeof schema.fields = Object.keys(schema.fields)[0];
+const MarkdownEditor = memo(function MarkdownEditor(
+  props: MarkdownEditorProps
+): JSX.Element {
+  const { schema, defaultValue, isLoading, onSubmit } = props;
+
+  const prop: keyof typeof schema.fields = useMemo(
+    () => Object.keys(schema.fields)[0],
+    [schema.fields]
+  );
+
   const [mode, setMode] = useState<PreviewType>(
     defaultValue ? 'preview' : 'edit'
   );
+
   const {
     formState: { errors },
     control,
@@ -66,18 +75,21 @@ const MarkdownEditor = (props: MarkdownEditorProps) => {
     resolver: yupResolver(schema),
   });
 
-  const handleClickPreview = () => {
+  const handleClickPreview = useCallback((): void => {
     setMode('edit');
-  };
+  }, []);
 
-  const onSubmit: SubmitHandler<Record<typeof prop, string>> = (data) => {
-    if (data[prop] === defaultValue) {
-      setMode('preview');
-      return;
-    }
+  const onSubmitValid: SubmitHandler<Record<typeof prop, string>> = useCallback(
+    (data): void => {
+      if (data[prop] === defaultValue) {
+        setMode('preview');
+        return;
+      }
 
-    props.onSubmit(data[prop]);
-  };
+      onSubmit(data[prop]);
+    },
+    [defaultValue, onSubmit, prop]
+  );
 
   // 表示するデータが変更された場合に値を初期化する
   useEffect(() => {
@@ -96,35 +108,37 @@ const MarkdownEditor = (props: MarkdownEditorProps) => {
     );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      {/* cf. https://react-hook-form.com/get-started/#IntegratingwithUIlibraries */}
-      <Controller
-        control={control}
-        name={prop}
-        defaultValue={defaultValue}
-        render={({ field }) => (
-          <MDEditor
-            autoFocus
-            preview={mode}
-            commands={mdCommands}
-            className={errors[prop] ? 'outline outline-1 outline-error' : ''}
-            {...field}
-            textareaProps={{
-              placeholder: 'Enter the text',
-            }}
-          />
-        )}
-      />
-      <div className="my-2 flex items-baseline">
-        <span className={errors[prop] ? 'text-error' : ''}>
-          {errors[prop]?.message}
-        </span>
-        <SubmitButton size="small" className="ml-auto">
-          {'Save'}
-        </SubmitButton>
-      </div>
+    <form onSubmit={handleSubmit(onSubmitValid)}>
+      <Fieldset disabled={isLoading}>
+        {/* cf. https://react-hook-form.com/get-started/#IntegratingwithUIlibraries */}
+        <Controller
+          control={control}
+          name={prop}
+          defaultValue={defaultValue}
+          render={({ field }) => (
+            <MDEditor
+              autoFocus
+              preview={mode}
+              commands={mdCommands}
+              className={errors[prop] ? 'outline outline-1 outline-error' : ''}
+              {...field}
+              textareaProps={{
+                placeholder: 'Enter the text',
+              }}
+            />
+          )}
+        />
+        <div className="my-2 flex items-baseline">
+          <span className={errors[prop] ? 'text-error' : ''}>
+            {errors[prop]?.message}
+          </span>
+          <SubmitButton size="small" className="ml-auto">
+            {'Save'}
+          </SubmitButton>
+        </div>
+      </Fieldset>
     </form>
   );
-};
+});
 
 export default MarkdownEditor;

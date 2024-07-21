@@ -34,6 +34,15 @@ const overrides: ThemeOptions['components'] = {
       container: rootElement,
     },
   },
+  MuiFormHelperText: {
+    styleOverrides: {
+      root: {
+        marginLeft: '3px',
+        marginRight: '3px',
+        whiteSpace: 'pre-wrap',
+      },
+    },
+  },
   MuiLink: {
     defaultProps: {
       // https://mui.com/material-ui/migration/v5-component-changes/#✅-update-default-underline-prop

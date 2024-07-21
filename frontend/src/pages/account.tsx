@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import Head from 'next/head';
 import type { GetStaticProps } from 'next';
 
@@ -10,7 +11,8 @@ import {
   Container,
 } from '@mui/material';
 
-import { isGuest } from '@/utils/auth';
+import { useGetSessionQuery } from '@/store/api';
+import { isGuest } from '@/lib/auth';
 import { BaseLayout } from '@/layouts';
 import {
   UserProfile,
@@ -31,7 +33,13 @@ export const getStaticProps: GetStaticProps<AccountProps> = async () => {
   };
 };
 
-const Account = () => {
+const Account = memo(function Account(): JSX.Element {
+  const { data: { user } = {} } = useGetSessionQuery();
+
+  if (!user) {
+    return <></>;
+  }
+
   return (
     <>
       <Head>
@@ -69,7 +77,7 @@ const Account = () => {
                   <DeleteAccountDialog
                     trigger={
                       <Button
-                        disabled={isGuest()}
+                        disabled={isGuest(user)}
                         variant="contained"
                         color="error"
                       >
@@ -85,6 +93,6 @@ const Account = () => {
       </BaseLayout>
     </>
   );
-};
+});
 
 export default Account;

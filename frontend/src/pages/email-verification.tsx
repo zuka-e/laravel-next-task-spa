@@ -1,13 +1,17 @@
+import { memo } from 'react';
 import Head from 'next/head';
 import type { GetStaticProps } from 'next';
 
 import { Container, Card, Grid, Typography, Button } from '@mui/material';
 
-import { sendEmailVerificationLink } from '@/store/thunks/auth';
-import { useAppDispatch, useAppSelector } from '@/utils/hooks';
+import {
+  useGetSessionQuery,
+  useRequestVerificationEmailMutation,
+} from '@/store/api';
 import { BaseLayout } from '@/layouts';
 import { AlertMessage, LinkButton } from '@/templates';
 import type { AuthPage } from '@/routes';
+import { isVerified } from '@/lib/auth';
 
 type EmailVerificationProps = AuthPage;
 
@@ -22,15 +26,13 @@ export const getStaticProps: GetStaticProps<
   };
 };
 
-const EmailVerification = () => {
-  const dispatch = useAppDispatch();
-  const verified = useAppSelector(
-    (state) => !!state.auth.user?.emailVerifiedAt
-  );
+const EmailVerification = memo(function EmailVerification(): JSX.Element {
+  const { data: { user } = {} } = useGetSessionQuery();
+  const [requestVerificationEmail] = useRequestVerificationEmailMutation();
 
-  const handleClick = () => {
-    dispatch(sendEmailVerificationLink());
-  };
+  if (!user) {
+    return <></>;
+  }
 
   return (
     <>
@@ -44,15 +46,15 @@ const EmailVerification = () => {
           className="my-4 flex flex-col gap-4 sm:my-16"
         >
           <AlertMessage
-            severity={verified ? 'success' : 'warning'}
+            severity={isVerified(user) ? 'success' : 'warning'}
             elevation={2}
             className="font-bold"
           >
-            {verified
+            {isVerified(user)
               ? '認証済みです。'
               : '登録から24時間以内に認証を完了させなかった場合、一定時間経過後に登録が抹消されます。'}
           </AlertMessage>
-          {verified ? (
+          {isVerified(user) ? (
             <div>
               <LinkButton to={'/'} variant="contained" className="w-fit">
                 トップページへ
@@ -73,7 +75,9 @@ const EmailVerification = () => {
                 <Button
                   variant="contained"
                   color="secondary"
-                  onClick={handleClick}
+                  onClick={() => {
+                    requestVerificationEmail();
+                  }}
                 >
                   {`メールを再送信する`}
                 </Button>
@@ -84,6 +88,6 @@ const EmailVerification = () => {
       </BaseLayout>
     </>
   );
-};
+});
 
 export default EmailVerification;

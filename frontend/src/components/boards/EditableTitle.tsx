@@ -1,67 +1,93 @@
-import { useState } from 'react';
+import { forwardRef, memo, useMemo, useState } from 'react';
 
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 import { TextField, TextFieldProps } from '@mui/material';
 
-import { FormAction } from '@/store/slices/taskBoardSlice';
-import { TitleForm } from '.';
+import { getInputErrorMessage } from '@/utils/api/errors';
 
-type EditableTitleProps = FormAction & {
-  inputStyle?: string;
-  disableMargin?: boolean;
-  maxRows?: number;
-} & TextFieldProps;
-
-const EditableTitle = (props: EditableTitleProps) => {
-  const { inputStyle, disableMargin, maxRows, ...formProps } = props;
-  const { method, model, variant, ...textFieldProps } = formProps;
-  const defaultValue = props.method === 'PATCH' ? props.data.title : '';
-  const [editing, setEditing] = useState(false);
-
-  const handleOpenForm = () => {
-    setEditing(true);
-  };
-
-  const handleCloseForm = () => {
-    setEditing(false);
-  };
-
-  return editing ? (
-    <TitleForm
-      handleClose={handleCloseForm}
-      defaultValue={defaultValue || ''}
-      multiline
-      className="-ml-1.5"
-      InputProps={{
-        className: 'font-bold ' + (props.inputStyle ?? ''),
-        classes: { multiline: 'p-1.5' },
-      }}
-      FormHelperTextProps={{
-        className: 'mt-0 ml-1',
-      }}
-      {...formProps}
-    />
-  ) : (
-    <TextField
-      fullWidth
-      value={defaultValue || ''} // `defaultValue`の場合初レンダリング時の値を固定
-      inputProps={{ title: defaultValue }}
-      multiline
-      maxRows={props.maxRows || 1}
-      variant="outlined"
-      className="-ml-1.5"
-      InputProps={{
-        onClick: handleOpenForm,
-        className:
-          'rounded outline-1 hover:outline font-bold p-1.5 ' +
-          (props.disableMargin ? '' : 'mb-5'),
-        classes: {
-          inputMultiline: 'line-clamp-1 ' + (props.inputStyle ?? ''),
-          notchedOutline: 'border-none',
-        },
-      }}
-      {...textFieldProps}
-    />
-  );
+type FormData = {
+  title: string;
 };
+
+const schema = yup.object().shape({
+  title: yup.string().label('Title').min(1).max(255),
+});
+
+type EditableTitleProps = {
+  defaultValue: string;
+  disabled: boolean;
+  error: unknown;
+  onSubmit: (data: FormData) => void;
+};
+
+const EditableTitle = memo(function EditableTitle(
+  props: EditableTitleProps
+): JSX.Element {
+  const { defaultValue, disabled, error, onSubmit } = props;
+  const [isEditing, setIsEditing] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    mode: 'onBlur',
+    resolver: yupResolver(schema),
+  });
+
+  const errorMessage = useMemo(() => {
+    return getInputErrorMessage(error, 'title') || errors?.title?.message;
+  }, [error, errors?.title?.message]);
+
+  return (
+    <>
+      {isEditing ? (
+        <form
+          onBlur={() => setIsEditing(false)}
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <StyledTextField
+            id="title"
+            defaultValue={defaultValue}
+            autoFocus
+            disabled={disabled}
+            helperText={errorMessage}
+            error={!!error || !!errors?.title}
+            {...register('title')}
+          />
+        </form>
+      ) : (
+        <StyledTextField
+          onFocus={() => setIsEditing(true)}
+          value={defaultValue}
+        />
+      )}
+    </>
+  );
+});
+
+const StyledTextField = memo(
+  forwardRef<HTMLDivElement, TextFieldProps>(function StyledTitleForm(
+    props,
+    ref
+  ): JSX.Element {
+    return (
+      <TextField
+        fullWidth
+        variant="outlined"
+        placeholder="Enter a title"
+        InputProps={{
+          classes: { notchedOutline: 'border-none' },
+          className: 'rounded outline-1 hover:outline font-bold',
+        }}
+        InputLabelProps={{ margin: 'dense' }}
+        className="-ml-1.5"
+        ref={ref}
+        {...props}
+      />
+    );
+  })
+);
 
 export default EditableTitle;

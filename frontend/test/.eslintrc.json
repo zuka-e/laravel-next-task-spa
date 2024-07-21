@@ -1,0 +1,11 @@
+// https://eslint.org/docs/user-guide/getting-started#installation-and-usage
+// https://eslint.org/docs/user-guide/configuring/configuration-files
+// https://eslint.org/docs/latest/use/configure/configuration-files#cascading-and-hierarchy
+// https://github.com/testing-library/eslint-plugin-testing-library#run-the-plugin-only-against-test-files
+{
+  "ignorePatterns": ["e2e"],
+  "extends": ["plugin:testing-library/react"],
+  "rules": {
+    "@typescript-eslint/no-non-null-assertion": "off"
+  }
+}

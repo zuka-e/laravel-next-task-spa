@@ -1,8 +1,11 @@
+import { memo } from 'react';
+
 import dayjs from 'dayjs';
 import { CardHeader, Typography, IconButton } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 
-import { TaskList } from '@/models';
+import type { TaskList } from '@/store/api/services/tasks/models';
+import { useUpdateTaskListMutation } from '@/store/api';
 import { PopoverControl } from '@/templates';
 import { EditableTitle } from '..';
 import { ListMenu } from '.';
@@ -11,16 +14,19 @@ type ListCardHeaderProps = {
   list: TaskList;
 };
 
-const ListCardHeader = (props: ListCardHeaderProps) => {
+const ListCardHeader = memo(function ListCardHeader(
+  props: ListCardHeaderProps
+): JSX.Element {
   const { list } = props;
+
+  const [updateTaskList, { isLoading, error }] = useUpdateTaskListMutation();
 
   const Title = () => (
     <EditableTitle
-      method="PATCH"
-      model="list"
-      data={list}
-      disableMargin
-      inputStyle="text-white"
+      defaultValue={list.title}
+      disabled={isLoading}
+      error={error}
+      onSubmit={(data) => updateTaskList({ id: list.id, ...data })}
     />
   );
 
@@ -48,9 +54,9 @@ const ListCardHeader = (props: ListCardHeaderProps) => {
       title={<Title />}
       subheader={<Subheader />}
       action={<Action />}
-      className="pt-2 pr-2.5 pb-0"
+      className="pb-0 pr-2.5 pt-2"
     />
   );
-};
+});
 
 export default ListCardHeader;

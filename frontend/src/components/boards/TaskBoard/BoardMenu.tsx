@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 
 import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import {
@@ -7,9 +7,9 @@ import {
   Delete as DeleteIcon,
 } from '@mui/icons-material';
 
-import { TaskBoard } from '@/models';
-import { useAppDispatch, useRoute } from '@/utils/hooks';
-import { openInfoBox } from '@/store/slices/taskBoardSlice';
+import type { TaskBoard } from '@/store/api/services/tasks/models';
+import { useRoute } from '@/utils/hooks';
+import { useTaskDetails } from '@/lib/hooks';
 import { PopoverControl, DeleteTaskDialog } from '@/templates';
 import { SortSelect } from '..';
 
@@ -23,22 +23,29 @@ type BoardMenuProps = {
   board: TaskBoard;
 };
 
-const BoardMenu = (props: BoardMenuProps) => {
+const BoardMenu = memo(function BoardMenu(props: BoardMenuProps): JSX.Element {
   const { board } = props;
   const { pathParams } = useRoute();
-  const dispatch = useAppDispatch();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const { showTaskDetails } = useTaskDetails();
 
-  const handleClick = (key: keyof typeof menuItem) => () => {
-    switch (key) {
-      case 'info':
-        dispatch(openInfoBox({ model: 'board', data: board }));
-        break;
-      case 'delete':
-        setOpenDeleteDialog(true);
-        break;
-    }
-  };
+  const handleClick = useCallback(
+    (key: keyof typeof menuItem): void => {
+      switch (key) {
+        case 'info':
+          showTaskDetails('b', board.id);
+          break;
+        case 'delete':
+          setOpenDeleteDialog(true);
+          break;
+      }
+    },
+    [board.id, showTaskDetails]
+  );
+
+  const handleCloseDeleteDialog = useCallback((): void => {
+    setOpenDeleteDialog(false);
+  }, []);
 
   return (
     <List component="nav" aria-label="board-menu" dense>
@@ -54,25 +61,28 @@ const BoardMenu = (props: BoardMenuProps) => {
             </ListItem>
           }
         >
-          <SortSelect model="list" boardId={board.id} />
+          <SortSelect boardId={board.id} />
         </PopoverControl>
       )}
       {pathParams?.boardId && (
-        <ListItem button onClick={handleClick('info')} title={menuItem.info}>
+        <ListItem
+          button
+          onClick={() => handleClick('info')}
+          title={menuItem.info}
+        >
           <ListItemIcon>
             <InfoIcon />
           </ListItemIcon>
           <ListItemText primary={menuItem.info} />
         </ListItem>
       )}
-      {openDeleteDialog && (
-        <DeleteTaskDialog
-          model="board"
-          data={board}
-          setOpen={setOpenDeleteDialog}
-        />
-      )}
-      <ListItem button onClick={handleClick('delete')}>
+      <DeleteTaskDialog
+        model="board"
+        data={board}
+        open={openDeleteDialog}
+        onClose={handleCloseDeleteDialog}
+      />
+      <ListItem button onClick={() => handleClick('delete')}>
         <ListItemIcon>
           <DeleteIcon />
         </ListItemIcon>
@@ -80,6 +90,6 @@ const BoardMenu = (props: BoardMenuProps) => {
       </ListItem>
     </List>
   );
-};
+});
 
 export default BoardMenu;

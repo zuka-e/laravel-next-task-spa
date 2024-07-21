@@ -1,9 +1,9 @@
 // cf. file://./AuthRoute.tsx
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { memo, useEffect } from 'react';
 
-import { useAuth } from '@/utils/hooks';
+import { useGetSessionQuery } from '@/store/api';
+import { useRedirect } from '@/lib/hooks';
 import { Loading } from '@/layouts';
 
 export type GuestPage = {
@@ -17,25 +17,32 @@ type GuestRouteProps = {
 /**
  * Redirect if authenticated.
  */
-const GuestRoute = ({ children }: GuestRouteProps) => {
-  const router = useRouter();
-  const { auth, guest } = useAuth();
+const GuestRoute = memo(function GuestRoute({
+  children,
+}: GuestRouteProps): JSX.Element {
+  const { redirectToIntended } = useRedirect();
+
+  const { auth, isUninitialized } = useGetSessionQuery(undefined, {
+    selectFromResult: (result) => ({
+      ...result,
+      auth: !!result.data?.user?.id,
+    }),
+  });
 
   useEffect(() => {
-    if (auth) {
-      const previousUrl = sessionStorage.getItem('previousUrl');
-      sessionStorage.removeItem('previousUrl');
-      router.replace(previousUrl || '/');
+    if (!auth) {
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [auth]);
+
+    redirectToIntended();
+  }, [auth, redirectToIntended]);
 
   // Until initialized or the redirect completed.
-  if (!guest) {
+  if (isUninitialized || auth) {
     return <Loading open={true} />;
   }
 
   return <>{children}</>;
-};
+});
 
 export default GuestRoute;

@@ -1,55 +1,47 @@
-import faker from 'faker';
-
-import { Doc, db, TaskListDocument } from '@test/api/models';
-import { uuid } from '@test/utils/uuid';
+import { faker } from '@test/utils/faker';
+import type { TaskBoard, TaskList } from '@test/api/database/models';
+import db from '@test/api/database/manager';
+import { timestamp } from '@test/api/database/definitions';
 import { guestUser, otherUser } from './users';
 import { boardOfGuestUser, boardOfOtherUser } from './taskBoards';
 
-export const listOfGuestUser: TaskListDocument = {
-  id: uuid(),
-  userId: guestUser.id,
+export const listOfGuestUser = {
+  id: faker.string.uuid(),
   boardId: boardOfGuestUser.id,
   title: 'ゲストユーザーのTaskList',
   description: 'ゲストユーザーが所有するTaskList',
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-};
+  sequence: 2 ** 10 / 2,
+  createdAt: timestamp(),
+  updatedAt: timestamp(),
+} as TaskList;
 
-export const listOfOtherUser: TaskListDocument = {
-  id: uuid(),
-  userId: otherUser.id,
+export const listOfOtherUser = {
+  id: faker.string.uuid(),
   boardId: boardOfOtherUser.id,
   title: '他のユーザーのTaskList',
   description: '他のユーザーが所有するTaskList',
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-};
+  sequence: 2 ** 10 / 2,
+  createdAt: timestamp(),
+  updatedAt: timestamp(),
+} as TaskList;
 
-const initialLists: TaskListDocument[] = [listOfGuestUser, listOfOtherUser];
+const initialLists: TaskList[] = [listOfGuestUser, listOfOtherUser];
 
 type SeederProps = {
   count: number;
   belongsTo: {
-    user: Doc<'users'>;
-    board: Doc<'taskBoards'>;
+    board: TaskBoard;
   };
 };
 
-const runSeeder = (props: SeederProps) => {
-  const user = db.where('users', 'id', props.belongsTo.user.id)[0];
-  if (!user) throw Error('The specified data does not exist');
-
-  initialLists.forEach((list) => {
-    db.create('taskLists', list);
-  });
-
-  [...Array(props.count)].forEach(() => {
-    db.create('taskLists', {
-      id: faker.datatype.uuid(),
-      userId: props.belongsTo.user.id,
+const seed = (props: SeederProps) => {
+  [...Array(props.count)].forEach((_, i) => {
+    db.taskList.create({
+      id: faker.string.uuid(),
       boardId: props.belongsTo.board.id,
       title: `${faker.hacker.adjective()} ${faker.hacker.verb()}`,
       description: faker.hacker.phrase(),
+      sequence: (i + 1) * 2 ** 10,
       createdAt: faker.date.past().toISOString(),
       updatedAt: faker.date.recent().toISOString(),
     });
@@ -57,19 +49,26 @@ const runSeeder = (props: SeederProps) => {
 };
 
 const initialize = () => {
-  db.load('taskLists');
+  if (db.taskList.count()) {
+    return;
+  }
 
-  if (db.exists('taskLists')) return;
-
-  const guestUserBoards = db.where('taskBoards', 'userId', guestUser.id);
-  guestUserBoards.forEach((board) => {
-    runSeeder({ count: 2, belongsTo: { user: guestUser, board: board } });
+  initialLists.forEach((list) => {
+    db.taskList.create(list);
   });
 
-  const otherUserBoards = db.where('taskBoards', 'userId', otherUser.id);
-  otherUserBoards.forEach((board) => {
-    runSeeder({ count: 2, belongsTo: { user: otherUser, board: board } });
-  });
+  db.taskBoard
+    .findMany({ where: { userId: { equals: guestUser.id } } })
+    .forEach((board, i) => {
+      const count = i === 0 ? 50 : 2;
+      seed({ count, belongsTo: { board } });
+    });
+
+  db.taskBoard
+    .findMany({ where: { userId: { equals: otherUser.id } } })
+    .forEach((board) => {
+      seed({ count: 2, belongsTo: { board } });
+    });
 };
 
 // 初期化実行

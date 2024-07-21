@@ -1,9 +1,11 @@
-import { useEffect } from 'react';
+import { memo, useMemo } from 'react';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
+import Router from 'next/router';
 
-import { useAppDispatch, useRoute } from '@/utils/hooks';
-import { verifyEmail } from '@/store/thunks/auth';
+import { skipToken } from '@reduxjs/toolkit/query';
+
+import { useRoute } from '@/utils/hooks';
+import { useVerifyEmailQuery } from '@/store/api';
 import { BaseLayout, Loading } from '@/layouts';
 
 /**
@@ -13,31 +15,25 @@ import { BaseLayout, Loading } from '@/layouts';
  *
  * It just sends a request to the verification URL.
  */
-const VerifyEmail: React.FC = () => {
-  const router = useRouter();
+const VerifyEmail = memo(function VerifyEmail(): JSX.Element {
   const route = useRoute();
-  const dispatch = useAppDispatch();
 
-  const credentials = route.pathParams?.['credentials'];
-  const queryString = route.queryString;
+  const credentials = useMemo(
+    (): string | undefined => route.pathParams?.['credentials'],
+    [route.pathParams]
+  );
+  const queryString = useMemo(
+    (): string | undefined => route.queryString,
+    [route.queryString]
+  );
 
-  useEffect((): void => {
-    if (!(credentials && queryString)) {
-      return;
-    }
+  const { isSuccess } = useVerifyEmailQuery(
+    credentials && queryString ? { credentials, queryString } : skipToken
+  );
 
-    (async (): Promise<void> => {
-      const response = await dispatch(
-        verifyEmail({ credentials, queryString })
-      );
-
-      if (verifyEmail.fulfilled.match(response)) {
-        await router.replace('/account');
-        return;
-      }
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [credentials, queryString]);
+  if (isSuccess) {
+    Router.replace('/account');
+  }
 
   return (
     <>
@@ -49,6 +45,6 @@ const VerifyEmail: React.FC = () => {
       </BaseLayout>
     </>
   );
-};
+});
 
 export default VerifyEmail;

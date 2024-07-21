@@ -1,12 +1,13 @@
-import { useRef } from 'react';
+import { memo, useCallback, useRef } from 'react';
 
+import clsx from 'clsx';
 import { useDrag, useDrop } from 'react-dnd';
 import { Card, Typography } from '@mui/material';
 
-import * as Model from '@/models';
+import type * as Model from '@/store/api/services/tasks/models';
+import { useMoveCard } from '@/store/api';
 import { draggableItem, DragItem } from '@/utils/dnd';
-import { useAppDispatch, useAppSelector } from '@/utils/hooks';
-import { moveCard, openInfoBox } from '@/store/slices/taskBoardSlice';
+import { useTaskDetails } from '@/lib/hooks';
 
 type TaskCardProps = {
   card: Model.TaskCard;
@@ -14,49 +15,34 @@ type TaskCardProps = {
   listIndex: number;
 };
 
-const TaskCard = (props: TaskCardProps) => {
+const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
   const { card, cardIndex, listIndex } = props;
-  const selectedId = useAppSelector((state) => state.boards.infoBox.data?.id);
-  const dispatch = useAppDispatch();
+  const { showTaskDetails, isTaskSelected } = useTaskDetails();
+  const { moveCard } = useMoveCard();
   const ref = useRef<HTMLDivElement>(null);
 
   const [, drag] = useDrag<DragItem, unknown, unknown>({
     type: draggableItem.card,
     item: {
-      id: card.id,
-      listId: card.listId,
+      ...card,
       index: cardIndex,
       listIndex: listIndex,
     },
   });
 
-  /** リスト内のカードの移動を司る */
   const [{ isOver }, drop] = useDrop({
     accept: draggableItem.card,
     hover: (item: DragItem) => {
-      if (!ref.current) return;
+      if (item.id === card.id) {
+        return;
+      }
 
-      const dragListIndex = item.listIndex;
-      const hoverListIndex = listIndex;
+      const dragListId = item.listId;
       const dragIndex = item.index;
-      const hoverIndex = cardIndex;
 
-      // 位置不変の場合
-      if (dragIndex === hoverIndex && dragListIndex === hoverListIndex) return;
+      item.index = cardIndex;
 
-      const boardId = card.boardId;
-      dispatch(
-        moveCard({
-          dragListIndex,
-          hoverListIndex,
-          dragIndex,
-          hoverIndex,
-          boardId,
-        })
-      );
-
-      item.index = hoverIndex;
-      item.listIndex = hoverListIndex;
+      moveCard(item, dragListId, card.listId, dragIndex, cardIndex);
     },
     collect: (monitor) => ({
       isOver: monitor.isOver(),
@@ -65,30 +51,28 @@ const TaskCard = (props: TaskCardProps) => {
 
   drag(drop(ref));
 
-  const isSelected = () => card.id === selectedId;
-
-  const handleClick = () => {
-    dispatch(openInfoBox({ model: 'card', data: card }));
-  };
+  const handleClick = useCallback((): void => {
+    showTaskDetails('c', card.id);
+  }, [card.id, showTaskDetails]);
 
   return (
     <Card
       ref={ref}
       onClick={handleClick}
-      className={
-        'cursor-pointer hover:opacity-80' +
-        (isSelected() ? ' opacity-80 outline outline-primary ' : ' ') +
-        (isOver ? 'opacity-0' : '')
-      }
+      className={clsx(
+        'cursor-pointer hover:opacity-80',
+        isTaskSelected('c', card.id) && 'opacity-80 outline outline-primary',
+        isOver && 'opacity-0'
+      )}
     >
       <Typography
         title={card.title}
-        className="whitespace-pre-wrap p-1.5 line-clamp-3"
+        className="line-clamp-3 whitespace-pre-wrap p-1.5"
       >
         {card.title}
       </Typography>
     </Card>
   );
-};
+});
 
 export default TaskCard;

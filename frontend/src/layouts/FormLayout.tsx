@@ -1,33 +1,50 @@
+import { memo, useMemo } from 'react';
+
 import { Container, Card, Grid, Avatar, Typography } from '@mui/material';
 
 import { APP_NAME } from '@/config/app';
-import { AlertMessage } from '@/templates';
+import { isInvalidRequest, makeErrorMessageFrom } from '@/utils/api/errors';
+import { AlertMessage, Fieldset } from '@/templates';
 import Link, { NextLinkComposed } from '@/templates/Link';
 import logo from '@/images/logo_short.svg';
 
-const Copyright = () => (
-  <Typography variant="body2" color="textSecondary" align="center">
-    © {APP_NAME} {new Date().getFullYear()}
-  </Typography>
-);
+const Copyright = memo(function Copyright(): JSX.Element {
+  return (
+    <Typography variant="body2" color="textSecondary" align="center">
+      © {APP_NAME} {new Date().getFullYear()}
+    </Typography>
+  );
+});
 
 type FormLayoutProps = {
   children: React.ReactNode;
+  /** Form heading */
   title: string;
-  message?: string;
+  /** Object that may be validation errors */
+  error: unknown;
+  /** Whether being submitting */
+  isLoading: boolean;
+  /** Whether to disable the form entirely */
+  disabled?: boolean;
   onSubmit: React.FormEventHandler<HTMLFormElement>;
 };
 
-const FormLayout = (props: FormLayoutProps) => {
-  const { children, title, onSubmit, message } = props;
+const FormLayout = memo(function FormLayout(
+  props: FormLayoutProps
+): JSX.Element {
+  const { children, title, onSubmit, error, isLoading, disabled } = props;
+
+  const errorMessage = useMemo((): string | null => {
+    return isInvalidRequest(error) ? makeErrorMessageFrom(error) : null;
+  }, [error]);
 
   return (
     <>
       <Container component="main" maxWidth="xs" className="my-4 sm:my-16">
-        {message && (
+        {errorMessage && (
           <AlertMessage
             severity="error"
-            body={message}
+            body={errorMessage}
             className="mb-4 whitespace-pre-wrap text-xs"
           />
         )}
@@ -44,8 +61,8 @@ const FormLayout = (props: FormLayoutProps) => {
             <Typography component="h1" variant="h5" gutterBottom>
               {title}
             </Typography>
-            <form onSubmit={onSubmit} className="w-full">
-              {children}
+            <form onSubmit={onSubmit} aria-label={title} className="w-full">
+              <Fieldset disabled={disabled || isLoading}>{children}</Fieldset>
             </form>
           </Grid>
         </Card>
@@ -68,6 +85,6 @@ const FormLayout = (props: FormLayoutProps) => {
       </footer>
     </>
   );
-};
+});
 
 export default FormLayout;

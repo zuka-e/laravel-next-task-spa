@@ -1,46 +1,35 @@
-import { act, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 
-import { useRouter } from 'next/router';
-import { Provider } from 'react-redux';
+import PageHandler from '@/components/pages/PageHandler';
+import { ErrorHandler } from '@/components/errors';
+import { Route } from '@/routes';
 
-import store from '@test/store';
-import { PageHandler } from '@/components/pages';
-import { setHttpStatus } from '@/store/slices';
-
-jest.mock('next/router', () => ({
-  useRouter: jest.fn(),
+vi.mock('@/components/errors', () => ({
+  ErrorHandler: vi.fn(({ children }) => (
+    <div data-testid="error-handler">{children}</div>
+  )),
 }));
 
-describe('Page handler', () => {
-  (useRouter as jest.Mock).mockReturnValue({
-    asPath: '',
+vi.mock('@/routes', () => ({
+  Route: vi.fn(() => <div data-testid="route" />),
+}));
+
+describe('PageHandler', () => {
+  it('renders ErrorHandler', () => {
+    render(<PageHandler Component={() => null} pageProps={{}} />);
+
+    expect(ErrorHandler).toBeCalledTimes(1);
+    expect(screen.getByTestId('error-handler')).toBeVisible();
   });
 
-  const errorMessages = [
-    '400 Bad Request',
-    '403 Forbidden',
-    '404 Not Found',
-    '419 Page Expired',
-    '429 Too Many Requests',
-    '500 Internal Server Error',
-    '503 Service Unavailable',
-  ];
+  it('passes props to Route component', () => {
+    const props = { Component: () => null, pageProps: { foo: 'bar' } };
+    render(<PageHandler {...props} />);
 
-  errorMessages.forEach((errorMessage) => {
-    const status = parseInt(errorMessage.split(' ')[0]);
-
-    it(`should render ${status} if the error is detected`, () => {
-      render(
-        <Provider store={store}>
-          <PageHandler Component={() => <></>} pageProps={{}} />
-        </Provider>
-      );
-
-      act(() => {
-        store.dispatch(setHttpStatus(status));
-      });
-
-      expect(screen.getByRole('heading', { name: errorMessage })).toBeVisible();
-    });
+    expect(Route).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining(props),
+      expect.anything()
+    );
   });
 });

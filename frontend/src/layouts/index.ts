@@ -4,7 +4,7 @@ export { default as BaseLayout } from './BaseLayout';
 export { default as StandbyScreen } from './StandbyScreen';
 export { default as Loading } from './Loading';
 export { default as Progressbar } from './Progressbar';
-export { default as FlashNotification } from './FlashNotification';
+export { default as Notification } from './Notification';
 export { default as FormLayout } from './FormLayout';
 export { default as HttpErrorLayout } from './HttpErrorLayout';
 export { default as MarkdownWithToc } from './MarkdownWithToc';

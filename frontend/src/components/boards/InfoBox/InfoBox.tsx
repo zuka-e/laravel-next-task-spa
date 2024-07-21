@@ -1,74 +1,65 @@
-import { useEffect } from 'react';
+import { memo } from 'react';
 
-import theme from '@/theme';
-import { TaskBoard, TaskList, TaskCard } from '@/models';
-import { removeInfoBox } from '@/store/slices/taskBoardSlice';
-import {
-  useAppDispatch,
-  useDeepEqualSelector,
-  usePrevious,
-} from '@/utils/hooks';
-import { TaskBoardDetails, TaskListDetails, TaskCardDetails } from '.';
+import { Card, CardContent, IconButton, Skeleton, Stack } from '@mui/material';
+import { Close as CloseIcon } from '@mui/icons-material';
 
-const InfoBox = (props: JSX.IntrinsicElements['div']) => {
-  const { className, ...divProps } = props;
-  const dispatch = useAppDispatch();
-  const currentState = useDeepEqualSelector((state) => state.boards.infoBox);
-  const previousState = usePrevious(
-    currentState.model ? currentState : undefined
-  );
+import { repeatMap } from '@/utils';
+import { useGetTaskDetailsQuery, useTaskDetails } from '@/lib/hooks';
+import { TaskBoardDetails, TaskCardDetails, TaskListDetails } from '.';
 
-  useEffect(() => {
-    if (!previousState) return; // `open`を実行していない(`prev`が存在していない)場合
-    if (currentState.open) return; // `close`されていない場合
-    if (!currentState.model) return; // 既に`remove`されている場合
+const InfoBox = memo(function InfoBox() {
+  const taskDetailsQuery = useGetTaskDetailsQuery();
+  const { hideTaskDetails } = useTaskDetails();
 
-    /** `close`後`transition`動作を待機してから`remove` */
-    const timeoutId = setTimeout(() => {
-      dispatch(removeInfoBox());
-    }, theme.transitions.duration.standard);
+  if (!taskDetailsQuery) {
+    return <Card className="w-0" />;
+  }
 
-    /** Prevent memory leaks */
-    return function cleanup() {
-      clearTimeout(timeoutId);
-    };
-  }, [dispatch, previousState, currentState.open, currentState.model]);
+  const { type, data, isFetching } = taskDetailsQuery;
 
-  useEffect(() => {
-    return function cleanup() {
-      dispatch(removeInfoBox());
-    };
-  }, [dispatch]);
+  const renderInfoBox = (): JSX.Element => {
+    if (!data) {
+      return <></>;
+    }
 
-  const renderInfoBox = () => {
-    switch (currentState.model) {
-      case 'board':
-        return <TaskBoardDetails board={currentState.data as TaskBoard} />;
-      case 'list':
-        return <TaskListDetails list={currentState.data as TaskList} />;
-      case 'card':
-        return <TaskCardDetails card={currentState.data as TaskCard} />;
+    const { isDeleted } = data.data;
+
+    if (isDeleted) {
+      hideTaskDetails();
+    }
+
+    switch (type) {
+      case 'b':
+        return <TaskBoardDetails board={data.data} />;
+      case 'l':
+        return <TaskListDetails list={data.data} />;
+      case 'c':
+        return <TaskCardDetails card={data.data} />;
+      default:
+        throw new Error('Unexpected Error.');
     }
   };
 
   return (
-    <div
-      className={
-        'relative w-full min-w-0 overflow-hidden shadow transition-all' +
-        (className ? ` ${className} ` : ' ') +
-        (currentState.open ? 'max-w-full' : 'max-w-0')
-      }
-      {...divProps}
-    >
-      {currentState.model ? (
-        <div className="absolute h-full w-full [&>*]:overflow-y-auto">
-          {renderInfoBox()}
+    <Card elevation={7} className="ml-auto w-full transition-all md:w-6/12">
+      <CardContent className="sticky top-16 z-10 h-full max-h-screen bg-white">
+        <div className="absolute right-2 top-2 z-20 w-fit rounded p-1">
+          <IconButton aria-label="close" onClick={hideTaskDetails}>
+            <CloseIcon />
+          </IconButton>
         </div>
-      ) : (
-        <h2 className="text-center">There is no content</h2>
-      )}
-    </div>
+        {isFetching ? (
+          <Stack spacing={2} className="ml-4 mr-10">
+            {repeatMap(15, (i) => (
+              <Skeleton key={i} variant="text" className="text-2xl" />
+            ))}
+          </Stack>
+        ) : (
+          renderInfoBox()
+        )}
+      </CardContent>
+    </Card>
   );
-};
+});
 
 export default InfoBox;
