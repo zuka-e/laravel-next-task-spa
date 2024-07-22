@@ -96,9 +96,9 @@ COPY --from=node --chown=${USER} /usr/local/lib/node_modules/npm /usr/lib/node_m
 RUN mkdir -p ${HOME}/.vscode-server/extensions \
     && chown -R ${USER} ${HOME}/.vscode-server
 
-# Allow the non-root user to access these files.
+# Allow `USER` to access these files.
 RUN mkdir -p ./vendor ./node_modules \
-    && chown -R ${USER}:${USER} ./
+    && chown -R ${USER}:${USER} ./vendor ./node_modules
 
 USER ${USER}
 
@@ -137,12 +137,16 @@ RUN composer dump-autoload --no-dev --classmap-authoritative
 #==========================================================================
 # For production
 #==========================================================================
-FROM base as production
+FROM build as production
 
 # cf. https://hub.docker.com/_/php - Configuration
 RUN mv ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini
 
 COPY ./ ./
+
+# Allow `USER` to access these files.
+RUN mkdir -p ./bootstrap/cache \
+    && chown ${USER}:${USER} ./bootstrap/cache
 
 COPY --from=build ${WORKDIR}/vendor/ ./vendor/
 COPY --from=build --chown=${USER} ${WORKDIR}/bootstrap/cache/ ./bootstrap/cache/

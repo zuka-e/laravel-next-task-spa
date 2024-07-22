@@ -6,6 +6,11 @@
 # e.g. docker compose -f docker-compose.base.yml -f docker-compose.dev.yml exec -u root php-fpm bash
 
 services:
+  php-fpm:
+    depends_on:
+      redis:
+        condition: service_healthy
+        restart: true
   mysql:
     volumes:
       - type: bind

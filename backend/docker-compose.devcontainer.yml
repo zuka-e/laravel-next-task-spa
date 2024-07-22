@@ -1,3 +1,9 @@
+# If it fails to `Reopen in Container`, see the *container* log for the detailed and ensure:
+# - to set `.env` values for the expected environment
+# - to remove the previous volume that affects the subsequent
+# - local builds works (`docker-compose -f docker-compose.base.yml -f docker-compose.dev.yml`)
+# If Git doen’t works, `Manage Unsafe Repositories` form `Source Control` in sidebar.
+
 services:
   php-fpm:
     volumes:

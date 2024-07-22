@@ -15,12 +15,12 @@ Dockerfile
 *.dockerignore
 
 # Composer related
-/composer.phar
-/vendor
+composer.phar
+vendor
 
 # Node related
-/node_modules
-/npm-debug.log
+node_modules
+npm-debug.log
 
 storage/*/*
 logs/*
