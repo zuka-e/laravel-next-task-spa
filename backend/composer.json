@@ -9,25 +9,24 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "bref/bref": "^1.2",
-        "bref/laravel-bridge": "^1.1",
-        "doctrine/dbal": "^3.0",
+        "bref/bref": "^2.3",
+        "bref/laravel-bridge": "^2.3",
         "guzzlehttp/guzzle": "^7.0.1",
-        "laravel/fortify": "^1.7",
-        "laravel/framework": "^10.0",
-        "laravel/sanctum": "^3.2",
-        "laravel/telescope": "^4.14"
+        "laravel/fortify": "^1.22",
+        "laravel/framework": "^11.18",
+        "laravel/sanctum": "^4.0",
+        "laravel/telescope": "^5.0"
     },
     "require-dev": {
-        "barryvdh/laravel-ide-helper": "^2.13",
+        "barryvdh/laravel-ide-helper": "^3.1",
         "fakerphp/faker": "^1.9.1",
         "laravel/horizon": "^5.15",
         "laravel/sail": "^1.0.1",
-        "laravel/tinker": "^2.5",
+        "laravel/tinker": "^2.9",
         "mockery/mockery": "^1.4.2",
-        "nunomaduro/collision": "^7.0",
+        "nunomaduro/collision": "^8.3",
         "phpunit/phpunit": "^10.0",
-        "spatie/laravel-ignition": "^2.0"
+        "spatie/laravel-ignition": "^2.8"
     },
     "config": {
         "optimize-autoloader": true,
