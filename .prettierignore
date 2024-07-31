@@ -1,0 +1,17 @@
+# https://prettier.io/docs/en/ignore.html
+
+public
+build
+storage
+
+vendor
+node_modules
+
+package.json
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+coverage
+
+*.md

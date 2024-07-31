@@ -1,0 +1,8 @@
+# cf. https://pnpm.io/workspaces
+# cf. https://pnpm.io/catalogs
+
+# Note: `package.json` `engines` field will now affect the root `pnpm` execution.
+
+packages:
+  # cf. https://github.com/okonet/lint-staged#how-can-i-ignore-files-from-eslintignore
+  - 'frontend'
