@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+# cf. https://github.com/okonet/lint-staged#command-line-flags
+
+pnpm exec lint-staged --config .lintstagedrc.mjs
