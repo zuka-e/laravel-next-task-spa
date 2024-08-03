@@ -42,6 +42,7 @@
     // while not in case of `yarn lint`.
     "@typescript-eslint/explicit-module-boundary-types": "off"
   },
+  "ignorePatterns": ["node_modules"],
   // https://eslint.org/docs/latest/user-guide/configuring/configuration-files#how-do-overrides-work
   "overrides": [
     {
