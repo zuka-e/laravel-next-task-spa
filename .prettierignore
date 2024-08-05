@@ -7,15 +7,10 @@ storage
 vendor
 node_modules
 
-composer.json
-composer.lock
 package.json
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
-
-_ide_helper.php
-_ide_helper_models.php
 
 coverage
 

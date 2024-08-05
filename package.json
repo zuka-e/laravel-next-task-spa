@@ -12,7 +12,6 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "@prettier/plugin-php": "0.21.0",
     "@typescript-eslint/eslint-plugin": "^5.30.7",
     "@typescript-eslint/parser": "^5.30.7",
     "eslint": "^8.26.0",
