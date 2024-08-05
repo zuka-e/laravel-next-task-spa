@@ -32,11 +32,12 @@ services:
   php-fpm:
     # cf. https://docs.docker.com/compose/compose-file/build
     build:
-      context: ./
-      dockerfile: ${DOCKER_CONFIG_DIR}/app/Dockerfile
+      context: ../
+      dockerfile: ./backend/${DOCKER_CONFIG_DIR}/app/Dockerfile
       target: ${APP_ENV}
       args:
-        CONFIG_DIR: ${DOCKER_CONFIG_DIR}/app
+        SRC_DIR: ./backend
+        CONFIG_DIR: ./backend/${DOCKER_CONFIG_DIR}/app
         PHP_VERSION: ${PHP_VERSION}
         WORKDIR: ${CONTAINER_WORKDIR}
         USER: ${WEB_USER}

@@ -10,6 +10,9 @@ services:
       - type: volume
         source: vscode-extensions
         target: /home/${WEB_USER}/.vscode-server/extensions
+      - type: volume
+        source: workspace_node_modules
+        target: ${CONTAINER_WORKDIR}/node_modules/
       - type: bind
         source: ../
         target: ${CONTAINER_PROJECT_DIR}
@@ -18,4 +21,7 @@ volumes:
   vscode-extensions:
     # https://docs.docker.com/compose/compose-file/07-volumes/#name
     name: vscode-extensions-for-laravel-api
+    driver: local
+  workspace_node_modules:
+    name: ${COMPOSE_PROJECT_NAME}-workspace-node_modules
     driver: local

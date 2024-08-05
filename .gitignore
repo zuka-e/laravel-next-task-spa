@@ -1,3 +1,4 @@
 # cf. https://github.com/github/gitignore
 
 node_modules
+.pnpm-store

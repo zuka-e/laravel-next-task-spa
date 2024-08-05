@@ -7,7 +7,7 @@ FROM composer:2.6 as composer
 
 # cf. https://hub.docker.com/_/node/
 # cf. https://github.com/nodejs/docker-node/blob/main/docs/BestPractices.md
-FROM node:20 as node
+FROM node:18 as node
 
 #==========================================================================
 # Base Image for each environment
@@ -15,7 +15,9 @@ FROM node:20 as node
 # cf. https://hub.docker.com/_/php - Image Variants
 FROM php:${PHP_VERSION}-fpm AS base
 
-ARG CONFIG_DIR=./docker/app
+ARG WORKSPACE_DIR=.
+ARG SRC_DIR=${WORKSPACE_DIR}/backend
+ARG CONFIG_DIR=${SRC_DIR}/docker/app
 ARG WORKDIR=/var/www/html
 ARG WEB_USER=www-data
 ARG USER=${WEB_USER}
@@ -77,7 +79,7 @@ RUN apt-get update && apt-get install -y \
         # cf. https://laravel.com/docs/10.x/redis
         # cf. https://github.com/phpredis/phpredis/blob/develop/INSTALL.md
         redis \
-        xdebug-3.2.1 \
+        xdebug \
     && docker-php-ext-enable \
         redis \
         xdebug
@@ -92,6 +94,9 @@ COPY --from=node --chown=${USER} /usr/local/bin/ /usr/bin/
 # Install `npm`.
 COPY --from=node --chown=${USER} /usr/local/lib/node_modules/npm /usr/lib/node_modules/npm
 
+# cf. https://pnpm.io/installation#using-npm
+RUN npm install -g pnpm
+
 # VSCode extensions for DevContainer
 RUN mkdir -p ${HOME}/.vscode-server/extensions \
     && chown -R ${USER} ${HOME}/.vscode-server
@@ -103,18 +108,22 @@ RUN mkdir -p ./vendor ./node_modules \
 USER ${USER}
 
 # Install Composer dependencies.
-COPY ./composer.json ./composer.lock ./
+COPY ${SRC_DIR}/composer.json ${SRC_DIR}/composer.lock ./
 # cf. https://getcomposer.org/doc/03-cli.md#install-i
 RUN composer install --no-scripts --no-interaction
 
-# Install Composer dependencies.
-COPY ./package.json ./package-lock.json ./
-# cf. https://docs.npmjs.com/cli/commands/npm-ci
-RUN npm clean-install --ignore-scripts
+# cf. https://pnpm.io/workspaces
+COPY ${WORKSPACE_DIR}/package.json \
+    ${WORKSPACE_DIR}/pnpm-lock.yaml \
+    ${WORKSPACE_DIR}/pnpm-workspace.yaml \
+    ../
+COPY ${SRC_DIR}/package.json ./
+# cf. https://pnpm.io/cli/install
+RUN pnpm install --no-scripts
 
 COPY ${CONFIG_DIR}/php/php.ini ${CONFIG_DIR}/php/xdebug.ini ${PHP_INI_DIR}/conf.d/
 COPY ${CONFIG_DIR}/start-container.dev.sh /usr/local/bin/start-container
-COPY ${CONFIG_DIR}/supervisor /etc/supervisor/conf.d/
+COPY ${CONFIG_DIR}/supervisor/ /etc/supervisor/conf.d/
 
 #==========================================================================
 # For package installation to exclude package managers from production
@@ -124,15 +133,24 @@ FROM base as build
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 # Install Composer dependencies.
-COPY ./composer.json ./composer.lock ./
+COPY ${SRC_DIR}/composer.json ./composer.lock ./
 # cf. https://getcomposer.org/doc/03-cli.md#install-i
 RUN composer install --no-dev --classmap-authoritative --no-scripts --no-plugins --no-interaction
 
 # Update the autoloader (otherwise Class won't be found).
 RUN mkdir -p ./bootstrap/cache/
-COPY ./ ./
+COPY ${SRC_DIR}/ ./
 # cf. https://getcomposer.org/doc/03-cli.md#dump-autoload-dumpautoload
 RUN composer dump-autoload --no-dev --classmap-authoritative
+
+# cf. https://pnpm.io/workspaces
+COPY ${WORKSPACE_DIR}/package.json \
+    ${WORKSPACE_DIR}/pnpm-lock.yaml \
+    ${WORKSPACE_DIR}/pnpm-workspace.yaml \
+    ../
+COPY ${SRC_DIR}/package.json ./
+# cf. https://pnpm.io/cli/install
+RUN pnpm clean-install --frozen-lockfile --ignore-scripts
 
 #==========================================================================
 # For production
@@ -142,7 +160,7 @@ FROM build as production
 # cf. https://hub.docker.com/_/php - Configuration
 RUN mv ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini
 
-COPY ./ ./
+COPY ${SRC_DIR}/ ./
 
 # Allow `USER` to access these files.
 RUN mkdir -p ./bootstrap/cache \

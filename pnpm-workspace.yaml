@@ -5,4 +5,5 @@
 
 packages:
   # cf. https://github.com/okonet/lint-staged#how-can-i-ignore-files-from-eslintignore
+  - 'backend'
   - 'frontend'

@@ -7,7 +7,9 @@ const config = {
   singleQuote: true,
   quoteProps: 'consistent',
   /** @see https://prettier.io/docs/en/plugins */
-  plugins: ['prettier-plugin-tailwindcss'],
+  plugins: ['@prettier/plugin-php', 'prettier-plugin-tailwindcss'],
+  /** @see https://github.com/prettier/plugin-php#configuration */
+  phpVersion: '8.2',
 };
 
 export default config;
