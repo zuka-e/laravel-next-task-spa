@@ -77,7 +77,7 @@ RUN apt-get update && apt-get install -y \
         # cf. https://laravel.com/docs/10.x/redis
         # cf. https://github.com/phpredis/phpredis/blob/develop/INSTALL.md
         redis \
-        xdebug-3.2.1 \
+        xdebug \
     && docker-php-ext-enable \
         redis \
         xdebug
