@@ -14,11 +14,12 @@ services:
   mysql:
     volumes:
       - type: bind
-        source: ${DOCKER_CONFIG_DIR}/mysql/create-testing-database.sh
+        source: ./backend/docker/mysql/create-testing-database.sh
         target: /docker-entrypoint-initdb.d/10-create-testing-database.sh
         read_only: true
   redis:
     image: redis:7.2-alpine
+    profiles: ['backend']
     ports:
       - ${FORWARD_REDIS_PORT:-6380}:6379
     volumes:
@@ -33,6 +34,7 @@ services:
   mailpit:
     # cf. https://hub.docker.com/r/axllent/mailpit
     image: axllent/mailpit:latest
+    profiles: ['backend']
     ports:
       - ${FORWARD_MAILPIT_PORT:-1025}:1025
       - ${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025

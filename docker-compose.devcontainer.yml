@@ -11,7 +11,7 @@ services:
         source: vscode-extensions
         target: /home/${WEB_USER}/.vscode-server/extensions
       - type: bind
-        source: ../
+        source: ./
         target: ${CONTAINER_PROJECT_DIR}
         consistency: delegated
 volumes:
