@@ -6,54 +6,35 @@ services:
     image: nginx:1.25
     # cf. https://docs.docker.com/compose/environment-variables/env-file
     environment:
-      CONTAINER_WORKDIR: ${CONTAINER_WORKDIR}
-      APP_ENV: ${APP_ENV}
-      SERVER_NAME: ${APP_DOMAIN}
-    volumes:
-      # cf. https://docs.docker.com/compose/compose-file/05-services/#long-syntax-5
-      # cf. https://hub.docker.com/_/nginx - Using environment variables
-      - type: bind
-        source: ${DOCKER_CONFIG_DIR}/nginx/default.conf
-        target: /etc/nginx/templates/default.conf.template
-        read_only: true
-      - type: bind
-        source: ${DOCKER_CONFIG_DIR}/nginx/${APP_ENV}.conf
-        target: /etc/nginx/templates/${APP_ENV}.conf.template
-        read_only: true
-      - type: bind
-        source: ./public
-        target: ${CONTAINER_WORKDIR}/public
-        read_only: true
+      APP_DOMAIN: ${APP_DOMAIN}
     ports:
-      - ${APP_PORT:-8080}:80
-    depends_on:
-      php-fpm:
-        condition: service_started
+      - ${FORWARD_APP_PORT:-80}:80
   php-fpm:
     # cf. https://docs.docker.com/compose/compose-file/build
     build:
-      context: ./
-      dockerfile: ${DOCKER_CONFIG_DIR}/app/Dockerfile
-      target: ${APP_ENV}
+      context: ./backend
+      dockerfile: ./docker/app/Dockerfile
+      target: ${ENV}
       args:
-        CONFIG_DIR: ${DOCKER_CONFIG_DIR}/app
+        CONFIG_DIR: ./docker/app
         PHP_VERSION: ${PHP_VERSION}
-        WORKDIR: ${CONTAINER_WORKDIR}
-        USER: ${WEB_USER}
-    image: ${USER}/${COMPOSE_PROJECT_NAME}:${APP_ENV}
+        WORKDIR: ${CONTAINER_PROJECT_DIR}/backend
+        WEB_USER: ${WEB_USER}
+    image: ${USER}/${COMPOSE_PROJECT_NAME}-php
+    profiles: ['backend']
     environment:
       SHELL: /usr/bin/bash
     volumes:
       - type: volume
         source: vendor
-        target: ${CONTAINER_WORKDIR}/vendor/
+        target: ${CONTAINER_PROJECT_DIR}/backend/vendor/
       - type: volume
-        source: node_modules
-        target: ${CONTAINER_WORKDIR}/node_modules/
+        source: node_modules-backend
+        target: ${CONTAINER_PROJECT_DIR}/backend/node_modules/
       # cf. https://docs.docker.com/desktop/previous-versions/edge-releases-mac/#docker-desktop-community-2330
       - type: bind
-        source: ./
-        target: ${CONTAINER_WORKDIR}
+        source: ./backend
+        target: ${CONTAINER_PROJECT_DIR}/backend
         consistency: delegated
     depends_on:
       mysql:
@@ -62,6 +43,7 @@ services:
   mysql:
     # cf. https://hub.docker.com/_/mariadb
     image: mariadb:10
+    profiles: ['backend']
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_DATABASE}
@@ -80,7 +62,7 @@ services:
 volumes:
   vendor:
     driver: local
-  node_modules:
+  node_modules-backend:
     driver: local
   mysql:
     driver: local

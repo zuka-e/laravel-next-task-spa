@@ -1,18 +1,23 @@
 # IDE and editor files.
 .vscode
+.devcontainer
 
 # Git related
 .git
 .gitignore
+.github
+
+.husky
 
 # configuration files
 .env
 .env.*
+# .env.*.local
 
 # Docker related
-docker-compose.yml
+docker-compose*
 Dockerfile
-*.dockerignore
+.dockerignore
 
 # Composer related
 composer.phar
@@ -22,7 +27,13 @@ vendor
 node_modules
 npm-debug.log
 
+# Next.js related
+.next
+
+test
+tests
 storage/*/*
 logs/*
 *.log
 **/cache
+

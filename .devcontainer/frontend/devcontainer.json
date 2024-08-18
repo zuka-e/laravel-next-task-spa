@@ -1,0 +1,23 @@
+// https://containers.dev/implementors/json_reference/#compose-specific
+{
+  "dockerComposeFile": [
+    "${localWorkspaceFolder}/docker-compose.base.yml",
+    "${localWorkspaceFolder}/docker-compose.frontend.yml",
+    "${localWorkspaceFolder}/docker-compose.dev.yml",
+    "${localWorkspaceFolder}/docker-compose.devcontainer.yml"
+  ],
+  "initializeCommand": "${localWorkspaceFolder}/.devcontainer/init-env.sh frontend",
+  "shutdownAction": "none",
+  "service": "node",
+  "workspaceFolder": "/var/www/html/frontend",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "bmewburn.vscode-intelephense-client",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "streetsidesoftware.code-spell-checker"
+      ]
+    }
+  }
+}
