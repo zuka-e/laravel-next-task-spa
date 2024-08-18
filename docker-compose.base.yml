@@ -4,43 +4,23 @@ services:
   nginx:
     # cf. https://hub.docker.com/_/nginx
     image: nginx:1.25
-    profiles: ['backend']
     # cf. https://docs.docker.com/compose/environment-variables/env-file
     environment:
-      ROOT_DIR: /var/www/html/public
       APP_DOMAIN: ${APP_DOMAIN}
-    volumes:
-      # cf. https://docs.docker.com/compose/compose-file/05-services/#long-syntax-5
-      # cf. https://hub.docker.com/_/nginx - Using environment variables
-      - type: bind
-        source: ./backend/docker/nginx/default.conf
-        target: /etc/nginx/templates/default.conf.template
-        read_only: true
-      - type: bind
-        source: ./backend/docker/nginx/${APP_ENV}.conf
-        target: /etc/nginx/templates/${APP_ENV}.conf.template
-        read_only: true
-      - type: bind
-        source: ./backend/public
-        target: /var/www/html/public
-        read_only: true
     ports:
       - ${FORWARD_APP_PORT:-80}:80
-    depends_on:
-      php-fpm:
-        condition: service_started
   php-fpm:
     # cf. https://docs.docker.com/compose/compose-file/build
     build:
       context: ./backend
       dockerfile: ./docker/app/Dockerfile
-      target: ${APP_ENV}
+      target: ${ENV}
       args:
         CONFIG_DIR: ./docker/app
         PHP_VERSION: ${PHP_VERSION}
         WORKDIR: ${CONTAINER_PROJECT_DIR}/backend
-        USER: ${WEB_USER}
-    image: ${USER}/${COMPOSE_PROJECT_NAME}:${APP_ENV}
+        WEB_USER: ${WEB_USER}
+    image: ${USER}/${COMPOSE_PROJECT_NAME}-php
     profiles: ['backend']
     environment:
       SHELL: /usr/bin/bash
@@ -49,7 +29,7 @@ services:
         source: vendor
         target: ${CONTAINER_PROJECT_DIR}/backend/vendor/
       - type: volume
-        source: node_modules
+        source: node_modules-backend
         target: ${CONTAINER_PROJECT_DIR}/backend/node_modules/
       # cf. https://docs.docker.com/desktop/previous-versions/edge-releases-mac/#docker-desktop-community-2330
       - type: bind
@@ -82,7 +62,7 @@ services:
 volumes:
   vendor:
     driver: local
-  node_modules:
+  node_modules-backend:
     driver: local
   mysql:
     driver: local

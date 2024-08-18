@@ -1,0 +1,11 @@
+services:
+  nginx:
+    profiles: ['frontend']
+    volumes:
+      - type: bind
+        source: ./frontend/docker/nginx/frontend.conf
+        target: /etc/nginx/templates/frontend.conf.template
+        read_only: true
+    depends_on:
+      node:
+        condition: service_started

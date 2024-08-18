@@ -2,20 +2,18 @@
 {
   "dockerComposeFile": [
     "${localWorkspaceFolder}/docker-compose.base.yml",
-    "${localWorkspaceFolder}/docker-compose.backend.yml",
+    "${localWorkspaceFolder}/docker-compose.frontend.yml",
     "${localWorkspaceFolder}/docker-compose.dev.yml",
     "${localWorkspaceFolder}/docker-compose.devcontainer.yml"
   ],
-  "initializeCommand": "${localWorkspaceFolder}/.devcontainer/init-env.sh backend",
+  "initializeCommand": "${localWorkspaceFolder}/.devcontainer/init-env.sh frontend",
   "shutdownAction": "none",
-  "service": "php-fpm",
-  "workspaceFolder": "/var/www/html/backend",
+  "service": "node",
+  "workspaceFolder": "/var/www/html/frontend",
   "customizations": {
     "vscode": {
       "extensions": [
-        "xdebug.php-debug",
         "bmewburn.vscode-intelephense-client",
-        "amiralizadeh9480.laravel-extra-intellisense",
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
         "streetsidesoftware.code-spell-checker"

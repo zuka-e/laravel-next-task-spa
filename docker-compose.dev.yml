@@ -38,6 +38,34 @@ services:
     ports:
       - ${FORWARD_MAILPIT_PORT:-1025}:1025
       - ${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025
+  node:
+    # cf. https://docs.docker.com/compose/compose-file/build
+    build:
+      context: ./frontend
+      dockerfile: ./docker/app/Dockerfile
+      target: ${ENV}
+      args:
+        CONFIG_DIR: ./docker/app
+        NODE_VERSION: ${NODE_VERSION}
+        USER: ${CONTAINER_USER:-nextjs}
+        WORKDIR: ${CONTAINER_PROJECT_DIR}/frontend
+    image: ${USER}/${COMPOSE_PROJECT_NAME}-node
+    profiles: ['frontend']
+    environment:
+      SHELL: /usr/bin/bash
+    volumes:
+      - type: volume
+        source: node_modules
+        target: ${CONTAINER_PROJECT_DIR}/frontend/node_modules/
+      # cf. https://docs.docker.com/desktop/previous-versions/edge-releases-mac/#docker-desktop-community-2330
+      - type: bind
+        source: ./frontend
+        target: ${CONTAINER_PROJECT_DIR}/frontend
+        consistency: delegated
+    ports:
+      - ${FORWARD_NODE_PORT:-3000}:3000
 volumes:
   redis:
+    driver: local
+  node_modules:
     driver: local
