@@ -47,7 +47,10 @@ RUN mkdir -p ./node_modules \
 USER ${USER}
 
 COPY ./package.json ./yarn.lock ./
+
 RUN yarn --frozen-lockfile
+
+COPY ./ ./
 
 CMD ["yarn", "dev"]
 
