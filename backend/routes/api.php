@@ -15,9 +15,3 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [HomeController::class, 'index']);
-
-Route::prefix('v1')
-    ->name('v1.')
-    ->group(function () {
-        require __DIR__ . '/api/v1.php';
-    });
