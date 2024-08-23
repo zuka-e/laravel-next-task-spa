@@ -27,6 +27,16 @@ use Laravel\Fortify\Http\Controllers\TwoFactorAuthenticatedSessionController;
 use Laravel\Fortify\Http\Controllers\TwoFactorAuthenticationController;
 use Laravel\Fortify\Http\Controllers\TwoFactorQrCodeController;
 use Laravel\Fortify\Http\Controllers\TwoFactorSecretKeyController;
+use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
+
+/**
+ * @see \Laravel\Sanctum\SanctumServiceProvider::defineRoutes
+ */
+Route::group(['prefix' => config('sanctum.prefix', 'sanctum')], function () {
+    Route::get('/sanctum/csrf-cookie', [CsrfCookieController::class, 'show'])
+        ->middleware('web')
+        ->name('sanctum.csrf-cookie');
+});
 
 // prettier-ignore
 
