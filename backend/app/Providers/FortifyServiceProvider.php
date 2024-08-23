@@ -24,6 +24,9 @@ use Laravel\Fortify\Contracts\LogoutResponse as LogoutResponseContract;
 use Laravel\Fortify\Contracts\PasswordUpdateResponse as PasswordUpdateResponseContract;
 
 /**
+ * `\Laravel\Fortify\FortifyServiceProvider` will also be included automatically,
+ * unless adding the package name to the `dont-discover` array in `composer.json`.
+ *
  * @see \Laravel\Fortify\FortifyServiceProvider
  */
 class FortifyServiceProvider extends ServiceProvider
@@ -35,7 +38,7 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        Fortify::ignoreRoutes();
     }
 
     /**
@@ -46,8 +49,6 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Fortify::ignoreRoutes();
-
         $this->configureRoutes();
 
         $this->registerActions();
