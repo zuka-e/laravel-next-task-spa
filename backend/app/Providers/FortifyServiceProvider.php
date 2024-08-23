@@ -13,6 +13,7 @@ use App\Http\Responses\PasswordUpdateResponse;
 use App\Http\Responses\ProfileInformationUpdatedResponse;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -59,18 +60,23 @@ class FortifyServiceProvider extends ServiceProvider
     }
 
     /**
-     * Configure the routes offered by the application.
+     * Configure authentication related routes.
      *
-     * @return void
      * @see \Laravel\Fortify\FortifyServiceProvider configureRoutes
      * @see \App\Providers\RouteServiceProvider
      */
-    protected function configureRoutes()
+    protected function configureRoutes(): void
     {
-        Route::namespace('Laravel\Fortify\Http\Controllers')
-            ->domain(config('fortify.domain', null))
-            ->prefix(config('fortify.prefix'))
-            ->group(base_path('routes/auth.php'));
+        $domain = config('fortify.domain');
+        $commonPrefix = config('fortify.prefix');
+        $versionDirs = File::directories(base_path('routes/api'));
+
+        foreach ($versionDirs as $versionDir) {
+            Route::namespace('Laravel\Fortify\Http\Controllers')
+                ->domain($domain)
+                ->prefix(join('/', [File::name($versionDir), $commonPrefix]))
+                ->group("{$versionDir}/auth.php");
+        }
     }
 
     /**
