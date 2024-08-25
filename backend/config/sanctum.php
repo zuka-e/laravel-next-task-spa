@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @see \Laravel\Sanctum\SanctumServiceProvider
+ */
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -51,4 +55,15 @@ return [
         'validate_csrf_token' =>
             Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Routes
+    |--------------------------------------------------------------------------
+    */
+
+    // Determines if the default routes should be registered.
+    'routes' => false,
+
+    'prefix' => null,
 ];

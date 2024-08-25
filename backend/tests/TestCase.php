@@ -17,7 +17,7 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->routePrefix = config('fortify.prefix');
+        $this->routePrefix = 'v1';
 
         $this->guestUser = User::factory()->create([
             'name' => config('fortify.guest.name'),

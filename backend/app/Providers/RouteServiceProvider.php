@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +39,8 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->configureRateLimiting();
 
+        $this->configureApiRoutes();
+
         $this->routes(function () {
             Route::middleware(['api', 'throttle:api'])
                 ->namespace($this->namespace)
@@ -63,5 +66,32 @@ class RouteServiceProvider extends ServiceProvider
                 optional($request->user())->id ?: $request->ip(),
             );
         });
+    }
+
+    /**
+     * Configure the routes offered by the application.
+     *
+     * @see \Laravel\Fortify\FortifyServiceProvider configureRoutes
+     * @see \App\Providers\RouteServiceProvider
+     */
+    protected function configureApiRoutes(): void
+    {
+        $versionDirs = File::directories(base_path('routes/api'));
+
+        foreach ($versionDirs as $versionDir) {
+            foreach (File::files($versionDir) as $routePath) {
+                if (File::name($routePath) === 'auth.php') {
+                    continue;
+                }
+
+                $version = File::name($versionDir);
+
+                Route::middleware(['api', 'throttle:api'])
+                    ->namespace($this->namespace)
+                    ->prefix($version)
+                    ->name("{$version}.")
+                    ->group($routePath);
+            }
+        }
     }
 }

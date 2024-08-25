@@ -72,7 +72,7 @@ return [
     |
     */
 
-    'prefix' => 'v1',
+    'prefix' => null,
 
     'domain' => null,
 
