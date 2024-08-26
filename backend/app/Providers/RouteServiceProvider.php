@@ -80,16 +80,16 @@ class RouteServiceProvider extends ServiceProvider
 
         foreach ($versionDirs as $versionDir) {
             foreach (File::files($versionDir) as $routePath) {
-                if (File::name($routePath) === 'auth.php') {
+                if (basename($routePath) === 'auth.php') {
                     continue;
                 }
 
-                $version = File::name($versionDir);
+                $version = basename($versionDir);
 
                 Route::middleware(['api', 'throttle:api'])
                     ->namespace($this->namespace)
                     ->prefix($version)
-                    ->name("{$version}.")
+                    ->name($version !== 'v1' ? "{$version}." : '')
                     ->group($routePath);
             }
         }

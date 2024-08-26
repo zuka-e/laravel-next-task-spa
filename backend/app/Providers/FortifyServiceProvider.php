@@ -72,9 +72,12 @@ class FortifyServiceProvider extends ServiceProvider
         $versionDirs = File::directories(base_path('routes/api'));
 
         foreach ($versionDirs as $versionDir) {
+            $version = basename($versionDir);
+
             Route::namespace('Laravel\Fortify\Http\Controllers')
                 ->domain($domain)
-                ->prefix(join('/', [File::name($versionDir), $commonPrefix]))
+                ->prefix(join('/', [$version, $commonPrefix]))
+                ->name($version !== 'v1' ? "{$version}." : '')
                 ->group("{$versionDir}/auth.php");
         }
     }
