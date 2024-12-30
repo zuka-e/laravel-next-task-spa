@@ -27,7 +27,7 @@ export default {
 
     return [
       `eslint --max-warnings=0 ${filesToLint}`,
-      `prettier --write ${filesToLint}`,
+      `prettier --write ${files}`,
     ];
   },
 };
