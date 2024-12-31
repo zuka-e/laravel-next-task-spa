@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# https://typicode.github.io/husky/how-to.html#project-not-in-git-root-directory
+cd frontend
+
+# cf. https://commitlint.js.org/reference/cli.html
+# cf. https://github.com/conventional-changelog/commitlint#config
+npx commitlint --edit --strict
