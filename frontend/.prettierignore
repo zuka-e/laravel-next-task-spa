@@ -1,10 +1,10 @@
-# In accordance with `.gitignore` and `.eslintignore`,
+# > Prettier will also follow rules specified in the ".gitignore" file
+# > if it exists in the same directory from which it is run.
+# > https://prettier.io/docs/en/ignore
 
-node_modules
-build
-coverage
 public
 package.json
 package-lock.json
 yarn.lock
+pnpm-lock.yaml
 *.md

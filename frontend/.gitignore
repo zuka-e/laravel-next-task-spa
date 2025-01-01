@@ -18,9 +18,13 @@
 .env.test.local
 .env.production.local
 
+# Logs
+logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.pnpm-debug.log*
 
 .next
 # > This file (`next-env.d.ts`) should not be committed

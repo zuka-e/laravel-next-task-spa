@@ -6,4 +6,4 @@ cd frontend
 
 # cf. https://commitlint.js.org/reference/cli.html
 # cf. https://github.com/conventional-changelog/commitlint#config
-npx commitlint --edit --strict
+pnpm exec commitlint --edit --strict

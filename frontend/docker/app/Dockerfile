@@ -46,13 +46,13 @@ RUN mkdir -p ./node_modules \
 
 USER ${USER}
 
-COPY ./package.json ./yarn.lock ./
+COPY ./package.json ./pnpm-lock.yaml ./
 
-RUN yarn --frozen-lockfile
+RUN pnpm install --frozen-lockfile --prefer-offline
 
 COPY ./ ./
 
-CMD ["yarn", "dev"]
+CMD ["pnpm", "dev"]
 
 #==========================================================================
 # For package installation
@@ -60,13 +60,13 @@ CMD ["yarn", "dev"]
 
 FROM base as build
 
-COPY ./package.json ./yarn.lock ./
+COPY ./package.json ./pnpm.lock ./
 
-RUN yarn --frozen-lockfile
+RUN pnpm install --frozen-lockfile --ignore-scripts --prefer-offline
 
 COPY ./ ./
 
-RUN yarn build
+RUN pnpm build
 
 #==========================================================================
 # For production
@@ -83,4 +83,4 @@ COPY --from=build --chown=${USER} ${WORKDIR}/.next/ ./.next/
 
 USER ${USER}
 
-CMD ["yarn", "start"]
+CMD ["pnpm", "start"]
