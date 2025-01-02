@@ -67,24 +67,25 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      # cf. https://pnpm.io/continuous-integration#github-actions
+      # cf. https://github.com/pnpm/action-setup
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+          cache-dependency-path: './frontend/pnpm-lock.yaml'
 
-      - name: Cache Node.js modules
-        id: yarn-cache
-        uses: actions/cache@v3
-        with:
-          path: ./frontend/node_modules
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
       - name: Install dependencies
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: yarn --frozen-lockfile
+        run: pnpm install --frozen-lockfile --ignore-scripts --prefer-offline
 
       - name: Run unit & integration tests
-        run: yarn test:ci
+        run: pnpm test:ci
