@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, type JSX } from 'react';
 
 import { Card, CardContent, IconButton, Skeleton, Stack } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';

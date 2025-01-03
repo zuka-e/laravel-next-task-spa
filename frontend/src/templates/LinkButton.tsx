@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, type JSX } from 'react';
 
 import { Button } from '@mui/material';
 import type { ButtonProps } from '@mui/material';

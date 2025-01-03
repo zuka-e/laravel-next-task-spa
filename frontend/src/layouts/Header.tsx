@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useState, type JSX } from 'react';
 import Image from 'next/image';
 
 import { AppBar, Toolbar, Drawer, Avatar, IconButton } from '@mui/material';

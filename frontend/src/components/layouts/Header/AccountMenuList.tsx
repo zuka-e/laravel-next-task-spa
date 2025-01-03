@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, type JSX } from 'react';
 import Router from 'next/router';
 
 import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';

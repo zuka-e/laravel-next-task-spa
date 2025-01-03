@@ -1,6 +1,6 @@
 // https://nextjs.org/docs/advanced-features/custom-document
 
-import { memo } from 'react';
+import { memo, type JSX } from 'react';
 import { Html, Head, Main, NextScript } from 'next/document';
 
 import theme from '@/theme';

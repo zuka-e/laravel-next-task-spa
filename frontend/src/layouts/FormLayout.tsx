@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import { memo, useMemo, type JSX } from 'react';
 
 import { Container, Card, Grid, Avatar, Typography } from '@mui/material';
 

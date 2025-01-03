@@ -1,4 +1,4 @@
-import { memo, useCallback, useRef } from 'react';
+import { memo, useCallback, useRef, type JSX } from 'react';
 
 import clsx from 'clsx';
 import { useDrag, useDrop } from 'react-dnd';

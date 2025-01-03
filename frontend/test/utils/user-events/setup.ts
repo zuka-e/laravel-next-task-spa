@@ -1,6 +1,8 @@
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import type { JSX } from 'react';
+
 /**
  * @see https://testing-library.com/docs/user-event/intro#writing-tests-with-userevent
  * @see https://testing-library.com/docs/user-event/setup

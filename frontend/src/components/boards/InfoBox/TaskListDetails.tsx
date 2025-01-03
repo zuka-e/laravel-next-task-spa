@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, type JSX } from 'react';
 
 import * as yup from 'yup';
 import dayjs from 'dayjs';

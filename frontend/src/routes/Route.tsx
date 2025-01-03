@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react';
+import { memo, useEffect, type JSX } from 'react';
 import type { AppProps } from 'next/app';
 import Router, { useRouter } from 'next/router';
 

@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, type JSX } from 'react';
 
 import { skipToken } from '@reduxjs/toolkit/query';
 import {

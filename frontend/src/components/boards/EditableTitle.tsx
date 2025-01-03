@@ -1,4 +1,4 @@
-import { forwardRef, memo, useMemo, useState } from 'react';
+import { forwardRef, memo, useMemo, useState, type JSX } from 'react';
 
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';

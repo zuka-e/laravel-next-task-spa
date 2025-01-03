@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, type JSX } from 'react';
 
 /**
  * [`<fieldset>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/fieldset) for use with MUI.

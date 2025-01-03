@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback, useEffect, type JSX } from 'react';
 import Head from 'next/head';
 import Router from 'next/router';
 import type { GetStaticProps } from 'next';

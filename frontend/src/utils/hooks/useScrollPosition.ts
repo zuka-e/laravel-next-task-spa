@@ -18,7 +18,7 @@ type UseScrollPositionOption = {
  * When `ref` scroll size is increased, move the scroll position by its difference.
  */
 const useScrollPosition = <T extends HTMLElement>(
-  ref: RefObject<T>,
+  ref: RefObject<T | null>,
   options: UseScrollPositionOption
 ) => {
   const { on, threshold = 0 } = options;

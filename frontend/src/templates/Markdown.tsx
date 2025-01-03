@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, type JSX } from 'react';
 
 import MarkdownToJsx, { MarkdownToJSX } from 'markdown-to-jsx';
 import { Typography } from '@mui/material';
