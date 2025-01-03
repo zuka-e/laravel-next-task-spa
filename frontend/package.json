@@ -18,7 +18,7 @@
     "prepare": "cd .. && husky install frontend/.husky"
   },
   "dependencies": {
-    "next": "^13.5.8",
+    "next": "^14.2.22",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
