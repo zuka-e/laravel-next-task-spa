@@ -1,5 +1,5 @@
 import { memo, useCallback, useState } from 'react';
-import Image from 'next/legacy/image';
+import Image from 'next/image';
 
 import { AppBar, Toolbar, Drawer, Avatar, IconButton } from '@mui/material';
 import {
@@ -65,6 +65,10 @@ const Header = memo(function Header(): JSX.Element {
               width="120"
               height="30"
               priority
+              style={{
+                maxWidth: '100%',
+                height: 'auto',
+              }}
             />
           </Link>
         </div>

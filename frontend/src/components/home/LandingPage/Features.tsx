@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import Image from 'next/legacy/image';
+import Image from 'next/image';
 
 import { Grid, Typography } from '@mui/material';
 
@@ -32,7 +32,7 @@ const FeatureLayout = memo(function FeatureLayout(
     <Grid item md={4} sm={9} xs={11}>
       <Grid container direction="column" alignItems="center" className="gap-6">
         <div className="relative h-80 w-full">
-          <Image src={image} alt={basename(image)} layout="fill" />
+          <Image src={image} alt={basename(image)} fill sizes="100vw" />
         </div>
         <div className="w-full">
           <Typography variant="h3" align="center">

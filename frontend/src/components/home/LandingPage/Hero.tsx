@@ -1,5 +1,5 @@
 import { memo, useCallback, useMemo } from 'react';
-import Image from 'next/legacy/image';
+import Image from 'next/image';
 import Router from 'next/router';
 
 import {
@@ -101,7 +101,7 @@ const Hero = memo(function Hero(): JSX.Element {
       </Grid>
       <Grid xs={10} sm={10} md={5}>
         <div className="relative h-72 w-full">
-          <Image src={hero.src} alt="hero" layout="fill" priority />
+          <Image src={hero.src} alt="hero" priority fill sizes="100vw" />
         </div>
       </Grid>
     </Grid>
