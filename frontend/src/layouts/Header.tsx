@@ -1,5 +1,5 @@
 import { memo, useCallback, useState } from 'react';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 
 import { AppBar, Toolbar, Drawer, Avatar, IconButton } from '@mui/material';
 import {
