@@ -32,7 +32,7 @@ const useMutationObserver = <T extends HTMLElement>(
     });
 
     return () => {
-      mutationObserver.disconnect;
+      mutationObserver.disconnect();
     };
   }, [options, ref]);
 };

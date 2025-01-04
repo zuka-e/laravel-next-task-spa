@@ -73,7 +73,7 @@ const api = baseApi.injectEndpoints({
           await queryFulfilled;
           // cf. https://redux-toolkit.js.org/rtk-query/api/created-api/api-slice-utils#resetapistate
           dispatch(baseApi.util.resetApiState());
-        } catch (error) {
+        } catch {
           //
         }
       },

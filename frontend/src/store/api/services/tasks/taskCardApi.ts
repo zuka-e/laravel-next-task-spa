@@ -132,7 +132,6 @@ const api = baseApi.injectEndpoints({
               (card) => card.id === updatedTaskCard.id
             );
 
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             Object.assign(current!, updatedTaskCard);
           })
         );
