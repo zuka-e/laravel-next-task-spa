@@ -1,33 +1,22 @@
-// If any file ignored for ESLint is included in the commit files, the following will be displayed
-// and the commit cannot be completed because of `--max-warnings=0`.
-// -- warning  File ignored because of a matching ignore pattern. Use "--no-ignore" to override --
-// cf. https://github.com/okonet/lint-staged#how-can-i-ignore-files-from-eslintignore
-
-import { ESLint } from 'eslint';
+/**
+ * Command to format
+ *
+ * @type {import('lint-staged').Command}
+ * @see https://github.com/lint-staged/lint-staged#automatically-fix-code-style-with-prettier-for-any-format-prettier-supports
+ */
+const format = 'pnpm exec prettier --write --ignore-unknown';
 
 /**
- * @param {string[]} files
- * @returns {Promise<string>}
+ * Command to lint
+ *
+ * @type {import('lint-staged').Command}
+ * @see https://github.com/lint-staged/lint-staged#eslint--8510--flat-eslint-config
  */
-const removeIgnoredFiles = async (files) => {
-  const eslint = new ESLint();
-  const isIgnored = await Promise.all(
-    files.map((file) => {
-      return eslint.isPathIgnored(file);
-    })
-  );
+const lint = 'pnpm exec eslint --fix --max-warnings=0 --no-warn-ignored';
 
-  return files.filter((_, i) => !isIgnored[i]).join(' ');
-};
-
+/** @type {import('lint-staged').Config} */
 export default {
-  // cf. https://github.com/okonet/lint-staged#example-wrap-filenames-in-single-quotes-and-run-once-per-file
-  '**/*.{ts,tsx,js,jsx}': async (files) => {
-    const filesToLint = await removeIgnoredFiles(files);
-
-    return [
-      `eslint --max-warnings=0 ${filesToLint}`,
-      `prettier --write ${files.join(' ')}`,
-    ];
-  },
+  // cf. https://github.com/lint-staged/lint-staged#task-concurrency
+  '*.?(c|m)[jt]s?(x)': [lint, format],
+  '!*.?(c|m)[jt]s?(x)': [format],
 };
