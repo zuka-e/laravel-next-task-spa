@@ -1,79 +1,66 @@
-import typescriptEslint from '@typescript-eslint/eslint-plugin';
-import testingLibrary from 'eslint-plugin-testing-library';
 import globals from 'globals';
-import tsParser from '@typescript-eslint/parser';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import js from '@eslint/js';
+import { includeIgnoreFile } from '@eslint/compat';
 import { FlatCompat } from '@eslint/eslintrc';
+import eslint from '@eslint/js';
+import prettier from 'eslint-config-prettier';
+import testingLibrary from 'eslint-plugin-testing-library';
+import tseslint from 'typescript-eslint';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
+  baseDirectory: import.meta.dirname,
 });
 
-/** @type {import('eslint').Linter.Config} */
+/** @type {import('eslint').Linter.Config[]} */
 export default [
   {
     ignores: [
-      '**/node_modules',
-      '**/build',
-      '**/coverage',
-      '**/public',
-      '!**/.babelrc.js',
+      // Workaround (All files are included despite `--ext` option)
+      '**/*.!(?(*.)js|?(*.)mjs|?(*.)cjs|?(*.)jsx|?(*.)ts|?(*.)mts|?(*.)cts|?(*.)tsx)',
+      '**/Dockerfile',
+      'public/**',
     ],
   },
-  ...compat.extends(
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'next/core-web-vitals',
-    'prettier'
-  ),
+  // cf. https://eslint.org/docs/latest/use/configure/ignore#including-gitignore-files
+  includeIgnoreFile(`${import.meta.dirname}/.gitignore`),
+  eslint.configs.recommended,
+  ...tseslint.configs.recommended,
+  ...compat.config({
+    // cf. https://nextjs.org/docs/app/api-reference/config/eslint#recommended-plugin-ruleset
+    extends: ['plugin:@next/next/recommended'],
+  }),
+  prettier,
   {
-    plugins: {
-      '@typescript-eslint': typescriptEslint,
-      'testing-library': testingLibrary,
-    },
-
     languageOptions: {
       globals: {
         ...globals.browser,
-        ...globals.node,
       },
-
-      parser: tsParser,
       ecmaVersion: 5,
       sourceType: 'commonjs',
     },
-
     rules: {
+      '@typescript-eslint/no-require-imports': 'off',
+      // cf. https://typescript-eslint.io/rules/no-unused-vars
       '@typescript-eslint/no-unused-vars': [
-        'warn',
+        'error',
         {
-          ignoreRestSiblings: true,
+          args: 'all',
           argsIgnorePattern: '^_',
+          caughtErrors: 'all',
+          caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
         },
       ],
-
-      '@typescript-eslint/explicit-module-boundary-types': 'off',
     },
   },
   {
-    files: ['!src/*.js'],
-
+    files: ['test'],
+    ignores: ['e2e'],
+    // cf. https://github.com/testing-library/eslint-plugin-testing-library#react
+    ...testingLibrary.configs['flat/react'],
     rules: {
-      '@typescript-eslint/no-var-requires': 'off',
+      '@typescript-eslint/no-non-null-assertion': 'off',
     },
   },
-  ...compat.extends('plugin:testing-library/react').map((config) => ({
-    ...config,
-    files: [
-      'src/**/__tests__/**/*.[jt]s?(x)',
-      'src/**/?(*.)+(spec|test).[jt]s?(x)',
-    ],
-    ignores: ['**/e2e/**/*'],
-  })),
 ];
