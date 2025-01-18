@@ -95,7 +95,7 @@ const TaskBoardDetails = memo(function TaskBoardDetails(
             schema={yup.object().shape({
               description: yup.string().label('Description').max(2000),
             })}
-            defaultValue={board.description}
+            defaultValue={board.description ?? undefined}
             isLoading={isLoading}
           />
         </CardContent>{' '}

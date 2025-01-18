@@ -104,7 +104,7 @@ const TaskListDetails = memo(function TaskListDetails(
             schema={yup.object().shape({
               content: yup.string().label('Description').max(2000),
             })}
-            defaultValue={list.description}
+            defaultValue={list.description ?? undefined}
             isLoading={isLoading}
           />
         </CardContent>

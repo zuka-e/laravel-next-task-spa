@@ -85,7 +85,7 @@ const SearchResult = memo(function SearchResult(
         >
           <ListItemText
             primary={highlightText(card.title, input)}
-            secondary={highlightText(card.content, input)}
+            secondary={card.content && highlightText(card.content, input)}
             primaryTypographyProps={{
               className: 'font-bold',
             }}

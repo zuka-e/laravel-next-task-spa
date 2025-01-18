@@ -169,7 +169,7 @@ const TaskCardDetails = memo(function TaskCardDetails(
             schema={yup.object().shape({
               content: yup.string().label('Content').min(20),
             })}
-            defaultValue={card.content}
+            defaultValue={card.content ?? undefined}
             isLoading={isLoading}
           />
         </CardContent>
