@@ -1,5 +1,3 @@
-import { resolve } from 'path';
-
 import dotenv from 'dotenv';
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
@@ -15,8 +13,8 @@ export default defineConfig({
     setupFiles: ['./test/vitest.setup.ts'],
     include: ['./test/__tests__/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     alias: {
-      '@': resolve(__dirname, './src'),
-      '@test': resolve(__dirname, './test'),
+      '@': `${import.meta.dirname}/src`,
+      '@test': `${import.meta.dirname}/test`,
     },
     coverage: {
       enabled: true,

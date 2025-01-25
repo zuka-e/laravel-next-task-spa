@@ -1,41 +1,56 @@
 import globals from 'globals';
 import { includeIgnoreFile } from '@eslint/compat';
-import { FlatCompat } from '@eslint/eslintrc';
 import eslint from '@eslint/js';
-import prettier from 'eslint-config-prettier';
+import prettierConfig from 'eslint-config-prettier';
+import react from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
+import next from '@next/eslint-plugin-next';
 import testingLibrary from 'eslint-plugin-testing-library';
 import tseslint from 'typescript-eslint';
 
-const compat = new FlatCompat({
-  baseDirectory: import.meta.dirname,
-});
-
-/** @type {import('eslint').Linter.Config[]} */
-export default [
-  {
-    ignores: [
-      // Workaround (All files are included despite `--ext` option)
-      '**/*.!(?(*.)js|?(*.)mjs|?(*.)cjs|?(*.)jsx|?(*.)ts|?(*.)mts|?(*.)cts|?(*.)tsx)',
-      '**/Dockerfile',
-      'public/**',
-    ],
-  },
+// `tseslint.config` enables `extends` that handles `Linter.Config` (e.g. `eslint.configs.recommended`)
+// as well as its array (e.g. `tseslint.configs.recommended`).
+// without this, `A config object is using the "extends" key, which is not supported in flat config system.`
+// cf. https://tseslint.com/packages/typescript-eslint/#flat-config-extends
+export default tseslint.config(
   // cf. https://eslint.org/docs/latest/use/configure/ignore#including-gitignore-files
   includeIgnoreFile(`${import.meta.dirname}/.gitignore`),
-  eslint.configs.recommended,
-  ...tseslint.configs.recommended,
-  ...compat.config({
-    // cf. https://nextjs.org/docs/app/api-reference/config/eslint#recommended-plugin-ruleset
-    extends: ['plugin:@next/next/recommended'],
-  }),
-  prettier,
   {
+    // Include only `ignores`
+    // cf. https://eslint.org/docs/latest/use/configure/ignore#ignoring-files
+    ignores: ['**/Dockerfile', 'public/'],
+  },
+  {
+    files: ['**/*.{js,cjs,cts}'],
+    languageOptions: {
+      globals: {
+        ...globals.commonjs,
+      },
+    },
+  },
+  {
+    files: ['**/*.{mjs,mts}'],
     languageOptions: {
       globals: {
         ...globals.browser,
       },
-      ecmaVersion: 5,
-      sourceType: 'commonjs',
+    },
+  },
+  {
+    files: ['**/*.{js,cjs,mjs,ts,cts,mts,tsx}'],
+    extends: [
+      // cf. https://eslint.org/docs/latest/use/configure
+      eslint.configs.recommended,
+      // cf. https://github.com/prettier/eslint-config-prettier
+      prettierConfig,
+    ],
+  },
+  {
+    files: ['**/*.{ts,cts,mts,tsx}'],
+    extends: [tseslint.configs.recommended],
+    plugins: {
+      // cf. https://nextjs.org/docs/app/api-reference/config/eslint#recommended-plugin-ruleset
+      '@next/next': next,
     },
     rules: {
       '@typescript-eslint/no-require-imports': 'off',
@@ -52,15 +67,43 @@ export default [
           ignoreRestSiblings: true,
         },
       ],
+      ...next.configs.recommended.rules,
     },
   },
   {
-    files: ['test'],
-    ignores: ['e2e'],
-    // cf. https://github.com/testing-library/eslint-plugin-testing-library#react
-    ...testingLibrary.configs['flat/react'],
+    files: ['**/*.{ts,tsx}'], // Somehow `ts` is required.
+    // cf. https://github.com/jsx-eslint/eslint-plugin-react#configuration
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
+    plugins: {
+      'react-hooks': reactHooks,
+    },
+    extends: [
+      // cf. https://github.com/jsx-eslint/eslint-plugin-react#flat-configs
+      react.configs.flat.recommended,
+      react.configs.flat['jsx-runtime'],
+    ],
     rules: {
-      '@typescript-eslint/no-non-null-assertion': 'off',
+      ...reactHooks.configs.recommended.rules,
     },
   },
-];
+  {
+    files: ['test/**'],
+    ignores: ['**/e2e/**'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+    extends: [
+      // cf. https://github.com/testing-library/eslint-plugin-testing-library#react
+      testingLibrary.configs['flat/react'],
+    ],
+    rules: {
+      ...testingLibrary.configs['flat/react'].rules,
+    },
+  }
+);
