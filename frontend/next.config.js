@@ -29,6 +29,14 @@ const nextConfig = {
   eslint: {
     dirs: ['.'],
   },
+  experimental: {
+    turbo: {
+      resolveAlias: {
+        '@/*': ['src/*'],
+        '@test/*': ['test/*'],
+      },
+    },
+  },
 };
 
 module.exports = { ...removeImports()(), ...nextConfig };
