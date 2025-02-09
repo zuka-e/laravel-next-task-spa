@@ -1,6 +1,5 @@
 import { type AxiosError } from 'axios';
 
-import type { SoftDelete } from '@/store/api/types';
 import type { TaskBoard, TaskCard, TaskList, User } from './models';
 
 type Severity = 'success' | 'info' | 'warning' | 'error';
@@ -196,10 +195,49 @@ export type CreateTaskBoardRequest = Partial<
 >;
 
 export type FetchTaskBoardResponse = ApiResponse<{
-  data: TaskBoard & SoftDelete;
+  data: TaskBoard;
 }>;
 
 export type FetchTaskBoardRequest = Pick<TaskBoard, 'id'>;
+
+/**
+ * > recommended keeping data in a normalized lookup table
+ * > to enable easily finding items by ID and updating them
+ * > https://redux-toolkit.js.org/rtk-query/usage/cache-behavior#no-normalized-or-de-duplicated-cache
+ *
+ * cf. https://redux.js.org/usage/structuring-reducers/normalizing-state-shape#designing-a-normalized-state
+ */
+export type FetchKanbanBoardResponse = ApiResponse<{
+  data: {
+    board: Pick<TaskBoard, 'id' | 'title'> &
+      Required<Pick<TaskBoard, 'listIds' | 'cardIds'>>;
+    lists: (Pick<TaskList, 'id' | 'boardId' | 'title' | 'updatedAt'> &
+      Required<Pick<TaskList, 'cardIds'>>)[];
+    cards: Pick<TaskCard, 'id' | 'listId' | 'title' | 'done'>[];
+  };
+}>;
+
+export type KanbanBoard = FetchKanbanBoardResponse['data']['board'] & {
+  lists: Record<
+    TaskList['id'],
+    (Pick<TaskList, 'id' | 'boardId' | 'title' | 'updatedAt'> &
+      Required<Pick<TaskList, 'cardIds'>>) & {
+      cards: Pick<TaskCard, 'id' | 'listId' | 'title' | 'done'>[];
+    }
+  >;
+};
+
+export type FetchKanbanBoardTransformedResponse = FetchKanbanBoardResponse & {
+  data: {
+    kanbanBoard: KanbanBoard;
+    allCards: Record<
+      TaskCard['id'],
+      Pick<TaskCard, 'id' | 'listId' | 'title' | 'done'>
+    >;
+  };
+};
+
+export type FetchKanbanBoardRequest = Pick<TaskBoard, 'id'>;
 
 export type UpdateTaskBoardResponse = ApiResponse<{
   data: TaskBoard;
@@ -231,7 +269,7 @@ export type CreateTaskListRequest = {
 } & Partial<Pick<TaskList, 'title' | 'description'>>;
 
 export type FetchTaskListResponse = ApiResponse<{
-  data: TaskList & SoftDelete;
+  data: TaskList;
 }>;
 
 export type FetchTaskListRequest = Pick<TaskList, 'id'>;
@@ -241,7 +279,7 @@ export type UpdateTaskListResponse = ApiResponse<{
 }>;
 
 export type UpdateTaskListRequest = Pick<TaskList, 'id'> &
-  Partial<Pick<TaskList, 'title' | 'description'>>;
+  Partial<Pick<TaskList, 'title' | 'description' | 'cardIds'>>;
 
 export type DestroyTaskListResponse = ApiResponse<{
   data: TaskList;
@@ -276,7 +314,7 @@ export type CreateTaskCardRequest = {
   Partial<Pick<TaskCard, 'content' | 'deadline' | 'done'>>;
 
 export type FetchTaskCardResponse = ApiResponse<{
-  data: TaskCard & SoftDelete;
+  data: TaskCard;
 }>;
 
 export type FetchTaskCardRequest = Pick<TaskCard, 'id'>;
@@ -300,3 +338,19 @@ export type DestroyTaskCardResponse = ApiResponse<{
 }>;
 
 export type DestroyTaskCardRequest = Pick<TaskCard, 'id'>;
+
+export type MoveTaskCardRequest = {
+  boardId: string;
+  srcListId: string;
+  destListId: string;
+  srcIndex: number;
+  destIndex: number;
+  cardId: string;
+};
+
+export type MoveTaskCardResponse = ApiResponse<{
+  data: {
+    lists: Pick<TaskList, 'id' | 'boardId' | 'title' | 'cardIds'>[];
+    card?: Pick<TaskCard, 'id' | 'listId' | 'title'>;
+  };
+}>;

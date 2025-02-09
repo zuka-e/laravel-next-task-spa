@@ -21,9 +21,9 @@ import {
 } from '@/store/api';
 
 type DeleteAction =
-  | { model: 'board'; data: TaskBoard }
-  | { model: 'list'; data: TaskList }
-  | { model: 'card'; data: TaskCard };
+  | { model: 'board'; data: Pick<TaskBoard, 'id' | 'title'> }
+  | { model: 'list'; data: Pick<TaskList, 'id' | 'title'> }
+  | { model: 'card'; data: Pick<TaskCard, 'id' | 'title'> };
 
 type DeleteTaskDialogProps = DeleteAction & {
   open: boolean;

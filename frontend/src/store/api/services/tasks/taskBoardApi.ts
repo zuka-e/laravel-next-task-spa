@@ -1,18 +1,42 @@
 import { makePath } from '@/utils/api';
-import { getTagsForPartialList } from '@/store/api/utils/caching';
+import {
+  getTagsForList,
+  getTagsForPartialList,
+} from '@/store/api/utils/caching';
 import baseApi from './baseApi';
 import type {
   CreateTaskBoardRequest,
   CreateTaskBoardResponse,
   DestroyTaskBoardRequest,
   DestroyTaskBoardResponse,
+  FetchKanbanBoardRequest,
+  FetchKanbanBoardResponse,
+  FetchKanbanBoardTransformedResponse,
   FetchTaskBoardRequest,
   FetchTaskBoardResponse,
   FetchTaskBoardsRequest,
   FetchTaskBoardsResponse,
+  KanbanBoard,
+  MoveTaskCardRequest,
+  MoveTaskCardResponse,
   UpdateTaskBoardRequest,
   UpdateTaskBoardResponse,
 } from './types';
+
+const getOrderedCards = <T extends { id: string }>(
+  cards: Record<string, T>,
+  cardIds: string[]
+) => {
+  return cardIds.reduce<T[]>((acc, cardId) => {
+    const card = cards[cardId];
+
+    if (card) {
+      acc.push(card);
+    }
+
+    return acc;
+  }, []);
+};
 
 /**
  * @see https://redux-toolkit.js.org/rtk-query/api/created-api/code-splitting
@@ -51,9 +75,7 @@ const api = baseApi.injectEndpoints({
         url: makePath(['task-boards', arg.id]),
       }),
       // cf. https://redux-toolkit.js.org/rtk-query/usage/mutations#revalidation-example
-      providesTags: (res, _err, _req) => [
-        { type: 'TaskBoard', id: res?.data.id },
-      ],
+      providesTags: (res) => [{ type: 'TaskBoard', id: res?.data.id }],
     }),
     updateTaskBoard: builder.mutation<
       UpdateTaskBoardResponse,
@@ -64,9 +86,7 @@ const api = baseApi.injectEndpoints({
         method: 'PATCH',
         data,
       }),
-      invalidatesTags: (res) => {
-        return res ? [{ type: 'TaskBoard', id: res.data.id }] : [];
-      },
+      invalidatesTags: (res) => [{ type: 'TaskBoard', id: res?.data.id }],
     }),
     destroyTaskBoard: builder.mutation<
       DestroyTaskBoardResponse,
@@ -76,18 +96,130 @@ const api = baseApi.injectEndpoints({
         url: makePath(['task-boards', id]),
         method: 'DELETE',
       }),
-      // Invalidates only listed data.
-      invalidatesTags: () => getTagsForPartialList(undefined, 'TaskBoard'),
-      // cf. https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#pessimistic-updates
-      onQueryStarted: async ({ id }, { dispatch, queryFulfilled }) => {
-        await queryFulfilled;
+      invalidatesTags: (res) => [{ type: 'TaskBoard', id: res?.data.id }],
+    }),
+    getKanbanBoard: builder.query<
+      FetchKanbanBoardTransformedResponse,
+      FetchKanbanBoardRequest
+    >({
+      query: (arg) => ({
+        url: `/boards/${arg.id}?asKanban=1`,
+      }),
+      providesTags: (res) => {
+        return [
+          { type: 'TaskBoard', id: res?.data.board.id },
+          ...getTagsForList(res?.data.lists, 'TaskList'),
+          ...getTagsForList(res?.data.cards, 'TaskCard'),
+        ];
+      },
+      transformResponse: (
+        res: FetchKanbanBoardResponse
+      ): FetchKanbanBoardTransformedResponse => {
+        const kanbanBoard: KanbanBoard = {
+          ...res.data.board,
+          lists: {},
+        };
 
-        // Don't invalidate tag to avoid unintended refetching resulting in 404.
-        dispatch(
-          api.util.updateQueryData('getTaskBoard', { id }, (draft) => {
-            draft.data.isDeleted = true;
-          })
+        const allCards = res.data.cards.reduce<
+          FetchKanbanBoardTransformedResponse['data']['allCards']
+        >((acc, card) => {
+          acc[card.id] = card;
+          return acc;
+        }, {});
+
+        res.data.lists.forEach((list) => {
+          kanbanBoard.lists[list.id] = {
+            ...list,
+            cards: getOrderedCards(allCards, list.cardIds ?? []),
+          };
+        });
+
+        return {
+          ...res,
+          data: { ...res.data, kanbanBoard, allCards },
+        };
+      },
+    }),
+    moveTaskCard: builder.mutation<MoveTaskCardResponse, MoveTaskCardRequest>({
+      query: ({
+        boardId,
+        srcListId,
+        destListId,
+        srcIndex,
+        destIndex,
+        cardId,
+      }) => ({
+        url: `/boards/${boardId}/move_card`,
+        method: 'POST',
+        data: {
+          cardId,
+          srcListId,
+          srcIndex,
+          destListId,
+          destIndex,
+        },
+      }),
+      onQueryStarted: async (
+        { boardId, srcListId, destListId, srcIndex, destIndex, cardId },
+        { dispatch, queryFulfilled }
+      ) => {
+        // cf. https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#optimistic-updates
+        const patchResult = dispatch(
+          api.util.updateQueryData(
+            'getKanbanBoard',
+            { id: boardId },
+            (draft) => {
+              const srcList = draft.data.kanbanBoard.lists[srcListId];
+
+              const destList =
+                srcListId === destListId
+                  ? srcList
+                  : draft.data.kanbanBoard.lists[destListId];
+
+              if (!srcList || !destList) {
+                throw new Error('srcList or destList is undefined');
+              }
+
+              if (srcListId === destListId) {
+                if (srcIndex === destIndex) {
+                  return;
+                }
+
+                const destCardIds = [...(destList.cardIds ?? [])];
+                const [removedCardId] = destCardIds.splice(srcIndex, 1);
+                destCardIds.splice(destIndex, 0, removedCardId);
+
+                draft.data.kanbanBoard.lists[destListId].cardIds = destCardIds;
+                draft.data.kanbanBoard.lists[destListId].cards =
+                  getOrderedCards(draft.data.allCards, destCardIds);
+              } else {
+                const srcCardIds = [...(srcList.cardIds ?? [])];
+                const [removedCardId] = srcCardIds.splice(srcIndex, 1);
+
+                const destCardIds = [...(destList.cardIds ?? [])];
+                destCardIds.splice(destIndex, 0, removedCardId);
+
+                draft.data.allCards[cardId].listId = destListId;
+
+                draft.data.kanbanBoard.lists[srcListId].cardIds = srcCardIds;
+                draft.data.kanbanBoard.lists[srcListId].cards = getOrderedCards(
+                  draft.data.allCards,
+                  srcCardIds
+                );
+
+                draft.data.kanbanBoard.lists[destListId].cardIds = destCardIds;
+                draft.data.kanbanBoard.lists[destListId].cards =
+                  getOrderedCards(draft.data.allCards, destCardIds);
+              }
+            }
+          )
         );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
       },
     }),
   }),
@@ -97,6 +229,8 @@ export const {
   useGetTaskBoardsQuery,
   useCreateTaskBoardMutation,
   useGetTaskBoardQuery,
+  useGetKanbanBoardQuery,
   useUpdateTaskBoardMutation,
   useDestroyTaskBoardMutation,
+  useMoveTaskCardMutation,
 } = api;

@@ -19,7 +19,7 @@ const menuItem = {
 } as const;
 
 type ListMenuProps = {
-  list: TaskList;
+  list: Pick<TaskList, 'id' | 'title'>;
 };
 
 const ListMenu = memo(function ListMenu(props: ListMenuProps): JSX.Element {

@@ -67,20 +67,27 @@ export const handlers = [
     API_ROUTE + makePath(['task-boards', ':boardId']),
     withMiddleware<
       TaskBoardParams,
-      FetchTaskBoardRequest,
-      FetchTaskBoardResponse
-    >()(async ({ params }) => {
-      const taskBoard = taskBoardController.show(params['boardId']);
+      FetchTaskBoardRequest | FetchKanbanBoardRequest,
+      FetchTaskBoardResponse | FetchKanbanBoardResponse
+    >()(async ({ params, request }) => {
+      const taskBoard = taskBoardController.show(params['boardId'], request);
 
       if (!taskBoard) {
         return notFoundErrorResponse();
       }
 
-      return HttpResponse.json({
-        severity: 'info',
-        message: 'タスクボードを取得しました。',
-        data: taskBoard,
-      });
+      // ※ workaround for narrowing type
+      return 'id' in taskBoard
+        ? HttpResponse.json({
+            severity: 'info',
+            message: 'タスクボードを取得しました。',
+            data: taskBoard,
+          })
+        : HttpResponse.json({
+            severity: 'info',
+            message: 'タスクボードを取得しました。',
+            data: taskBoard,
+          });
     })
   ),
 
@@ -123,6 +130,29 @@ export const handlers = [
         severity: 'warning',
         message: 'タスクボードを削除しました。',
         data: deleted,
+      });
+    })
+  ),
+
+  http.post(
+    API_ROUTE + ',/boards/:boardId/move-card',
+    withMiddleware<
+      Pick<TaskBoardParams, 'boardId'>,
+      Omit<MoveTaskCardRequest, 'boardId'>,
+      MoveTaskCardResponse
+    >()(async ({ request }) => {
+      const data = await request.json();
+
+      const updated = taskBoardController.moveCard(data);
+
+      if (!updated) {
+        return notFoundErrorResponse();
+      }
+
+      return HttpResponse.json({
+        severity: 'info',
+        message: 'タスクカードを移動しました。',
+        data: updated,
       });
     })
   ),

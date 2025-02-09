@@ -11,7 +11,7 @@ import { EditableTitle } from '..';
 import { ListMenu } from '.';
 
 type ListCardHeaderProps = {
-  list: TaskList;
+  list: Pick<TaskList, 'id' | 'title' | 'updatedAt'>;
 };
 
 const ListCardHeader = memo(function ListCardHeader(

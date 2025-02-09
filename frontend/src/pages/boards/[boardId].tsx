@@ -1,33 +1,27 @@
-import { memo, type JSX } from 'react';
+import { memo, type JSX, useCallback, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 
-import { skipToken } from '@reduxjs/toolkit/query';
+import type { DragLocationHistory } from '@atlaskit/pragmatic-drag-and-drop/types';
 import {
-  Container,
-  Grid,
-  Divider,
-  IconButton,
-  Skeleton,
-  CircularProgress,
-} from '@mui/material';
+  monitorForElements,
+  type ElementDragPayload,
+} from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
+import { skipToken } from '@reduxjs/toolkit/query';
+import { Container, Grid, Divider, IconButton, Skeleton } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 
-import { repeatMap } from '@/utils';
-import {
-  useAppDispatch,
-  useDeepEqualSelector,
-  useIntersectionObserver,
-  useRoute,
-} from '@/utils/hooks';
+import { useRoute } from '@/utils/hooks';
+import { getDropTarget, isDraggableItem } from '@/lib/dnd/entities';
 import {
   useCreateTaskListMutation,
-  useGetTaskBoardQuery,
-  useGetTaskListsQuery,
+  useGetKanbanBoardQuery,
   useUpdateTaskBoardMutation,
+  useMoveTaskCardMutation,
 } from '@/store/api';
-import { setCursorByBoard } from '@/store/slices';
+import { isNotFoundError } from '@/store/api/utils/errors';
 import { BaseLayout } from '@/layouts';
 import { PopoverControl } from '@/templates';
 import { AddTaskButton, EditableTitle, SearchField } from '@/components/boards';
@@ -55,12 +49,8 @@ export const getStaticProps: GetStaticProps<TaskBoardProps> = async () => {
 };
 
 const TaskBoard = memo(function TaskBoard(): JSX.Element {
-  const dispatch = useAppDispatch();
   const router = useRouter();
   const { pathParams } = useRoute();
-  const searchState = useDeepEqualSelector(
-    (state) => state.taskBoard.data[pathParams?.['boardId'] ?? '']?.search
-  );
   const [
     createTaskList,
     { isLoading: isLoadingToCreate, error: creationError },
@@ -69,43 +59,74 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
     updateTaskBoard,
     { isLoading: isLoadingToUpdate, error: updateError },
   ] = useUpdateTaskBoardMutation();
+  const [moveTaskCard] = useMoveTaskCardMutation();
 
-  const { data: { data: board } = {} } = useGetTaskBoardQuery(
-    pathParams ? { id: pathParams['boardId'] ?? '' } : skipToken
-  );
-
-  const { data: paginatedList, isLoading: isLoadingLists } =
-    useGetTaskListsQuery(
-      pathParams
-        ? {
-            boardId: pathParams['boardId'],
-            cursor: searchState?.cursor,
-            limit: 10,
-            sort: searchState?.sort?.key || 'sequence',
-            direction: searchState?.sort?.direction,
-          }
-        : skipToken
+  const { data: { data: { kanbanBoard = undefined } = {} } = {}, error } =
+    useGetKanbanBoardQuery(
+      pathParams ? { id: pathParams['boardId'] ?? '' } : skipToken
     );
 
-  if (board?.isDeleted) {
+  if (isNotFoundError(error)) {
     router.replace('/boards');
   }
 
-  const nextListRef = useIntersectionObserver(() => {
-    if (board && paginatedList?.meta.nextCursor) {
-      dispatch(
-        setCursorByBoard({
-          id: board.id,
-          cursor: paginatedList.meta.nextCursor,
-        })
-      );
-    }
-  });
+  const handleDrop = useCallback(
+    async ({
+      source,
+      location,
+    }: {
+      source: ElementDragPayload;
+      location: DragLocationHistory;
+    }) => {
+      if (!isDraggableItem(source.data)) return;
+
+      const dest = location.current;
+
+      // Non-droppable area
+      if (dest.dropTargets.length === 0) {
+        return;
+      }
+
+      /** Destination card if dropped on it */
+      const destCard = getDropTarget(dest.dropTargets, 'item');
+      const destList = getDropTarget(dest.dropTargets, 'column');
+
+      if (!destList) {
+        throw new Error('Destination column is not found.');
+      }
+
+      /** Dropped area of the destination element */
+      // ※ Added by `attachClosestEdge()`
+      const closestEdge = destCard ? null : extractClosestEdge(destList.data);
+
+      const destIndex = destCard
+        ? destCard.data.index
+        : closestEdge === 'top'
+        ? 0
+        : kanbanBoard?.lists?.[destList.data.id]?.cards.length ?? 0;
+
+      moveTaskCard({
+        boardId: pathParams?.['boardId'] ?? '',
+        srcListId: source.data.parentId!,
+        destListId: destList.data.id,
+        srcIndex: source.data.index,
+        destIndex,
+        cardId: source.data.id,
+      });
+    },
+    [kanbanBoard, moveTaskCard, pathParams]
+  );
+
+  useEffect(() => {
+    return monitorForElements({
+      onDrop: handleDrop,
+    });
+  }, [handleDrop]);
 
   return (
     <>
       <Head>
-        <title>{board?.title ?? 'Loading...'}</title>
+        <title>{kanbanBoard?.title ?? 'Loading...'}</title>
       </Head>
       <BaseLayout>
         <Container
@@ -120,15 +141,15 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
             alignItems="center"
             className="overflow-x-auto"
           >
-            {board ? (
+            {kanbanBoard ? (
               <>
                 <Grid item className="mx-4 my-2 flex-auto">
                   <EditableTitle
-                    defaultValue={board.title}
+                    defaultValue={kanbanBoard.title}
                     disabled={isLoadingToUpdate}
                     error={updateError}
                     onSubmit={(data) =>
-                      updateTaskBoard({ id: board.id, ...data })
+                      updateTaskBoard({ id: kanbanBoard.id, ...data })
                     }
                   />
                 </Grid>
@@ -143,7 +164,7 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
                       </IconButton>
                     }
                   >
-                    <BoardMenu board={board} />
+                    <BoardMenu board={kanbanBoard} />
                   </PopoverControl>
                 </Grid>
               </>
@@ -163,29 +184,18 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
               wrap="nowrap"
               className="absolute inset-0 overflow-x-auto [&>div]:w-80 [&>div]:flex-shrink-0 [&>div]:p-2"
             >
-              {isLoadingLists
-                ? repeatMap(5, (i) => (
-                    <div key={i}>
-                      <Skeleton variant="rounded" className="h-full w-full" />
-                    </div>
-                  ))
-                : paginatedList?.data.map((list, i) => (
-                    <Grid item key={list.id} id={list.id}>
-                      <TaskList list={list} listIndex={i} />
-                    </Grid>
-                  ))}
-              {paginatedList?.links.next && (
-                <Grid item>
-                  <CircularProgress ref={nextListRef} />
+              {Object.values(kanbanBoard?.lists ?? {}).map((list, i) => (
+                <Grid item key={list.id} id={list.id}>
+                  <TaskList list={list} index={i} />
                 </Grid>
-              )}
-              {board && (
+              ))}
+              {kanbanBoard && (
                 <Grid item>
                   <AddTaskButton
                     disabled={isLoadingToCreate}
                     error={creationError}
                     onSubmit={(data) =>
-                      createTaskList({ boardId: board.id, ...data })
+                      createTaskList({ boardId: kanbanBoard.id, ...data })
                     }
                   />
                 </Grid>

@@ -57,6 +57,8 @@ export const modelDictionary = {
     userId: String,
     title: String,
     description: nullable<string>(() => null),
+    listIds: Array<string>,
+    cardIds: Array<string>,
     ...timestamps,
   },
   taskList: {
@@ -65,6 +67,7 @@ export const modelDictionary = {
     title: String,
     description: nullable<string>(() => null),
     sequence: Number,
+    cardIds: Array<string>,
     ...timestamps,
   },
   taskCard: {

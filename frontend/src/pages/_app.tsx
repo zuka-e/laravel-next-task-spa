@@ -9,8 +9,6 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { Provider } from 'react-redux';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -76,12 +74,10 @@ const App = memo(function App({ Component, pageProps }: AppProps): JSX.Element {
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={theme}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DndProvider backend={HTML5Backend}>
-                <CssBaseline />
-                <Loading />
-                <Notification />
-                <PageHandler {...{ Component, pageProps }} />
-              </DndProvider>
+              <CssBaseline />
+              <Loading />
+              <Notification />
+              <PageHandler {...{ Component, pageProps }} />
             </LocalizationProvider>
           </ThemeProvider>
         </StyledEngineProvider>

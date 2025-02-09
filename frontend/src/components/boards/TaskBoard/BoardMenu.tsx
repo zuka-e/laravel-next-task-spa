@@ -20,7 +20,7 @@ const menuItem = {
 } as const;
 
 type BoardMenuProps = {
-  board: TaskBoard;
+  board: Pick<TaskBoard, 'id' | 'title'>;
 };
 
 const BoardMenu = memo(function BoardMenu(props: BoardMenuProps): JSX.Element {
