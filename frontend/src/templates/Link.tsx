@@ -2,7 +2,7 @@
 // https://github.com/mui/material-ui/blob/HEAD/examples/nextjs-with-typescript/src/Link.tsx
 
 import type { LinkProps as NextLinkProps } from 'next/link';
-import React from 'react';
+import React, { Ref, memo } from 'react';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 
@@ -23,12 +23,20 @@ interface NextLinkComposedProps
   linkAs?: NextLinkProps['as'];
 }
 
-export const NextLinkComposed = React.forwardRef<
-  HTMLAnchorElement,
-  NextLinkComposedProps
->(function NextLinkComposed(props, ref) {
-  const { to, linkAs, replace, scroll, shallow, prefetch, locale, ...other } =
-    props;
+export const NextLinkComposed = memo(function NextLinkComposed(
+  props: NextLinkComposedProps & { ref?: Ref<HTMLAnchorElement> }
+) {
+  const {
+    ref,
+    to,
+    linkAs,
+    replace,
+    scroll,
+    shallow,
+    prefetch,
+    locale,
+    ...other
+  } = props;
 
   return (
     <NextLink
@@ -58,11 +66,11 @@ export type LinkProps = {
 
 // A styled version of the Next.js Link component:
 // https://nextjs.org/docs/api-reference/next/link
-const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(function Link(
-  props,
-  ref
+const Link = memo(function Link(
+  props: LinkProps & { ref?: Ref<HTMLAnchorElement> }
 ) {
   const {
+    ref,
     activeClassName = 'active',
     as,
     className: classNameProps,
