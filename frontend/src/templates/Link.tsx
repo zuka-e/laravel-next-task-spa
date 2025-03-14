@@ -48,10 +48,9 @@ export const NextLinkComposed = memo(function NextLinkComposed(
       shallow={shallow}
       passHref
       locale={locale}
-      legacyBehavior
-    >
-      <Anchor ref={ref} {...other} />
-    </NextLink>
+      ref={ref}
+      {...other}
+    />
   );
 });
 
