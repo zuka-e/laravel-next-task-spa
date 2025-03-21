@@ -65,10 +65,6 @@ const Header = memo(function Header(): JSX.Element {
               width="120"
               height="30"
               priority
-              style={{
-                maxWidth: '100%',
-                height: 'auto',
-              }}
             />
           </Link>
         </div>
