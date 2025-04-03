@@ -29,7 +29,7 @@ describe('PageHandler', () => {
     expect(Route).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining(props),
-      expect.anything()
+      undefined
     );
   });
 });
