@@ -1,6 +1,6 @@
 # cf. https://docs.docker.com/develop/develop-images/dockerfile_best-practices
 
-ARG NODE_VERSION=20
+ARG NODE_VERSION=22
 
 # cf. https://github.com/vercel/next.js/blob/canary/examples/with-docker/Dockerfile
 

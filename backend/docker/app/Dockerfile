@@ -7,7 +7,7 @@ FROM composer:2.6 as composer
 
 # cf. https://hub.docker.com/_/node/
 # cf. https://github.com/nodejs/docker-node/blob/main/docs/BestPractices.md
-FROM node:20 as node
+FROM node:22 as node
 
 #==========================================================================
 # Base Image for each environment
