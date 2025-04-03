@@ -6,6 +6,6 @@
     "devDependencies": {
         "@prettier/plugin-php": "0.22.4",
         "prettier": "3.5.3",
-        "serverless-domain-manager": "^5.1.5"
+        "serverless-domain-manager": "^8.0.0"
     }
 }
