@@ -1,0 +1,133 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "schedule:automergeDaily",
+    ":automergeMinor"
+  ],
+  "labels": ["dependencies"],
+  "timezone": "Asia/Tokyo",
+  "prConcurrentLimit": 0,
+  "prHourlyLimit": 0,
+  "packageRules": [
+    {
+      "matchFileNames": ["backend/**"],
+      "matchManagers": ["composer"],
+      "matchDepTypes": ["require"],
+      "matchUpdateTypes": ["major"],
+      "matchPackageNames": ["laravel/**"],
+      "groupName": "laravel dependencies",
+      "addLabels": ["backend", "composer", "laravel"]
+    },
+    {
+      "matchFileNames": ["backend/**"],
+      "matchManagers": ["composer"],
+      "matchDepTypes": ["require"],
+      "matchUpdateTypes": ["major"],
+      "addLabels": ["backend", "composer"]
+    },
+    {
+      "matchFileNames": ["backend/**"],
+      "matchManagers": ["composer"],
+      "matchDepTypes": ["require"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "composer dependencies (non-major)",
+      "addLabels": ["backend", "composer"]
+    },
+    {
+      "matchFileNames": ["backend/**"],
+      "matchManagers": ["composer"],
+      "matchDepTypes": ["require-dev"],
+      "matchUpdateTypes": ["major"],
+      "groupName": "composer dev-dependencies",
+      "addLabels": ["backend", "composer", "dev"]
+    },
+    {
+      "matchFileNames": ["backend/**"],
+      "matchManagers": ["composer"],
+      "matchDepTypes": ["require-dev"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "composer dev-dependencies (non-major)",
+      "addLabels": ["backend", "composer", "dev"]
+    },
+
+    {
+      "matchFileNames": ["backend/**"],
+      "matchManagers": ["npm"],
+      "matchDepTypes": ["dependencies"],
+      "matchUpdateTypes": ["major"],
+      "addLabels": ["backend", "npm"]
+    },
+    {
+      "matchFileNames": ["backend/**"],
+      "matchManagers": ["npm"],
+      "matchDepTypes": ["dependencies"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "npm dependencies (non-major)",
+      "addLabels": ["backend", "npm"]
+    },
+    {
+      "matchFileNames": ["backend/**"],
+      "matchManagers": ["npm"],
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["major"],
+      "groupName": "npm dev-dependencies",
+      "addLabels": ["backend", "npm", "dev"]
+    },
+    {
+      "matchFileNames": ["backend/**"],
+      "matchManagers": ["npm"],
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "npm dev-dependencies (non-major)",
+      "addLabels": ["backend", "npm", "dev"]
+    },
+
+    {
+      "matchFileNames": ["frontend/**"],
+      "matchManagers": ["npm"],
+      "matchDepTypes": ["dependencies", "devDependencies"],
+      "matchUpdateTypes": ["major"],
+      "matchPackageNames": [
+        "next",
+        "react",
+        "react-dom",
+        "@types/react",
+        "@types/react-dom"
+      ],
+      "groupName": "nextjs dependencies",
+      "addLabels": ["frontend", "npm"]
+    },
+    {
+      "matchFileNames": ["frontend/**"],
+      "matchManagers": ["npm"],
+      "matchDepTypes": ["dependencies"],
+      "matchUpdateTypes": ["major"],
+      "addLabels": ["frontend", "npm"]
+    },
+    {
+      "matchFileNames": ["frontend/**"],
+      "matchManagers": ["npm"],
+      "matchDepTypes": ["dependencies"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "npm dependencies (non-major)",
+      "addLabels": ["frontend", "npm"]
+    },
+    {
+      "matchFileNames": ["frontend/**"],
+      "matchManagers": ["npm"],
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["major"],
+      "groupName": "npm dev-dependencies",
+      "addLabels": ["frontend", "npm", "dev"]
+    },
+    {
+      "matchFileNames": ["frontend/**"],
+      "matchManagers": ["npm"],
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "npm dev-dependencies (non-major)",
+      "addLabels": ["frontend", "npm", "dev"]
+    }
+  ]
+}
