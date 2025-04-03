@@ -1,8 +1,9 @@
-import { memo } from 'react';
+import { memo, type JSX } from 'react';
 
 import { Card, CardContent, IconButton, Skeleton, Stack } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 
+import { isNotFoundError } from '@/store/api/utils/errors';
 import { repeatMap } from '@/utils';
 import { useGetTaskDetailsQuery, useTaskDetails } from '@/lib/hooks';
 import { TaskBoardDetails, TaskCardDetails, TaskListDetails } from '.';
@@ -15,16 +16,14 @@ const InfoBox = memo(function InfoBox() {
     return <Card className="w-0" />;
   }
 
-  const { type, data, isFetching } = taskDetailsQuery;
+  const { type, data, error, isFetching } = taskDetailsQuery;
 
   const renderInfoBox = (): JSX.Element => {
     if (!data) {
       return <></>;
     }
 
-    const { isDeleted } = data.data;
-
-    if (isDeleted) {
+    if (isNotFoundError(error)) {
       hideTaskDetails();
     }
 

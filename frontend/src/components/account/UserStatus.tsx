@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, type JSX } from 'react';
 
 import dayjs from 'dayjs';
 import { Button, Grid, Typography } from '@mui/material';

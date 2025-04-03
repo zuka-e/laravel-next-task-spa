@@ -1,6 +1,6 @@
 // cf. https://nextjs.org/docs/advanced-features/custom-error-page
 
-import { memo, useEffect } from 'react';
+import { memo, useEffect, type JSX } from 'react';
 import { useRouter } from 'next/router';
 import Error from 'next/error';
 

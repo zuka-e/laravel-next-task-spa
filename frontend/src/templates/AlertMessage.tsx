@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import { memo, useMemo, type JSX } from 'react';
 
 import { Alert, AlertTitle } from '@mui/material';
 import type { AlertProps, AlertColor } from '@mui/material';

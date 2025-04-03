@@ -23,7 +23,18 @@ export const store = (
   listId: TaskList['id'],
   params: Partial<Omit<TaskCard, 'id' | 'listId'>>
 ): TaskCard => {
-  return db.taskCard.create({ listId, ...params });
+  const newCard = db.taskCard.create({ listId, ...params });
+
+  const list = db.taskList.findFirst({ where: { id: { equals: listId } } });
+
+  const newCardIds = [...(list?.cardIds ?? []), newCard.id];
+
+  db.taskList.update({
+    where: { id: { equals: listId } },
+    data: { cardIds: newCardIds },
+  });
+
+  return newCard;
 };
 
 export const show = (id: TaskCard['id']): TaskCard | null => {
@@ -88,6 +99,25 @@ export const update = (
 };
 
 export const destroy = (id: TaskCard['id']): TaskCard | null => {
+  const card = db.taskCard.findFirst({ where: { id: { equals: id } } });
+
+  if (!card) {
+    return null;
+  }
+
+  const list = db.taskList.findFirst({
+    where: { id: { equals: card.listId } },
+  });
+
+  if (list) {
+    const newCardIds = list.cardIds.filter((id) => id !== card.id);
+
+    db.taskList.update({
+      where: { id: { equals: list.id } },
+      data: { cardIds: newCardIds },
+    });
+  }
+
   return db.taskCard.delete({ where: { id: { equals: id } } });
 };
 

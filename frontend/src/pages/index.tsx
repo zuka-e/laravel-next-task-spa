@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react';
+import { memo, useEffect, type JSX } from 'react';
 import Router from 'next/router';
 
 import { Container } from '@mui/material';

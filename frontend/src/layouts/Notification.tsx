@@ -1,6 +1,6 @@
 // cf. https://mui.com/material-ui/react-snackbar/#consecutive-snackbars
 
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState, type JSX } from 'react';
 
 import { Snackbar, Alert } from '@mui/material';
 

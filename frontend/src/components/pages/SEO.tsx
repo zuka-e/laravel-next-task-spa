@@ -1,6 +1,6 @@
 // https://nextjs.org/docs/migrating/from-create-react-app#search-engine-optimization
 
-import { memo, useCallback } from 'react';
+import { memo, useCallback, type JSX } from 'react';
 import Head from 'next/head';
 
 import { APP_URL, APP_NAME } from '@/config/app';

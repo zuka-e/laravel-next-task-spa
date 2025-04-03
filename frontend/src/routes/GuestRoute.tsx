@@ -1,6 +1,6 @@
 // cf. file://./AuthRoute.tsx
 
-import { memo, useEffect } from 'react';
+import { memo, useEffect, type JSX } from 'react';
 
 import { useGetSessionQuery } from '@/store/api';
 import { useRedirect } from '@/lib/hooks';

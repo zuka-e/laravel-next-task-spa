@@ -2,7 +2,7 @@ import { type UpdateProfileRequest } from '@/store/api';
 import type { User } from '@test/api/database/models';
 import db from '@test/api/database/manager';
 import { timestamp } from '@test/api/database/definitions';
-import { generateVerificationUrl } from '@test/api/http/utils/urls';
+import { generateVerificationUrl } from '@test/api/http/utils/verifications';
 
 export const update = (user: User, request: UpdateProfileRequest): User => {
   const isEmailUpdated = user.email !== request.email;

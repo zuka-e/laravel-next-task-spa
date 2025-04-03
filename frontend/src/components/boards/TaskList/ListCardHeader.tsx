@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, type JSX } from 'react';
 
 import dayjs from 'dayjs';
 import { CardHeader, Typography, IconButton } from '@mui/material';
@@ -11,7 +11,7 @@ import { EditableTitle } from '..';
 import { ListMenu } from '.';
 
 type ListCardHeaderProps = {
-  list: TaskList;
+  list: Pick<TaskList, 'id' | 'title' | 'updatedAt'>;
 };
 
 const ListCardHeader = memo(function ListCardHeader(

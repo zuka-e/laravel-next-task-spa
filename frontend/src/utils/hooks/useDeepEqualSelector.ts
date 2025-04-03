@@ -14,7 +14,7 @@ const deepEqual = <T>(left: T, right: T) => {
   try {
     deepStrictEqual(left, right);
     return true;
-  } catch (e) {
+  } catch {
     return false;
   }
 };

@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, type JSX } from 'react';
 
 import { Header, Footer, Progressbar } from '@/layouts';
 

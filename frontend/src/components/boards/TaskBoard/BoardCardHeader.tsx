@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, type JSX } from 'react';
 
 import dayjs from 'dayjs';
 import { CardHeader, Typography, Tooltip, IconButton } from '@mui/material';

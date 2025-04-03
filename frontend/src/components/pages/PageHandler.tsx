@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, type JSX } from 'react';
 import type { AppProps } from 'next/app';
 
 import { Route } from '@/routes';

@@ -73,7 +73,9 @@ const axiosBaseQuery = (
       /** HTTP status code */
       const status = error.response?.status || 500;
 
-      api.dispatch(setHttpStatus(status));
+      if (status !== 404) {
+        api.dispatch(setHttpStatus(status));
+      }
 
       return {
         error: {

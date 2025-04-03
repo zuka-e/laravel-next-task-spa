@@ -1,4 +1,4 @@
-import { forwardRef, memo, useMemo, useState } from 'react';
+import { memo, useMemo, useState, type JSX, Ref } from 'react';
 
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -67,27 +67,26 @@ const EditableTitle = memo(function EditableTitle(
   );
 });
 
-const StyledTextField = memo(
-  forwardRef<HTMLDivElement, TextFieldProps>(function StyledTitleForm(
-    props,
-    ref
-  ): JSX.Element {
-    return (
-      <TextField
-        fullWidth
-        variant="outlined"
-        placeholder="Enter a title"
-        InputProps={{
-          classes: { notchedOutline: 'border-none' },
-          className: 'rounded outline-1 hover:outline font-bold',
-        }}
-        InputLabelProps={{ margin: 'dense' }}
-        className="-ml-1.5"
-        ref={ref}
-        {...props}
-      />
-    );
-  })
-);
+const StyledTextField = memo(function StyledTitleForm(
+  props: TextFieldProps & { ref?: Ref<HTMLDivElement> }
+): JSX.Element {
+  const { ref, ...textFieldProps } = props;
+
+  return (
+    <TextField
+      fullWidth
+      variant="outlined"
+      placeholder="Enter a title"
+      InputProps={{
+        classes: { notchedOutline: 'border-none' },
+        className: 'rounded outline-1 hover:outline font-bold',
+      }}
+      InputLabelProps={{ margin: 'dense' }}
+      className="-ml-1.5"
+      ref={ref}
+      {...textFieldProps}
+    />
+  );
+});
 
 export default EditableTitle;

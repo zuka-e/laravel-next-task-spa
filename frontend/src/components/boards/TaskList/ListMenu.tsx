@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useState, type JSX } from 'react';
 
 import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import {
@@ -19,7 +19,7 @@ const menuItem = {
 } as const;
 
 type ListMenuProps = {
-  list: TaskList;
+  list: Pick<TaskList, 'id' | 'title'>;
 };
 
 const ListMenu = memo(function ListMenu(props: ListMenuProps): JSX.Element {

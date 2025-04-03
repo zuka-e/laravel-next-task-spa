@@ -1,7 +1,7 @@
 // cf. https://dev.to/ivandotv/protecting-static-pages-in-next-js-application-1e50
 // cf. https://github.com/ivandotv/nextjs-client-signin-logic
 
-import { memo, useEffect } from 'react';
+import { memo, useEffect, type JSX } from 'react';
 import Router from 'next/router';
 
 import { useGetSessionQuery } from '@/store/api';

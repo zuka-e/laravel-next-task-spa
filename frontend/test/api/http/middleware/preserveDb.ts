@@ -26,7 +26,9 @@ const initialize = async (): Promise<void> => {
     return;
   }
 
-  restore() || (await seed());
+  if (!restore()) {
+    await seed();
+  }
 
   db[isInitialized] = true;
 };

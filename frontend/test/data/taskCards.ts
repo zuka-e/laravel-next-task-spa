@@ -39,8 +39,8 @@ type SeederProps = {
 };
 
 const seed = (props: SeederProps) => {
-  [...Array(props.count)].forEach((_, i) => {
-    db.taskCard.create({
+  return [...Array(props.count)].map((_, i) => {
+    return db.taskCard.create({
       id: faker.string.uuid(),
       listId: props.belongsTo.list.id,
       title: `${faker.hacker.adjective()} ${faker.hacker.verb()}`,
@@ -72,7 +72,13 @@ const initialize = () => {
         .findMany({ where: { boardId: { equals: board.id } } })
         .forEach((list, j) => {
           const count = !i && !j ? 50 : 2;
-          seed({ count, belongsTo: { list } });
+
+          const cards = seed({ count, belongsTo: { list } });
+
+          db.taskList.update({
+            where: { id: { equals: list.id } },
+            data: { cardIds: cards.map((card) => card.id) },
+          });
         });
     });
 
@@ -82,7 +88,12 @@ const initialize = () => {
       db.taskList
         .findMany({ where: { boardId: { equals: board.id } } })
         .forEach((list) => {
-          seed({ count: 2, belongsTo: { list } });
+          const cards = seed({ count: 2, belongsTo: { list } });
+
+          db.taskList.update({
+            where: { id: { equals: list.id } },
+            data: { cardIds: cards.map((card) => card.id) },
+          });
         });
     });
 };

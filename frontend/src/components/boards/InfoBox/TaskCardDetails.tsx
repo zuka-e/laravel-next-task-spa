@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useState, type JSX } from 'react';
 
 import * as yup from 'yup';
 import dayjs from 'dayjs';
@@ -169,7 +169,7 @@ const TaskCardDetails = memo(function TaskCardDetails(
             schema={yup.object().shape({
               content: yup.string().label('Content').min(20),
             })}
-            defaultValue={card.content}
+            defaultValue={card.content ?? undefined}
             isLoading={isLoading}
           />
         </CardContent>

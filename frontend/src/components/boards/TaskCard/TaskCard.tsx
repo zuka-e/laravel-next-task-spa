@@ -1,77 +1,109 @@
-import { memo, useCallback, useRef } from 'react';
+import {
+  memo,
+  useCallback,
+  type JSX,
+  useRef,
+  useEffect,
+  useState,
+} from 'react';
 
 import clsx from 'clsx';
-import { useDrag, useDrop } from 'react-dnd';
-import { Card, Typography } from '@mui/material';
+import {
+  draggable,
+  dropTargetForElements,
+} from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
+import { attachClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
+
+import { Typography } from '@mui/material';
 
 import type * as Model from '@/store/api/services/tasks/models';
-import { useMoveCard } from '@/store/api';
-import { draggableItem, DragItem } from '@/utils/dnd';
+import {
+  DND_ENTITY_TYPE,
+  type DraggableItem,
+  type DroppableItem,
+} from '@/lib/dnd/entities';
 import { useTaskDetails } from '@/lib/hooks';
 
 type TaskCardProps = {
-  card: Model.TaskCard;
-  cardIndex: number;
-  listIndex: number;
+  card: Pick<Model.TaskCard, 'id' | 'listId' | 'title'>;
+  index: number;
 };
 
 const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
-  const { card, cardIndex, listIndex } = props;
+  const { card, index } = props;
   const { showTaskDetails, isTaskSelected } = useTaskDetails();
-  const { moveCard } = useMoveCard();
-  const ref = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isDraggedOver, setIsDraggedOver] = useState(false);
 
-  const [, drag] = useDrag<DragItem, unknown, unknown>({
-    type: draggableItem.card,
-    item: {
-      ...card,
-      index: cardIndex,
-      listIndex: listIndex,
-    },
-  });
-
-  const [{ isOver }, drop] = useDrop({
-    accept: draggableItem.card,
-    hover: (item: DragItem) => {
-      if (item.id === card.id) {
-        return;
-      }
-
-      const dragListId = item.listId;
-      const dragIndex = item.index;
-
-      item.index = cardIndex;
-
-      moveCard(item, dragListId, card.listId, dragIndex, cardIndex);
-    },
-    collect: (monitor) => ({
-      isOver: monitor.isOver(),
-    }),
-  });
-
-  drag(drop(ref));
+  const draggableRef = useRef<HTMLDivElement>(null);
+  const dropzoneRef = useRef<HTMLDivElement>(null);
 
   const handleClick = useCallback((): void => {
     showTaskDetails('c', card.id);
   }, [card.id, showTaskDetails]);
 
+  useEffect(() => {
+    if (!draggableRef.current || !dropzoneRef.current) return;
+
+    return combine(
+      draggable({
+        element: draggableRef.current,
+        getInitialData: (): DraggableItem =>
+          ({
+            isDraggable: true,
+            type: DND_ENTITY_TYPE.ITEM,
+            id: card.id,
+            index,
+            parentId: card.listId,
+          } as const),
+        onDragStart: () => setIsDragging(true),
+        onDrop: () => setIsDragging(false),
+      }),
+      dropTargetForElements({
+        element: dropzoneRef.current,
+        onDragStart: () => setIsDraggedOver(true),
+        onDragEnter: () => setIsDraggedOver(true),
+        onDragLeave: () => setIsDraggedOver(false),
+        onDrop: () => setIsDraggedOver(false),
+        getData: ({ input, element }) => {
+          const data: DroppableItem = {
+            isDroppable: true,
+            type: DND_ENTITY_TYPE.ITEM,
+            id: card.id,
+            index,
+          } as const;
+
+          return attachClosestEdge(data, {
+            input,
+            element,
+            allowedEdges: ['top', 'bottom'],
+          });
+        },
+      })
+    );
+  }, [card.id, card.listId, index]);
+
   return (
-    <Card
-      ref={ref}
+    <div
+      ref={dropzoneRef}
       onClick={handleClick}
-      className={clsx(
-        'cursor-pointer hover:opacity-80',
-        isTaskSelected('c', card.id) && 'opacity-80 outline outline-primary',
-        isOver && 'opacity-0'
-      )}
+      className={clsx('px-2 py-1', isDragging && 'opacity-50')}
     >
-      <Typography
+      <div
+        ref={draggableRef}
+        className={clsx(
+          'p-2 cursor-pointer bg-white rounded-md hover:opacity-80',
+          isTaskSelected('c', card.id) && 'opacity-80 outline outline-primary',
+          isDraggedOver && 'bg-gray-100'
+        )}
         title={card.title}
-        className="line-clamp-3 whitespace-pre-wrap p-1.5"
       >
-        {card.title}
-      </Typography>
-    </Card>
+        <Typography className="line-clamp-3 whitespace-pre-wrap p-1.5">
+          {card.title}
+        </Typography>
+      </div>
+    </div>
   );
 });
 

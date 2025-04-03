@@ -6,6 +6,17 @@ import { API_ROUTE } from '@/config/api';
 import { hash, verifyHash } from '@test/utils/crypto';
 
 /**
+ * Get the query parameters from the request.
+ *
+ * @see https://mswjs.io/docs/recipes/query-parameters
+ */
+export const getQuery = (
+  request: StrictRequest<DefaultBodyType>
+): URLSearchParams => {
+  return new URL(request.url).searchParams;
+};
+
+/**
  * Generate a signed URL for a given path and query parameters.
  *
  * @see https://laravel.com/docs/urls#signed-urls

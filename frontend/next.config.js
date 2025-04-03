@@ -26,6 +26,17 @@ const nextConfig = {
   // To confirm the behavior, you may use `next build && next start`
   // or set `NextConfig.reactStrictMode` to`false`.
   reactStrictMode: true,
+  eslint: {
+    dirs: ['.'],
+  },
+  experimental: {
+    turbo: {
+      resolveAlias: {
+        '@/*': ['src/*'],
+        '@test/*': ['test/*'],
+      },
+    },
+  },
 };
 
 module.exports = { ...removeImports()(), ...nextConfig };

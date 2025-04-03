@@ -1,3 +1,4 @@
+import { getTagsForList } from '@/store/api/utils/caching';
 import { makePath } from '@/utils/api';
 import baseApi from './baseApi';
 import type {
@@ -7,8 +8,6 @@ import type {
   DestroyTaskListResponse,
   FetchTaskListRequest,
   FetchTaskListResponse,
-  FetchTaskListsRequest,
-  FetchTaskListsResponse,
   UpdateTaskListRequest,
   UpdateTaskListResponse,
 } from './types';
@@ -20,59 +19,6 @@ const api = baseApi.injectEndpoints({
   // cf. https://redux-toolkit.js.org/rtk-query/usage/code-splitting
   overrideExisting: false,
   endpoints: (builder) => ({
-    /** Gets task lists belonging to the specified board */
-    getTaskLists: builder.query<FetchTaskListsResponse, FetchTaskListsRequest>({
-      query: ({ boardId, cursor, limit, sort, direction }) => ({
-        url: makePath(['task-boards', boardId], ['task-lists']),
-        params: { cursor, limit, sort, direction },
-      }),
-      // cf. https://redux-toolkit.js.org/rtk-query/api/createApi#merge
-      serializeQueryArgs: ({ endpointName, queryArgs }) => {
-        const { boardId } = queryArgs;
-        // Sole cache key per board  (cf. usual cache key format)
-        // It allow data to be added to the sole cache across all pages
-        return `${endpointName}(${JSON.stringify({ boardId })})`;
-      },
-      // cf. https://redux-toolkit.js.org/rtk-query/api/createApi#merge
-      merge: (current, incoming, { arg: req }) => {
-        // Replace all unless the incoming data is adjacent one.
-        if (!req.cursor) {
-          return incoming;
-        }
-
-        if (req.cursor === current.meta.nextCursor) {
-          return {
-            ...incoming,
-            data: [...current.data, ...incoming.data],
-            links: { ...incoming.links, prev: current.links.prev },
-            meta: { ...incoming.meta, prevCursor: current.meta.prevCursor },
-          };
-        }
-
-        if (req.cursor === current.meta.prevCursor) {
-          return {
-            ...incoming,
-            data: [...incoming.data, ...current.data],
-            links: { ...incoming.links, next: current.links.next },
-            meta: { ...incoming.meta, nextCursor: current.meta.nextCursor },
-          };
-        }
-
-        return incoming;
-      },
-      // cf. https://redux-toolkit.js.org/rtk-query/api/createApi#merge
-      // cf. https://redux-toolkit.js.org/rtk-query/api/createApi#forcerefetch
-      forceRefetch({ currentArg, previousArg }) {
-        if (
-          currentArg?.sort !== previousArg?.sort ||
-          currentArg?.direction !== previousArg?.direction
-        ) {
-          return true;
-        }
-
-        return JSON.stringify(currentArg) !== JSON.stringify(previousArg);
-      },
-    }),
     createTaskList: builder.mutation<
       CreateTaskListResponse,
       CreateTaskListRequest
@@ -82,27 +28,13 @@ const api = baseApi.injectEndpoints({
         method: 'POST',
         data,
       }),
-      // cf. https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#pessimistic-updates
-      onQueryStarted: async ({ boardId }, { dispatch, queryFulfilled }) => {
-        const {
-          data: { data: newTaskList },
-        } = await queryFulfilled;
-
-        // Adds new data to the per-board cache instead of invalidating the `LIST` cache.
-        dispatch(
-          api.util.updateQueryData('getTaskLists', { boardId }, (draft) => {
-            draft.data.push(newTaskList);
-          })
-        );
-      },
+      invalidatesTags: () => getTagsForList(undefined, 'TaskList'),
     }),
     getTaskList: builder.query<FetchTaskListResponse, FetchTaskListRequest>({
       query: ({ id }) => ({
         url: makePath(['task-lists', id]),
       }),
-      providesTags: (res, _err, _req) => {
-        return [{ type: 'TaskList', id: res?.data.id }];
-      },
+      providesTags: (res) => [{ type: 'TaskList', id: res?.data.id }],
     }),
     updateTaskList: builder.mutation<
       UpdateTaskListResponse,
@@ -113,27 +45,7 @@ const api = baseApi.injectEndpoints({
         method: 'PATCH',
         data,
       }),
-      onQueryStarted: async (_req, { dispatch, queryFulfilled }) => {
-        const {
-          data: { data: updatedTaskList },
-        } = await queryFulfilled;
-        const { boardId } = updatedTaskList;
-
-        // Replace cache instead of invalidating the cache.
-        dispatch(
-          api.util.updateQueryData('getTaskLists', { boardId }, (draft) => {
-            const current = draft.data.find(
-              (list) => list.id === updatedTaskList.id
-            );
-
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            Object.assign(current!, updatedTaskList);
-          })
-        );
-      },
-      invalidatesTags: (res) => {
-        return res ? [{ type: 'TaskList', id: res.data.id }] : [];
-      },
+      invalidatesTags: (res) => [{ type: 'TaskList', id: res?.data.id }],
     }),
     destroyTaskList: builder.mutation<
       DestroyTaskListResponse,
@@ -143,33 +55,12 @@ const api = baseApi.injectEndpoints({
         url: makePath(['task-lists', id]),
         method: 'DELETE',
       }),
-      onQueryStarted: async ({ id }, { dispatch, queryFulfilled }) => {
-        const {
-          data: { data: deletedTaskList },
-        } = await queryFulfilled;
-        const { boardId } = deletedTaskList;
-
-        // Replace cache instead of invalidating the cache.
-        dispatch(
-          api.util.updateQueryData('getTaskLists', { boardId }, (draft) => {
-            const i = draft.data.findIndex((list) => list.id === id);
-            draft.data.splice(i, 1);
-          })
-        );
-
-        // Don't invalidate tag to avoid unintended refetching resulting in 404.
-        dispatch(
-          api.util.updateQueryData('getTaskList', { id }, (draft) => {
-            draft.data.isDeleted = true;
-          })
-        );
-      },
+      invalidatesTags: (res) => [{ type: 'TaskList', id: res?.data.id }],
     }),
   }),
 });
 
 export const {
-  useGetTaskListsQuery,
   useCreateTaskListMutation,
   useGetTaskListQuery,
   useUpdateTaskListMutation,

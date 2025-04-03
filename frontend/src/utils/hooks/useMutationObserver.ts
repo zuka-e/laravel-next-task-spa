@@ -6,7 +6,7 @@ import { type RefObject, useEffect, useRef } from 'react';
  * @see https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
  */
 const useMutationObserver = <T extends HTMLElement>(
-  ref: RefObject<T>,
+  ref: RefObject<T | null>,
   onMutate: MutationCallback,
   options?: MutationObserverInit
 ) => {
@@ -32,7 +32,7 @@ const useMutationObserver = <T extends HTMLElement>(
     });
 
     return () => {
-      mutationObserver.disconnect;
+      mutationObserver.disconnect();
     };
   }, [options, ref]);
 };
