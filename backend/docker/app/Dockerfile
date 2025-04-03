@@ -3,7 +3,7 @@
 ARG PHP_VERSION
 
 # cf. https://hub.docker.com/_/composer
-FROM composer:2.6 as composer
+FROM composer:2.8 as composer
 
 # cf. https://hub.docker.com/_/node/
 # cf. https://github.com/nodejs/docker-node/blob/main/docs/BestPractices.md
