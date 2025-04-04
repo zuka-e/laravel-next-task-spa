@@ -1,7 +1,7 @@
 import globals from 'globals';
 import { includeIgnoreFile } from '@eslint/compat';
 import eslint from '@eslint/js';
-import prettierConfig from 'eslint-config-prettier';
+import prettierConfig from 'eslint-config-prettier/flat';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import next from '@next/eslint-plugin-next';
@@ -105,5 +105,5 @@ export default tseslint.config(
     rules: {
       ...testingLibrary.configs['flat/react'].rules,
     },
-  }
+  },
 );
