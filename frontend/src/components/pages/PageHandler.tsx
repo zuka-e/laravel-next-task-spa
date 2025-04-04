@@ -5,7 +5,7 @@ import { Route } from '@/routes';
 import { ErrorHandler } from '@/components/errors';
 
 const PageHandler = memo(function PageHandler(
-  props: Pick<AppProps, 'Component' | 'pageProps'>
+  props: Pick<AppProps, 'Component' | 'pageProps'>,
 ): JSX.Element {
   return (
     <ErrorHandler>

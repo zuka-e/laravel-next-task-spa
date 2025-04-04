@@ -11,7 +11,7 @@ const Notification = memo(function Notification(): JSX.Element {
   const messages = useDeepEqualSelector((state) => state.app.messages);
   const [open, setOpen] = useState(false);
   const [currentNotification, setCurrentNotification] = useState<
-    typeof messages[0] | undefined
+    (typeof messages)[0] | undefined
   >();
   const dispatch = useAppDispatch();
 
@@ -34,7 +34,7 @@ const Notification = memo(function Notification(): JSX.Element {
       if (reason === 'clickaway') return;
       else setOpen(false);
     },
-    []
+    [],
   );
 
   const handleExited = useCallback((): void => {

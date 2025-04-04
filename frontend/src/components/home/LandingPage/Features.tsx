@@ -24,7 +24,7 @@ type FeatureLayoutProps = {
 };
 
 const FeatureLayout = memo(function FeatureLayout(
-  props: FeatureLayoutProps
+  props: FeatureLayoutProps,
 ): JSX.Element {
   const { children, image, header } = props;
 

@@ -8,7 +8,7 @@ const breakpoints: ThemeOptions['breakpoints'] = {
   values: {
     xs: 0,
     ...(Object.fromEntries(
-      Object.entries(screens).map(([key, value]) => [key, parseInt(value)])
+      Object.entries(screens).map(([key, value]) => [key, parseInt(value)]),
     ) as Record<keyof typeof screens, number>),
   },
 };

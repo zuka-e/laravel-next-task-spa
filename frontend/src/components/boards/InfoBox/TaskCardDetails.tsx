@@ -37,7 +37,7 @@ type TaskCardDetailsProps = {
 };
 
 const TaskCardDetails = memo(function TaskCardDetails(
-  props: TaskCardDetailsProps
+  props: TaskCardDetailsProps,
 ): JSX.Element {
   const { card } = props;
   const { getTaskDetailsLink } = useTaskDetails();
@@ -61,7 +61,7 @@ const TaskCardDetails = memo(function TaskCardDetails(
         deadline: date?.toISOString(),
       });
     },
-    [card.id, updateTaskCard]
+    [card.id, updateTaskCard],
   );
 
   const handleDelete = useCallback((): void => {
@@ -79,7 +79,7 @@ const TaskCardDetails = memo(function TaskCardDetails(
         content: text,
       });
     },
-    [card.id, updateTaskCard]
+    [card.id, updateTaskCard],
   );
 
   return (

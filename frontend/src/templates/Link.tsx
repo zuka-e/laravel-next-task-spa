@@ -24,7 +24,7 @@ interface NextLinkComposedProps
 }
 
 export const NextLinkComposed = memo(function NextLinkComposed(
-  props: NextLinkComposedProps & { ref?: Ref<HTMLAnchorElement> }
+  props: NextLinkComposedProps & { ref?: Ref<HTMLAnchorElement> },
 ) {
   const {
     ref,
@@ -66,7 +66,7 @@ export type LinkProps = {
 // A styled version of the Next.js Link component:
 // https://nextjs.org/docs/api-reference/next/link
 const Link = memo(function Link(
-  props: LinkProps & { ref?: Ref<HTMLAnchorElement> }
+  props: LinkProps & { ref?: Ref<HTMLAnchorElement> },
 ) {
   const {
     ref,

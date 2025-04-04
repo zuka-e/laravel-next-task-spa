@@ -57,7 +57,7 @@ type PopoverControlProps = {
 };
 
 const PopoverControl = memo(function PopoverControl(
-  props: PopoverControlProps
+  props: PopoverControlProps,
 ): JSX.Element {
   const { children, trigger, position } = props;
   const [className, setClassName] = useState<string | undefined>('contents');
@@ -69,7 +69,7 @@ const PopoverControl = memo(function PopoverControl(
 
   const { anchorOrigin, transformOrigin } = useMemo(
     () => makePopoverOriginSet(position),
-    [position]
+    [position],
   );
 
   useEffect(() => {
@@ -91,7 +91,7 @@ const PopoverControl = memo(function PopoverControl(
       }, readinessTime);
       setClassName(undefined);
     },
-    []
+    [],
   );
 
   const handleClose = useCallback((): void => {

@@ -79,7 +79,7 @@ export const handlers = [
       };
 
       return HttpResponse.json(data, { status: 201 });
-    })
+    }),
   ),
 
   http.get(
@@ -90,7 +90,7 @@ export const handlers = [
         severity: 'info',
         message: 'CSRFトークンを取得しました。',
       });
-    })
+    }),
   ),
 
   http.get(
@@ -103,7 +103,7 @@ export const handlers = [
         message: 'ユーザー情報を取得しました。',
         user: currentUser ? sanitizeUser(currentUser) : null,
       });
-    })
+    }),
   ),
 
   http.post(
@@ -131,7 +131,7 @@ export const handlers = [
           };
 
       return HttpResponse.json(data);
-    })
+    }),
   ),
 
   http.post(
@@ -156,7 +156,7 @@ export const handlers = [
       };
 
       return HttpResponse.json(data, { status: 201 });
-    })
+    }),
   ),
 
   http.get(
@@ -192,7 +192,7 @@ export const handlers = [
         message: '認証に成功しました。',
         user: sanitizeUser(updatedUser),
       });
-    })
+    }),
   ),
 
   http.patch(
@@ -212,7 +212,7 @@ export const handlers = [
 
       const updatedUser = updateProfileController.update(
         getUser()!,
-        requestData
+        requestData,
       );
 
       const data: UpdateProfileResponse = {
@@ -222,7 +222,7 @@ export const handlers = [
       };
 
       return HttpResponse.json(data);
-    })
+    }),
   ),
 
   http.patch(
@@ -249,7 +249,7 @@ export const handlers = [
       };
 
       return HttpResponse.json(data);
-    })
+    }),
   ),
 
   http.post(
@@ -282,7 +282,7 @@ export const handlers = [
       };
 
       return HttpResponse.json(data);
-    })
+    }),
   ),
 
   http.post(
@@ -296,7 +296,7 @@ export const handlers = [
       const requestData = await request.json();
 
       return resetPasswordController.store({ token, ...requestData });
-    })
+    }),
   ),
 
   http.post(
@@ -310,7 +310,7 @@ export const handlers = [
       };
 
       return HttpResponse.json(data);
-    })
+    }),
   ),
 
   http.delete(
@@ -326,6 +326,6 @@ export const handlers = [
       };
 
       return HttpResponse.json(data);
-    })
+    }),
   ),
 ];

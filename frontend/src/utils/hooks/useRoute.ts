@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
  */
 export type AppRoute<
   Path extends string[] | void = void,
-  Query extends ParsedUrlQuery | void = void
+  Query extends ParsedUrlQuery | void = void,
 > = {
   /**
    * Pathname without query string. - *e.g.*`'/users/1'`
@@ -47,7 +47,7 @@ export type AppRoute<
  */
 const useRoute = <
   Path extends string[] | void = void,
-  Query extends ParsedUrlQuery | void = void
+  Query extends ParsedUrlQuery | void = void,
 >(): AppRoute<Path, Query> => {
   const router = useRouter();
 
@@ -67,12 +67,12 @@ const useRoute = <
 
   const pathname: AppRoute['pathname'] = useMemo(
     () => pathAndQuery[0],
-    [pathAndQuery]
+    [pathAndQuery],
   );
 
   const queryString: AppRoute['queryString'] = useMemo(
     () => pathAndQuery[1],
-    [pathAndQuery]
+    [pathAndQuery],
   );
 
   /**
@@ -81,23 +81,26 @@ const useRoute = <
   const pathParams = useMemo(() => {
     const pathParamNames = getPathParamNames(router.pathname);
 
-    return pathParamNames.reduce((obj, routeSegmentName: string) => {
-      const key = routeSegmentName.replace('...', '');
-      const values = router.query[key];
+    return pathParamNames.reduce(
+      (obj, routeSegmentName: string) => {
+        const key = routeSegmentName.replace('...', '');
+        const values = router.query[key];
 
-      switch (typeof values) {
-        case 'string':
-          obj[key] = values;
-          break;
-        case 'object':
-          obj[key] = values.join(' ');
-          break;
-        default:
-        // throw new Error('Unexpected.');
-      }
+        switch (typeof values) {
+          case 'string':
+            obj[key] = values;
+            break;
+          case 'object':
+            obj[key] = values.join(' ');
+            break;
+          default:
+          // throw new Error('Unexpected.');
+        }
 
-      return obj;
-    }, {} as NonNullable<AppRoute<Path, Query>['pathParams']>);
+        return obj;
+      },
+      {} as NonNullable<AppRoute<Path, Query>['pathParams']>,
+    );
   }, [router.pathname, router.query]);
 
   /**
@@ -113,17 +116,20 @@ const useRoute = <
   const queryParams = useMemo(() => {
     const queryParamNames = getQueryParamNames(queryString);
 
-    return queryParamNames.reduce((obj, queryParamName: string) => {
-      const queryValue = router.query[queryParamName];
+    return queryParamNames.reduce(
+      (obj, queryParamName: string) => {
+        const queryValue = router.query[queryParamName];
 
-      if (router.isReady && typeof queryValue === 'undefined') {
-        console.error('Unexpected query parameter format.');
-      }
+        if (router.isReady && typeof queryValue === 'undefined') {
+          console.error('Unexpected query parameter format.');
+        }
 
-      obj[queryParamName] = queryValue;
+        obj[queryParamName] = queryValue;
 
-      return obj;
-    }, {} as NonNullable<AppRoute<Path, Query>['queryParams']>);
+        return obj;
+      },
+      {} as NonNullable<AppRoute<Path, Query>['queryParams']>,
+    );
   }, [queryString, router.isReady, router.query]);
 
   if (!router.isReady) {

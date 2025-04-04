@@ -19,7 +19,7 @@ type UseScrollPositionOption = {
  */
 const useScrollPosition = <T extends HTMLElement>(
   ref: RefObject<T | null>,
-  options: UseScrollPositionOption
+  options: UseScrollPositionOption,
 ) => {
   const { on, threshold = 0 } = options;
 

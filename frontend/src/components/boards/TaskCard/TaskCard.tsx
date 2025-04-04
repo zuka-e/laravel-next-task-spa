@@ -56,7 +56,7 @@ const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
             id: card.id,
             index,
             parentId: card.listId,
-          } as const),
+          }) as const,
         onDragStart: () => setIsDragging(true),
         onDrop: () => setIsDragging(false),
       }),
@@ -80,7 +80,7 @@ const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
             allowedEdges: ['top', 'bottom'],
           });
         },
-      })
+      }),
     );
   }, [card.id, card.listId, index]);
 
@@ -95,7 +95,7 @@ const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
         className={clsx(
           'p-2 cursor-pointer bg-white rounded-md hover:opacity-80',
           isTaskSelected('c', card.id) && 'opacity-80 outline outline-primary',
-          isDraggedOver && 'bg-gray-100'
+          isDraggedOver && 'bg-gray-100',
         )}
         title={card.title}
       >

@@ -63,7 +63,7 @@ const UserProfile = memo(function UserProfile(): JSX.Element {
 
       updateProfile(data);
     },
-    [updateProfile, user]
+    [updateProfile, user],
   );
 
   if (!user) {

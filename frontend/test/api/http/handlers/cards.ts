@@ -41,7 +41,7 @@ export const handlers = [
         message: 'タスクカード一覧を取得しました。',
         ...paginated,
       });
-    })
+    }),
   ),
 
   http.post(
@@ -60,9 +60,9 @@ export const handlers = [
           message: 'タスクカードを作成しました。',
           data: response,
         },
-        { status: 201 }
+        { status: 201 },
       );
-    })
+    }),
   ),
 
   http.get(
@@ -83,7 +83,7 @@ export const handlers = [
         message: 'タスクカードを取得しました。',
         data: taskCard,
       });
-    })
+    }),
   ),
 
   http.patch(
@@ -105,7 +105,7 @@ export const handlers = [
         message: 'タスクカードを更新しました。',
         data: updated,
       });
-    })
+    }),
   ),
 
   http.delete(
@@ -126,7 +126,7 @@ export const handlers = [
         message: 'タスクカードを削除しました。',
         data: deleted,
       });
-    })
+    }),
   ),
 
   http.get(
@@ -145,6 +145,6 @@ export const handlers = [
         message: 'タスクカードを検索しました。',
         data: searched,
       });
-    })
+    }),
   ),
 ];

@@ -39,7 +39,7 @@ export const handlers = [
         message: 'タスクボード一覧を取得しました。',
         ...paginated,
       });
-    })
+    }),
   ),
 
   http.post(
@@ -58,9 +58,9 @@ export const handlers = [
           message: 'タスクボードを作成しました。',
           data: taskBoard,
         },
-        { status: 201 }
+        { status: 201 },
       );
-    })
+    }),
   ),
 
   http.get(
@@ -88,7 +88,7 @@ export const handlers = [
             message: 'タスクボードを取得しました。',
             data: taskBoard,
           });
-    })
+    }),
   ),
 
   http.patch(
@@ -110,7 +110,7 @@ export const handlers = [
         message: 'タスクボードを更新しました。',
         data: updated,
       });
-    })
+    }),
   ),
 
   http.delete(
@@ -131,7 +131,7 @@ export const handlers = [
         message: 'タスクボードを削除しました。',
         data: deleted,
       });
-    })
+    }),
   ),
 
   http.post(
@@ -154,6 +154,6 @@ export const handlers = [
         message: 'タスクカードを移動しました。',
         data: updated,
       });
-    })
+    }),
   ),
 ];

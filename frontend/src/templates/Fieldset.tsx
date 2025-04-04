@@ -7,7 +7,7 @@ import { memo, type JSX } from 'react';
  * <Fieldset disabled={isLoading}>...</Fieldset>
  */
 const Fieldset = memo(function Fieldset(
-  props: JSX.IntrinsicElements['fieldset']
+  props: JSX.IntrinsicElements['fieldset'],
 ): JSX.Element {
   return (
     <fieldset

@@ -95,7 +95,7 @@ const addMetaLinks = (props: PaginationResponse<unknown>) => {
 };
 
 export const cursorPaginate = <T extends { id: string }>(
-  props: PaginateProps<T>
+  props: PaginateProps<T>,
 ): CursorPaginationResponse<T> => {
   const { request, filtered } = props;
 

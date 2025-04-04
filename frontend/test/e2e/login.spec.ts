@@ -15,7 +15,7 @@ test.describe('Login form', () => {
     input: {
       email: string;
       password: string;
-    }
+    },
   ): Promise<void> => {
     const { email, password } = input;
     await page.getByRole('textbox', { name: 'Email Address' }).fill(email);

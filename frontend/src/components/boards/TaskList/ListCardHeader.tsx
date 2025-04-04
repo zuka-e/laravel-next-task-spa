@@ -15,7 +15,7 @@ type ListCardHeaderProps = {
 };
 
 const ListCardHeader = memo(function ListCardHeader(
-  props: ListCardHeaderProps
+  props: ListCardHeaderProps,
 ): JSX.Element {
   const { list } = props;
 

@@ -39,7 +39,7 @@ import '@uiw/react-markdown-preview/markdown.css';
  */
 const MDEditor = dynamic<MDEditorProps>(
   () => import('@uiw/react-md-editor').then((mod) => mod.default),
-  { ssr: false }
+  { ssr: false },
 );
 
 /**
@@ -48,7 +48,7 @@ const MDEditor = dynamic<MDEditorProps>(
  */
 const MarkdownPreview = dynamic<MarkdownPreviewProps>(
   () => import('@uiw/react-markdown-preview').then((mod) => mod.default),
-  { ssr: false }
+  { ssr: false },
 );
 
 type MarkdownEditorProps = {
@@ -59,17 +59,17 @@ type MarkdownEditorProps = {
 };
 
 const MarkdownEditor = memo(function MarkdownEditor(
-  props: MarkdownEditorProps
+  props: MarkdownEditorProps,
 ): JSX.Element {
   const { schema, defaultValue, isLoading, onSubmit } = props;
 
   const prop: keyof typeof schema.fields = useMemo(
     () => Object.keys(schema.fields)[0],
-    [schema.fields]
+    [schema.fields],
   );
 
   const [mode, setMode] = useState<PreviewType>(
-    defaultValue ? 'preview' : 'edit'
+    defaultValue ? 'preview' : 'edit',
   );
 
   const {
@@ -95,7 +95,7 @@ const MarkdownEditor = memo(function MarkdownEditor(
 
       onSubmit(data[prop]);
     },
-    [defaultValue, onSubmit, prop]
+    [defaultValue, onSubmit, prop],
   );
 
   // 表示するデータが変更された場合に値を初期化する

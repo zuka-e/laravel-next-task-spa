@@ -14,7 +14,7 @@ import { SideMenu } from '@/components/layouts/Sidebar';
 
 type SidebarProps = {
   toggleDrawer: (
-    open: boolean
+    open: boolean,
   ) => (event: React.KeyboardEvent | React.MouseEvent) => void;
 };
 

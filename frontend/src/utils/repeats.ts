@@ -7,7 +7,7 @@
  */
 export const repeatEach = (
   times: number,
-  callback: (index: number) => void
+  callback: (index: number) => void,
 ): void => {
   Array.from({ length: times }, (_, i) => i).forEach((i) => {
     callback(i);
@@ -23,7 +23,7 @@ export const repeatEach = (
  */
 export const repeatMap = <T>(
   times: number,
-  callback: (index: number) => T
+  callback: (index: number) => T,
 ): T[] => {
   return Array.from({ length: times }, (_, i) => i).map((j) => callback(j));
 };

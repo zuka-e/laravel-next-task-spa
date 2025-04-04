@@ -90,7 +90,7 @@ const SideMenu = memo(function SideMenu(): JSX.Element {
           break;
       }
     },
-    [login, logout, register]
+    [login, logout, register],
   );
 
   return (

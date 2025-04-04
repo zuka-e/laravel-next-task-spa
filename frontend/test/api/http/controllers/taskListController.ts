@@ -7,7 +7,7 @@ import { cursorPaginate } from '@test/api/http/responses/paginate';
 
 export const index = (
   boardId: TaskBoard['id'],
-  request: StrictRequest<DefaultBodyType>
+  request: StrictRequest<DefaultBodyType>,
 ): CursorPaginationResponse<TaskList> => {
   const lists = db.taskList.findMany({
     where: { boardId: { equals: boardId } },
@@ -18,7 +18,7 @@ export const index = (
 
 export const store = (
   boardId: TaskBoard['id'],
-  params: Partial<Omit<TaskList, 'id' | 'boardId'>>
+  params: Partial<Omit<TaskList, 'id' | 'boardId'>>,
 ): TaskList => {
   return db.taskList.create({ boardId, ...params });
 };
@@ -29,7 +29,7 @@ export const show = (id: TaskList['id']): TaskList | null => {
 
 export const update = (
   id: TaskList['id'],
-  params: Partial<Omit<TaskList, 'id' | 'boardId'>>
+  params: Partial<Omit<TaskList, 'id' | 'boardId'>>,
 ): TaskList | null => {
   return db.taskList.update({ where: { id: { equals: id } }, data: params });
 };

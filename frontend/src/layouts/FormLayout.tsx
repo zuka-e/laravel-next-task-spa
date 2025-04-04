@@ -30,7 +30,7 @@ type FormLayoutProps = {
 };
 
 const FormLayout = memo(function FormLayout(
-  props: FormLayoutProps
+  props: FormLayoutProps,
 ): JSX.Element {
   const { children, title, onSubmit, error, isLoading, disabled } = props;
 

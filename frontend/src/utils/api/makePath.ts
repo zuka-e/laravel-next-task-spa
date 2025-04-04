@@ -6,7 +6,7 @@ type PathSet = [pathName: PathNames[number], id?: string];
 
 /** `PathSet`の配列(可変長)を連結してパスを作成 */
 export const makePath = (...props: PathSet[]) => {
-  const reducer = (acc: string, current: typeof props[0]) => {
+  const reducer = (acc: string, current: (typeof props)[0]) => {
     const pathName = current[0];
     const id = current[1];
     return acc + `/${pathName}` + (id ? `/${id}` : '');

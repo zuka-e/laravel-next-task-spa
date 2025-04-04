@@ -23,7 +23,7 @@ type AddTaskButtonProps = {
 };
 
 const AddTaskButton = memo(function AddTaskButton(
-  props: AddTaskButtonProps
+  props: AddTaskButtonProps,
 ): JSX.Element {
   const { disabled, error, onSubmit } = props;
   const [isEditing, setIsEditing] = useState(false);
@@ -43,7 +43,7 @@ const AddTaskButton = memo(function AddTaskButton(
       setIsEditing(false);
       resetField('title');
     },
-    [onSubmit, resetField]
+    [onSubmit, resetField],
   );
 
   const errorMessage = useMemo(() => {

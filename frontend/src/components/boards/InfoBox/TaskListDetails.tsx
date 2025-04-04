@@ -27,7 +27,7 @@ type TaskListDetailsProps = {
 };
 
 const TaskListDetails = memo(function TaskListDetails(
-  props: TaskListDetailsProps
+  props: TaskListDetailsProps,
 ): JSX.Element {
   const { list } = props;
   const { getTaskDetailsLink } = useTaskDetails();
@@ -41,7 +41,7 @@ const TaskListDetails = memo(function TaskListDetails(
     (text: string): void => {
       updateTaskList({ id: list.id, description: text });
     },
-    [list.id, updateTaskList]
+    [list.id, updateTaskList],
   );
 
   return (

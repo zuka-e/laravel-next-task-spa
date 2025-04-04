@@ -25,7 +25,7 @@ type TaskBoardDetailsProps = {
 };
 
 const TaskBoardDetails = memo(function TaskBoardDetails(
-  props: TaskBoardDetailsProps
+  props: TaskBoardDetailsProps,
 ): JSX.Element {
   const { board } = props;
 
@@ -35,7 +35,7 @@ const TaskBoardDetails = memo(function TaskBoardDetails(
     (text: string): void => {
       updateTaskBoard({ id: board.id, description: text });
     },
-    [board.id, updateTaskBoard]
+    [board.id, updateTaskBoard],
   );
 
   return (

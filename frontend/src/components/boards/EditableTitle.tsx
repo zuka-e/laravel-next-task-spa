@@ -23,7 +23,7 @@ type EditableTitleProps = {
 };
 
 const EditableTitle = memo(function EditableTitle(
-  props: EditableTitleProps
+  props: EditableTitleProps,
 ): JSX.Element {
   const { defaultValue, disabled, error, onSubmit } = props;
   const [isEditing, setIsEditing] = useState(false);
@@ -68,7 +68,7 @@ const EditableTitle = memo(function EditableTitle(
 });
 
 const StyledTextField = memo(function StyledTitleForm(
-  props: TextFieldProps & { ref?: Ref<HTMLDivElement> }
+  props: TextFieldProps & { ref?: Ref<HTMLDivElement> },
 ): JSX.Element {
   const { ref, ...textFieldProps } = props;
 

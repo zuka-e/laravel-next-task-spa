@@ -15,7 +15,7 @@ type BoardCardHeaderProps = {
 };
 
 const BoardCardHeader = memo(function BoardCardHeader(
-  props: BoardCardHeaderProps
+  props: BoardCardHeaderProps,
 ): JSX.Element {
   const { board } = props;
 

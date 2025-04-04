@@ -37,7 +37,7 @@ const App = memo(function App({ Component, pageProps }: AppProps): JSX.Element {
     // cf. https://nextjs.org/docs/app/api-reference/functions/use-router#router-events
     const handleRouteChangeStart = (
       url: string,
-      { shallow }: { shallow: boolean }
+      { shallow }: { shallow: boolean },
     ) => {
       {
         console.log(`Navigating to "${url}"${shallow ? ' (shallow)' : ''}.`);
@@ -46,7 +46,7 @@ const App = memo(function App({ Component, pageProps }: AppProps): JSX.Element {
 
     const handleRouteChangeComplete = (
       url: string,
-      { shallow }: { shallow: boolean }
+      { shallow }: { shallow: boolean },
     ) => {
       {
         console.log(`Navigated to "${url}"${shallow ? ' (shallow)' : ''}.`);

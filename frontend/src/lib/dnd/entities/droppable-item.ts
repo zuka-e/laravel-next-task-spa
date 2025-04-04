@@ -15,7 +15,7 @@ export type DroppableItem<T extends DndEntityType = DndEntityType> = {
  * Check if the value is a droppable item.
  */
 export const isDroppableItem = <T extends DndEntityType>(
-  value: unknown
+  value: unknown,
 ): value is DroppableItem<T> => {
   return isPlainObject(value) && value.isDroppable === true;
 };

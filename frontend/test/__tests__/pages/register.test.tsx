@@ -35,7 +35,7 @@ describe('Registration Page', () => {
     const { user } = setup(
       <Provider store={setupStore()}>
         <SignUp />
-      </Provider>
+      </Provider>,
     );
 
     const email = faker.internet.exampleEmail();
@@ -45,11 +45,11 @@ describe('Registration Page', () => {
     await user.click(screen.getByRole('checkbox', { name: /password/i }));
     await user.type(
       screen.getByRole('textbox', { name: /password$/i }),
-      password
+      password,
     );
     await user.type(
       screen.getByRole('textbox', { name: /password confirm/i }),
-      password
+      password,
     );
 
     // cf. https://github.com/testing-library/dom-testing-library/issues/474

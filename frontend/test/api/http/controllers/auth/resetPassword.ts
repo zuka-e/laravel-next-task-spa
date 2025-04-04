@@ -15,7 +15,7 @@ import { validationErrorResponse } from '@test/api/http/responses';
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Auth/Passwords/PasswordBroker.php#L84 - reset()
  */
 export const store = (
-  request: ResetPasswordRequest
+  request: ResetPasswordRequest,
 ): StrictResponse<ResetPasswordResponse> => {
   const user = getUserByCredentials(request);
 

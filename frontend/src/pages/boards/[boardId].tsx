@@ -63,7 +63,7 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
 
   const { data: { data: { kanbanBoard = undefined } = {} } = {}, error } =
     useGetKanbanBoardQuery(
-      pathParams ? { id: pathParams['boardId'] ?? '' } : skipToken
+      pathParams ? { id: pathParams['boardId'] ?? '' } : skipToken,
     );
 
   if (isNotFoundError(error)) {
@@ -102,8 +102,8 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
       const destIndex = destCard
         ? destCard.data.index
         : closestEdge === 'top'
-        ? 0
-        : kanbanBoard?.lists?.[destList.data.id]?.cards.length ?? 0;
+          ? 0
+          : (kanbanBoard?.lists?.[destList.data.id]?.cards.length ?? 0);
 
       moveTaskCard({
         boardId: pathParams?.['boardId'] ?? '',
@@ -114,7 +114,7 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
         cardId: source.data.id,
       });
     },
-    [kanbanBoard, moveTaskCard, pathParams]
+    [kanbanBoard, moveTaskCard, pathParams],
   );
 
   useEffect(() => {

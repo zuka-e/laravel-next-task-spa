@@ -12,7 +12,7 @@ test.describe('Forgot-Password form', () => {
   /** Fill out and submit the form */
   const submit = async (
     page: Page,
-    input: { email: string }
+    input: { email: string },
   ): Promise<void> => {
     const { email } = input;
     await page.getByRole('textbox', { name: 'Email Address' }).fill(email);

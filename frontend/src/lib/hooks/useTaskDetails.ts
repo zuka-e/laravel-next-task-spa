@@ -46,7 +46,7 @@ export const useTaskDetails = () => {
       },
       undefined,
       // cf. https://nextjs.org/docs/pages/building-your-application/routing/linking-and-navigating#shallow-routing
-      { shallow: true }
+      { shallow: true },
     );
   };
 
@@ -62,7 +62,7 @@ export const useTaskDetails = () => {
         query: restQueryParams,
       },
       undefined,
-      { shallow: true }
+      { shallow: true },
     );
   };
 

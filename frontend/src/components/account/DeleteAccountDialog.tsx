@@ -16,7 +16,7 @@ type DeleteAccountDialogProps = {
 };
 
 const DeleteAccountDialog = memo(function DeleteAccountDialog(
-  props: DeleteAccountDialogProps
+  props: DeleteAccountDialogProps,
 ): JSX.Element {
   const { trigger } = props;
   const [deleteAccount, { isLoading }] = useDeleteAccountMutation();

@@ -15,14 +15,14 @@ const combinedReducer = combineSlices(
   appSlice,
   taskListSlice,
   taskBoardSlice,
-  taskApi
+  taskApi,
 );
 
 export type RootState = ReturnType<typeof combinedReducer>;
 
 export const rootReducer = (
   state: RootState | undefined,
-  action: UnknownAction
+  action: UnknownAction,
 ) => {
   return combinedReducer(state, action);
 };

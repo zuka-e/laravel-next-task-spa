@@ -38,7 +38,7 @@ const ListMenu = memo(function ListMenu(props: ListMenuProps): JSX.Element {
           break;
       }
     },
-    [list.id, showTaskDetails]
+    [list.id, showTaskDetails],
   );
 
   const handleCloseDeleteDialog = useCallback((): void => {

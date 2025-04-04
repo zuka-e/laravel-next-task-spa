@@ -34,7 +34,7 @@ const highlightText = (text: string, query: string): JSX.Element => {
           </span>
         ) : (
           <span key={i}>{part}</span>
-        )
+        ),
       )}
     </>
   );
@@ -45,14 +45,14 @@ type SearchResultProps = {
 };
 
 const SearchResult = memo(function SearchResult(
-  props: SearchResultProps
+  props: SearchResultProps,
 ): JSX.Element {
   const { input } = props;
   const { pathParams } = useRoute();
   const { showTaskDetails } = useTaskDetails();
 
   const { data, isFetching } = useSearchTaskCardsByBoardQuery(
-    pathParams ? { boardId: pathParams['boardId' ?? ''], q: input } : skipToken
+    pathParams ? { boardId: pathParams['boardId' ?? ''], q: input } : skipToken,
   );
 
   if (!input) {

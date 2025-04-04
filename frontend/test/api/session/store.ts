@@ -70,7 +70,7 @@ export const setSession = (session: Session['payload']): void => {
  */
 export const putSession = <K extends keyof Session['payload']>(
   key: K,
-  value?: Session['payload'][K]
+  value?: Session['payload'][K],
 ): void => {
   const session = getSession();
 

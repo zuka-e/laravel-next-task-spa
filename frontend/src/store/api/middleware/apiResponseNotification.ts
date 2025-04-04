@@ -14,7 +14,7 @@ import { isApiResponse } from '@/store/api/services/tasks/utils';
  * Determine if the action is an API response.
  */
 const isAsyncThunkActionResponse = (
-  action: unknown
+  action: unknown,
 ): action is UnknownAsyncThunkAction & PayloadAction<ApiResponse> => {
   if (!isAsyncThunkAction(action)) {
     return false;

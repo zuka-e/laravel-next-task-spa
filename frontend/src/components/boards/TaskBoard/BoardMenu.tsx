@@ -40,7 +40,7 @@ const BoardMenu = memo(function BoardMenu(props: BoardMenuProps): JSX.Element {
           break;
       }
     },
-    [board.id, showTaskDetails]
+    [board.id, showTaskDetails],
   );
 
   const handleCloseDeleteDialog = useCallback((): void => {

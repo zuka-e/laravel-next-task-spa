@@ -37,7 +37,7 @@ const Header = memo(function Header(): JSX.Element {
 
         setOpen(open);
       },
-    []
+    [],
   );
 
   return (

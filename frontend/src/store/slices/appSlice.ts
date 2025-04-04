@@ -30,7 +30,7 @@ export const appSlice = createSlice({
     /** Add new messages */
     pushNotification(
       state,
-      action: PayloadAction<Omit<Notification, 'id'>>
+      action: PayloadAction<Omit<Notification, 'id'>>,
     ): void {
       state.messages = [
         ...state.messages,

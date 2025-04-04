@@ -9,7 +9,7 @@ import { useInvalidateSessionMutation } from '@/store/api';
 import { pushNotification } from '@/store/slices';
 
 const Route = memo(function Route(
-  props: Pick<AppProps<Record<string, unknown>>, 'Component' | 'pageProps'>
+  props: Pick<AppProps<Record<string, unknown>>, 'Component' | 'pageProps'>,
 ): JSX.Element {
   const { Component, pageProps } = props;
   const router = useRouter();
@@ -24,7 +24,7 @@ const Route = memo(function Route(
         pushNotification({
           severity: 'error',
           message: 'ログインしてください。',
-        })
+        }),
       );
 
       invalidateSession();

@@ -17,7 +17,7 @@ type Middleware<
     PathParams,
     DefaultBodyType,
     ApiResponse
-  >
+  >,
 > = (resolver: R) => (...args: Parameters<R>) => ReturnType<R> | HttpResponse;
 
 export default Middleware;

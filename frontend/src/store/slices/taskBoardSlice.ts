@@ -31,7 +31,7 @@ export const taskBoardSlice = createSlice({
       action: PayloadAction<{
         id: TaskBoard['id'];
         cursor?: string;
-      }>
+      }>,
     ) {
       const { id, cursor } = action.payload;
 
@@ -48,7 +48,7 @@ export const taskBoardSlice = createSlice({
       action: PayloadAction<{
         id: TaskBoard['id'];
         sort: Partial<Sort<TaskList>>;
-      }>
+      }>,
     ) {
       const { id, sort } = action.payload;
 

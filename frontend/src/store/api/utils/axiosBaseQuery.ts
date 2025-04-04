@@ -42,7 +42,7 @@ type SerializableAxiosError = Pick<AxiosError, 'isAxiosError'> & {
  * @see https://redux-toolkit.js.org/rtk-query/usage-with-typescript#typing-a-basequery
  */
 const axiosBaseQuery = (
-  defaultConfig?: CreateAxiosDefaults
+  defaultConfig?: CreateAxiosDefaults,
 ): BaseQueryFn<
   AxiosRequestConfig,
   AxiosResponse<Record<string, unknown>>['data'],

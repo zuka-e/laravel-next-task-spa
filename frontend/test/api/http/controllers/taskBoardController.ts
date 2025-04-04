@@ -14,7 +14,7 @@ import { getQuery } from '@test/api/http/utils/urls';
 
 export const index = (
   userId: TaskBoard['userId'],
-  request: StrictRequest<DefaultBodyType>
+  request: StrictRequest<DefaultBodyType>,
 ): PaginationResponse<TaskBoard> => {
   const boards = db.taskBoard.findMany({
     where: { userId: { equals: userId } },
@@ -24,14 +24,14 @@ export const index = (
 };
 
 export const store = (
-  params: Partial<Omit<TaskBoard, 'id' | 'userId'>>
+  params: Partial<Omit<TaskBoard, 'id' | 'userId'>>,
 ): TaskBoard => {
   return db.taskBoard.create({ userId: getUser()!.id, ...params });
 };
 
 export const show = (
   id: TaskBoard['id'],
-  request: StrictRequest<DefaultBodyType>
+  request: StrictRequest<DefaultBodyType>,
 ): TaskBoard | FetchKanbanBoardResponse['data'] | null => {
   const asKanban = getQuery(request).get('asKanban');
 
@@ -64,7 +64,7 @@ export const show = (
 
 export const update = (
   id: TaskBoard['id'],
-  params: Partial<Omit<TaskBoard, 'id' | 'userId'>>
+  params: Partial<Omit<TaskBoard, 'id' | 'userId'>>,
 ): TaskBoard | null => {
   return db.taskBoard.update({ where: { id: { equals: id } }, data: params });
 };
@@ -74,7 +74,7 @@ export const destroy = (id: TaskBoard['id']): TaskBoard | null => {
 };
 
 export const moveCard = (
-  params: Omit<MoveTaskCardRequest, 'boardId'>
+  params: Omit<MoveTaskCardRequest, 'boardId'>,
 ): MoveTaskCardResponse['data'] | null => {
   const { cardId, srcListId, destListId, srcIndex, destIndex } = params;
 

@@ -31,7 +31,7 @@ const verifyCsrfToken: Middleware = (resolver) => {
           severity: 'error',
           message: 'CSRF token mismatch.',
         },
-        { status: 419 }
+        { status: 419 },
       );
     }
 

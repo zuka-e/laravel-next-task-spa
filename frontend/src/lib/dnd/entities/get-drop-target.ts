@@ -7,7 +7,7 @@ import { type DroppableItem, isDroppableItem } from '@/lib/dnd/entities';
  */
 const getDropTarget = <T extends DroppableItem['type']>(
   dropTargets: DropTargetRecord[],
-  type: T
+  type: T,
 ): (DropTargetRecord & { data: DroppableItem<T> }) | undefined => {
   const target = dropTargets.find((target) => target.data.type === type);
 

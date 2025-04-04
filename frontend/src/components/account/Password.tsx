@@ -78,7 +78,7 @@ const Password = memo(function Password(): JSX.Element {
           }
         });
     },
-    [reset, updatePassword]
+    [reset, updatePassword],
   );
 
   if (!user) {

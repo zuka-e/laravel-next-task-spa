@@ -30,20 +30,20 @@ const globalMiddleware: Middleware[] = [
 const withMiddleware = <
   Params extends PathParams<keyof Params> = PathParams,
   RequestBody extends Record<string, unknown> | undefined = undefined,
-  ResponseBody extends ApiResponse = ApiResponse
+  ResponseBody extends ApiResponse = ApiResponse,
 >(
-  middleware?: Middleware[]
+  middleware?: Middleware[],
 ) => {
   return (
     resolver: HttpResponseResolver<
       Params,
       RequestBody,
       ResponseBody | ErrorResponse
-    >
+    >,
   ) => {
     return compose<typeof resolver>(
       ...globalMiddleware,
-      ...(middleware ?? [])
+      ...(middleware ?? []),
     )(resolver);
   };
 };

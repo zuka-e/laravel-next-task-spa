@@ -25,7 +25,7 @@ import type {
 
 const getOrderedCards = <T extends { id: string }>(
   cards: Record<string, T>,
-  cardIds: string[]
+  cardIds: string[],
 ) => {
   return cardIds.reduce<T[]>((acc, cardId) => {
     const card = cards[cardId];
@@ -113,7 +113,7 @@ const api = baseApi.injectEndpoints({
         ];
       },
       transformResponse: (
-        res: FetchKanbanBoardResponse
+        res: FetchKanbanBoardResponse,
       ): FetchKanbanBoardTransformedResponse => {
         const kanbanBoard: KanbanBoard = {
           ...res.data.board,
@@ -161,7 +161,7 @@ const api = baseApi.injectEndpoints({
       }),
       onQueryStarted: async (
         { boardId, srcListId, destListId, srcIndex, destIndex, cardId },
-        { dispatch, queryFulfilled }
+        { dispatch, queryFulfilled },
       ) => {
         // cf. https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#optimistic-updates
         const patchResult = dispatch(
@@ -204,15 +204,15 @@ const api = baseApi.injectEndpoints({
                 draft.data.kanbanBoard.lists[srcListId].cardIds = srcCardIds;
                 draft.data.kanbanBoard.lists[srcListId].cards = getOrderedCards(
                   draft.data.allCards,
-                  srcCardIds
+                  srcCardIds,
                 );
 
                 draft.data.kanbanBoard.lists[destListId].cardIds = destCardIds;
                 draft.data.kanbanBoard.lists[destListId].cards =
                   getOrderedCards(draft.data.allCards, destCardIds);
               }
-            }
-          )
+            },
+          ),
         );
 
         try {

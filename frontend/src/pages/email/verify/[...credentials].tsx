@@ -20,15 +20,15 @@ const VerifyEmail = memo(function VerifyEmail(): JSX.Element {
 
   const credentials = useMemo(
     (): string | undefined => route.pathParams?.['credentials'],
-    [route.pathParams]
+    [route.pathParams],
   );
   const queryString = useMemo(
     (): string | undefined => route.queryString,
-    [route.queryString]
+    [route.queryString],
   );
 
   const { isSuccess } = useVerifyEmailQuery(
-    credentials && queryString ? { credentials, queryString } : skipToken
+    credentials && queryString ? { credentials, queryString } : skipToken,
   );
 
   if (isSuccess) {

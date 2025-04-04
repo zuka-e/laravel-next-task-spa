@@ -8,7 +8,7 @@ import { type Ref, useEffect, useState, useRef } from 'react';
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
  */
 const useIntersectionObserver = <T extends HTMLElement>(
-  onIntersect: (entry: IntersectionObserverEntry) => void
+  onIntersect: (entry: IntersectionObserverEntry) => void,
 ): Ref<T | null> => {
   // cf. https://usehooks-ts.com/react-hook/use-intersection-observer
   // cf. https://github.com/thebuilder/react-intersection-observer

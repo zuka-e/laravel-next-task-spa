@@ -35,14 +35,14 @@ const SearchField = memo(function SearchField(): JSX.Element {
       setAnchorEl(event.currentTarget);
       setPopperOpen(true);
     },
-    []
+    [],
   );
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>): void => {
       setValue(event.target.value);
     },
-    []
+    [],
   );
 
   if (!inputOpen)

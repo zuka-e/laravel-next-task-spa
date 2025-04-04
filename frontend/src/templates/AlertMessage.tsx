@@ -18,13 +18,13 @@ type AlertMessageProps = {
 } & AlertProps;
 
 const AlertMessage = memo(function AlertMessage(
-  props: AlertMessageProps
+  props: AlertMessageProps,
 ): JSX.Element {
   const { header, body, ...alertProps } = props;
 
   const title = useMemo(
     (): string => props.header || headerMap[props.severity],
-    [props.header, props.severity]
+    [props.header, props.severity],
   );
 
   return (

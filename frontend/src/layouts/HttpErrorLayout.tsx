@@ -13,7 +13,7 @@ type HttpErrorLayoutProps = {
 };
 
 const HttpErrorLayout = memo(function HttpErrorLayout(
-  props: HttpErrorLayoutProps
+  props: HttpErrorLayoutProps,
 ): JSX.Element {
   const { title, description, hint, children } = props;
 

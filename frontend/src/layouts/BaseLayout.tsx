@@ -8,7 +8,7 @@ type BaseLayoutProps = {
 };
 
 const BaseLayout = memo(function BaseLayout(
-  props: BaseLayoutProps
+  props: BaseLayoutProps,
 ): JSX.Element {
   return (
     <>

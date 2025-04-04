@@ -34,7 +34,7 @@ const TaskBoardIndex = memo(function TaskBoardIndex(): JSX.Element {
 
   const { data: paginator } = useGetTaskBoardsQuery(
     { page: parseInt(queryParams?.page?.toString() ?? '1') },
-    { skip: !pathParams || !queryParams }
+    { skip: !pathParams || !queryParams },
   );
 
   const [createTaskBoard, { isLoading, data: response, error }] =
@@ -53,7 +53,7 @@ const TaskBoardIndex = memo(function TaskBoardIndex(): JSX.Element {
         query: { ...queryParams, page },
       });
     },
-    [pathname, queryParams]
+    [pathname, queryParams],
   );
 
   if (!pathParams || !paginator) return <StandbyScreen />;

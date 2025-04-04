@@ -10,7 +10,7 @@ type MarkdownWithTocProps = {
 };
 
 const MarkdownWithToc = memo(function MarkdownWithToc(
-  props: MarkdownWithTocProps
+  props: MarkdownWithTocProps,
 ): JSX.Element {
   const { children, articles } = props;
 

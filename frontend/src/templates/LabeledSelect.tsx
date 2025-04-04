@@ -16,7 +16,7 @@ type LabeledSelectProps = {
 } & SelectProps;
 
 const LabeledSelect = memo(function LabeledSelect(
-  props: LabeledSelectProps
+  props: LabeledSelectProps,
 ): JSX.Element {
   const { label, options, color, ...selectProps } = props;
 

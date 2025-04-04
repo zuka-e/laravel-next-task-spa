@@ -9,7 +9,7 @@ type LinkButtonProps = ButtonProps<'a'> &
   Parameters<typeof NextLinkComposed>[number];
 
 const LinkButton = memo(function LinkButton(
-  props: LinkButtonProps
+  props: LinkButtonProps,
 ): JSX.Element {
   return (
     <Button

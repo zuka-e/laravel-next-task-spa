@@ -31,7 +31,7 @@ type DeleteTaskDialogProps = DeleteAction & {
 };
 
 const DeleteTaskDialog = memo(function DeleteTaskDialog(
-  props: DeleteTaskDialogProps
+  props: DeleteTaskDialogProps,
 ): JSX.Element {
   const { open, onClose } = props;
   const [destroyTaskBoard, { isLoading: isLoadingBoard }] =

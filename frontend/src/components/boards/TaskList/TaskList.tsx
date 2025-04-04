@@ -29,7 +29,7 @@ const cardFilter = {
   DONE: 'Completed',
 } as const;
 
-type FilterName = typeof cardFilter[keyof typeof cardFilter];
+type FilterName = (typeof cardFilter)[keyof typeof cardFilter];
 
 type TaskListProps = {
   list: Pick<Model.TaskList, 'id' | 'title' | 'updatedAt'> & {
@@ -60,7 +60,7 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
     (event): void => {
       setFilterValue(event.target.value as FilterName); // unknown型から変換
     },
-    []
+    [],
   );
 
   useEffect(() => {
@@ -96,7 +96,7 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
           'flex max-h-full flex-col',
           isTaskSelected('l', list.id)
             ? 'bg-secondary-dark outline outline-primary'
-            : 'bg-secondary'
+            : 'bg-secondary',
         )}
       >
         <ListCardHeader list={list} />
