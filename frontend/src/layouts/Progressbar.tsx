@@ -1,5 +1,6 @@
 import { memo, type JSX } from 'react';
 
+import clsx from 'clsx';
 import { LinearProgress, LinearProgressProps } from '@mui/material';
 
 const Progressbar = memo(function Progressbar({
@@ -11,7 +12,7 @@ const Progressbar = memo(function Progressbar({
       variant="query"
       color="secondary"
       {...props}
-      className={'mt-2 ' + className ?? ''}
+      className={clsx('mt-2', className)}
     />
   );
 });

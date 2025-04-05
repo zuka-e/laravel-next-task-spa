@@ -52,7 +52,7 @@ const SearchResult = memo(function SearchResult(
   const { showTaskDetails } = useTaskDetails();
 
   const { data, isFetching } = useSearchTaskCardsByBoardQuery(
-    pathParams ? { boardId: pathParams['boardId' ?? ''], q: input } : skipToken,
+    pathParams ? { boardId: pathParams['boardId'] ?? '', q: input } : skipToken,
   );
 
   if (!input) {
