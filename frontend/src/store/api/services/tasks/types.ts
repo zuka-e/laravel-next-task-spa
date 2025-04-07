@@ -117,7 +117,7 @@ export type LoginResponse = ApiResponse<{
 export type LoginRequest = {
   email: string;
   password: string;
-  remember?: string;
+  remember?: boolean;
 };
 
 export type LogoutResponse = ApiResponse;
