@@ -82,6 +82,9 @@ importers:
       '@faker-js/faker':
         specifier: ^8.4.1
         version: 8.4.1
+      '@ianvs/prettier-plugin-sort-imports':
+        specifier: ^4.4.1
+        version: 4.4.1(prettier@3.5.3)
       '@mswjs/data':
         specifier: ^0.16.1
         version: 0.16.1(typescript@5.8.3)
@@ -4692,7 +4695,6 @@ snapshots:
       '@babel/helper-validator-identifier': 7.25.9
       js-tokens: 4.0.0
       picocolors: 1.1.1
-    optional: true
 
   '@babel/compat-data@7.24.8': {}
 
@@ -4730,7 +4732,6 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.8
       '@jridgewell/trace-mapping': 0.3.25
       jsesc: 3.1.0
-    optional: true
 
   '@babel/helper-compilation-targets@7.24.8':
     dependencies:
@@ -4843,7 +4844,6 @@ snapshots:
       '@babel/code-frame': 7.26.2
       '@babel/parser': 7.27.0
       '@babel/types': 7.27.0
-    optional: true
 
   '@babel/traverse@7.24.8':
     dependencies:
@@ -4871,7 +4871,6 @@ snapshots:
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
-    optional: true
 
   '@babel/types@7.24.8':
     dependencies:
@@ -5260,7 +5259,6 @@ snapshots:
       semver: 7.7.1
     transitivePeerDependencies:
       - supports-color
-    optional: true
 
   '@img/sharp-darwin-arm64@0.33.5':
     optionalDependencies:
@@ -7726,8 +7724,7 @@ snapshots:
 
   jsesc@2.5.2: {}
 
-  jsesc@3.1.0:
-    optional: true
+  jsesc@3.1.0: {}
 
   json-buffer@3.0.1: {}
 
