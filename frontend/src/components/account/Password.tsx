@@ -45,7 +45,8 @@ const schema = yup.object().shape({
   passwordConfirmation: yup
     .string()
     .label(formData.passwordConfirmation.label)
-    .oneOf([yup.ref('password'), null], 'Passwords do not match'),
+    .required()
+    .oneOf([yup.ref('password')], 'Passwords do not match'),
 });
 
 const Password = memo(function Password(): JSX.Element {
@@ -58,7 +59,7 @@ const Password = memo(function Password(): JSX.Element {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormData>({ mode: 'onBlur', resolver: yupResolver(schema) });
+  } = useForm({ mode: 'onBlur', resolver: yupResolver(schema) });
 
   const togglePasswordVisibility = useCallback((): void => {
     setVisiblePassword((prev) => !prev);

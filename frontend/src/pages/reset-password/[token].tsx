@@ -15,16 +15,11 @@ import {
   Checkbox,
 } from '@mui/material';
 
-import {
-  type ResetPasswordRequest,
-  useResetPasswordMutation,
-} from '@/store/api';
+import { useResetPasswordMutation } from '@/store/api';
 import { useRoute } from '@/utils/hooks';
 import { FormLayout } from '@/layouts';
 import { SubmitButton } from '@/templates';
 import type { GuestPage } from '@/routes';
-
-type FormData = ResetPasswordRequest;
 
 const formData = {
   password: {
@@ -38,6 +33,8 @@ const formData = {
 };
 
 const schema = yup.object().shape({
+  email: yup.string().email().required(),
+  token: yup.string().required(),
   password: yup
     .string()
     .label(formData.password.label)
@@ -47,7 +44,8 @@ const schema = yup.object().shape({
   passwordConfirmation: yup
     .string()
     .label(formData.passwordConfirmation.label)
-    .oneOf([yup.ref('password'), null], 'Passwords do not match'),
+    .required()
+    .oneOf([yup.ref('password')], 'Passwords do not match'),
 });
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -79,7 +77,7 @@ const ResetPassword = memo(function ResetPassword(): JSX.Element {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<FormData>({
+  } = useForm({
     mode: 'onBlur',
     resolver: yupResolver(schema),
   });

@@ -45,6 +45,7 @@ const schema = yup.object().shape({
     .required()
     .min(8)
     .max(20),
+  remember: yup.boolean().label(formData.remember.label).required(),
 });
 
 type LoginProps = GuestPage;
@@ -67,7 +68,7 @@ const SignIn = memo(function SignIn(): JSX.Element {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({ mode: 'onBlur', resolver: yupResolver(schema) });
+  } = useForm({ mode: 'onBlur', resolver: yupResolver(schema) });
 
   const togglePasswordVisibility = useCallback((): void => {
     setVisiblePassword((prev) => !prev);

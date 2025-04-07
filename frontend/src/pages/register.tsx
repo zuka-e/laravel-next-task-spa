@@ -50,7 +50,8 @@ const schema = yup.object().shape({
   password_confirmation: yup
     .string()
     .label(formData.password_confirmation.label)
-    .oneOf([yup.ref('password'), null], 'Passwords do not match'),
+    .required()
+    .oneOf([yup.ref('password')], 'Passwords do not match'),
 });
 
 type RegisterProps = GuestPage;
@@ -72,7 +73,7 @@ const SignUp = memo(function SignUp(): JSX.Element {
     register, // 入力項目の登録
     handleSubmit, // 用意された`handleSubmit`
     formState: { errors }, // エラー情報 (メッセージなど)
-  } = useForm<FormData>({
+  } = useForm({
     mode: 'onBlur', // バリデーション判定タイミング
     resolver: yupResolver(schema),
   });

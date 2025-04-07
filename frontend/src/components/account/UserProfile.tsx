@@ -39,7 +39,7 @@ const UserProfile = memo(function UserProfile(): JSX.Element {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({ mode: 'onBlur', resolver: yupResolver(schema) });
+  } = useForm({ mode: 'onBlur', resolver: yupResolver(schema) });
 
   const errorMessage = useMemo((): string | null => {
     return isInvalidRequest(error) ? makeErrorMessageFrom(error) : null;

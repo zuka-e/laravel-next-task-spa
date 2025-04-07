@@ -13,7 +13,7 @@ type FormData = {
 };
 
 const schema = yup.object().shape({
-  title: yup.string().label('Title').min(1).max(255),
+  title: yup.string().label('Title').required().min(1).max(255),
 });
 
 type AddTaskButtonProps = {
@@ -32,7 +32,7 @@ const AddTaskButton = memo(function AddTaskButton(
     handleSubmit,
     resetField,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm({
     mode: 'onBlur',
     resolver: yupResolver(schema),
   });

@@ -9,10 +9,8 @@ import {
 import dynamic from 'next/dynamic';
 
 import { useForm, Controller } from 'react-hook-form';
-import type { SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import type { ObjectShape } from 'yup/lib/object';
 import { CardActions } from '@mui/material';
 import type { MDEditorProps, PreviewType } from '@uiw/react-md-editor';
 import type { MarkdownPreviewProps } from '@uiw/react-markdown-preview';
@@ -52,7 +50,7 @@ const MarkdownPreview = dynamic<MarkdownPreviewProps>(
 );
 
 type MarkdownEditorProps = {
-  schema: yup.ObjectSchema<ObjectShape>;
+  schema: yup.ObjectSchema<Record<string, string | undefined>>;
   onSubmit: (text: string) => void;
   defaultValue?: string;
   isLoading: boolean;
@@ -77,23 +75,26 @@ const MarkdownEditor = memo(function MarkdownEditor(
     control,
     handleSubmit,
     resetField,
-  } = useForm<Record<typeof prop, string>>({
+  } = useForm({
     mode: 'onBlur',
     resolver: yupResolver(schema),
+    defaultValues: {
+      [prop]: defaultValue ?? '',
+    },
   });
 
   const handleClickPreview = useCallback((): void => {
     setMode('edit');
   }, []);
 
-  const onSubmitValid: SubmitHandler<Record<typeof prop, string>> = useCallback(
+  const onValid: Parameters<typeof handleSubmit>[0] = useCallback(
     (data): void => {
       if (data[prop] === defaultValue) {
         setMode('preview');
         return;
       }
 
-      onSubmit(data[prop]);
+      onSubmit(data[prop] ?? '');
     },
     [defaultValue, onSubmit, prop],
   );
@@ -101,7 +102,6 @@ const MarkdownEditor = memo(function MarkdownEditor(
   // 表示するデータが変更された場合に値を初期化する
   useEffect(() => {
     setMode(defaultValue ? 'preview' : 'edit');
-    resetField(prop, { defaultValue });
   }, [defaultValue, prop, resetField]);
 
   if (mode === 'preview' && defaultValue)
@@ -115,13 +115,12 @@ const MarkdownEditor = memo(function MarkdownEditor(
     );
 
   return (
-    <form onSubmit={handleSubmit(onSubmitValid)}>
+    <form onSubmit={handleSubmit(onValid)}>
       <Fieldset disabled={isLoading}>
         {/* cf. https://react-hook-form.com/get-started/#IntegratingwithUIlibraries */}
         <Controller
           control={control}
           name={prop}
-          defaultValue={defaultValue}
           render={({ field }) => (
             <MDEditor
               autoFocus
