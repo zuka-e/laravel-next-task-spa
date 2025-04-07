@@ -2,5 +2,6 @@
 {
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
+  "typescript.preferences.autoImportFileExcludePatterns": ["dist"],
   "typescript.preferences.preferTypeOnlyAutoImports": true
 }

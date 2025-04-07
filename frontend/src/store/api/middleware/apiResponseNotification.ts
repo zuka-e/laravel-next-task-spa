@@ -4,8 +4,8 @@ import {
   type PayloadAction,
   isAsyncThunkAction,
 } from '@reduxjs/toolkit';
-import { type UnknownAsyncThunkAction } from '@reduxjs/toolkit/dist/matchers';
 
+import type { GuardType } from '@/types/utils';
 import { pushNotification } from '@/store/slices';
 import { type ApiResponse } from '@/store/api/services/tasks';
 import { isApiResponse } from '@/store/api/services/tasks/utils';
@@ -15,7 +15,8 @@ import { isApiResponse } from '@/store/api/services/tasks/utils';
  */
 const isAsyncThunkActionResponse = (
   action: unknown,
-): action is UnknownAsyncThunkAction & PayloadAction<ApiResponse> => {
+): action is GuardType<typeof isAsyncThunkAction> &
+  PayloadAction<ApiResponse> => {
   if (!isAsyncThunkAction(action)) {
     return false;
   }
