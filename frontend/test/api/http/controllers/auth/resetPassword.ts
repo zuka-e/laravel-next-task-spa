@@ -1,6 +1,9 @@
-import { HttpResponse, StrictResponse } from 'msw';
+import { HttpResponse, type StrictResponse } from 'msw';
 
-import { ResetPasswordResponse, type ResetPasswordRequest } from '@/store/api';
+import {
+  type ResetPasswordResponse,
+  type ResetPasswordRequest,
+} from '@/store/api';
 import { loginWithSession } from '@test/api/auth';
 import {
   getUserByCredentials,

@@ -1,10 +1,8 @@
 /**
  * Base model
  */
-type Model<T> = {
+export type Model<T> = {
   id: string;
   createdAt: string;
   updatedAt: string;
 } & { [K in keyof T]: T[K] };
-
-export default Model;

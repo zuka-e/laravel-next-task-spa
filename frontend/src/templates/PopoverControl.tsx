@@ -8,7 +8,7 @@ import {
   type JSX,
 } from 'react';
 
-import { Popover, PopoverOrigin } from '@mui/material';
+import { Popover, type PopoverOrigin } from '@mui/material';
 
 type PopoverPosition = 'top' | 'right' | 'bottom' | 'left';
 

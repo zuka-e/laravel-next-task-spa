@@ -12,12 +12,10 @@ import type { ApiResponse } from '@/store/api';
  * @see https://mswjs.io/docs/recipes/global-response-delay
  * @see https://mswjs.io/docs/recipes/higher-order-resolver
  */
-type Middleware<
+export type Middleware<
   R extends HttpResponseResolver = HttpResponseResolver<
     PathParams,
     DefaultBodyType,
     ApiResponse
   >,
 > = (resolver: R) => (...args: Parameters<R>) => ReturnType<R> | HttpResponse;
-
-export default Middleware;

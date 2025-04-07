@@ -10,8 +10,6 @@
  * );
  * @see https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#pessimistic-updates
  */
-type SoftDelete = {
+export type SoftDelete = {
   isDeleted?: boolean;
 };
-
-export default SoftDelete;

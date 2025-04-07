@@ -4,7 +4,7 @@
 // e.g. https://github.com/vercel/next.js/blob/canary/examples/with-redux/src/pages/_app.tsx
 
 import { memo, useEffect, type JSX } from 'react';
-import { AppProps } from 'next/app';
+import { type AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 

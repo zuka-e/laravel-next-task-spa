@@ -5,7 +5,7 @@ import axios, {
   type AxiosResponse,
   type AxiosError,
   type Method,
-  CreateAxiosDefaults,
+  type CreateAxiosDefaults,
 } from 'axios';
 
 import { GET_CSRF_TOKEN_PATH } from '@/config/api';

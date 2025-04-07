@@ -1,1 +1,1 @@
-export type { default as SoftDelete } from './SoftDelete';
+export type * from './SoftDelete';

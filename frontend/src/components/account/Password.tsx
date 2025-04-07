@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import { Checkbox, FormControlLabel, Grid, TextField } from '@mui/material';
 
 import {
-  UpdatePasswordRequest,
+  type UpdatePasswordRequest,
   useGetSessionQuery,
   useUpdatePasswordMutation,
 } from '@/store/api';

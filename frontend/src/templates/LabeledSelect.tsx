@@ -5,9 +5,9 @@ import {
   InputLabel,
   Input,
   Select,
-  SelectProps,
+  type SelectProps,
   MenuItem,
-  MenuItemProps,
+  type MenuItemProps,
 } from '@mui/material';
 
 type LabeledSelectProps = {

@@ -2,7 +2,7 @@
 // https://github.com/mui/material-ui/blob/HEAD/examples/nextjs-with-typescript/src/Link.tsx
 
 import type { LinkProps as NextLinkProps } from 'next/link';
-import React, { Ref, memo } from 'react';
+import React, { type Ref, memo } from 'react';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 

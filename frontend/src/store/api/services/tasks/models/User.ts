@@ -1,9 +1,7 @@
 import type { Model } from '.';
 
-type User = Model<{
+export type User = Model<{
   name: string;
   email: string;
   emailVerifiedAt: string | null;
 }>;
-
-export default User;

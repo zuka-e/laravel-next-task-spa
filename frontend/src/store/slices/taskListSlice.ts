@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import type { TaskCard, TaskList } from '@/store/api/services/tasks/models';
 import { type Sort } from '@/utils/sort';

@@ -42,7 +42,7 @@ import {
   validationErrorResponse,
 } from '@test/api/http/responses/errors';
 import db from '@test/api/database/manager';
-import { User } from '@test/api/database/models';
+import type { User } from '@test/api/database/models';
 
 const sanitizeUser = (user: User): Omit<User, 'password'> => {
   const { password, ...visible } = user;

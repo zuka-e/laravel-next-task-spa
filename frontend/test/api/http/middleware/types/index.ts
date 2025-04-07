@@ -1,1 +1,1 @@
-export type { default as Middleware } from './MIddleware';
+export type * from './middleware';
