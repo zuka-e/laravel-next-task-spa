@@ -1,4 +1,5 @@
-import { type RefObject, useRef } from 'react';
+import { useRef, type RefObject } from 'react';
+
 import useMutationObserver from './useMutationObserver';
 
 type ScrollState = {

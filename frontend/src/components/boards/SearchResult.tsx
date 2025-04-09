@@ -1,19 +1,18 @@
 import { memo, type JSX } from 'react';
-
-import { skipToken } from '@reduxjs/toolkit/query';
 import {
+  CardContent,
   List,
   ListItem,
   ListItemText,
-  CardContent,
-  Stack,
   Skeleton,
+  Stack,
 } from '@mui/material';
+import { skipToken } from '@reduxjs/toolkit/query';
 
-import { useSearchTaskCardsByBoardQuery } from '@/store/api';
-import { useRoute } from '@/utils/hooks';
-import { repeatMap } from '@/utils';
 import { useTaskDetails } from '@/lib/hooks';
+import { useSearchTaskCardsByBoardQuery } from '@/store/api';
+import { repeatMap } from '@/utils';
+import { useRoute } from '@/utils/hooks';
 
 /**
  * Highlight the matched text.

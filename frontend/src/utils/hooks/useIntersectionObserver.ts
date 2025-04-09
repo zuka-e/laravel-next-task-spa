@@ -1,4 +1,4 @@
-import { type Ref, useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState, type Ref } from 'react';
 
 /**
  * Execute the specified callback if the returned `ref` appears on viewport.

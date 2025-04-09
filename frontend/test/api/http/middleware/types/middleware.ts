@@ -1,9 +1,10 @@
 import type {
-  PathParams,
   DefaultBodyType,
-  HttpResponseResolver,
   HttpResponse,
+  HttpResponseResolver,
+  PathParams,
 } from 'msw';
+
 import type { ApiResponse } from '@/store/api';
 
 /**

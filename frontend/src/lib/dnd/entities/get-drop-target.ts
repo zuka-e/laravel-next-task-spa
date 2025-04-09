@@ -1,6 +1,6 @@
 import type { DropTargetRecord } from '@atlaskit/pragmatic-drag-and-drop/types';
 
-import { type DroppableItem, isDroppableItem } from '@/lib/dnd/entities';
+import { isDroppableItem, type DroppableItem } from '@/lib/dnd/entities';
 
 /**
  * Get the drop target by type.

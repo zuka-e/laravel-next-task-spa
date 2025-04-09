@@ -1,13 +1,12 @@
 import { memo, type JSX } from 'react';
-
-import dayjs from 'dayjs';
 import { Button, Grid, Typography } from '@mui/material';
+import dayjs from 'dayjs';
 
+import { isVerified } from '@/lib/auth';
 import {
   useGetSessionQuery,
   useRequestVerificationEmailMutation,
 } from '@/store/api';
-import { isVerified } from '@/lib/auth';
 import { AlertMessage } from '@/templates';
 
 const UserStatus = memo(function UserProfile(): JSX.Element {

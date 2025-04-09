@@ -1,12 +1,11 @@
 import { memo, useCallback, useState, type JSX } from 'react';
-
 import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogActions,
-  DialogContentText,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from '@mui/material';
 
 import { useDeleteAccountMutation } from '@/store/api';

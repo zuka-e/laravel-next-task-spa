@@ -1,14 +1,14 @@
 import {
-  type UnknownAction,
-  configureStore,
   combineSlices,
+  configureStore,
+  type UnknownAction,
 } from '@reduxjs/toolkit';
 
 import { envIs } from '@/utils/app';
-import { logger } from './middleware';
-import { appSlice, taskBoardSlice, taskListSlice } from './slices';
 import { apiResponseNotification } from './api/middleware';
 import { api as taskApi } from './api/services/tasks';
+import { logger } from './middleware';
+import { appSlice, taskBoardSlice, taskListSlice } from './slices';
 
 // cf. https://redux-toolkit.js.org/api/combineSlices
 const combinedReducer = combineSlices(

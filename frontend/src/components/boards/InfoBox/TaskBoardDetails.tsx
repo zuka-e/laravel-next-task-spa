@@ -1,22 +1,21 @@
 import { memo, useCallback, type JSX } from 'react';
-
-import * as yup from 'yup';
-import dayjs from 'dayjs';
 import {
-  Grid,
-  CardHeader,
-  CardContent,
-  CardActions,
-  Typography,
-  Breadcrumbs,
-} from '@mui/material';
-import {
-  FolderOpen as FolderOpenIcon,
   Folder as FolderIcon,
+  FolderOpen as FolderOpenIcon,
 } from '@mui/icons-material';
+import {
+  Breadcrumbs,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Grid,
+  Typography,
+} from '@mui/material';
+import dayjs from 'dayjs';
+import * as yup from 'yup';
 
-import type { TaskBoard } from '@/store/api/services/tasks/models';
 import { useUpdateTaskBoardMutation } from '@/store/api';
+import type { TaskBoard } from '@/store/api/services/tasks/models';
 import { Link, MarkdownEditor } from '@/templates';
 import { EditableTitle } from '..';
 

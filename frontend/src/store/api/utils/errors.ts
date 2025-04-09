@@ -1,4 +1,4 @@
-import { type AxiosError, isAxiosError } from 'axios';
+import { isAxiosError, type AxiosError } from 'axios';
 
 /**
  * Check if the error is a 404 error.

@@ -1,4 +1,4 @@
-import { type RefObject, useEffect, useRef } from 'react';
+import { useEffect, useRef, type RefObject } from 'react';
 
 /**
  * Execute the specified callback if `ref` is mutated.

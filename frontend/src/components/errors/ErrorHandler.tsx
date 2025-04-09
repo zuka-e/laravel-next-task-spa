@@ -1,19 +1,18 @@
 // cf. https://nextjs.org/docs/advanced-features/custom-error-page
 
 import { memo, useEffect, type JSX } from 'react';
-import { useRouter } from 'next/router';
 import Error from 'next/error';
+import { useRouter } from 'next/router';
 
-import { useAppSelector } from '@/utils/hooks';
 import BadRequest from '@/components/errors/400';
 import Forbidden from '@/components/errors/403';
-import NotFound from '@/pages/404';
 import PageExpired from '@/components/errors/419';
 import TooManyRequests from '@/components/errors/429';
-import InternalServerError from '@/pages/500';
 import ServiceUnavailable from '@/components/errors/503';
+import NotFound from '@/pages/404';
+import InternalServerError from '@/pages/500';
 import { clearHttpStatus } from '@/store/slices';
-import { useAppDispatch } from '@/utils/hooks';
+import { useAppDispatch, useAppSelector } from '@/utils/hooks';
 
 type ErrorHandlerProps = {
   children: React.ReactNode;

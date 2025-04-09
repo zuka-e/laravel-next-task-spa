@@ -1,5 +1,5 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { AlertColor } from '@mui/material';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 type Notification = {
   id: string | number;

@@ -1,7 +1,7 @@
 import axios, {
+  isAxiosError,
   type AxiosError,
   type AxiosResponse,
-  isAxiosError,
 } from 'axios';
 
 export type ApiError = Required<Pick<AxiosError, 'response'>> & AxiosError;

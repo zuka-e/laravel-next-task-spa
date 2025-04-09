@@ -1,11 +1,10 @@
 import { memo, useCallback, type JSX } from 'react';
 import Router from 'next/router';
-
-import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import {
   AccountCircle as AccountCircleIcon,
   ExitToApp as ExitToAppIcon,
 } from '@mui/icons-material';
+import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 
 import { useGetSessionQuery, useLogoutMutation } from '@/store/api';
 import { Fieldset } from '@/templates';

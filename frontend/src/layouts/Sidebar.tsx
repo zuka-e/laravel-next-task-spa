@@ -1,14 +1,13 @@
 import { memo, type JSX } from 'react';
-
+import { Menu as MenuIcon } from '@mui/icons-material';
 import {
-  Typography,
-  List,
-  ListSubheader,
   Divider,
   IconButton,
+  List,
   ListItemIcon,
+  ListSubheader,
+  Typography,
 } from '@mui/material';
-import { Menu as MenuIcon } from '@mui/icons-material';
 
 import { SideMenu } from '@/components/layouts/Sidebar';
 

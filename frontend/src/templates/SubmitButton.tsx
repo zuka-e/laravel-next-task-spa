@@ -1,5 +1,4 @@
 import { memo, type JSX } from 'react';
-
 import { Button, type ButtonProps } from '@mui/material';
 
 const SubmitButton = memo(function SubmitButton(

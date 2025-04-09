@@ -1,7 +1,6 @@
 import { memo, type JSX } from 'react';
-
-import MarkdownToJsx, { type MarkdownProps } from 'markdown-to-jsx';
 import { Typography } from '@mui/material';
+import MarkdownToJsx, { type MarkdownProps } from 'markdown-to-jsx';
 
 const OPTIONS = {
   slugify: (str) => str, // 自動生成されるid属性を日本語で利用

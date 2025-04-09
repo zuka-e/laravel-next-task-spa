@@ -1,10 +1,10 @@
 import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
-import { faker } from '@test/utils/faker';
-import { hash } from '@test/utils/crypto';
 import { repeatEach } from '@/utils';
-import type { User } from '@test/api/database/models';
-import db from '@test/api/database/manager';
 import { timestamp } from '@test/api/database/definitions';
+import db from '@test/api/database/manager';
+import type { User } from '@test/api/database/models';
+import { hash } from '@test/utils/crypto';
+import { faker } from '@test/utils/faker';
 
 export const guestUser = {
   id: faker.string.uuid(),

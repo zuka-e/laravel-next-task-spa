@@ -1,5 +1,4 @@
 import { memo, type JSX } from 'react';
-
 import { Grid, Typography } from '@mui/material';
 
 import { APP_NAME } from '@/config/app';

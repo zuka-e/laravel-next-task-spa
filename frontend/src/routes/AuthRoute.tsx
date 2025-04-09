@@ -4,9 +4,9 @@
 import { memo, useEffect, type JSX } from 'react';
 import Router from 'next/router';
 
-import { useGetSessionQuery } from '@/store/api';
-import { useRedirect } from '@/lib/hooks';
 import { Loading } from '@/layouts';
+import { useRedirect } from '@/lib/hooks';
+import { useGetSessionQuery } from '@/store/api';
 
 export type AuthPage = {
   auth: true;

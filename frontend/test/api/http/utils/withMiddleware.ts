@@ -1,5 +1,5 @@
-import { type PathParams, type HttpResponseResolver } from 'msw';
 import { compose } from '@reduxjs/toolkit';
+import { type HttpResponseResolver, type PathParams } from 'msw';
 
 import { type ApiResponse } from '@/store/api';
 import {

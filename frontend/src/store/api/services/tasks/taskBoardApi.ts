@@ -1,8 +1,8 @@
-import { makePath } from '@/utils/api';
 import {
   getTagsForList,
   getTagsForPartialList,
 } from '@/store/api/utils/caching';
+import { makePath } from '@/utils/api';
 import baseApi from './baseApi';
 import type {
   CreateTaskBoardRequest,

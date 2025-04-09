@@ -1,10 +1,10 @@
 import { type DefaultBodyType, type StrictRequest } from 'msw';
 
 import {
-  type PaginationResponse,
   type CursorPaginationResponse,
+  type PaginationResponse,
 } from '@/store/api';
-import { base64UrlEncode, base64UrlDecode } from '@test/api/http/utils/base64';
+import { base64UrlDecode, base64UrlEncode } from '@test/api/http/utils/base64';
 
 type PaginateProps<T> = {
   request: StrictRequest<DefaultBodyType>;

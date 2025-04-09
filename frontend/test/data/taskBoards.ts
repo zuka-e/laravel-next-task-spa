@@ -1,7 +1,7 @@
-import { faker } from '@test/utils/faker';
-import type { TaskBoard, User } from '@test/api/database/models';
-import db from '@test/api/database/manager';
 import { timestamp } from '@test/api/database/definitions';
+import db from '@test/api/database/manager';
+import type { TaskBoard, User } from '@test/api/database/models';
+import { faker } from '@test/utils/faker';
 import { guestUser, otherUser, unverifiedUser } from './users';
 
 export const boardOfGuestUser = {

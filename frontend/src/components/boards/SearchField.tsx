@@ -1,14 +1,13 @@
 import { memo, useCallback, useState, type JSX } from 'react';
-
-import {
-  ClickAwayListener,
-  TextField,
-  InputAdornment,
-  IconButton,
-  Popper,
-  Card,
-} from '@mui/material';
 import { Search as SearchIcon } from '@mui/icons-material';
+import {
+  Card,
+  ClickAwayListener,
+  IconButton,
+  InputAdornment,
+  Popper,
+  TextField,
+} from '@mui/material';
 
 import { SearchResult } from '.';
 

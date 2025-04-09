@@ -1,16 +1,15 @@
 import { memo, useCallback, useState, type JSX } from 'react';
-
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import { Checkbox, FormControlLabel, Grid, TextField } from '@mui/material';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
+import { isGuest } from '@/lib/auth';
 import {
-  type UpdatePasswordRequest,
   useGetSessionQuery,
   useUpdatePasswordMutation,
+  type UpdatePasswordRequest,
 } from '@/store/api';
-import { isGuest } from '@/lib/auth';
 import { AlertMessage, SubmitButton } from '@/templates';
 import { isInvalidRequest, makeErrorMessageFrom } from '@/utils/api/errors';
 

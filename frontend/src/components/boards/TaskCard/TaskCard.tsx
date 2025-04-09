@@ -1,29 +1,27 @@
 import {
   memo,
   useCallback,
-  type JSX,
-  useRef,
   useEffect,
+  useRef,
   useState,
+  type JSX,
 } from 'react';
-
-import clsx from 'clsx';
+import { attachClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
+import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import {
   draggable,
   dropTargetForElements,
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
-import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
-import { attachClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
-
 import { Typography } from '@mui/material';
+import clsx from 'clsx';
 
-import type * as Model from '@/store/api/services/tasks/models';
 import {
   DND_ENTITY_TYPE,
   type DraggableItem,
   type DroppableItem,
 } from '@/lib/dnd/entities';
 import { useTaskDetails } from '@/lib/hooks';
+import type * as Model from '@/store/api/services/tasks/models';
 
 type TaskCardProps = {
   card: Pick<Model.TaskCard, 'id' | 'listId' | 'title'>;

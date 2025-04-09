@@ -1,18 +1,18 @@
 import { HttpResponse, http } from 'msw';
 
+import { API_ROUTE } from '@/config/api';
 import type {
   CreateTaskListRequest,
   CreateTaskListResponse,
-  UpdateTaskListRequest,
-  UpdateTaskListResponse,
-  DestroyTaskListResponse,
   DestroyTaskListRequest,
-  FetchTaskListsRequest,
-  FetchTaskListsResponse,
+  DestroyTaskListResponse,
   FetchTaskListRequest,
   FetchTaskListResponse,
+  FetchTaskListsRequest,
+  FetchTaskListsResponse,
+  UpdateTaskListRequest,
+  UpdateTaskListResponse,
 } from '@/store/api';
-import { API_ROUTE } from '@/config/api';
 import { makePath } from '@/utils/api';
 import { taskListController } from '@test/api/http/controllers';
 import { notFoundErrorResponse } from '@test/api/http/responses/errors';

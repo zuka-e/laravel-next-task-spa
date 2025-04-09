@@ -1,10 +1,9 @@
 import { memo, type JSX } from 'react';
 import Image from 'next/image';
-
 import { Grid, Typography } from '@mui/material';
 
-import filingSystem from '@/images/filing_system.svg';
 import drag from '@/images/drag.svg';
+import filingSystem from '@/images/filing_system.svg';
 import search from '@/images/search.svg';
 
 /** パスを含むファイル名からパス及び拡張子を取り除く */

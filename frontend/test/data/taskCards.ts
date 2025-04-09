@@ -1,9 +1,9 @@
-import { faker } from '@test/utils/faker';
-import type { TaskCard, TaskList } from '@test/api/database/models';
-import db from '@test/api/database/manager';
 import { timestamp } from '@test/api/database/definitions';
-import { guestUser, otherUser } from './users';
+import db from '@test/api/database/manager';
+import type { TaskCard, TaskList } from '@test/api/database/models';
+import { faker } from '@test/utils/faker';
 import { listOfGuestUser, listOfOtherUser } from './taskLists';
+import { guestUser, otherUser } from './users';
 
 export const cardOfGuestUser = {
   id: faker.string.uuid(),

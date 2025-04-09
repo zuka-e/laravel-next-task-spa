@@ -1,6 +1,6 @@
 import { memo, type JSX } from 'react';
 
-import { Header, Footer, Progressbar } from '@/layouts';
+import { Footer, Header, Progressbar } from '@/layouts';
 
 const StandbyScreen = memo(function StandbyScreen(): JSX.Element {
   return (

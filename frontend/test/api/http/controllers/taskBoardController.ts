@@ -6,10 +6,10 @@ import type {
   MoveTaskCardResponse,
   PaginationResponse,
 } from '@/store/api';
-import { paginate } from '@test/api/http/responses/paginate';
-import type { TaskBoard, TaskList } from '@test/api/database/models';
-import db from '@test/api/database/manager';
 import { getUser } from '@test/api/auth';
+import db from '@test/api/database/manager';
+import type { TaskBoard, TaskList } from '@test/api/database/models';
+import { paginate } from '@test/api/http/responses/paginate';
 import { getQuery } from '@test/api/http/utils/urls';
 
 export const index = (

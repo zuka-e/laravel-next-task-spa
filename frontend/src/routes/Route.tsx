@@ -2,11 +2,11 @@ import { memo, useEffect, type JSX } from 'react';
 import type { AppProps } from 'next/app';
 import Router, { useRouter } from 'next/router';
 
-import { useAppDispatch, useAppSelector, useRoute } from '@/utils/hooks';
 import { setPreviousUrl } from '@/lib/routes';
 import { AuthRoute, GuestRoute } from '@/routes';
 import { useInvalidateSessionMutation } from '@/store/api';
 import { pushNotification } from '@/store/slices';
+import { useAppDispatch, useAppSelector, useRoute } from '@/utils/hooks';
 
 const Route = memo(function Route(
   props: Pick<AppProps<Record<string, unknown>>, 'Component' | 'pageProps'>,

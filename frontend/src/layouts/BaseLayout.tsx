@@ -1,6 +1,6 @@
 import { memo, type JSX } from 'react';
 
-import { Header, Footer } from '@/layouts';
+import { Footer, Header } from '@/layouts';
 
 type BaseLayoutProps = {
   children: React.ReactNode;

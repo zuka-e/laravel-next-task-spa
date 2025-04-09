@@ -5,15 +5,15 @@
 // E2E testing may be preferable.
 
 import { type Mock } from 'vitest';
-import { screen, fireEvent, waitFor } from '@testing-library/react';
-import { Provider } from 'react-redux';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { useRouter } from 'next/router';
+import { Provider } from 'react-redux';
 
-import { setup } from '@test/utils/user-events';
-import { faker } from '@test/utils/faker';
 import SignUp from '@/pages/register';
 import { setupStore } from '@/store';
 import { useRegisterMutation } from '@/store/api';
+import { faker } from '@test/utils/faker';
+import { setup } from '@test/utils/user-events';
 
 vi.mock('next/router', () => ({
   useRouter: vi.fn(),

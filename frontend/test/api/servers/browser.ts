@@ -1,4 +1,4 @@
-import { type StartOptions, setupWorker } from 'msw/browser';
+import { setupWorker, type StartOptions } from 'msw/browser';
 
 import { handlers } from '../http/handlers';
 

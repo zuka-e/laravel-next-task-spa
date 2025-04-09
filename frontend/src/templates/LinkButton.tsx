@@ -1,7 +1,5 @@
 import { memo, type JSX } from 'react';
-
-import { Button } from '@mui/material';
-import type { ButtonProps } from '@mui/material';
+import { Button, type ButtonProps } from '@mui/material';
 
 import { NextLinkComposed } from '@/templates/Link';
 

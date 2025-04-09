@@ -1,11 +1,11 @@
 import { type BaseQueryFn } from '@reduxjs/toolkit/query/react';
 import axios, {
   isAxiosError,
-  type AxiosRequestConfig as BaseAxiosRequestConfig,
-  type AxiosResponse,
   type AxiosError,
-  type Method,
+  type AxiosResponse,
+  type AxiosRequestConfig as BaseAxiosRequestConfig,
   type CreateAxiosDefaults,
+  type Method,
 } from 'axios';
 
 import { GET_CSRF_TOKEN_PATH } from '@/config/api';

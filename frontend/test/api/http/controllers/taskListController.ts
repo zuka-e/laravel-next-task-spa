@@ -1,8 +1,8 @@
 import { type DefaultBodyType, type StrictRequest } from 'msw';
 
 import type { CursorPaginationResponse } from '@/store/api';
-import type { TaskBoard, TaskList } from '@test/api/database/models';
 import db from '@test/api/database/manager';
+import type { TaskBoard, TaskList } from '@test/api/database/models';
 import { cursorPaginate } from '@test/api/http/responses/paginate';
 
 export const index = (

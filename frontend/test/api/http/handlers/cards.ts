@@ -1,20 +1,20 @@
 import { HttpResponse, http } from 'msw';
 
+import { API_ROUTE } from '@/config/api';
 import type {
   CreateTaskCardRequest,
   CreateTaskCardResponse,
-  UpdateTaskCardRequest,
-  UpdateTaskCardResponse,
   DestroyTaskCardRequest,
   DestroyTaskCardResponse,
-  FetchTaskCardsRequest,
-  FetchTaskCardsResponse,
   FetchTaskCardRequest,
   FetchTaskCardResponse,
+  FetchTaskCardsRequest,
+  FetchTaskCardsResponse,
   SearchTasksByBoardRequest,
   SearchTasksByBoardResponse,
+  UpdateTaskCardRequest,
+  UpdateTaskCardResponse,
 } from '@/store/api';
-import { API_ROUTE } from '@/config/api';
 import { makePath } from '@/utils/api';
 import { taskCardController } from '@test/api/http/controllers';
 import { notFoundErrorResponse } from '@test/api/http/responses/errors';

@@ -1,5 +1,4 @@
 import { memo, type JSX } from 'react';
-
 import { Container, Grid } from '@mui/material';
 
 import { Link, Markdown } from '@/templates';

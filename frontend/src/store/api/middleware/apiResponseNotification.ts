@@ -1,14 +1,14 @@
-import { isAxiosError } from 'axios';
 import {
+  isAsyncThunkAction,
   type Middleware,
   type PayloadAction,
-  isAsyncThunkAction,
 } from '@reduxjs/toolkit';
+import { isAxiosError } from 'axios';
 
-import type { GuardType } from '@/types/utils';
-import { pushNotification } from '@/store/slices';
 import { type ApiResponse } from '@/store/api/services/tasks';
 import { isApiResponse } from '@/store/api/services/tasks/utils';
+import { pushNotification } from '@/store/slices';
+import type { GuardType } from '@/types/utils';
 
 /**
  * Determine if the action is an API response.

@@ -1,11 +1,10 @@
 import { useRouter } from 'next/router';
-
 import { skipToken } from '@reduxjs/toolkit/query';
 
 import {
   useGetTaskBoardQuery,
-  useGetTaskListQuery,
   useGetTaskCardQuery,
+  useGetTaskListQuery,
 } from '@/store/api';
 import { useRoute } from '@/utils/hooks';
 

@@ -1,18 +1,23 @@
 import { memo, useCallback, useEffect, type JSX } from 'react';
+import type { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Router from 'next/router';
-import type { GetStaticProps } from 'next';
+import {
+  Card,
+  Container,
+  Divider,
+  Grid,
+  Pagination,
+  Typography,
+} from '@mui/material';
 
-import { Container, Grid, Card, Divider, Typography } from '@mui/material';
-import { Pagination } from '@mui/material';
-
-import { useCreateTaskBoardMutation, useGetTaskBoardsQuery } from '@/store/api';
-import { useRoute } from '@/utils/hooks';
-import { BaseLayout, StandbyScreen } from '@/layouts';
-import { Link } from '@/templates';
 import { AddTaskButton } from '@/components/boards';
 import { BoardCardHeader } from '@/components/boards/TaskBoard';
+import { BaseLayout, StandbyScreen } from '@/layouts';
 import type { AuthPage } from '@/routes';
+import { useCreateTaskBoardMutation, useGetTaskBoardsQuery } from '@/store/api';
+import { Link } from '@/templates';
+import { useRoute } from '@/utils/hooks';
 
 type TaskBoardIndexProps = AuthPage;
 

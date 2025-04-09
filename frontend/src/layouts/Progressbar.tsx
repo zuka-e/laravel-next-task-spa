@@ -1,7 +1,6 @@
 import { memo, type JSX } from 'react';
-
-import clsx from 'clsx';
 import { LinearProgress, type LinearProgressProps } from '@mui/material';
+import clsx from 'clsx';
 
 const Progressbar = memo(function Progressbar({
   className,

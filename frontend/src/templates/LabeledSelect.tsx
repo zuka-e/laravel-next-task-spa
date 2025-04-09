@@ -1,13 +1,12 @@
 import { memo, type JSX } from 'react';
-
 import {
   FormControl,
-  InputLabel,
   Input,
-  Select,
-  type SelectProps,
+  InputLabel,
   MenuItem,
+  Select,
   type MenuItemProps,
+  type SelectProps,
 } from '@mui/material';
 
 type LabeledSelectProps = {

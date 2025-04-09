@@ -1,14 +1,13 @@
 import { memo, useCallback, useState, type JSX } from 'react';
-
-import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import {
-  Sort as SortIcon,
-  Info as InfoIcon,
   Delete as DeleteIcon,
+  Info as InfoIcon,
+  Sort as SortIcon,
 } from '@mui/icons-material';
+import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 
-import type { TaskList } from '@/store/api/services/tasks/models';
 import { useTaskDetails } from '@/lib/hooks';
+import type { TaskList } from '@/store/api/services/tasks/models';
 import { DeleteTaskDialog, PopoverControl } from '@/templates';
 import { SortSelect } from '..';
 

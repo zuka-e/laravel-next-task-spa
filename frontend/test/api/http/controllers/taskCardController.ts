@@ -4,8 +4,8 @@ import type {
   CursorPaginationResponse,
   UpdateTaskCardRequest,
 } from '@/store/api';
-import type { TaskBoard, TaskCard, TaskList } from '@test/api/database/models';
 import db from '@test/api/database/manager';
+import type { TaskBoard, TaskCard, TaskList } from '@test/api/database/models';
 import { cursorPaginate } from '@test/api/http/responses/paginate';
 
 export const index = (

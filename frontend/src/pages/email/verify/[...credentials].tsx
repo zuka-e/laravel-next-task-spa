@@ -1,12 +1,11 @@
 import { memo, useMemo, type JSX } from 'react';
 import Head from 'next/head';
 import Router from 'next/router';
-
 import { skipToken } from '@reduxjs/toolkit/query';
 
-import { useRoute } from '@/utils/hooks';
-import { useVerifyEmailQuery } from '@/store/api';
 import { BaseLayout, Loading } from '@/layouts';
+import { useVerifyEmailQuery } from '@/store/api';
+import { useRoute } from '@/utils/hooks';
 
 /**
  * This page will be associated with the email verification URL,

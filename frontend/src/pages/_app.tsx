@@ -7,18 +7,17 @@ import { memo, useEffect, type JSX } from 'react';
 import { type AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-
-import { Provider } from 'react-redux';
-import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import CssBaseline from '@mui/material/CssBaseline';
+import { Provider } from 'react-redux';
 
+import { PageHandler } from '@/components/pages';
 import { APP_NAME } from '@/config/app';
+import { Loading, Notification } from '@/layouts';
 import store from '@/store';
 import theme from '@/theme';
-import { Notification, Loading } from '@/layouts';
-import { PageHandler } from '@/components/pages';
 
 import '@/styles/globals.css';
 import '@/config/dayjs';

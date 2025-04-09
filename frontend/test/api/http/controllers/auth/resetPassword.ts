@@ -1,15 +1,15 @@
 import { HttpResponse, type StrictResponse } from 'msw';
 
 import {
-  type ResetPasswordResponse,
   type ResetPasswordRequest,
+  type ResetPasswordResponse,
 } from '@/store/api';
 import { loginWithSession } from '@test/api/auth';
+import { validationErrorResponse } from '@test/api/http/responses';
 import {
   getUserByCredentials,
   resetPassword,
 } from '@test/api/http/utils/passwords';
-import { validationErrorResponse } from '@test/api/http/responses';
 
 /**
  * Reset password.

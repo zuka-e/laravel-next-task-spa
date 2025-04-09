@@ -1,7 +1,7 @@
 import type { LoginRequest } from '@/store/api';
-import { verifyHash } from '@test/utils/crypto';
 import { getUser, loginWithSession } from '@test/api/auth';
 import db from '@test/api/database/manager';
+import { verifyHash } from '@test/utils/crypto';
 
 /**
  * 1. 引数の`email`から`User`を検索

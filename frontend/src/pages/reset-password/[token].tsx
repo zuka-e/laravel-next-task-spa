@@ -1,25 +1,24 @@
 import { memo, useCallback, useEffect, useState, type JSX } from 'react';
+import type { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import type { GetStaticPaths, GetStaticProps } from 'next';
-
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import {
   Button,
-  TextField,
-  Divider,
-  Grid,
-  FormControlLabel,
   Checkbox,
+  Divider,
+  FormControlLabel,
+  Grid,
+  TextField,
 } from '@mui/material';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
-import { useResetPasswordMutation } from '@/store/api';
-import { useRoute } from '@/utils/hooks';
 import { FormLayout } from '@/layouts';
-import { SubmitButton } from '@/templates';
 import type { GuestPage } from '@/routes';
+import { useResetPasswordMutation } from '@/store/api';
+import { SubmitButton } from '@/templates';
+import { useRoute } from '@/utils/hooks';
 
 const formData = {
   password: {
