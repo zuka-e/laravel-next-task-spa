@@ -107,6 +107,10 @@ export const moveCard = (
   const newSrcCardIds = [...srcList.cardIds];
   const [removedCardId] = newSrcCardIds.splice(srcIndex, 1);
 
+  if (!removedCardId) {
+    return null;
+  }
+
   const newDestCardIds =
     srcListId === destListId ? newSrcCardIds : [...destList.cardIds];
   newDestCardIds.splice(destIndex, 0, removedCardId);

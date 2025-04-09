@@ -100,9 +100,7 @@ const TaskListDetails = memo(function TaskListDetails(
         <CardContent>
           <MarkdownEditor
             onSubmit={handleSubmitText}
-            schema={yup.object().shape({
-              content: yup.string().label('Description').max(2000),
-            })}
+            schema={yup.string().label('Description').max(2000)}
             defaultValue={list.description ?? undefined}
             isLoading={isLoading}
           />

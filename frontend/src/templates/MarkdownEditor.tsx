@@ -1,11 +1,4 @@
-import {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  type JSX,
-} from 'react';
+import { memo, useCallback, useEffect, useState, type JSX } from 'react';
 import dynamic from 'next/dynamic';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { CardActions } from '@mui/material';
@@ -48,9 +41,13 @@ const MarkdownPreview = dynamic<MarkdownPreviewProps>(
 );
 
 type MarkdownEditorProps = {
-  schema: yup.ObjectSchema<Record<string, string | undefined>>;
-  onSubmit: (text: string) => void;
+  schema: yup.StringSchema<
+    string | undefined,
+    yup.AnyObject,
+    string | undefined
+  >;
   defaultValue?: string;
+  onSubmit: (text: string) => void;
   isLoading: boolean;
 };
 
@@ -59,26 +56,23 @@ const MarkdownEditor = memo(function MarkdownEditor(
 ): JSX.Element {
   const { schema, defaultValue, isLoading, onSubmit } = props;
 
-  const prop: keyof typeof schema.fields = useMemo(
-    () => Object.keys(schema.fields)[0],
-    [schema.fields],
-  );
-
   const [mode, setMode] = useState<PreviewType>(
     defaultValue ? 'preview' : 'edit',
   );
+
+  const fieldName = 'content';
 
   const {
     formState: { errors },
     control,
     handleSubmit,
-    resetField,
   } = useForm({
     mode: 'onBlur',
-    resolver: yupResolver(schema),
-    defaultValues: {
-      [prop]: defaultValue ?? '',
-    },
+    resolver: yupResolver(
+      yup.object().shape({
+        [fieldName]: schema,
+      }),
+    ),
   });
 
   const handleClickPreview = useCallback((): void => {
@@ -87,20 +81,20 @@ const MarkdownEditor = memo(function MarkdownEditor(
 
   const onValid: Parameters<typeof handleSubmit>[0] = useCallback(
     (data): void => {
-      if (data[prop] === defaultValue) {
+      if (data[fieldName] === defaultValue) {
         setMode('preview');
         return;
       }
 
-      onSubmit(data[prop] ?? '');
+      onSubmit(data[fieldName] ?? '');
     },
-    [defaultValue, onSubmit, prop],
+    [defaultValue, onSubmit],
   );
 
   // 表示するデータが変更された場合に値を初期化する
   useEffect(() => {
     setMode(defaultValue ? 'preview' : 'edit');
-  }, [defaultValue, prop, resetField]);
+  }, [defaultValue]);
 
   if (mode === 'preview' && defaultValue)
     return (
@@ -118,13 +112,16 @@ const MarkdownEditor = memo(function MarkdownEditor(
         {/* cf. https://react-hook-form.com/get-started/#IntegratingwithUIlibraries */}
         <Controller
           control={control}
-          name={prop}
+          name={fieldName}
+          defaultValue={defaultValue}
           render={({ field }) => (
             <MDEditor
               autoFocus
               preview={mode}
               commands={mdCommands}
-              className={errors[prop] ? 'outline outline-1 outline-error' : ''}
+              className={
+                errors[fieldName] ? 'outline outline-1 outline-error' : ''
+              }
               {...field}
               textareaProps={{
                 placeholder: 'Enter the text',
@@ -133,9 +130,9 @@ const MarkdownEditor = memo(function MarkdownEditor(
           )}
         />
         <div className="my-2 flex items-baseline">
-          <span className={errors[prop] ? 'text-error' : ''}>
-            {errors[prop]?.message}
-          </span>
+          {errors[fieldName] && (
+            <span className={'text-error'}>{errors[fieldName].message}</span>
+          )}
           <SubmitButton size="small" className="ml-auto">
             {'Save'}
           </SubmitButton>

@@ -164,9 +164,7 @@ const TaskCardDetails = memo(function TaskCardDetails(
         <CardContent>
           <MarkdownEditor
             onSubmit={handleSubmitText}
-            schema={yup.object().shape({
-              content: yup.string().label('Content').min(20),
-            })}
+            schema={yup.string().label('Content').min(20)}
             defaultValue={card.content ?? undefined}
             isLoading={isLoading}
           />

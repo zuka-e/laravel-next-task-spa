@@ -66,7 +66,7 @@ const useRoute = <
   const pathAndQuery = useMemo(() => router.asPath.split('?'), [router.asPath]);
 
   const pathname: AppRoute['pathname'] = useMemo(
-    () => pathAndQuery[0],
+    () => pathAndQuery[0]!,
     [pathAndQuery],
   );
 
@@ -114,7 +114,7 @@ const useRoute = <
    * (e.g. `asPath` => `/email/verify/[...credentials]`, `query` => `{}`)
    */
   const queryParams = useMemo(() => {
-    const queryParamNames = getQueryParamNames(queryString);
+    const queryParamNames = queryString ? getQueryParamNames(queryString) : [];
 
     return queryParamNames.reduce(
       (obj, queryParamName: string) => {
@@ -164,7 +164,7 @@ const getPathParamNames = (pathname: string): string[] =>
 const getQueryParamNames = (queryString: string): string[] => {
   const queryParams = queryString?.split('&') ?? [];
 
-  return [...new Set(queryParams.map((param) => param.split('=')[0]))];
+  return [...new Set(queryParams.map((param) => param.split('=')[0]!))];
 };
 
 export default useRoute;

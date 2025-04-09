@@ -185,31 +185,46 @@ const api = baseApi.injectEndpoints({
                   return;
                 }
 
+                const list = draft.data.kanbanBoard.lists[destListId];
+
+                if (!list) {
+                  return;
+                }
+
                 const destCardIds = [...(destList.cardIds ?? [])];
                 const [removedCardId] = destCardIds.splice(srcIndex, 1);
-                destCardIds.splice(destIndex, 0, removedCardId);
+                destCardIds.splice(destIndex, 0, removedCardId ?? '');
 
-                draft.data.kanbanBoard.lists[destListId].cardIds = destCardIds;
-                draft.data.kanbanBoard.lists[destListId].cards =
-                  getOrderedCards(draft.data.allCards, destCardIds);
+                list.cardIds = destCardIds;
+                list.cards = getOrderedCards(draft.data.allCards, destCardIds);
               } else {
+                const srcList = draft.data.kanbanBoard.lists[srcListId];
+                const destList = draft.data.kanbanBoard.lists[destListId];
+                const card = draft.data.allCards[cardId];
+
+                if (!(srcList && destList && card)) {
+                  return;
+                }
+
                 const srcCardIds = [...(srcList.cardIds ?? [])];
                 const [removedCardId] = srcCardIds.splice(srcIndex, 1);
 
                 const destCardIds = [...(destList.cardIds ?? [])];
-                destCardIds.splice(destIndex, 0, removedCardId);
+                destCardIds.splice(destIndex, 0, removedCardId ?? '');
 
-                draft.data.allCards[cardId].listId = destListId;
+                card.listId = destListId;
 
-                draft.data.kanbanBoard.lists[srcListId].cardIds = srcCardIds;
-                draft.data.kanbanBoard.lists[srcListId].cards = getOrderedCards(
+                srcList.cardIds = srcCardIds;
+                srcList.cards = getOrderedCards(
                   draft.data.allCards,
                   srcCardIds,
                 );
 
-                draft.data.kanbanBoard.lists[destListId].cardIds = destCardIds;
-                draft.data.kanbanBoard.lists[destListId].cards =
-                  getOrderedCards(draft.data.allCards, destCardIds);
+                destList.cardIds = destCardIds;
+                destList.cards = getOrderedCards(
+                  draft.data.allCards,
+                  destCardIds,
+                );
               }
             },
           ),

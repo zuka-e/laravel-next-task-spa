@@ -27,7 +27,7 @@ const useIntersectionObserver = <T extends HTMLElement>(
     // `entries` will have only one element as long as `setRef` is used for `ref` attr,
     // as there is just one observed `ref` object.
     const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
+      if (entry?.isIntersecting) {
         onIntersectRef.current(entry);
       }
     });
