@@ -11,15 +11,6 @@ import type { Middleware } from '@test/api/http/middleware/types';
 import { type ErrorResponse } from '@test/api/http/responses/errors';
 
 /**
- * Global middleware that will run for every request handler.
- */
-const globalMiddleware: Middleware[] = [
-  preserveDb,
-  startSession,
-  verifyCsrfToken,
-];
-
-/**
  * Creates a higher-order resolver that composes multiple middleware
  *
  * @param middleware - Additional middleware
@@ -41,6 +32,15 @@ const withMiddleware = <
       ResponseBody | ErrorResponse
     >,
   ) => {
+    /**
+     * Global middleware that will run for every request handler.
+     */
+    const globalMiddleware = [
+      preserveDb,
+      startSession,
+      verifyCsrfToken,
+    ] as const satisfies Middleware[];
+
     return compose<typeof resolver>(
       ...globalMiddleware,
       ...(middleware ?? []),
