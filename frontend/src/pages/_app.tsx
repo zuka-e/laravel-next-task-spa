@@ -22,7 +22,7 @@ import theme from '@/theme';
 import '@/styles/globals.css';
 import '@/config/dayjs';
 
-if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
+if (process.env['NEXT_PUBLIC_API_MOCKING'] === 'enabled') {
   // With `import` instead of `require`, API requests start before MSW enabled,
   // probably because "import(...)" is async. ("await import" have the same result)
   require('../../test/api/servers');

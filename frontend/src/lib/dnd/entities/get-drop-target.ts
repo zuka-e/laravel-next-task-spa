@@ -9,7 +9,7 @@ const getDropTarget = <T extends DroppableItem['type']>(
   dropTargets: DropTargetRecord[],
   type: T,
 ): (DropTargetRecord & { data: DroppableItem<T> }) | undefined => {
-  const target = dropTargets.find((target) => target.data.type === type);
+  const target = dropTargets.find((target) => target.data['type'] === type);
 
   if (!target) return undefined;
 

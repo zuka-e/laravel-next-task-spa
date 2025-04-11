@@ -10,7 +10,7 @@ export const worker = setupWorker(...handlers);
  */
 export const config: StartOptions = {
   onUnhandledRequest(request, print) {
-    if (new URL(request.url).origin !== process.env.NEXT_PUBLIC_API_HOST) {
+    if (new URL(request.url).origin !== process.env['NEXT_PUBLIC_API_HOST']) {
       return;
     }
 

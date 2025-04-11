@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState, type JSX } from 'react';
+import { memo, useCallback, useState, type JSX } from 'react';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -74,19 +74,15 @@ const ResetPassword = memo(function ResetPassword(): JSX.Element {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors, isSubmitting },
   } = useForm({
     mode: 'onBlur',
     resolver: yupResolver(schema),
+    defaultValues: {
+      email: route.queryParams?.['email']?.toString(),
+      token: route.pathParams?.['token']?.toString(),
+    },
   });
-
-  useEffect(() => {
-    reset({
-      email: route.queryParams?.email?.toString() ?? '',
-      token: route.pathParams?.token?.toString() ?? '',
-    });
-  }, [reset, route.pathParams?.token, route.queryParams?.email]);
 
   const togglePasswordVisibility = useCallback((): void => {
     setVisiblePassword((prev) => !prev);
@@ -113,8 +109,8 @@ const ResetPassword = memo(function ResetPassword(): JSX.Element {
           type={visiblePassword ? 'text' : 'password'}
           autoComplete={formData.password.id}
           {...register('password')}
-          helperText={errors?.password?.message || '8-20 characters'}
-          error={!!errors?.password}
+          helperText={errors?.['password']?.message || '8-20 characters'}
+          error={!!errors?.['password']}
         />
         <TextField
           variant="outlined"
@@ -127,9 +123,9 @@ const ResetPassword = memo(function ResetPassword(): JSX.Element {
           autoComplete={formData.passwordConfirmation.id}
           {...register('passwordConfirmation')}
           helperText={
-            errors?.passwordConfirmation?.message || 'Retype password'
+            errors?.['passwordConfirmation']?.message || 'Retype password'
           }
-          error={!!errors?.passwordConfirmation}
+          error={!!errors?.['passwordConfirmation']}
         />
         <FormControlLabel
           label="Show Password"

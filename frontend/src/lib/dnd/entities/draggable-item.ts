@@ -18,5 +18,5 @@ export type DraggableItem<T extends DndEntityType = DndEntityType> = {
 export const isDraggableItem = <T extends DndEntityType>(
   value: unknown,
 ): value is DraggableItem<T> => {
-  return isPlainObject(value) && value.isDraggable === true;
+  return isPlainObject(value) && value['isDraggable'] === true;
 };

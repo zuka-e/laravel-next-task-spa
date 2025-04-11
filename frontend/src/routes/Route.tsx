@@ -56,11 +56,11 @@ const Route = memo(function Route(
   return (
     <>
       {/* cf. https://alexsidorenko.com/blog/next-js-protected-routes/#move-user-logic-to-_appjs */}
-      {pageProps.auth ? (
+      {pageProps['auth'] ? (
         <AuthRoute>
           <Component {...pageProps} />
         </AuthRoute>
-      ) : pageProps.guest ? (
+      ) : pageProps['guest'] ? (
         <GuestRoute>
           <Component {...pageProps} />
         </GuestRoute>

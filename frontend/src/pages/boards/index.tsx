@@ -38,7 +38,7 @@ const TaskBoardIndex = memo(function TaskBoardIndex(): JSX.Element {
   const { pathname, pathParams, queryParams } = useRoute();
 
   const { data: paginator } = useGetTaskBoardsQuery(
-    { page: parseInt(queryParams?.page?.toString() ?? '1') },
+    { page: parseInt(queryParams?.['page']?.toString() ?? '1') },
     { skip: !pathParams || !queryParams },
   );
 

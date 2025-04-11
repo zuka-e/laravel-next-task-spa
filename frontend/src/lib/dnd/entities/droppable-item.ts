@@ -17,5 +17,5 @@ export type DroppableItem<T extends DndEntityType = DndEntityType> = {
 export const isDroppableItem = <T extends DndEntityType>(
   value: unknown,
 ): value is DroppableItem<T> => {
-  return isPlainObject(value) && value.isDroppable === true;
+  return isPlainObject(value) && value['isDroppable'] === true;
 };
