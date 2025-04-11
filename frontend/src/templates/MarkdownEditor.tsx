@@ -9,9 +9,6 @@ import * as yup from 'yup';
 
 import { mdCommands } from '@/config/mdEditor';
 import { Fieldset, SubmitButton } from '@/templates';
-// cf. https://github.com/uiwjs/react-md-editor/issues/52
-import '@uiw/react-md-editor/markdown-editor.css';
-import '@uiw/react-markdown-preview/markdown.css';
 
 /**
  * When used with `import MDEditor`, the following error occurred.

@@ -8,7 +8,7 @@
     "noFallthroughCasesInSwitch": true,
     "noPropertyAccessFromIndexSignature": true,
     "noUncheckedIndexedAccess": true,
-    // "noUncheckedSideEffectImports": true,
+    "noUncheckedSideEffectImports": true,
     // "strictBuiltinIteratorReturn": true,
     // "exactOptionalPropertyTypes": true,
 
