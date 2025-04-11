@@ -18,7 +18,7 @@ services:
         target: /docker-entrypoint-initdb.d/10-create-testing-database.sh
         read_only: true
   redis:
-    image: redis:7.2-alpine
+    image: redis:7.4-alpine
     profiles: ['backend']
     ports:
       - ${FORWARD_REDIS_PORT:-6380}:6379
