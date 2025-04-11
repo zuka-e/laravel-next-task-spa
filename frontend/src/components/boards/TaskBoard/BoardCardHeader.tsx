@@ -1,11 +1,10 @@
 import { memo, type JSX } from 'react';
-
-import dayjs from 'dayjs';
-import { CardHeader, Typography, Tooltip, IconButton } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
+import { CardHeader, IconButton, Tooltip, Typography } from '@mui/material';
+import dayjs from 'dayjs';
 
-import type { TaskBoard } from '@/store/api/services/tasks/models';
 import { useUpdateTaskBoardMutation } from '@/store/api';
+import type { TaskBoard } from '@/store/api/services/tasks/models';
 import { PopoverControl } from '@/templates';
 import { EditableTitle } from '..';
 import { BoardMenu } from '.';
@@ -15,7 +14,7 @@ type BoardCardHeaderProps = {
 };
 
 const BoardCardHeader = memo(function BoardCardHeader(
-  props: BoardCardHeaderProps
+  props: BoardCardHeaderProps,
 ): JSX.Element {
   const { board } = props;
 

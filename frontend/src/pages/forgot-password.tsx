@@ -1,20 +1,19 @@
 import { memo, type JSX } from 'react';
+import type { GetStaticProps } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import type { GetStaticProps } from 'next';
-
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Button, Divider, Grid, TextField } from '@mui/material';
+import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import { Button, TextField, Divider, Grid } from '@mui/material';
 
-import {
-  type ForgotPasswordRequest,
-  useForgotPasswordMutation,
-} from '@/store/api';
 import { FormLayout } from '@/layouts';
-import { SubmitButton } from '@/templates';
 import type { GuestPage } from '@/routes';
+import {
+  useForgotPasswordMutation,
+  type ForgotPasswordRequest,
+} from '@/store/api';
+import { SubmitButton } from '@/templates';
 
 type FormData = ForgotPasswordRequest;
 
@@ -47,7 +46,7 @@ const ForgotPassword = memo(function ForgotPassword(): JSX.Element {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<FormData>({ mode: 'onBlur', resolver: yupResolver(schema) });
+  } = useForm({ mode: 'onBlur', resolver: yupResolver(schema) });
 
   return (
     <>

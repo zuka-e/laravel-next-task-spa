@@ -4,13 +4,13 @@ import type {
   CursorPaginationResponse,
   UpdateTaskCardRequest,
 } from '@/store/api';
-import type { TaskBoard, TaskCard, TaskList } from '@test/api/database/models';
 import db from '@test/api/database/manager';
+import type { TaskBoard, TaskCard, TaskList } from '@test/api/database/models';
 import { cursorPaginate } from '@test/api/http/responses/paginate';
 
 export const index = (
   listId: TaskList['id'],
-  request: StrictRequest<DefaultBodyType>
+  request: StrictRequest<DefaultBodyType>,
 ): CursorPaginationResponse<TaskCard> => {
   const cards = db.taskCard.findMany({
     where: { listId: { equals: listId } },
@@ -21,7 +21,7 @@ export const index = (
 
 export const store = (
   listId: TaskList['id'],
-  params: Partial<Omit<TaskCard, 'id' | 'listId'>>
+  params: Partial<Omit<TaskCard, 'id' | 'listId'>>,
 ): TaskCard => {
   const newCard = db.taskCard.create({ listId, ...params });
 
@@ -43,7 +43,7 @@ export const show = (id: TaskCard['id']): TaskCard | null => {
 
 export const update = (
   id: UpdateTaskCardRequest['id'],
-  params: Omit<UpdateTaskCardRequest, 'id'>
+  params: Omit<UpdateTaskCardRequest, 'id'>,
 ): TaskCard | null => {
   const card = db.taskCard.findFirst({ where: { id: { equals: id } } });
 
@@ -70,7 +70,7 @@ export const update = (
     let sequence = Math.round(
       nextCardSequence
         ? ((prevCardSequence ?? 0) + (nextCardSequence ?? 0)) / 2
-        : (cards.at(-1)?.sequence ?? 0) + 2 ** 10
+        : (cards.at(-1)?.sequence ?? 0) + 2 ** 10,
     );
 
     // Reorder if duplicated
@@ -88,7 +88,7 @@ export const update = (
       sequence = Math.round(
         nextCardSequence
           ? ((prevCardSequence ?? 0) + (nextCardSequence ?? 0)) / 2
-          : 2 ** 10
+          : 2 ** 10,
       );
     }
 
@@ -133,6 +133,6 @@ export const search = (id: TaskBoard['id'], q: string): TaskCard[] => {
     .filter(
       (card) =>
         new RegExp(q, 'i').test(card.title) ||
-        new RegExp(q, 'i').test(card.content ?? '')
+        new RegExp(q, 'i').test(card.content ?? ''),
     );
 };

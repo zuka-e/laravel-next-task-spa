@@ -1,5 +1,5 @@
-import { type PathParams, type HttpResponseResolver } from 'msw';
 import { compose } from '@reduxjs/toolkit';
+import { type HttpResponseResolver, type PathParams } from 'msw';
 
 import { type ApiResponse } from '@/store/api';
 import {
@@ -9,15 +9,6 @@ import {
 } from '@test/api/http/middleware';
 import type { Middleware } from '@test/api/http/middleware/types';
 import { type ErrorResponse } from '@test/api/http/responses/errors';
-
-/**
- * Global middleware that will run for every request handler.
- */
-const globalMiddleware: Middleware[] = [
-  preserveDb,
-  startSession,
-  verifyCsrfToken,
-];
 
 /**
  * Creates a higher-order resolver that composes multiple middleware
@@ -30,20 +21,29 @@ const globalMiddleware: Middleware[] = [
 const withMiddleware = <
   Params extends PathParams<keyof Params> = PathParams,
   RequestBody extends Record<string, unknown> | undefined = undefined,
-  ResponseBody extends ApiResponse = ApiResponse
+  ResponseBody extends ApiResponse = ApiResponse,
 >(
-  middleware?: Middleware[]
+  middleware?: Middleware[],
 ) => {
   return (
     resolver: HttpResponseResolver<
       Params,
       RequestBody,
       ResponseBody | ErrorResponse
-    >
+    >,
   ) => {
+    /**
+     * Global middleware that will run for every request handler.
+     */
+    const globalMiddleware = [
+      preserveDb,
+      startSession,
+      verifyCsrfToken,
+    ] as const satisfies Middleware[];
+
     return compose<typeof resolver>(
       ...globalMiddleware,
-      ...(middleware ?? [])
+      ...(middleware ?? []),
     )(resolver);
   };
 };

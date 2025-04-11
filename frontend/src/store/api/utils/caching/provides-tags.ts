@@ -12,11 +12,11 @@ import type { AbstractTagId } from './types';
 const getTagsWithAbstract = <
   R extends { id: string | number }[] | undefined,
   T extends string,
-  U extends AbstractTagId
+  U extends AbstractTagId,
 >(
   resultsWithIds: R,
   tagType: T,
-  abstractTagId: U
+  abstractTagId: U,
 ) => {
   // cf. https://redux-toolkit.js.org/rtk-query/usage/automated-refetching#advanced-invalidation-with-abstract-tag-ids
 
@@ -41,10 +41,10 @@ const getTagsWithAbstract = <
  */
 export const getTagsForList = <
   R extends Parameters<typeof getTagsWithAbstract>[0],
-  T extends Parameters<typeof getTagsWithAbstract>[1]
+  T extends Parameters<typeof getTagsWithAbstract>[1],
 >(
   resultsWithIds: R,
-  tagType: T
+  tagType: T,
 ) => getTagsWithAbstract(resultsWithIds, tagType, 'LIST');
 
 /**
@@ -55,8 +55,8 @@ export const getTagsForList = <
  */
 export const getTagsForPartialList = <
   R extends Parameters<typeof getTagsWithAbstract>[0],
-  T extends Parameters<typeof getTagsWithAbstract>[1]
+  T extends Parameters<typeof getTagsWithAbstract>[1],
 >(
   resultsWithIds: R,
-  tagType: T
+  tagType: T,
 ) => getTagsWithAbstract(resultsWithIds, tagType, 'PARTIAL-LIST');

@@ -1,17 +1,16 @@
 import { memo, type JSX } from 'react';
-import Head from 'next/head';
 import type { GetStaticProps } from 'next';
+import Head from 'next/head';
+import { Button, Card, Container, Grid, Typography } from '@mui/material';
 
-import { Container, Card, Grid, Typography, Button } from '@mui/material';
-
+import { BaseLayout } from '@/layouts';
+import { isVerified } from '@/lib/auth';
+import type { AuthPage } from '@/routes';
 import {
   useGetSessionQuery,
   useRequestVerificationEmailMutation,
 } from '@/store/api';
-import { BaseLayout } from '@/layouts';
 import { AlertMessage, LinkButton } from '@/templates';
-import type { AuthPage } from '@/routes';
-import { isVerified } from '@/lib/auth';
 
 type EmailVerificationProps = AuthPage;
 

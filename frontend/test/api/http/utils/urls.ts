@@ -1,8 +1,8 @@
-import type { DefaultBodyType, StrictRequest } from 'msw';
 import dayjs from 'dayjs';
+import type { DefaultBodyType, StrictRequest } from 'msw';
 
-import { APP_URL } from '@/config/app';
 import { API_ROUTE } from '@/config/api';
+import { APP_URL } from '@/config/app';
 import { hash, verifyHash } from '@test/utils/crypto';
 
 /**
@@ -11,7 +11,7 @@ import { hash, verifyHash } from '@test/utils/crypto';
  * @see https://mswjs.io/docs/recipes/query-parameters
  */
 export const getQuery = (
-  request: StrictRequest<DefaultBodyType>
+  request: StrictRequest<DefaultBodyType>,
 ): URLSearchParams => {
   return new URL(request.url).searchParams;
 };
@@ -25,7 +25,7 @@ export const getQuery = (
 export const generateSignedUrl = (
   path: string,
   pathParams: Record<string, string>,
-  ttl = 10
+  ttl = 10,
 ): string => {
   const extraPath = Object.values(pathParams).join('/');
   const url = new URL(`${path}/${extraPath}`, APP_URL);
@@ -44,10 +44,10 @@ export const generateSignedUrl = (
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Routing/UrlGenerator.php#L402 - hasValidSignature()
  */
 export const hasValidSignature = (
-  req: StrictRequest<DefaultBodyType>
+  req: StrictRequest<DefaultBodyType>,
 ): boolean => {
   const verificationUrl = new URL(
-    req.url.replace(new RegExp(`^${API_ROUTE}`), APP_URL)
+    req.url.replace(new RegExp(`^${API_ROUTE}`), APP_URL),
   );
   const searchParams = verificationUrl.searchParams;
   const expires = parseInt(searchParams.get('expires') ?? '');

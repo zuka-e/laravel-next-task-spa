@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { AlertColor } from '@mui/material';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 type Notification = {
   id: string | number;
@@ -30,7 +30,7 @@ export const appSlice = createSlice({
     /** Add new messages */
     pushNotification(
       state,
-      action: PayloadAction<Omit<Notification, 'id'>>
+      action: PayloadAction<Omit<Notification, 'id'>>,
     ): void {
       state.messages = [
         ...state.messages,

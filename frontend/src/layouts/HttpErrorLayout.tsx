@@ -1,7 +1,6 @@
 import { memo, useCallback, type JSX } from 'react';
 import Router from 'next/router';
-
-import { Container, Typography, Button } from '@mui/material';
+import { Button, Container, Typography } from '@mui/material';
 
 import { BaseLayout } from '@/layouts';
 
@@ -13,7 +12,7 @@ type HttpErrorLayoutProps = {
 };
 
 const HttpErrorLayout = memo(function HttpErrorLayout(
-  props: HttpErrorLayoutProps
+  props: HttpErrorLayoutProps,
 ): JSX.Element {
   const { title, description, hint, children } = props;
 

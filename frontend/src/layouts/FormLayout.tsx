@@ -1,12 +1,11 @@
 import { memo, useMemo, type JSX } from 'react';
-
-import { Container, Card, Grid, Avatar, Typography } from '@mui/material';
+import { Avatar, Card, Container, Grid, Typography } from '@mui/material';
 
 import { APP_NAME } from '@/config/app';
-import { isInvalidRequest, makeErrorMessageFrom } from '@/utils/api/errors';
+import logo from '@/images/logo_short.svg';
 import { AlertMessage, Fieldset } from '@/templates';
 import Link, { NextLinkComposed } from '@/templates/Link';
-import logo from '@/images/logo_short.svg';
+import { isInvalidRequest, makeErrorMessageFrom } from '@/utils/api/errors';
 
 const Copyright = memo(function Copyright(): JSX.Element {
   return (
@@ -30,7 +29,7 @@ type FormLayoutProps = {
 };
 
 const FormLayout = memo(function FormLayout(
-  props: FormLayoutProps
+  props: FormLayoutProps,
 ): JSX.Element {
   const { children, title, onSubmit, error, isLoading, disabled } = props;
 

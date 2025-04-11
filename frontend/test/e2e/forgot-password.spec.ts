@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 import { assertScreenshot } from './utils';
 
@@ -12,7 +12,7 @@ test.describe('Forgot-Password form', () => {
   /** Fill out and submit the form */
   const submit = async (
     page: Page,
-    input: { email: string }
+    input: { email: string },
   ): Promise<void> => {
     const { email } = input;
     await page.getByRole('textbox', { name: 'Email Address' }).fill(email);

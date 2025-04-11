@@ -1,16 +1,15 @@
 import { memo, useCallback, useState, type JSX } from 'react';
-
-import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import {
-  Sort as SortIcon,
-  Info as InfoIcon,
   Delete as DeleteIcon,
+  Info as InfoIcon,
+  Sort as SortIcon,
 } from '@mui/icons-material';
+import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 
-import type { TaskBoard } from '@/store/api/services/tasks/models';
-import { useRoute } from '@/utils/hooks';
 import { useTaskDetails } from '@/lib/hooks';
-import { PopoverControl, DeleteTaskDialog } from '@/templates';
+import type { TaskBoard } from '@/store/api/services/tasks/models';
+import { DeleteTaskDialog, PopoverControl } from '@/templates';
+import { useRoute } from '@/utils/hooks';
 import { SortSelect } from '..';
 
 const menuItem = {
@@ -40,7 +39,7 @@ const BoardMenu = memo(function BoardMenu(props: BoardMenuProps): JSX.Element {
           break;
       }
     },
-    [board.id, showTaskDetails]
+    [board.id, showTaskDetails],
   );
 
   const handleCloseDeleteDialog = useCallback((): void => {
@@ -49,7 +48,7 @@ const BoardMenu = memo(function BoardMenu(props: BoardMenuProps): JSX.Element {
 
   return (
     <List component="nav" aria-label="board-menu" dense>
-      {pathParams?.boardId && ( // 詳細ページの場合
+      {pathParams?.['boardId'] && ( // 詳細ページの場合
         <PopoverControl
           position="left"
           trigger={
@@ -64,7 +63,7 @@ const BoardMenu = memo(function BoardMenu(props: BoardMenuProps): JSX.Element {
           <SortSelect boardId={board.id} />
         </PopoverControl>
       )}
-      {pathParams?.boardId && (
+      {pathParams?.['boardId'] && (
         <ListItem
           button
           onClick={() => handleClick('info')}

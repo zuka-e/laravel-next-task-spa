@@ -14,7 +14,7 @@ export const compare = <T>(
   a: T,
   b: T,
   key: keyof T,
-  direction?: 'asc' | 'desc'
+  direction?: 'asc' | 'desc',
 ) => {
   const process = () => {
     const valueA = a[key];

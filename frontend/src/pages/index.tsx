@@ -1,13 +1,12 @@
 import { memo, useEffect, type JSX } from 'react';
 import Router from 'next/router';
-
 import { Container } from '@mui/material';
 
-import { useGetSessionQuery } from '@/store/api';
-import { BaseLayout, Loading } from '@/layouts';
-import { LinkButton } from '@/templates';
+import { Features, Hero } from '@/components/home/LandingPage';
 import { SEO } from '@/components/pages';
-import { Hero, Features } from '@/components/home/LandingPage';
+import { BaseLayout, Loading } from '@/layouts';
+import { useGetSessionQuery } from '@/store/api';
+import { LinkButton } from '@/templates';
 
 const Home = memo(function Home(): JSX.Element {
   const { userId, isUninitialized } = useGetSessionQuery(undefined, {

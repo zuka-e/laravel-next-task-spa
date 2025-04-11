@@ -1,12 +1,15 @@
-import { HttpResponse, StrictResponse } from 'msw';
+import { HttpResponse, type StrictResponse } from 'msw';
 
-import { ResetPasswordResponse, type ResetPasswordRequest } from '@/store/api';
+import {
+  type ResetPasswordRequest,
+  type ResetPasswordResponse,
+} from '@/store/api';
 import { loginWithSession } from '@test/api/auth';
+import { validationErrorResponse } from '@test/api/http/responses';
 import {
   getUserByCredentials,
   resetPassword,
 } from '@test/api/http/utils/passwords';
-import { validationErrorResponse } from '@test/api/http/responses';
 
 /**
  * Reset password.
@@ -15,7 +18,7 @@ import { validationErrorResponse } from '@test/api/http/responses';
  * @see https://github.com/laravel/framework/blob/10.x/src/Illuminate/Auth/Passwords/PasswordBroker.php#L84 - reset()
  */
 export const store = (
-  request: ResetPasswordRequest
+  request: ResetPasswordRequest,
 ): StrictResponse<ResetPasswordResponse> => {
   const user = getUserByCredentials(request);
 

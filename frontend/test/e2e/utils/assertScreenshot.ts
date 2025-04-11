@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 /** Take a snapshot at every breakpoint and compare with the expected. */
 const assertScreenshot = (options?: { only?: true }): void => {

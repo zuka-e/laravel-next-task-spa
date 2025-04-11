@@ -1,4 +1,4 @@
-import { type RefObject, useEffect, useRef } from 'react';
+import { useEffect, useRef, type RefObject } from 'react';
 
 /**
  * Execute the specified callback if `ref` is mutated.
@@ -8,7 +8,7 @@ import { type RefObject, useEffect, useRef } from 'react';
 const useMutationObserver = <T extends HTMLElement>(
   ref: RefObject<T | null>,
   onMutate: MutationCallback,
-  options?: MutationObserverInit
+  options?: MutationObserverInit,
 ) => {
   // cf. `useResizeObserver` won't be fired by `scrollWidth` changes.
   // cf. https://usehooks-ts.com/react-hook/use-resize-observer

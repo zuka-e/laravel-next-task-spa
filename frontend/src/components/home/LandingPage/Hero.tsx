@@ -1,25 +1,24 @@
 import { memo, useCallback, useMemo, type JSX } from 'react';
 import Image from 'next/image';
 import Router from 'next/router';
-
+import {
+  LockOpen as LockOpenIcon,
+  Menu as MenuIcon,
+  PersonAdd as PersonAddIcon,
+} from '@mui/icons-material';
 import {
   Button,
   Unstable_Grid2 as Grid,
-  Typography,
   List,
   ListItem,
+  Typography,
 } from '@mui/material';
-import {
-  PersonAdd as PersonAddIcon,
-  LockOpen as LockOpenIcon,
-  Menu as MenuIcon,
-} from '@mui/icons-material';
 
 import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
-import { useLoginMutation, useRegisterMutation } from '@/store/api';
-import { makeEmail } from '@/utils/generator';
-import { Fieldset, LinkButton, PopoverControl } from '@/templates';
 import hero from '@/images/hero.svg';
+import { useLoginMutation, useRegisterMutation } from '@/store/api';
+import { Fieldset, LinkButton, PopoverControl } from '@/templates';
+import { makeEmail } from '@/utils/generator';
 
 const Hero = memo(function Hero(): JSX.Element {
   const [login, { isLoading: isLoginLoading }] = useLoginMutation();

@@ -3,7 +3,7 @@
 import { memo, useCallback, type JSX } from 'react';
 import Head from 'next/head';
 
-import { APP_URL, APP_NAME } from '@/config/app';
+import { APP_NAME, APP_URL } from '@/config/app';
 
 const SEO = memo(function SEO(props: {
   title: string;

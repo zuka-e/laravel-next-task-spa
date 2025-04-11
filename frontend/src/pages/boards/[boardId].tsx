@@ -1,34 +1,33 @@
-import { memo, type JSX, useCallback, useEffect } from 'react';
+import { memo, useCallback, useEffect, type JSX } from 'react';
+import type { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import type { GetStaticPaths, GetStaticProps } from 'next';
-
-import type { DragLocationHistory } from '@atlaskit/pragmatic-drag-and-drop/types';
+import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import {
   monitorForElements,
   type ElementDragPayload,
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
-import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
-import { skipToken } from '@reduxjs/toolkit/query';
-import { Container, Grid, Divider, IconButton, Skeleton } from '@mui/material';
+import type { DragLocationHistory } from '@atlaskit/pragmatic-drag-and-drop/types';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
+import { Container, Divider, Grid, IconButton, Skeleton } from '@mui/material';
+import { skipToken } from '@reduxjs/toolkit/query';
 
-import { useRoute } from '@/utils/hooks';
+import { AddTaskButton, EditableTitle, SearchField } from '@/components/boards';
+import { InfoBox } from '@/components/boards/InfoBox';
+import { BoardMenu } from '@/components/boards/TaskBoard';
+import { TaskList } from '@/components/boards/TaskList';
+import { BaseLayout } from '@/layouts';
 import { getDropTarget, isDraggableItem } from '@/lib/dnd/entities';
+import type { AuthPage } from '@/routes';
 import {
   useCreateTaskListMutation,
   useGetKanbanBoardQuery,
-  useUpdateTaskBoardMutation,
   useMoveTaskCardMutation,
+  useUpdateTaskBoardMutation,
 } from '@/store/api';
 import { isNotFoundError } from '@/store/api/utils/errors';
-import { BaseLayout } from '@/layouts';
 import { PopoverControl } from '@/templates';
-import { AddTaskButton, EditableTitle, SearchField } from '@/components/boards';
-import { BoardMenu } from '@/components/boards/TaskBoard';
-import { TaskList } from '@/components/boards/TaskList';
-import { InfoBox } from '@/components/boards/InfoBox';
-import type { AuthPage } from '@/routes';
+import { useRoute } from '@/utils/hooks';
 
 type TaskBoardProps = AuthPage;
 
@@ -63,7 +62,7 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
 
   const { data: { data: { kanbanBoard = undefined } = {} } = {}, error } =
     useGetKanbanBoardQuery(
-      pathParams ? { id: pathParams['boardId'] ?? '' } : skipToken
+      pathParams ? { id: pathParams['boardId'] ?? '' } : skipToken,
     );
 
   if (isNotFoundError(error)) {
@@ -102,8 +101,8 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
       const destIndex = destCard
         ? destCard.data.index
         : closestEdge === 'top'
-        ? 0
-        : kanbanBoard?.lists?.[destList.data.id]?.cards.length ?? 0;
+          ? 0
+          : (kanbanBoard?.lists?.[destList.data.id]?.cards.length ?? 0);
 
       moveTaskCard({
         boardId: pathParams?.['boardId'] ?? '',
@@ -114,7 +113,7 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
         cardId: source.data.id,
       });
     },
-    [kanbanBoard, moveTaskCard, pathParams]
+    [kanbanBoard, moveTaskCard, pathParams],
   );
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { type Middleware, isAction, isRejected } from '@reduxjs/toolkit';
+import { isAction, isRejected, type Middleware } from '@reduxjs/toolkit';
 
 /**
  * Logger middleware that logs all actions to the console.

@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 import { faker } from '@test/utils/faker';
 import { assertScreenshot } from './utils';
@@ -16,7 +16,7 @@ test.describe('Registration form', () => {
     input: {
       email: string;
       password: string;
-    }
+    },
   ): Promise<void> => {
     const { email, password } = input;
     await page.getByRole('textbox', { name: /email/ }).fill(email);

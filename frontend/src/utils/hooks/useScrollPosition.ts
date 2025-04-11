@@ -1,4 +1,5 @@
-import { type RefObject, useRef } from 'react';
+import { useRef, type RefObject } from 'react';
+
 import useMutationObserver from './useMutationObserver';
 
 type ScrollState = {
@@ -19,7 +20,7 @@ type UseScrollPositionOption = {
  */
 const useScrollPosition = <T extends HTMLElement>(
   ref: RefObject<T | null>,
-  options: UseScrollPositionOption
+  options: UseScrollPositionOption,
 ) => {
   const { on, threshold = 0 } = options;
 

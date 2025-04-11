@@ -1,18 +1,16 @@
 import { memo, useCallback, useMemo, type JSX } from 'react';
 import Router from 'next/router';
-
-import { ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import {
-  Folder as FolderIcon,
+  AccountCircle as AccountCircleIcon,
   ExitToApp as ExitToAppIcon,
+  Folder as FolderIcon,
+  LockOpen as LockOpenIcon,
   PersonAdd as PersonAddIcon,
   PersonAddOutlined as PersonAddOutlinedIcon,
-  LockOpen as LockOpenIcon,
-  AccountCircle as AccountCircleIcon,
 } from '@mui/icons-material';
+import { ListItem, ListItemIcon, ListItemText } from '@mui/material';
 
 import { GUEST_EMAIL, GUEST_PASSWORD } from '@/config/app';
-import { makeEmail } from '@/utils/generator';
 import {
   useGetSessionQuery,
   useLoginMutation,
@@ -20,6 +18,7 @@ import {
   useRegisterMutation,
 } from '@/store/api';
 import { Fieldset } from '@/templates';
+import { makeEmail } from '@/utils/generator';
 
 const SideMenu = memo(function SideMenu(): JSX.Element {
   const { userId } = useGetSessionQuery(undefined, {
@@ -90,7 +89,7 @@ const SideMenu = memo(function SideMenu(): JSX.Element {
           break;
       }
     },
-    [login, logout, register]
+    [login, logout, register],
   );
 
   return (

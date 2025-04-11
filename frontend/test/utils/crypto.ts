@@ -1,12 +1,12 @@
 import {
-  type BinaryLike,
-  type CipherGCMTypes,
   createCipheriv,
   createDecipheriv,
   createHash,
   pbkdf2Sync,
   randomBytes,
   scryptSync,
+  type BinaryLike,
+  type CipherGCMTypes,
 } from 'crypto';
 
 const DIGEST_ALGORITHM = 'sha512';
@@ -21,7 +21,7 @@ const DIGEST_ALGORITHM = 'sha512';
 const deriveKey = (
   password: BinaryLike,
   salt: BinaryLike,
-  keylen: number
+  keylen: number,
 ): Buffer => {
   return typeof window === 'undefined'
     ? // https://nodejs.org/api/crypto.html#cryptoscryptsyncpassword-salt-keylen-options

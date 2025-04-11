@@ -1,4 +1,4 @@
-import { type Ref, useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState, type Ref } from 'react';
 
 /**
  * Execute the specified callback if the returned `ref` appears on viewport.
@@ -8,7 +8,7 @@ import { type Ref, useEffect, useState, useRef } from 'react';
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
  */
 const useIntersectionObserver = <T extends HTMLElement>(
-  onIntersect: (entry: IntersectionObserverEntry) => void
+  onIntersect: (entry: IntersectionObserverEntry) => void,
 ): Ref<T | null> => {
   // cf. https://usehooks-ts.com/react-hook/use-intersection-observer
   // cf. https://github.com/thebuilder/react-intersection-observer
@@ -27,7 +27,7 @@ const useIntersectionObserver = <T extends HTMLElement>(
     // `entries` will have only one element as long as `setRef` is used for `ref` attr,
     // as there is just one observed `ref` object.
     const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
+      if (entry?.isIntersecting) {
         onIntersectRef.current(entry);
       }
     });

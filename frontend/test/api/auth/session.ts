@@ -1,3 +1,5 @@
+import db from '@test/api/database/manager';
+import type { User } from '@test/api/database/models';
 import {
   getSession,
   invalidateSession,
@@ -5,8 +7,6 @@ import {
   putSession,
   regenerateCsrfToken,
 } from '@test/api/session';
-import type { User } from '@test/api/database/models';
-import db from '@test/api/database/manager';
 
 // /**
 //  * The currently authenticated user.

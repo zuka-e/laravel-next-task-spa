@@ -1,4 +1,4 @@
-import type { CookieSerializeOptions } from 'cookie';
+import type { SerializeOptions } from 'cookie';
 
 /**
  * Cookie key of encrypted session ID.
@@ -17,7 +17,7 @@ export const XSRF_TOKEN = 'XSRF-TOKEN';
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies
  */
-export const options: CookieSerializeOptions = {
+export const options: SerializeOptions = {
   // domain: `.${new URL(process.env.NEXT_PUBLIC_APP_URL || '').host}`,
   path: '/',
   // maxAge: 300,

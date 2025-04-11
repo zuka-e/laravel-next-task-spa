@@ -1,6 +1,6 @@
 import type { Model } from '.';
 
-type TaskCard = Model<{
+export type TaskCard = Model<{
   listId: string;
   title: string;
   content: string | null;
@@ -8,5 +8,3 @@ type TaskCard = Model<{
   done: boolean;
   sequence: number;
 }>;
-
-export default TaskCard;

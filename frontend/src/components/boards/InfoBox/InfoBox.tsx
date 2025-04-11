@@ -1,11 +1,10 @@
 import { memo, type JSX } from 'react';
-
-import { Card, CardContent, IconButton, Skeleton, Stack } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
+import { Card, CardContent, IconButton, Skeleton, Stack } from '@mui/material';
 
+import { useGetTaskDetailsQuery, useTaskDetails } from '@/lib/hooks';
 import { isNotFoundError } from '@/store/api/utils/errors';
 import { repeatMap } from '@/utils';
-import { useGetTaskDetailsQuery, useTaskDetails } from '@/lib/hooks';
 import { TaskBoardDetails, TaskCardDetails, TaskListDetails } from '.';
 
 const InfoBox = memo(function InfoBox() {

@@ -1,24 +1,23 @@
 import { memo, useCallback, useState, type JSX } from 'react';
+import type { GetStaticProps } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import type { GetStaticProps } from 'next';
-
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import {
   Button,
-  TextField,
   Checkbox,
-  FormControlLabel,
   Divider,
+  FormControlLabel,
   Grid,
+  TextField,
 } from '@mui/material';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
 import { APP_NAME } from '@/config/app';
-import { useLoginMutation, type LoginRequest } from '@/store/api';
 import { FormLayout } from '@/layouts';
 import type { GuestPage } from '@/routes';
+import { useLoginMutation, type LoginRequest } from '@/store/api';
 
 type FormData = LoginRequest;
 
@@ -45,6 +44,7 @@ const schema = yup.object().shape({
     .required()
     .min(8)
     .max(20),
+  remember: yup.boolean().label(formData.remember.label).required(),
 });
 
 type LoginProps = GuestPage;
@@ -67,7 +67,7 @@ const SignIn = memo(function SignIn(): JSX.Element {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({ mode: 'onBlur', resolver: yupResolver(schema) });
+  } = useForm({ mode: 'onBlur', resolver: yupResolver(schema) });
 
   const togglePasswordVisibility = useCallback((): void => {
     setVisiblePassword((prev) => !prev);

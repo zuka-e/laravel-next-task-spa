@@ -1,23 +1,27 @@
 import { HttpResponse, http } from 'msw';
 
+import { API_ROUTE } from '@/config/api';
 import type {
   CreateTaskBoardRequest,
   CreateTaskBoardResponse,
   DestroyTaskBoardRequest,
   DestroyTaskBoardResponse,
+  FetchKanbanBoardRequest,
+  FetchKanbanBoardResponse,
   FetchTaskBoardRequest,
   FetchTaskBoardResponse,
   FetchTaskBoardsRequest,
   FetchTaskBoardsResponse,
+  MoveTaskCardRequest,
+  MoveTaskCardResponse,
   UpdateTaskBoardRequest,
   UpdateTaskBoardResponse,
 } from '@/store/api';
-import { API_ROUTE } from '@/config/api';
 import { makePath } from '@/utils/api';
-import { withMiddleware } from '@test/api/http/utils';
 import { getUser } from '@test/api/auth';
-import { notFoundErrorResponse } from '@test/api/http/responses/errors';
 import { taskBoardController } from '@test/api/http/controllers';
+import { notFoundErrorResponse } from '@test/api/http/responses/errors';
+import { withMiddleware } from '@test/api/http/utils';
 
 type TaskBoardParams = {
   userId: string;
@@ -39,7 +43,7 @@ export const handlers = [
         message: 'タスクボード一覧を取得しました。',
         ...paginated,
       });
-    })
+    }),
   ),
 
   http.post(
@@ -58,9 +62,9 @@ export const handlers = [
           message: 'タスクボードを作成しました。',
           data: taskBoard,
         },
-        { status: 201 }
+        { status: 201 },
       );
-    })
+    }),
   ),
 
   http.get(
@@ -88,7 +92,7 @@ export const handlers = [
             message: 'タスクボードを取得しました。',
             data: taskBoard,
           });
-    })
+    }),
   ),
 
   http.patch(
@@ -110,7 +114,7 @@ export const handlers = [
         message: 'タスクボードを更新しました。',
         data: updated,
       });
-    })
+    }),
   ),
 
   http.delete(
@@ -131,7 +135,7 @@ export const handlers = [
         message: 'タスクボードを削除しました。',
         data: deleted,
       });
-    })
+    }),
   ),
 
   http.post(
@@ -154,6 +158,6 @@ export const handlers = [
         message: 'タスクカードを移動しました。',
         data: updated,
       });
-    })
+    }),
   ),
 ];

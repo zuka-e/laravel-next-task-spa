@@ -1,25 +1,24 @@
 import { memo, useCallback, type JSX } from 'react';
-
-import * as yup from 'yup';
-import dayjs from 'dayjs';
 import {
-  Grid,
-  CardHeader,
-  CardContent,
-  CardActions,
-  Typography,
-  Breadcrumbs,
-  Tooltip,
-} from '@mui/material';
-import {
-  ListAlt as ListAltIcon,
   FolderOpen as FolderOpenIcon,
+  ListAlt as ListAltIcon,
 } from '@mui/icons-material';
+import {
+  Breadcrumbs,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Grid,
+  Tooltip,
+  Typography,
+} from '@mui/material';
+import dayjs from 'dayjs';
+import * as yup from 'yup';
 
-import type { TaskList } from '@/store/api/services/tasks/models';
-import { useGetTaskBoardQuery, useUpdateTaskListMutation } from '@/store/api';
-import { Link, MarkdownEditor } from '@/templates';
 import { useTaskDetails } from '@/lib/hooks';
+import { useGetTaskBoardQuery, useUpdateTaskListMutation } from '@/store/api';
+import type { TaskList } from '@/store/api/services/tasks/models';
+import { Link, MarkdownEditor } from '@/templates';
 import { EditableTitle } from '..';
 
 type TaskListDetailsProps = {
@@ -27,7 +26,7 @@ type TaskListDetailsProps = {
 };
 
 const TaskListDetails = memo(function TaskListDetails(
-  props: TaskListDetailsProps
+  props: TaskListDetailsProps,
 ): JSX.Element {
   const { list } = props;
   const { getTaskDetailsLink } = useTaskDetails();
@@ -41,7 +40,7 @@ const TaskListDetails = memo(function TaskListDetails(
     (text: string): void => {
       updateTaskList({ id: list.id, description: text });
     },
-    [list.id, updateTaskList]
+    [list.id, updateTaskList],
   );
 
   return (
@@ -101,9 +100,7 @@ const TaskListDetails = memo(function TaskListDetails(
         <CardContent>
           <MarkdownEditor
             onSubmit={handleSubmitText}
-            schema={yup.object().shape({
-              content: yup.string().label('Description').max(2000),
-            })}
+            schema={yup.string().label('Description').max(2000)}
             defaultValue={list.description ?? undefined}
             isLoading={isLoading}
           />

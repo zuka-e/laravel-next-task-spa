@@ -1,24 +1,23 @@
 import { memo, useCallback, useState, type JSX } from 'react';
+import type { GetStaticProps } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import type { GetStaticProps } from 'next';
-
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import {
   Button,
-  TextField,
-  Divider,
-  Grid,
-  FormControlLabel,
   Checkbox,
+  Divider,
+  FormControlLabel,
+  Grid,
+  TextField,
 } from '@mui/material';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
-import { useRegisterMutation, type RegisterRequest } from '@/store/api';
 import { FormLayout } from '@/layouts';
-import { SubmitButton } from '@/templates';
 import type { GuestPage } from '@/routes';
+import { useRegisterMutation, type RegisterRequest } from '@/store/api';
+import { SubmitButton } from '@/templates';
 
 // Input items
 type FormData = RegisterRequest;
@@ -50,7 +49,8 @@ const schema = yup.object().shape({
   password_confirmation: yup
     .string()
     .label(formData.password_confirmation.label)
-    .oneOf([yup.ref('password'), null], 'Passwords do not match'),
+    .required()
+    .oneOf([yup.ref('password')], 'Passwords do not match'),
 });
 
 type RegisterProps = GuestPage;
@@ -72,7 +72,7 @@ const SignUp = memo(function SignUp(): JSX.Element {
     register, // 入力項目の登録
     handleSubmit, // 用意された`handleSubmit`
     formState: { errors }, // エラー情報 (メッセージなど)
-  } = useForm<FormData>({
+  } = useForm({
     mode: 'onBlur', // バリデーション判定タイミング
     resolver: yupResolver(schema),
   });

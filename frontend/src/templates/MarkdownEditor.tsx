@@ -1,28 +1,14 @@
-import {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  type JSX,
-} from 'react';
+import { memo, useCallback, useEffect, useState, type JSX } from 'react';
 import dynamic from 'next/dynamic';
-
-import { useForm, Controller } from 'react-hook-form';
-import type { SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import type { ObjectShape } from 'yup/lib/object';
 import { CardActions } from '@mui/material';
-import type { MDEditorProps, PreviewType } from '@uiw/react-md-editor';
 import type { MarkdownPreviewProps } from '@uiw/react-markdown-preview';
+import type { MDEditorProps, PreviewType } from '@uiw/react-md-editor';
+import { Controller, useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
 import { mdCommands } from '@/config/mdEditor';
 import { Fieldset, SubmitButton } from '@/templates';
-
-// cf. https://github.com/uiwjs/react-md-editor/issues/52
-import '@uiw/react-md-editor/markdown-editor.css';
-import '@uiw/react-markdown-preview/markdown.css';
 
 /**
  * When used with `import MDEditor`, the following error occurred.
@@ -39,7 +25,7 @@ import '@uiw/react-markdown-preview/markdown.css';
  */
 const MDEditor = dynamic<MDEditorProps>(
   () => import('@uiw/react-md-editor').then((mod) => mod.default),
-  { ssr: false }
+  { ssr: false },
 );
 
 /**
@@ -48,61 +34,64 @@ const MDEditor = dynamic<MDEditorProps>(
  */
 const MarkdownPreview = dynamic<MarkdownPreviewProps>(
   () => import('@uiw/react-markdown-preview').then((mod) => mod.default),
-  { ssr: false }
+  { ssr: false },
 );
 
 type MarkdownEditorProps = {
-  schema: yup.ObjectSchema<ObjectShape>;
-  onSubmit: (text: string) => void;
+  schema: yup.StringSchema<
+    string | undefined,
+    yup.AnyObject,
+    string | undefined
+  >;
   defaultValue?: string;
+  onSubmit: (text: string) => void;
   isLoading: boolean;
 };
 
 const MarkdownEditor = memo(function MarkdownEditor(
-  props: MarkdownEditorProps
+  props: MarkdownEditorProps,
 ): JSX.Element {
   const { schema, defaultValue, isLoading, onSubmit } = props;
 
-  const prop: keyof typeof schema.fields = useMemo(
-    () => Object.keys(schema.fields)[0],
-    [schema.fields]
+  const [mode, setMode] = useState<PreviewType>(
+    defaultValue ? 'preview' : 'edit',
   );
 
-  const [mode, setMode] = useState<PreviewType>(
-    defaultValue ? 'preview' : 'edit'
-  );
+  const fieldName = 'content';
 
   const {
     formState: { errors },
     control,
     handleSubmit,
-    resetField,
-  } = useForm<Record<typeof prop, string>>({
+  } = useForm({
     mode: 'onBlur',
-    resolver: yupResolver(schema),
+    resolver: yupResolver(
+      yup.object().shape({
+        [fieldName]: schema,
+      }),
+    ),
   });
 
   const handleClickPreview = useCallback((): void => {
     setMode('edit');
   }, []);
 
-  const onSubmitValid: SubmitHandler<Record<typeof prop, string>> = useCallback(
+  const onValid: Parameters<typeof handleSubmit>[0] = useCallback(
     (data): void => {
-      if (data[prop] === defaultValue) {
+      if (data[fieldName] === defaultValue) {
         setMode('preview');
         return;
       }
 
-      onSubmit(data[prop]);
+      onSubmit(data[fieldName] ?? '');
     },
-    [defaultValue, onSubmit, prop]
+    [defaultValue, onSubmit],
   );
 
   // 表示するデータが変更された場合に値を初期化する
   useEffect(() => {
     setMode(defaultValue ? 'preview' : 'edit');
-    resetField(prop, { defaultValue });
-  }, [defaultValue, prop, resetField]);
+  }, [defaultValue]);
 
   if (mode === 'preview' && defaultValue)
     return (
@@ -115,19 +104,21 @@ const MarkdownEditor = memo(function MarkdownEditor(
     );
 
   return (
-    <form onSubmit={handleSubmit(onSubmitValid)}>
+    <form onSubmit={handleSubmit(onValid)}>
       <Fieldset disabled={isLoading}>
         {/* cf. https://react-hook-form.com/get-started/#IntegratingwithUIlibraries */}
         <Controller
           control={control}
-          name={prop}
+          name={fieldName}
           defaultValue={defaultValue}
           render={({ field }) => (
             <MDEditor
               autoFocus
               preview={mode}
               commands={mdCommands}
-              className={errors[prop] ? 'outline outline-1 outline-error' : ''}
+              className={
+                errors[fieldName] ? 'outline outline-1 outline-error' : ''
+              }
               {...field}
               textareaProps={{
                 placeholder: 'Enter the text',
@@ -136,9 +127,9 @@ const MarkdownEditor = memo(function MarkdownEditor(
           )}
         />
         <div className="my-2 flex items-baseline">
-          <span className={errors[prop] ? 'text-error' : ''}>
-            {errors[prop]?.message}
-          </span>
+          {errors[fieldName] && (
+            <span className={'text-error'}>{errors[fieldName].message}</span>
+          )}
           <SubmitButton size="small" className="ml-auto">
             {'Save'}
           </SubmitButton>

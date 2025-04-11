@@ -8,6 +8,6 @@
       "@test/*": ["test/*"]
     }
   },
-  "include": ["../**/*.ts", "../**/*.tsx"],
+  "include": ["../**/*.ts", "../**/*.tsx", "../next-env.d.ts"],
   "exclude": ["../node_modules"]
 }

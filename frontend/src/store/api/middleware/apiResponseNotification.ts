@@ -1,21 +1,22 @@
-import { isAxiosError } from 'axios';
 import {
+  isAsyncThunkAction,
   type Middleware,
   type PayloadAction,
-  isAsyncThunkAction,
 } from '@reduxjs/toolkit';
-import { type UnknownAsyncThunkAction } from '@reduxjs/toolkit/dist/matchers';
+import { isAxiosError } from 'axios';
 
-import { pushNotification } from '@/store/slices';
 import { type ApiResponse } from '@/store/api/services/tasks';
 import { isApiResponse } from '@/store/api/services/tasks/utils';
+import { pushNotification } from '@/store/slices';
+import type { GuardType } from '@/types/utils';
 
 /**
  * Determine if the action is an API response.
  */
 const isAsyncThunkActionResponse = (
-  action: unknown
-): action is UnknownAsyncThunkAction & PayloadAction<ApiResponse> => {
+  action: unknown,
+): action is GuardType<typeof isAsyncThunkAction> &
+  PayloadAction<ApiResponse> => {
   if (!isAsyncThunkAction(action)) {
     return false;
   }

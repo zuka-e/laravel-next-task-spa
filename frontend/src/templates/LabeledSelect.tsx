@@ -1,13 +1,12 @@
 import { memo, type JSX } from 'react';
-
 import {
   FormControl,
-  InputLabel,
   Input,
-  Select,
-  SelectProps,
+  InputLabel,
   MenuItem,
-  MenuItemProps,
+  Select,
+  type MenuItemProps,
+  type SelectProps,
 } from '@mui/material';
 
 type LabeledSelectProps = {
@@ -16,7 +15,7 @@ type LabeledSelectProps = {
 } & SelectProps;
 
 const LabeledSelect = memo(function LabeledSelect(
-  props: LabeledSelectProps
+  props: LabeledSelectProps,
 ): JSX.Element {
   const { label, options, color, ...selectProps } = props;
 

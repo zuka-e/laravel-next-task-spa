@@ -1,18 +1,18 @@
 import { HttpResponse, http } from 'msw';
 
+import { API_ROUTE } from '@/config/api';
 import type {
   CreateTaskListRequest,
   CreateTaskListResponse,
-  UpdateTaskListRequest,
-  UpdateTaskListResponse,
-  DestroyTaskListResponse,
   DestroyTaskListRequest,
-  FetchTaskListsRequest,
-  FetchTaskListsResponse,
+  DestroyTaskListResponse,
   FetchTaskListRequest,
   FetchTaskListResponse,
+  FetchTaskListsRequest,
+  FetchTaskListsResponse,
+  UpdateTaskListRequest,
+  UpdateTaskListResponse,
 } from '@/store/api';
-import { API_ROUTE } from '@/config/api';
 import { makePath } from '@/utils/api';
 import { taskListController } from '@test/api/http/controllers';
 import { notFoundErrorResponse } from '@test/api/http/responses/errors';
@@ -38,7 +38,7 @@ export const handlers = [
         message: 'タスクリスト一覧を取得しました。',
         ...paginated,
       });
-    })
+    }),
   ),
 
   http.post(
@@ -57,9 +57,9 @@ export const handlers = [
           message: 'タスクリストを作成しました。',
           data: taskList,
         },
-        { status: 201 }
+        { status: 201 },
       );
-    })
+    }),
   ),
 
   http.get(
@@ -80,7 +80,7 @@ export const handlers = [
         message: 'タスクリストを取得しました。',
         data: taskList,
       });
-    })
+    }),
   ),
 
   http.patch(
@@ -102,7 +102,7 @@ export const handlers = [
         message: 'タスクリストを更新しました。',
         data: updated,
       });
-    })
+    }),
   ),
 
   http.delete(
@@ -123,6 +123,6 @@ export const handlers = [
         message: 'タスクリストを削除しました。',
         data: deleted,
       });
-    })
+    }),
   ),
 ];

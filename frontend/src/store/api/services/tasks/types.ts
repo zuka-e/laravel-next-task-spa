@@ -8,7 +8,7 @@ type Severity = 'success' | 'info' | 'warning' | 'error';
  * API response with default properties
  */
 export type ApiResponse<
-  T extends Record<string, unknown> = Record<never, never>
+  T extends Record<string, unknown> = Record<never, never>,
 > = {
   severity: Severity;
   message: string;
@@ -84,7 +84,7 @@ export type AxiosValidationErrorResponse = AxiosError<ValidationErrorResponse>;
  * Request params expecting paginated response
  */
 type PaginationRequest<
-  T extends Record<string, unknown> = Record<never, never>
+  T extends Record<string, unknown> = Record<never, never>,
 > = {
   page?: number;
   limit?: number;
@@ -96,7 +96,7 @@ type PaginationRequest<
  * Request params expecting cursor-paginated response
  */
 type CursorPaginationRequest<
-  T extends Record<string, unknown> = Record<never, never>
+  T extends Record<string, unknown> = Record<never, never>,
 > = {
   cursor?: string;
   limit?: number;
@@ -117,7 +117,7 @@ export type LoginResponse = ApiResponse<{
 export type LoginRequest = {
   email: string;
   password: string;
-  remember?: string;
+  remember?: boolean;
 };
 
 export type LogoutResponse = ApiResponse;

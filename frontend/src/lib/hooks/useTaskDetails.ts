@@ -1,11 +1,10 @@
 import { useRouter } from 'next/router';
-
 import { skipToken } from '@reduxjs/toolkit/query';
 
 import {
   useGetTaskBoardQuery,
-  useGetTaskListQuery,
   useGetTaskCardQuery,
+  useGetTaskListQuery,
 } from '@/store/api';
 import { useRoute } from '@/utils/hooks';
 
@@ -46,7 +45,7 @@ export const useTaskDetails = () => {
       },
       undefined,
       // cf. https://nextjs.org/docs/pages/building-your-application/routing/linking-and-navigating#shallow-routing
-      { shallow: true }
+      { shallow: true },
     );
   };
 
@@ -62,7 +61,7 @@ export const useTaskDetails = () => {
         query: restQueryParams,
       },
       undefined,
-      { shallow: true }
+      { shallow: true },
     );
   };
 

@@ -5,15 +5,15 @@
 // E2E testing may be preferable.
 
 import { type Mock } from 'vitest';
-import { screen, fireEvent, waitFor } from '@testing-library/react';
-import { Provider } from 'react-redux';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { useRouter } from 'next/router';
+import { Provider } from 'react-redux';
 
-import { setup } from '@test/utils/user-events';
-import { faker } from '@test/utils/faker';
 import SignUp from '@/pages/register';
 import { setupStore } from '@/store';
 import { useRegisterMutation } from '@/store/api';
+import { faker } from '@test/utils/faker';
+import { setup } from '@test/utils/user-events';
 
 vi.mock('next/router', () => ({
   useRouter: vi.fn(),
@@ -35,7 +35,7 @@ describe('Registration Page', () => {
     const { user } = setup(
       <Provider store={setupStore()}>
         <SignUp />
-      </Provider>
+      </Provider>,
     );
 
     const email = faker.internet.exampleEmail();
@@ -45,11 +45,11 @@ describe('Registration Page', () => {
     await user.click(screen.getByRole('checkbox', { name: /password/i }));
     await user.type(
       screen.getByRole('textbox', { name: /password$/i }),
-      password
+      password,
     );
     await user.type(
       screen.getByRole('textbox', { name: /password confirm/i }),
-      password
+      password,
     );
 
     // cf. https://github.com/testing-library/dom-testing-library/issues/474

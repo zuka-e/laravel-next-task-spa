@@ -1,26 +1,25 @@
 import { memo, type JSX } from 'react';
-import Head from 'next/head';
 import type { GetStaticProps } from 'next';
-
+import Head from 'next/head';
 import {
   Button,
   Card,
   CardContent,
   CardHeader,
-  Divider,
   Container,
+  Divider,
 } from '@mui/material';
 
-import { useGetSessionQuery } from '@/store/api';
-import { isGuest } from '@/lib/auth';
-import { BaseLayout } from '@/layouts';
 import {
-  UserProfile,
-  Password,
-  UserStatus,
   DeleteAccountDialog,
+  Password,
+  UserProfile,
+  UserStatus,
 } from '@/components/account';
+import { BaseLayout } from '@/layouts';
+import { isGuest } from '@/lib/auth';
 import type { AuthPage } from '@/routes';
+import { useGetSessionQuery } from '@/store/api';
 
 type AccountProps = AuthPage;
 

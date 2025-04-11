@@ -24,7 +24,7 @@ export const titleCommand = commands.group(
       'aria-label': 'Insert title',
       'title': 'Insert title',
     },
-  }
+  },
 );
 
 // デフォルトの並び順は以下を参照

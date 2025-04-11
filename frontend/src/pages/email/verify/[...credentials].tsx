@@ -1,12 +1,11 @@
 import { memo, useMemo, type JSX } from 'react';
 import Head from 'next/head';
 import Router from 'next/router';
-
 import { skipToken } from '@reduxjs/toolkit/query';
 
-import { useRoute } from '@/utils/hooks';
-import { useVerifyEmailQuery } from '@/store/api';
 import { BaseLayout, Loading } from '@/layouts';
+import { useVerifyEmailQuery } from '@/store/api';
+import { useRoute } from '@/utils/hooks';
 
 /**
  * This page will be associated with the email verification URL,
@@ -20,15 +19,15 @@ const VerifyEmail = memo(function VerifyEmail(): JSX.Element {
 
   const credentials = useMemo(
     (): string | undefined => route.pathParams?.['credentials'],
-    [route.pathParams]
+    [route.pathParams],
   );
   const queryString = useMemo(
     (): string | undefined => route.queryString,
-    [route.queryString]
+    [route.queryString],
   );
 
   const { isSuccess } = useVerifyEmailQuery(
-    credentials && queryString ? { credentials, queryString } : skipToken
+    credentials && queryString ? { credentials, queryString } : skipToken,
   );
 
   if (isSuccess) {

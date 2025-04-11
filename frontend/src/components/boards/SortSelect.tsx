@@ -1,11 +1,11 @@
 import { memo, useCallback, type JSX } from 'react';
-
-import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { Check as CheckIcon } from '@mui/icons-material';
+import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 
 import type { TaskCard, TaskList } from '@/store/api/services/tasks/models';
-import { useAppDispatch, useAppSelector } from '@/utils/hooks';
 import { setSortByBoard, setSortByList } from '@/store/slices';
+import { useAppDispatch, useAppSelector } from '@/utils/hooks';
+
 // import { type Sort } from '@/utils/sort';
 
 // type Option = Record<string, Sort<TaskCard> & { label: string }>;
@@ -53,7 +53,7 @@ type SortSelectProps =
   | { listId?: TaskCard['listId'] };
 
 const SortSelect = memo(function SortSelect(
-  props: SortSelectProps
+  props: SortSelectProps,
 ): JSX.Element {
   const boardId = 'boardId' in props ? props.boardId : undefined;
   const listId = 'listId' in props ? props.listId : undefined;
@@ -64,8 +64,8 @@ const SortSelect = memo(function SortSelect(
     const sort = boardId
       ? state.taskBoard.data[boardId]?.search.sort
       : listId
-      ? state.taskList.data[listId]?.search.sort
-      : undefined;
+        ? state.taskList.data[listId]?.search.sort
+        : undefined;
 
     return sort ?? options['sequence-asc'];
   });
@@ -78,7 +78,7 @@ const SortSelect = memo(function SortSelect(
         dispatch(setSortByList({ id: listId, sort: options[key] }));
       }
     },
-    [dispatch, boardId, listId]
+    [dispatch, boardId, listId],
   );
 
   return (
@@ -93,7 +93,7 @@ const SortSelect = memo(function SortSelect(
               </ListItemIcon>
             )}
           </ListItem>
-        )
+        ),
       )}
     </List>
   );

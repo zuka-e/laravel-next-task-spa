@@ -1,29 +1,27 @@
 import {
   memo,
   useCallback,
-  type JSX,
-  useRef,
   useEffect,
+  useRef,
   useState,
+  type JSX,
 } from 'react';
-
-import clsx from 'clsx';
+import { attachClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
+import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import {
   draggable,
   dropTargetForElements,
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
-import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
-import { attachClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
-
 import { Typography } from '@mui/material';
+import clsx from 'clsx';
 
-import type * as Model from '@/store/api/services/tasks/models';
 import {
   DND_ENTITY_TYPE,
   type DraggableItem,
   type DroppableItem,
 } from '@/lib/dnd/entities';
 import { useTaskDetails } from '@/lib/hooks';
+import type * as Model from '@/store/api/services/tasks/models';
 
 type TaskCardProps = {
   card: Pick<Model.TaskCard, 'id' | 'listId' | 'title'>;
@@ -56,7 +54,7 @@ const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
             id: card.id,
             index,
             parentId: card.listId,
-          } as const),
+          }) as const,
         onDragStart: () => setIsDragging(true),
         onDrop: () => setIsDragging(false),
       }),
@@ -80,7 +78,7 @@ const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
             allowedEdges: ['top', 'bottom'],
           });
         },
-      })
+      }),
     );
   }, [card.id, card.listId, index]);
 
@@ -95,7 +93,7 @@ const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
         className={clsx(
           'p-2 cursor-pointer bg-white rounded-md hover:opacity-80',
           isTaskSelected('c', card.id) && 'opacity-80 outline outline-primary',
-          isDraggedOver && 'bg-gray-100'
+          isDraggedOver && 'bg-gray-100',
         )}
         title={card.title}
       >

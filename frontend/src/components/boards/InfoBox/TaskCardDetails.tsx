@@ -1,43 +1,41 @@
 import { memo, useCallback, useState, type JSX } from 'react';
-
-import * as yup from 'yup';
-import dayjs from 'dayjs';
 import {
-  Button,
-  Grid,
-  CardHeader,
-  CardContent,
-  CardActions,
-  FormControlLabel,
-  Checkbox,
-  Typography,
-  Breadcrumbs,
-} from '@mui/material';
-import {
-  ListAlt as ListAltIcon,
   Assignment as AssignmentIcon,
   Delete as DeleteIcon,
+  ListAlt as ListAltIcon,
 } from '@mui/icons-material';
+import {
+  Breadcrumbs,
+  Button,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  Typography,
+} from '@mui/material';
+import dayjs from 'dayjs';
+import * as yup from 'yup';
 
+import { useTaskDetails } from '@/lib/hooks';
+import { useGetTaskListQuery, useUpdateTaskCardMutation } from '@/store/api';
 import type { TaskCard } from '@/store/api/services/tasks/models';
-import { useUpdateTaskCardMutation } from '@/store/api';
 import {
   DatetimeInput,
   DeleteTaskDialog,
   Link,
   MarkdownEditor,
 } from '@/templates';
-import { EditableTitle } from '..';
 import type { DatetimeInputProps } from '@/templates/DatetimeInput';
-import { useGetTaskListQuery } from '@/store/api';
-import { useTaskDetails } from '@/lib/hooks';
+import { EditableTitle } from '..';
 
 type TaskCardDetailsProps = {
   card: TaskCard;
 };
 
 const TaskCardDetails = memo(function TaskCardDetails(
-  props: TaskCardDetailsProps
+  props: TaskCardDetailsProps,
 ): JSX.Element {
   const { card } = props;
   const { getTaskDetailsLink } = useTaskDetails();
@@ -61,7 +59,7 @@ const TaskCardDetails = memo(function TaskCardDetails(
         deadline: date?.toISOString(),
       });
     },
-    [card.id, updateTaskCard]
+    [card.id, updateTaskCard],
   );
 
   const handleDelete = useCallback((): void => {
@@ -79,7 +77,7 @@ const TaskCardDetails = memo(function TaskCardDetails(
         content: text,
       });
     },
-    [card.id, updateTaskCard]
+    [card.id, updateTaskCard],
   );
 
   return (
@@ -166,9 +164,7 @@ const TaskCardDetails = memo(function TaskCardDetails(
         <CardContent>
           <MarkdownEditor
             onSubmit={handleSubmitText}
-            schema={yup.object().shape({
-              content: yup.string().label('Content').min(20),
-            })}
+            schema={yup.string().label('Content').min(20)}
             defaultValue={card.content ?? undefined}
             isLoading={isLoading}
           />

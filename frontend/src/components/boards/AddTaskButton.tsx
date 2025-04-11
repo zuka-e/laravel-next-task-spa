@@ -1,10 +1,9 @@
 import { memo, useCallback, useMemo, useState, type JSX } from 'react';
-
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import { Button, TextField } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
+import { Button, TextField } from '@mui/material';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
 import { getInputErrorMessage } from '@/utils/api/errors';
 
@@ -13,7 +12,7 @@ type FormData = {
 };
 
 const schema = yup.object().shape({
-  title: yup.string().label('Title').min(1).max(255),
+  title: yup.string().label('Title').required().min(1).max(255),
 });
 
 type AddTaskButtonProps = {
@@ -23,7 +22,7 @@ type AddTaskButtonProps = {
 };
 
 const AddTaskButton = memo(function AddTaskButton(
-  props: AddTaskButtonProps
+  props: AddTaskButtonProps,
 ): JSX.Element {
   const { disabled, error, onSubmit } = props;
   const [isEditing, setIsEditing] = useState(false);
@@ -32,7 +31,7 @@ const AddTaskButton = memo(function AddTaskButton(
     handleSubmit,
     resetField,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm({
     mode: 'onBlur',
     resolver: yupResolver(schema),
   });
@@ -43,7 +42,7 @@ const AddTaskButton = memo(function AddTaskButton(
       setIsEditing(false);
       resetField('title');
     },
-    [onSubmit, resetField]
+    [onSubmit, resetField],
   );
 
   const errorMessage = useMemo(() => {

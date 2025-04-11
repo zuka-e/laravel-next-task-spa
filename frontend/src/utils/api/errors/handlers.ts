@@ -1,7 +1,7 @@
 import axios, {
+  isAxiosError,
   type AxiosError,
   type AxiosResponse,
-  isAxiosError,
 } from 'axios';
 
 export type ApiError = Required<Pick<AxiosError, 'response'>> & AxiosError;
@@ -27,7 +27,7 @@ export const makeErrorMessageFrom = (error: InvalidRequest) => {
 
   return Object.values(error.response.data.errors).reduce(
     concatenateErrorsWithLineBreaks,
-    ''
+    '',
   );
 };
 
@@ -40,7 +40,7 @@ export const makeErrorMessageFrom = (error: InvalidRequest) => {
  */
 export const getInputErrors = (
   error: unknown,
-  field: string
+  field: string,
 ): string[] | undefined => {
   return isInvalidRequest(error)
     ? error.response.data.errors[field]
@@ -58,7 +58,7 @@ export const getInputErrors = (
 export const getInputErrorMessage = (
   error: unknown,
   field: string,
-  separator?: string
+  separator?: string,
 ): string | undefined => {
   return isInvalidRequest(error)
     ? error.response.data.errors[field]?.join(separator ?? '\n')

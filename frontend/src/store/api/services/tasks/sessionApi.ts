@@ -107,7 +107,7 @@ const api = baseApi.injectEndpoints({
         dispatch(
           api.util.updateQueryData('getSession', undefined, (draft) => {
             draft.user = user;
-          })
+          }),
         );
       },
     }),

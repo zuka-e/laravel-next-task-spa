@@ -1,4 +1,4 @@
-import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 import type { TaskBoard, TaskList } from '@/store/api/services/tasks/models';
 import { type Sort } from '@/utils/sort';
@@ -31,7 +31,7 @@ export const taskBoardSlice = createSlice({
       action: PayloadAction<{
         id: TaskBoard['id'];
         cursor?: string;
-      }>
+      }>,
     ) {
       const { id, cursor } = action.payload;
 
@@ -48,7 +48,7 @@ export const taskBoardSlice = createSlice({
       action: PayloadAction<{
         id: TaskBoard['id'];
         sort: Partial<Sort<TaskList>>;
-      }>
+      }>,
     ) {
       const { id, sort } = action.payload;
 

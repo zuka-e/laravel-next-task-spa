@@ -1,7 +1,10 @@
 import { memo, useMemo, type JSX } from 'react';
-
-import { Alert, AlertTitle } from '@mui/material';
-import type { AlertProps, AlertColor } from '@mui/material';
+import {
+  Alert,
+  AlertTitle,
+  type AlertColor,
+  type AlertProps,
+} from '@mui/material';
 
 const headerMap: Record<AlertColor, Capitalize<AlertColor>> = {
   success: 'Success',
@@ -18,13 +21,13 @@ type AlertMessageProps = {
 } & AlertProps;
 
 const AlertMessage = memo(function AlertMessage(
-  props: AlertMessageProps
+  props: AlertMessageProps,
 ): JSX.Element {
   const { header, body, ...alertProps } = props;
 
   const title = useMemo(
     (): string => props.header || headerMap[props.severity],
-    [props.header, props.severity]
+    [props.header, props.severity],
   );
 
   return (

@@ -1,19 +1,18 @@
 import { memo, useCallback, useState, type JSX } from 'react';
 import Image from 'next/image';
-
-import { AppBar, Toolbar, Drawer, Avatar, IconButton } from '@mui/material';
 import {
   AccountCircle as AccountCircleIcon,
-  Person as PersonIcon,
   Menu as MenuIcon,
+  Person as PersonIcon,
 } from '@mui/icons-material';
+import { AppBar, Avatar, Drawer, IconButton, Toolbar } from '@mui/material';
 
+import { AccountMenuList } from '@/components/layouts/Header';
 import { APP_NAME } from '@/config/app';
+import logo from '@/images/logo.svg';
 import { useGetSessionQuery } from '@/store/api';
 import { Link, LinkButton, PopoverControl } from '@/templates';
-import { AccountMenuList } from '@/components/layouts/Header';
 import Sidebar from './Sidebar';
-import logo from '@/images/logo.svg';
 
 const Header = memo(function Header(): JSX.Element {
   const { auth } = useGetSessionQuery(undefined, {
@@ -37,7 +36,7 @@ const Header = memo(function Header(): JSX.Element {
 
         setOpen(open);
       },
-    []
+    [],
   );
 
   return (

@@ -1,16 +1,15 @@
 import { memo, useCallback, useState, type JSX } from 'react';
-
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import { Checkbox, FormControlLabel, Grid, TextField } from '@mui/material';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
+import { isGuest } from '@/lib/auth';
 import {
-  UpdatePasswordRequest,
   useGetSessionQuery,
   useUpdatePasswordMutation,
+  type UpdatePasswordRequest,
 } from '@/store/api';
-import { isGuest } from '@/lib/auth';
 import { AlertMessage, SubmitButton } from '@/templates';
 import { isInvalidRequest, makeErrorMessageFrom } from '@/utils/api/errors';
 
@@ -45,7 +44,8 @@ const schema = yup.object().shape({
   passwordConfirmation: yup
     .string()
     .label(formData.passwordConfirmation.label)
-    .oneOf([yup.ref('password'), null], 'Passwords do not match'),
+    .required()
+    .oneOf([yup.ref('password')], 'Passwords do not match'),
 });
 
 const Password = memo(function Password(): JSX.Element {
@@ -58,7 +58,7 @@ const Password = memo(function Password(): JSX.Element {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormData>({ mode: 'onBlur', resolver: yupResolver(schema) });
+  } = useForm({ mode: 'onBlur', resolver: yupResolver(schema) });
 
   const togglePasswordVisibility = useCallback((): void => {
     setVisiblePassword((prev) => !prev);
@@ -78,7 +78,7 @@ const Password = memo(function Password(): JSX.Element {
           }
         });
     },
-    [reset, updatePassword]
+    [reset, updatePassword],
   );
 
   if (!user) {

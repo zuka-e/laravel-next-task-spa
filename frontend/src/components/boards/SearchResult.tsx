@@ -1,19 +1,18 @@
 import { memo, type JSX } from 'react';
-
-import { skipToken } from '@reduxjs/toolkit/query';
 import {
+  CardContent,
   List,
   ListItem,
   ListItemText,
-  CardContent,
-  Stack,
   Skeleton,
+  Stack,
 } from '@mui/material';
+import { skipToken } from '@reduxjs/toolkit/query';
 
-import { useSearchTaskCardsByBoardQuery } from '@/store/api';
-import { useRoute } from '@/utils/hooks';
-import { repeatMap } from '@/utils';
 import { useTaskDetails } from '@/lib/hooks';
+import { useSearchTaskCardsByBoardQuery } from '@/store/api';
+import { repeatMap } from '@/utils';
+import { useRoute } from '@/utils/hooks';
 
 /**
  * Highlight the matched text.
@@ -34,7 +33,7 @@ const highlightText = (text: string, query: string): JSX.Element => {
           </span>
         ) : (
           <span key={i}>{part}</span>
-        )
+        ),
       )}
     </>
   );
@@ -45,14 +44,14 @@ type SearchResultProps = {
 };
 
 const SearchResult = memo(function SearchResult(
-  props: SearchResultProps
+  props: SearchResultProps,
 ): JSX.Element {
   const { input } = props;
   const { pathParams } = useRoute();
   const { showTaskDetails } = useTaskDetails();
 
   const { data, isFetching } = useSearchTaskCardsByBoardQuery(
-    pathParams ? { boardId: pathParams['boardId' ?? ''], q: input } : skipToken
+    pathParams ? { boardId: pathParams['boardId'] ?? '', q: input } : skipToken,
   );
 
   if (!input) {

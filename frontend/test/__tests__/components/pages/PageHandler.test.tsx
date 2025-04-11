@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 
-import PageHandler from '@/components/pages/PageHandler';
 import { ErrorHandler } from '@/components/errors';
+import PageHandler from '@/components/pages/PageHandler';
 import { Route } from '@/routes';
 
 vi.mock('@/components/errors', () => ({
@@ -29,7 +29,7 @@ describe('PageHandler', () => {
     expect(Route).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining(props),
-      undefined
+      undefined,
     );
   });
 });

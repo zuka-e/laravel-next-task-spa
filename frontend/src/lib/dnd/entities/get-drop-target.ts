@@ -1,15 +1,15 @@
 import type { DropTargetRecord } from '@atlaskit/pragmatic-drag-and-drop/types';
 
-import { type DroppableItem, isDroppableItem } from '@/lib/dnd/entities';
+import { isDroppableItem, type DroppableItem } from '@/lib/dnd/entities';
 
 /**
  * Get the drop target by type.
  */
 const getDropTarget = <T extends DroppableItem['type']>(
   dropTargets: DropTargetRecord[],
-  type: T
+  type: T,
 ): (DropTargetRecord & { data: DroppableItem<T> }) | undefined => {
-  const target = dropTargets.find((target) => target.data.type === type);
+  const target = dropTargets.find((target) => target.data['type'] === type);
 
   if (!target) return undefined;
 

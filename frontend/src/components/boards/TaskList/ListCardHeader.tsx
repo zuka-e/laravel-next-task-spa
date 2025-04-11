@@ -1,11 +1,10 @@
 import { memo, type JSX } from 'react';
-
-import dayjs from 'dayjs';
-import { CardHeader, Typography, IconButton } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
+import { CardHeader, IconButton, Typography } from '@mui/material';
+import dayjs from 'dayjs';
 
-import type { TaskList } from '@/store/api/services/tasks/models';
 import { useUpdateTaskListMutation } from '@/store/api';
+import type { TaskList } from '@/store/api/services/tasks/models';
 import { PopoverControl } from '@/templates';
 import { EditableTitle } from '..';
 import { ListMenu } from '.';
@@ -15,7 +14,7 @@ type ListCardHeaderProps = {
 };
 
 const ListCardHeader = memo(function ListCardHeader(
-  props: ListCardHeaderProps
+  props: ListCardHeaderProps,
 ): JSX.Element {
   const { list } = props;
 

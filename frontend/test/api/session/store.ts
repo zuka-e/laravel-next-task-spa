@@ -1,8 +1,8 @@
 import { generateRandomString } from '@/utils/generator';
-import type { Session } from '@test/api/database/models';
-import db from '@test/api/database/manager';
-import { timestamp } from '@test/api/database/definitions';
 import { getUser } from '@test/api/auth';
+import { timestamp } from '@test/api/database/definitions';
+import db from '@test/api/database/manager';
+import type { Session } from '@test/api/database/models';
 
 /**
  * The session ID.
@@ -70,7 +70,7 @@ export const setSession = (session: Session['payload']): void => {
  */
 export const putSession = <K extends keyof Session['payload']>(
   key: K,
-  value?: Session['payload'][K]
+  value?: Session['payload'][K],
 ): void => {
   const session = getSession();
 

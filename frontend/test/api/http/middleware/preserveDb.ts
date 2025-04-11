@@ -72,7 +72,7 @@ const persist = (): void => {
   }
 
   const data = Object.fromEntries(
-    Object.entries(db).map(([table, model]) => [table, model.getAll()])
+    Object.entries(db).map(([table, model]) => [table, model.getAll()]),
   );
 
   store(JSON.stringify(data));

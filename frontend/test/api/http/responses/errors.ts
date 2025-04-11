@@ -15,7 +15,7 @@ export const authenticationErrorResponse = (message?: string) => {
       severity: 'error',
       message: message ?? 'Unauthenticated.',
     } as const,
-    { status: 401 }
+    { status: 401 },
   );
 };
 
@@ -28,7 +28,7 @@ export const authorizationErrorResponse = (message?: string) => {
       severity: 'error',
       message: message ?? 'Forbidden.',
     } as const,
-    { status: 403 }
+    { status: 403 },
   );
 };
 
@@ -41,7 +41,7 @@ export const notFoundErrorResponse = (message?: string) => {
       severity: 'error',
       message: message ?? 'Not Found.',
     } as const,
-    { status: 404 }
+    { status: 404 },
   );
 };
 
@@ -49,7 +49,7 @@ export const notFoundErrorResponse = (message?: string) => {
  * Create `Response` for validation errors.
  */
 export const validationErrorResponse = (
-  errors: ValidationErrorResponse['errors']
+  errors: ValidationErrorResponse['errors'],
 ) => {
   return HttpResponse.json<ValidationErrorResponse>(
     {
@@ -57,6 +57,6 @@ export const validationErrorResponse = (
       message: 'Invalid request.',
       errors,
     } as const,
-    { status: 422 }
+    { status: 422 },
   );
 };

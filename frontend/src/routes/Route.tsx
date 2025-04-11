@@ -2,14 +2,14 @@ import { memo, useEffect, type JSX } from 'react';
 import type { AppProps } from 'next/app';
 import Router, { useRouter } from 'next/router';
 
-import { useAppDispatch, useAppSelector, useRoute } from '@/utils/hooks';
 import { setPreviousUrl } from '@/lib/routes';
 import { AuthRoute, GuestRoute } from '@/routes';
 import { useInvalidateSessionMutation } from '@/store/api';
 import { pushNotification } from '@/store/slices';
+import { useAppDispatch, useAppSelector, useRoute } from '@/utils/hooks';
 
 const Route = memo(function Route(
-  props: Pick<AppProps<Record<string, unknown>>, 'Component' | 'pageProps'>
+  props: Pick<AppProps<Record<string, unknown>>, 'Component' | 'pageProps'>,
 ): JSX.Element {
   const { Component, pageProps } = props;
   const router = useRouter();
@@ -24,7 +24,7 @@ const Route = memo(function Route(
         pushNotification({
           severity: 'error',
           message: 'ログインしてください。',
-        })
+        }),
       );
 
       invalidateSession();
@@ -56,11 +56,11 @@ const Route = memo(function Route(
   return (
     <>
       {/* cf. https://alexsidorenko.com/blog/next-js-protected-routes/#move-user-logic-to-_appjs */}
-      {pageProps.auth ? (
+      {pageProps['auth'] ? (
         <AuthRoute>
           <Component {...pageProps} />
         </AuthRoute>
-      ) : pageProps.guest ? (
+      ) : pageProps['guest'] ? (
         <GuestRoute>
           <Component {...pageProps} />
         </GuestRoute>

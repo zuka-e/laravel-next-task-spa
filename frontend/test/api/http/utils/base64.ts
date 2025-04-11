@@ -3,7 +3,7 @@
  */
 // cf. https://github.com/laravel/framework/blob/11.x/src/Illuminate/Pagination/Cursor.php#L103 - encode()
 export const base64Encode = (
-  data: string | Record<string, unknown>
+  data: string | Record<string, unknown>,
 ): string => {
   const str = typeof data === 'object' ? JSON.stringify(data) : data;
   // cf. https://developer.mozilla.org/en-US/docs/Glossary/Base64#the_unicode_problem
@@ -19,7 +19,7 @@ export const base64Encode = (
  * Encodes the data to a base64 URL-safe string.
  */
 export const base64UrlEncode = (
-  data: string | Record<string, unknown>
+  data: string | Record<string, unknown>,
 ): string => {
   return base64Encode(data)
     .replace(/\+/g, '-')

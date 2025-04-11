@@ -1,13 +1,10 @@
 // https://mui.com/material-ui/guides/routing/#next-js
 // https://github.com/mui/material-ui/blob/HEAD/examples/nextjs-with-typescript/src/Link.tsx
 
-import type { LinkProps as NextLinkProps } from 'next/link';
-import React, { Ref, memo } from 'react';
+import React, { memo, type Ref } from 'react';
+import NextLink, { type LinkProps as NextLinkProps } from 'next/link';
 import { useRouter } from 'next/router';
-import NextLink from 'next/link';
-
-import type { LinkProps as MuiLinkProps } from '@mui/material/Link';
-import MuiLink from '@mui/material/Link';
+import MuiLink, { type LinkProps as MuiLinkProps } from '@mui/material/Link';
 import { styled } from '@mui/material/styles';
 
 // Add support for the sx prop for consistency with the other branches.
@@ -24,7 +21,7 @@ interface NextLinkComposedProps
 }
 
 export const NextLinkComposed = memo(function NextLinkComposed(
-  props: NextLinkComposedProps & { ref?: Ref<HTMLAnchorElement> }
+  props: NextLinkComposedProps & { ref?: Ref<HTMLAnchorElement> },
 ) {
   const {
     ref,
@@ -66,7 +63,7 @@ export type LinkProps = {
 // A styled version of the Next.js Link component:
 // https://nextjs.org/docs/api-reference/next/link
 const Link = memo(function Link(
-  props: LinkProps & { ref?: Ref<HTMLAnchorElement> }
+  props: LinkProps & { ref?: Ref<HTMLAnchorElement> },
 ) {
   const {
     ref,

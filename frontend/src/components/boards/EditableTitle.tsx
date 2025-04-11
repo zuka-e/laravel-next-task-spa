@@ -1,9 +1,8 @@
-import { memo, useMemo, useState, type JSX, Ref } from 'react';
-
-import { useForm } from 'react-hook-form';
+import { memo, useMemo, useState, type JSX, type Ref } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { TextField, type TextFieldProps } from '@mui/material';
+import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import { TextField, TextFieldProps } from '@mui/material';
 
 import { getInputErrorMessage } from '@/utils/api/errors';
 
@@ -12,7 +11,7 @@ type FormData = {
 };
 
 const schema = yup.object().shape({
-  title: yup.string().label('Title').min(1).max(255),
+  title: yup.string().label('Title').required().min(1).max(255),
 });
 
 type EditableTitleProps = {
@@ -23,7 +22,7 @@ type EditableTitleProps = {
 };
 
 const EditableTitle = memo(function EditableTitle(
-  props: EditableTitleProps
+  props: EditableTitleProps,
 ): JSX.Element {
   const { defaultValue, disabled, error, onSubmit } = props;
   const [isEditing, setIsEditing] = useState(false);
@@ -31,7 +30,7 @@ const EditableTitle = memo(function EditableTitle(
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm({
     mode: 'onBlur',
     resolver: yupResolver(schema),
   });
@@ -68,7 +67,7 @@ const EditableTitle = memo(function EditableTitle(
 });
 
 const StyledTextField = memo(function StyledTitleForm(
-  props: TextFieldProps & { ref?: Ref<HTMLDivElement> }
+  props: TextFieldProps & { ref?: Ref<HTMLDivElement> },
 ): JSX.Element {
   const { ref, ...textFieldProps } = props;
 

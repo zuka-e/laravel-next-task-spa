@@ -1,16 +1,15 @@
 import { memo, useCallback, useMemo, type JSX } from 'react';
-
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import { Grid, TextField } from '@mui/material';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
+import { isGuest } from '@/lib/auth';
 import {
-  type UpdateProfileRequest,
   useGetSessionQuery,
   useUpdateProfileMutation,
+  type UpdateProfileRequest,
 } from '@/store/api';
-import { isGuest } from '@/lib/auth';
 import { AlertMessage, SubmitButton } from '@/templates';
 import { isInvalidRequest, makeErrorMessageFrom } from '@/utils/api/errors';
 
@@ -39,7 +38,7 @@ const UserProfile = memo(function UserProfile(): JSX.Element {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({ mode: 'onBlur', resolver: yupResolver(schema) });
+  } = useForm({ mode: 'onBlur', resolver: yupResolver(schema) });
 
   const errorMessage = useMemo((): string | null => {
     return isInvalidRequest(error) ? makeErrorMessageFrom(error) : null;
@@ -63,7 +62,7 @@ const UserProfile = memo(function UserProfile(): JSX.Element {
 
       updateProfile(data);
     },
-    [updateProfile, user]
+    [updateProfile, user],
   );
 
   if (!user) {

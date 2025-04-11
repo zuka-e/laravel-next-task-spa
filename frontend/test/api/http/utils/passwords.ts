@@ -93,7 +93,7 @@ export const resetPassword = (
   input: {
     password: string;
     passwordConfirmation: string;
-  }
+  },
 ): User | string => {
   const { password, passwordConfirmation } = input;
 

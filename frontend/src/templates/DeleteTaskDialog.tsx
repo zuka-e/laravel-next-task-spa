@@ -1,24 +1,23 @@
 import { memo, useCallback, useMemo, type JSX } from 'react';
-
 import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogActions,
-  DialogContentText,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from '@mui/material';
 
+import {
+  useDestroyTaskBoardMutation,
+  useDestroyTaskCardMutation,
+  useDestroyTaskListMutation,
+} from '@/store/api';
 import type {
   TaskBoard,
   TaskCard,
   TaskList,
 } from '@/store/api/services/tasks/models';
-import {
-  useDestroyTaskBoardMutation,
-  useDestroyTaskListMutation,
-  useDestroyTaskCardMutation,
-} from '@/store/api';
 
 type DeleteAction =
   | { model: 'board'; data: Pick<TaskBoard, 'id' | 'title'> }
@@ -31,7 +30,7 @@ type DeleteTaskDialogProps = DeleteAction & {
 };
 
 const DeleteTaskDialog = memo(function DeleteTaskDialog(
-  props: DeleteTaskDialogProps
+  props: DeleteTaskDialogProps,
 ): JSX.Element {
   const { open, onClose } = props;
   const [destroyTaskBoard, { isLoading: isLoadingBoard }] =

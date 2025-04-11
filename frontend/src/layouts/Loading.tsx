@@ -1,5 +1,4 @@
 import { memo, type JSX } from 'react';
-
 import { Backdrop, CircularProgress } from '@mui/material';
 
 type LoadingProps = { open?: boolean };

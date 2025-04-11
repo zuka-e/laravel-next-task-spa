@@ -1,11 +1,11 @@
+import { SESSION_COOKIE } from '@test/api/config/cookie';
+import { setCookie } from '@test/api/http/utils';
 import {
   getSessionId,
   saveSession,
   setSessionId,
   startSession as startSessionStore,
 } from '@test/api/session/store';
-import { SESSION_COOKIE } from '@test/api/config/cookie';
-import { setCookie } from '@test/api/http/utils';
 import { decrypt } from '@test/utils/crypto';
 import type { Middleware } from './types';
 

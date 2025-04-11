@@ -1,28 +1,30 @@
-import { http, HttpResponse, type PathParams } from 'msw';
 import dayjs from 'dayjs';
+import { HttpResponse, http, type PathParams } from 'msw';
 
 import type {
+  DeleteAccountResponse,
   FetchSessionResponse,
+  ForgotPasswordRequest,
+  ForgotPasswordResponse,
+  LoginRequest,
+  LoginResponse,
   LogoutResponse,
   RegisterRequest,
   RegisterResponse,
+  RequestVerificationEmailResponse,
+  ResetPasswordRequest,
+  ResetPasswordResponse,
+  UpdatePasswordRequest,
+  UpdatePasswordResponse,
+  UpdateProfileRequest,
+  UpdateProfileResponse,
   ValidationErrorResponse,
   VerifyEmailRequest,
   VerifyEmailResponse,
-  RequestVerificationEmailResponse,
-  UpdateProfileRequest,
-  UpdateProfileResponse,
-  UpdatePasswordRequest,
-  UpdatePasswordResponse,
-  ForgotPasswordRequest,
-  ForgotPasswordResponse,
-  ResetPasswordRequest,
-  ResetPasswordResponse,
-  LoginRequest,
-  LoginResponse,
-  DeleteAccountResponse,
 } from '@/store/api';
 import { getUser, logoutWithSession } from '@test/api/auth';
+import db from '@test/api/database/manager';
+import type { User } from '@test/api/database/models';
 import {
   createUserController,
   deleteAccountController,
@@ -30,19 +32,17 @@ import {
   updatePasswordController,
   updateProfileController,
 } from '@test/api/http/controllers';
-import { verifyHash } from '@test/utils/crypto';
-import { url } from '@test/api/http/utils/route';
-import { isUniqueEmail, authenticate } from '@test/api/http/utils/validation';
-import { generatePasswordResetUrl } from '@test/api/http/utils/passwords';
-import { generateVerificationUrl } from '@test/api/http/utils/verifications';
-import { withMiddleware } from '@test/api/http/utils';
 import { validateSignature } from '@test/api/http/middleware';
 import {
   authorizationErrorResponse,
   validationErrorResponse,
 } from '@test/api/http/responses/errors';
-import db from '@test/api/database/manager';
-import { User } from '@test/api/database/models';
+import { withMiddleware } from '@test/api/http/utils';
+import { generatePasswordResetUrl } from '@test/api/http/utils/passwords';
+import { url } from '@test/api/http/utils/route';
+import { authenticate, isUniqueEmail } from '@test/api/http/utils/validation';
+import { generateVerificationUrl } from '@test/api/http/utils/verifications';
+import { verifyHash } from '@test/utils/crypto';
 
 const sanitizeUser = (user: User): Omit<User, 'password'> => {
   const { password, ...visible } = user;
@@ -79,7 +79,7 @@ export const handlers = [
       };
 
       return HttpResponse.json(data, { status: 201 });
-    })
+    }),
   ),
 
   http.get(
@@ -90,7 +90,7 @@ export const handlers = [
         severity: 'info',
         message: 'CSRFトークンを取得しました。',
       });
-    })
+    }),
   ),
 
   http.get(
@@ -103,7 +103,7 @@ export const handlers = [
         message: 'ユーザー情報を取得しました。',
         user: currentUser ? sanitizeUser(currentUser) : null,
       });
-    })
+    }),
   ),
 
   http.post(
@@ -131,7 +131,7 @@ export const handlers = [
           };
 
       return HttpResponse.json(data);
-    })
+    }),
   ),
 
   http.post(
@@ -156,7 +156,7 @@ export const handlers = [
       };
 
       return HttpResponse.json(data, { status: 201 });
-    })
+    }),
   ),
 
   http.get(
@@ -192,7 +192,7 @@ export const handlers = [
         message: '認証に成功しました。',
         user: sanitizeUser(updatedUser),
       });
-    })
+    }),
   ),
 
   http.patch(
@@ -212,7 +212,7 @@ export const handlers = [
 
       const updatedUser = updateProfileController.update(
         getUser()!,
-        requestData
+        requestData,
       );
 
       const data: UpdateProfileResponse = {
@@ -222,7 +222,7 @@ export const handlers = [
       };
 
       return HttpResponse.json(data);
-    })
+    }),
   ),
 
   http.patch(
@@ -249,7 +249,7 @@ export const handlers = [
       };
 
       return HttpResponse.json(data);
-    })
+    }),
   ),
 
   http.post(
@@ -282,7 +282,7 @@ export const handlers = [
       };
 
       return HttpResponse.json(data);
-    })
+    }),
   ),
 
   http.post(
@@ -296,7 +296,7 @@ export const handlers = [
       const requestData = await request.json();
 
       return resetPasswordController.store({ token, ...requestData });
-    })
+    }),
   ),
 
   http.post(
@@ -310,7 +310,7 @@ export const handlers = [
       };
 
       return HttpResponse.json(data);
-    })
+    }),
   ),
 
   http.delete(
@@ -326,6 +326,6 @@ export const handlers = [
       };
 
       return HttpResponse.json(data);
-    })
+    }),
   ),
 ];

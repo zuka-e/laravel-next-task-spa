@@ -1,20 +1,20 @@
 import { HttpResponse, http } from 'msw';
 
+import { API_ROUTE } from '@/config/api';
 import type {
   CreateTaskCardRequest,
   CreateTaskCardResponse,
-  UpdateTaskCardRequest,
-  UpdateTaskCardResponse,
   DestroyTaskCardRequest,
   DestroyTaskCardResponse,
-  FetchTaskCardsRequest,
-  FetchTaskCardsResponse,
   FetchTaskCardRequest,
   FetchTaskCardResponse,
+  FetchTaskCardsRequest,
+  FetchTaskCardsResponse,
   SearchTasksByBoardRequest,
   SearchTasksByBoardResponse,
+  UpdateTaskCardRequest,
+  UpdateTaskCardResponse,
 } from '@/store/api';
-import { API_ROUTE } from '@/config/api';
 import { makePath } from '@/utils/api';
 import { taskCardController } from '@test/api/http/controllers';
 import { notFoundErrorResponse } from '@test/api/http/responses/errors';
@@ -41,7 +41,7 @@ export const handlers = [
         message: 'タスクカード一覧を取得しました。',
         ...paginated,
       });
-    })
+    }),
   ),
 
   http.post(
@@ -60,9 +60,9 @@ export const handlers = [
           message: 'タスクカードを作成しました。',
           data: response,
         },
-        { status: 201 }
+        { status: 201 },
       );
-    })
+    }),
   ),
 
   http.get(
@@ -83,7 +83,7 @@ export const handlers = [
         message: 'タスクカードを取得しました。',
         data: taskCard,
       });
-    })
+    }),
   ),
 
   http.patch(
@@ -105,7 +105,7 @@ export const handlers = [
         message: 'タスクカードを更新しました。',
         data: updated,
       });
-    })
+    }),
   ),
 
   http.delete(
@@ -126,7 +126,7 @@ export const handlers = [
         message: 'タスクカードを削除しました。',
         data: deleted,
       });
-    })
+    }),
   ),
 
   http.get(
@@ -145,6 +145,6 @@ export const handlers = [
         message: 'タスクカードを検索しました。',
         data: searched,
       });
-    })
+    }),
   ),
 ];

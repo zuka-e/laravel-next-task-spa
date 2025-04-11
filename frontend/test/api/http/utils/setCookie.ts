@@ -13,7 +13,7 @@ import { encrypt } from '@test/utils/crypto';
 const setCookie = (
   name: string,
   value: string,
-  options?: SerializeOptions
+  options?: SerializeOptions,
 ): void => {
   document.cookie = serialize(name, encrypt(value), {
     ...config.cookie.options,

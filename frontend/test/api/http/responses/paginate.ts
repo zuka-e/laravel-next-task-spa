@@ -1,10 +1,10 @@
 import { type DefaultBodyType, type StrictRequest } from 'msw';
 
 import {
-  type PaginationResponse,
   type CursorPaginationResponse,
+  type PaginationResponse,
 } from '@/store/api';
-import { base64UrlEncode, base64UrlDecode } from '@test/api/http/utils/base64';
+import { base64UrlDecode, base64UrlEncode } from '@test/api/http/utils/base64';
 
 type PaginateProps<T> = {
   request: StrictRequest<DefaultBodyType>;
@@ -95,7 +95,7 @@ const addMetaLinks = (props: PaginationResponse<unknown>) => {
 };
 
 export const cursorPaginate = <T extends { id: string }>(
-  props: PaginateProps<T>
+  props: PaginateProps<T>,
 ): CursorPaginationResponse<T> => {
   const { request, filtered } = props;
 
@@ -139,15 +139,15 @@ export const cursorPaginate = <T extends { id: string }>(
   const nextCursor =
     from + perPage < sorted.length
       ? base64UrlEncode({
-          id: sorted[from + perPage].id,
-          [column]: sorted[from + perPage][column],
+          id: sorted[from + perPage]!.id,
+          [column]: sorted[from + perPage]![column],
         })
       : null;
   const prevCursor =
     from > 0
       ? base64UrlEncode({
-          id: sorted[Math.max(from - perPage, 0)].id,
-          [column]: sorted[Math.max(from - perPage, 0)][column],
+          id: sorted[Math.max(from - perPage, 0)]!.id,
+          [column]: sorted[Math.max(from - perPage, 0)]![column],
         })
       : null;
   const nextLink = nextCursor ? getUrlWithCursor(url, nextCursor) : null;

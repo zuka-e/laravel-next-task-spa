@@ -1,31 +1,46 @@
 {
+  // https://www.typescriptlang.org/tsconfig
   "compilerOptions": {
-    "allowJs": true,
-    "noEmit": true,
-    "incremental": true,
+    /** Type checking */
     "strict": true,
-    "target": "es5",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "jsx": "preserve",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "isolatedModules": true,
+    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "downlevelIteration": true,
-    "skipLibCheck": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUncheckedSideEffectImports": true,
+    // "strictBuiltinIteratorReturn": true,
+    // "exactOptionalPropertyTypes": true,
+
+    /** Modules */
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
+    "allowJs": true,
     "baseUrl": ".",
     // > Next.js supports "paths" and "baseUrl" since Next.js 9.4.
     // > https://nextjs.org/docs/advanced-features/module-path-aliases
     // ※ Module resolution generally depends on compiler.
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+
+    /** Interop Constraints */
+    "esModuleInterop": true,
+    "verbatimModuleSyntax": true,
+
+    /** Language and Environment */
+    "target": "esnext",
+    "lib": ["dom", "dom.iterable"],
+    "jsx": "preserve",
+
+    /** Emit */
+    "noEmit": true,
+
+    /** Projects */
+    "incremental": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "**/*.d.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "next-env.d.ts"],
   // > It is not a mechanism that prevents a file from being included in the codebase
   // > https://www.typescriptlang.org/tsconfig/#exclude
   // e.g. imports "excluded" module in an "included" file.

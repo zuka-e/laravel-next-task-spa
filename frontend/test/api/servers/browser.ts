@@ -1,4 +1,4 @@
-import { StartOptions, setupWorker } from 'msw/browser';
+import { setupWorker, type StartOptions } from 'msw/browser';
 
 import { handlers } from '../http/handlers';
 
@@ -10,7 +10,7 @@ export const worker = setupWorker(...handlers);
  */
 export const config: StartOptions = {
   onUnhandledRequest(request, print) {
-    if (new URL(request.url).origin !== process.env.NEXT_PUBLIC_API_HOST) {
+    if (new URL(request.url).origin !== process.env['NEXT_PUBLIC_API_HOST']) {
       return;
     }
 

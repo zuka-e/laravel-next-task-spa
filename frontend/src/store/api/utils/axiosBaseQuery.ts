@@ -1,11 +1,11 @@
 import { type BaseQueryFn } from '@reduxjs/toolkit/query/react';
 import axios, {
   isAxiosError,
-  type AxiosRequestConfig as BaseAxiosRequestConfig,
-  type AxiosResponse,
   type AxiosError,
+  type AxiosResponse,
+  type AxiosRequestConfig as BaseAxiosRequestConfig,
+  type CreateAxiosDefaults,
   type Method,
-  CreateAxiosDefaults,
 } from 'axios';
 
 import { GET_CSRF_TOKEN_PATH } from '@/config/api';
@@ -42,7 +42,7 @@ type SerializableAxiosError = Pick<AxiosError, 'isAxiosError'> & {
  * @see https://redux-toolkit.js.org/rtk-query/usage-with-typescript#typing-a-basequery
  */
 const axiosBaseQuery = (
-  defaultConfig?: CreateAxiosDefaults
+  defaultConfig?: CreateAxiosDefaults,
 ): BaseQueryFn<
   AxiosRequestConfig,
   AxiosResponse<Record<string, unknown>>['data'],
