@@ -1,7 +1,5 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-# https://typicode.github.io/husky/#/?id=custom-directory
+# https://typicode.github.io/husky/how-to.html#project-not-in-git-root-directory
 cd frontend
+
 # https://github.com/okonet/lint-staged#command-line-flags
 pnpm exec lint-staged --config .lintstagedrc.mjs
