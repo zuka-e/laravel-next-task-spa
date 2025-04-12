@@ -110,8 +110,8 @@ importers:
         specifier: ^13.3.0
         version: 13.3.0
       '@types/markdown-to-jsx':
-        specifier: ^6.11.3
-        version: 6.11.3
+        specifier: ^7.0.0
+        version: 7.0.1(react@19.1.0)
       '@types/node':
         specifier: ^22.13.6
         version: 22.13.6
@@ -1388,8 +1388,9 @@ packages:
   '@types/lodash@4.17.6':
     resolution: {integrity: sha512-OpXEVoCKSS3lQqjx9GGGOapBeuW5eUboYHRlHP9urXPX25IKZ6AnP5ZRxtVf63iieUbsHxLn8NQ5Nlftc6yzAA==}
 
-  '@types/markdown-to-jsx@6.11.3':
-    resolution: {integrity: sha512-30nFYpceM/ZEvhGiqWjm5quLUxNeld0HCzJEXMZZDpq53FPkS85mTwkWtCXzCqq8s5JYLgM5W392a02xn8Bdaw==}
+  '@types/markdown-to-jsx@7.0.1':
+    resolution: {integrity: sha512-m9WVgoC+xggBNuaqHj/ONk6erCr2S+ok18/OdDovlqD3UCHyRA66o/y5QvTrQhm2XEeDwz/zA89jyrEykSm2wg==}
+    deprecated: This is a stub types definition. markdown-to-jsx provides its own type definitions, so you do not need this installed.
 
   '@types/md5@2.3.5':
     resolution: {integrity: sha512-/i42wjYNgE6wf0j2bcTX6kuowmdL/6PE4IVitMpm2eYKBUuYCprdcWVK+xEF0gcV6ufMCRhtxmReGfc6hIK7Jw==}
@@ -5803,9 +5804,11 @@ snapshots:
 
   '@types/lodash@4.17.6': {}
 
-  '@types/markdown-to-jsx@6.11.3':
+  '@types/markdown-to-jsx@7.0.1(react@19.1.0)':
     dependencies:
-      '@types/react': 19.1.1
+      markdown-to-jsx: 7.3.1(react@19.1.0)
+    transitivePeerDependencies:
+      - react
 
   '@types/md5@2.3.5': {}
 
