@@ -76,7 +76,7 @@
     "eslint-plugin-testing-library": "^7.1.1",
     "globals": "^16.0.0",
     "husky": "^8.0.0",
-    "jsdom": "^24.1.0",
+    "jsdom": "^26.0.0",
     "lint-staged": "^15.0.0",
     "markdown-to-jsx": "^7.1.2",
     "msw": "^2.2.9",
