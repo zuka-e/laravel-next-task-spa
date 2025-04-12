@@ -181,7 +181,7 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
             <Grid
               container
               wrap="nowrap"
-              className="absolute inset-0 overflow-x-auto [&>div]:w-80 [&>div]:flex-shrink-0 [&>div]:p-2"
+              className="absolute inset-0 overflow-x-auto [&>div]:w-80 [&>div]:shrink-0 [&>div]:p-2"
             >
               {Object.values(kanbanBoard?.lists ?? {}).map((list, i) => (
                 <Grid item key={list.id} id={list.id}>

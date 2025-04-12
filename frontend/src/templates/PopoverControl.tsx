@@ -116,7 +116,7 @@ const PopoverControl = memo(function PopoverControl(
         anchorOrigin={anchorOrigin}
         transformOrigin={transformOrigin}
       >
-        <div className="w-72 rounded border border-solid border-blue-400">
+        <div className="w-72 rounded-sm border border-solid border-blue-400">
           {children}
         </div>
       </Popover>

@@ -84,14 +84,14 @@ const TaskCardDetails = memo(function TaskCardDetails(
     <div className="flex h-full flex-col rounded-none">
       <CardActions
         disableSpacing
-        className="sticky top-0 z-10 gap-2 bg-inherit shadow-sm"
+        className="sticky top-0 z-10 gap-2 bg-inherit shadow-xs"
       >
         <Breadcrumbs
           aria-label="breadcrumb"
           className="overflow-x-auto whitespace-nowrap"
           classes={{
             ol: 'flex-nowrap',
-            li: '[&>*]:flex [&>*]:items-center',
+            li: '*:flex *:items-center',
           }}
         >
           <Link href={getTaskDetailsLink('l', card.listId)} shallow={true}>
