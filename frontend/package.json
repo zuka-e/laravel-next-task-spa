@@ -11,7 +11,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint --fix",
-    "prepare": "cd .. && husky install frontend/.husky",
+    "prepare": "cd .. && husky frontend/.husky",
     "format": "prettier --write --ignore-unknown",
     "format-all": "prettier --write .",
     "test": "vitest watch",
