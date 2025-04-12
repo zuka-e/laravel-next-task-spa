@@ -1,6 +1,6 @@
 import { memo, type JSX } from 'react';
 import { Typography } from '@mui/material';
-import MarkdownToJsx, { type MarkdownProps } from 'markdown-to-jsx';
+import MarkdownToJsx, { type MarkdownToJSX } from 'markdown-to-jsx';
 
 const OPTIONS = {
   slugify: (str) => str, // 自動生成されるid属性を日本語で利用
@@ -25,12 +25,12 @@ const OPTIONS = {
     ol: { props: { style: { paddingInlineStart: '1.6rem' } } },
     li: { component: Typography, props: { component: 'li' } },
   },
-} as const satisfies MarkdownProps['options'];
+} as const satisfies MarkdownToJSX.Options;
 
 const Markdown = memo(function Markdown({
   children,
   options,
-}: MarkdownProps): JSX.Element {
+}: Parameters<typeof MarkdownToJsx>[0]): JSX.Element {
   return (
     <MarkdownToJsx options={{ ...OPTIONS, ...options }}>
       {children}
