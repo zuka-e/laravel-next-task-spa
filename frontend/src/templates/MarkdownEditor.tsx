@@ -97,7 +97,7 @@ const MarkdownEditor = memo(function MarkdownEditor(
     return (
       <CardActions
         onClick={handleClickPreview}
-        className="overflow-y-auto rounded outline-1 hover:outline"
+        className="overflow-y-auto rounded-sm outline-1 hover:outline"
       >
         <MarkdownPreview source={defaultValue} />
       </CardActions>

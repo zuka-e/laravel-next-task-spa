@@ -17,11 +17,11 @@ const Footer = memo(function Footer(): JSX.Element {
     <footer className="mt-auto bg-black py-8 text-white">
       <Grid container direction="column" alignItems="center">
         <Grid item>
-          <Link href="/terms" className="!text-inherit">
+          <Link href="/terms" className="text-inherit!">
             Terms
           </Link>
           <span className="ml-2 border-0 border-l border-solid pl-2" />
-          <Link href="/privacy" className="!text-inherit">
+          <Link href="/privacy" className="text-inherit!">
             Privacy
           </Link>
         </Grid>

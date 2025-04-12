@@ -41,7 +41,7 @@ const InfoBox = memo(function InfoBox() {
   return (
     <Card elevation={7} className="ml-auto w-full transition-all md:w-6/12">
       <CardContent className="sticky top-16 z-10 h-full max-h-screen bg-white">
-        <div className="absolute right-2 top-2 z-20 w-fit rounded p-1">
+        <div className="absolute right-2 top-2 z-20 w-fit rounded-sm p-1">
           <IconButton aria-label="close" onClick={hideTaskDetails}>
             <CloseIcon />
           </IconButton>

@@ -78,7 +78,7 @@ const StyledTextField = memo(function StyledTitleForm(
       placeholder="Enter a title"
       InputProps={{
         classes: { notchedOutline: 'border-none' },
-        className: 'rounded outline-1 hover:outline font-bold',
+        className: 'rounded-sm outline-1 hover:outline font-bold',
       }}
       InputLabelProps={{ margin: 'dense' }}
       className="-ml-1.5"
