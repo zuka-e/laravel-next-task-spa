@@ -1,26 +1,18 @@
+import { SEVERITIES } from '@/store/api/config/response';
 import { type ApiResponse } from '@/store/api/services/tasks';
-
-const severities: ApiResponse['severity'][] = [
-  'error',
-  'warning',
-  'info',
-  'success',
-];
+import { isPlainObject, isString } from '@/utils/types';
 
 /**
- * Determine if the type of `payload` is `ApiResponse`.
+ * Determine if the type of `value` is `ApiResponse`.
  */
-const isApiResponse = (payload: unknown): payload is ApiResponse => {
-  // Determine if it's `AsyncThunkAction` with a `object` payload.
-  if (!payload || typeof payload !== 'object') {
+const isApiResponse = (value: unknown): value is ApiResponse => {
+  if (!isPlainObject(value)) {
     return false;
   }
 
   return (
-    'severity' in payload &&
-    (severities as string[]).includes(payload.severity as string) &&
-    'message' in payload &&
-    typeof payload.message === 'string'
+    SEVERITIES.includes(value['severity'] as ApiResponse['severity']) &&
+    isString(value['message'])
   );
 };
 
