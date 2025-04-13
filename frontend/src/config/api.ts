@@ -1,9 +1,17 @@
+import { z } from 'zod';
+
 import type { Routes } from '@/types/routes';
 
-export const API_HOST =
-  process.env['NEXT_PUBLIC_API_HOST'] || 'http://localhost';
-export const API_VERSION = process.env['NEXT_PUBLIC_API_VERSION'] || 'v1';
-export const API_BASE_URL = API_HOST + '/' + API_VERSION;
+export const API_HOST = z
+  .string()
+  .url()
+  .parse(process.env['NEXT_PUBLIC_API_HOST']);
+
+export const API_VERSION = z
+  .string()
+  .parse(process.env['NEXT_PUBLIC_API_VERSION']);
+
+export const API_BASE_URL = `${API_HOST}/${API_VERSION}`;
 
 export const API_ENDPOINTS = {
   AUTH: {

@@ -1,4 +1,5 @@
 import { nullable, primaryKey } from '@mswjs/data';
+import { type ModelDictionary } from '@mswjs/data/lib/glossary';
 
 import { faker } from '@test/utils/faker';
 
@@ -80,4 +81,4 @@ export const modelDictionary = {
     sequence: Number,
     ...timestamps,
   },
-};
+} satisfies ModelDictionary;
