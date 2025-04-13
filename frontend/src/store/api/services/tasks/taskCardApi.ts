@@ -1,5 +1,6 @@
+import { API_ENDPOINTS } from '@/config/api';
 import { getTagsForList } from '@/store/api/utils/caching';
-import { makePath } from '@/utils/api';
+import { buildPath } from '@/utils/api/url';
 import baseApi from './baseApi';
 import type {
   CreateTaskCardRequest,
@@ -26,7 +27,9 @@ const api = baseApi.injectEndpoints({
       CreateTaskCardRequest
     >({
       query: ({ listId, ...data }) => ({
-        url: makePath(['task-lists', listId], ['task-cards']),
+        url: buildPath(API_ENDPOINTS.TASKS.LISTS.CARDS.CREATE, {
+          listId,
+        }),
         method: 'POST',
         data,
       }),
@@ -34,7 +37,9 @@ const api = baseApi.injectEndpoints({
     }),
     getTaskCard: builder.query<FetchTaskCardResponse, FetchTaskCardRequest>({
       query: ({ id }) => ({
-        url: makePath(['task-cards', id]),
+        url: buildPath(API_ENDPOINTS.TASKS.CARDS.SHOW, {
+          cardId: id,
+        }),
       }),
       providesTags: (res) => [{ type: 'TaskCard', id: res?.data.id }],
     }),
@@ -43,7 +48,9 @@ const api = baseApi.injectEndpoints({
       UpdateTaskCardRequest
     >({
       query: ({ id, ...data }) => ({
-        url: makePath(['task-cards', id]),
+        url: buildPath(API_ENDPOINTS.TASKS.CARDS.UPDATE, {
+          cardId: id,
+        }),
         method: 'PATCH',
         data,
       }),
@@ -54,7 +61,9 @@ const api = baseApi.injectEndpoints({
       DestroyTaskCardRequest
     >({
       query: ({ id }) => ({
-        url: makePath(['task-cards', id]),
+        url: buildPath(API_ENDPOINTS.TASKS.CARDS.DESTROY, {
+          cardId: id,
+        }),
         method: 'DELETE',
       }),
       invalidatesTags: (res) => [{ type: 'TaskCard', id: res?.data.id }],
@@ -64,7 +73,9 @@ const api = baseApi.injectEndpoints({
       SearchTasksByBoardRequest
     >({
       query: ({ boardId, q }) => ({
-        url: makePath(['task-boards', boardId]) + '/search',
+        url: buildPath(API_ENDPOINTS.TASKS.BOARDS.CARDS.SEARCH, {
+          boardId,
+        }),
         params: { q },
       }),
     }),

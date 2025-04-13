@@ -1,6 +1,6 @@
 import { HttpResponse, http } from 'msw';
 
-import { API_ROUTE } from '@/config/api';
+import { API_BASE_URL, API_ENDPOINTS } from '@/config/api';
 import type {
   CreateTaskBoardRequest,
   CreateTaskBoardResponse,
@@ -17,10 +17,9 @@ import type {
   UpdateTaskBoardRequest,
   UpdateTaskBoardResponse,
 } from '@/store/api';
-import { makePath } from '@/utils/api';
 import { getUser } from '@test/api/auth';
 import { taskBoardController } from '@test/api/http/controllers';
-import { notFoundErrorResponse } from '@test/api/http/responses/errors';
+import { notFoundErrorResponse } from '@test/api/http/responses';
 import { withMiddleware } from '@test/api/http/utils';
 
 type TaskBoardParams = {
@@ -30,7 +29,7 @@ type TaskBoardParams = {
 
 export const handlers = [
   http.get(
-    API_ROUTE + makePath(['task-boards']),
+    API_BASE_URL + API_ENDPOINTS.TASKS.BOARDS.INDEX,
     withMiddleware<
       TaskBoardParams,
       FetchTaskBoardsRequest,
@@ -47,7 +46,7 @@ export const handlers = [
   ),
 
   http.post(
-    API_ROUTE + makePath(['task-boards']),
+    API_BASE_URL + API_ENDPOINTS.TASKS.BOARDS.CREATE,
     withMiddleware<
       TaskBoardParams,
       CreateTaskBoardRequest,
@@ -68,7 +67,7 @@ export const handlers = [
   ),
 
   http.get(
-    API_ROUTE + makePath(['task-boards', ':boardId']),
+    API_BASE_URL + API_ENDPOINTS.TASKS.BOARDS.SHOW,
     withMiddleware<
       TaskBoardParams,
       FetchTaskBoardRequest | FetchKanbanBoardRequest,
@@ -96,7 +95,7 @@ export const handlers = [
   ),
 
   http.patch(
-    API_ROUTE + makePath(['task-boards', ':boardId']),
+    API_BASE_URL + API_ENDPOINTS.TASKS.BOARDS.UPDATE,
     withMiddleware<
       TaskBoardParams,
       UpdateTaskBoardRequest,
@@ -118,7 +117,7 @@ export const handlers = [
   ),
 
   http.delete(
-    API_ROUTE + makePath(['task-boards', ':boardId']),
+    API_BASE_URL + API_ENDPOINTS.TASKS.BOARDS.DESTROY,
     withMiddleware<
       TaskBoardParams,
       DestroyTaskBoardRequest,
@@ -139,7 +138,7 @@ export const handlers = [
   ),
 
   http.post(
-    API_ROUTE + ',/boards/:boardId/move-card',
+    API_BASE_URL + API_ENDPOINTS.TASKS.BOARDS.MOVE_CARD,
     withMiddleware<
       Pick<TaskBoardParams, 'boardId'>,
       Omit<MoveTaskCardRequest, 'boardId'>,

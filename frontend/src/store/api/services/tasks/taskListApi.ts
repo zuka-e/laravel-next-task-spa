@@ -1,5 +1,6 @@
+import { API_ENDPOINTS } from '@/config/api';
 import { getTagsForList } from '@/store/api/utils/caching';
-import { makePath } from '@/utils/api';
+import { buildPath } from '@/utils/api/url';
 import baseApi from './baseApi';
 import type {
   CreateTaskListRequest,
@@ -24,7 +25,9 @@ const api = baseApi.injectEndpoints({
       CreateTaskListRequest
     >({
       query: ({ boardId, ...data }) => ({
-        url: makePath(['task-boards', boardId], ['task-lists']),
+        url: buildPath(API_ENDPOINTS.TASKS.BOARDS.LISTS.CREATE, {
+          boardId,
+        }),
         method: 'POST',
         data,
       }),
@@ -32,7 +35,9 @@ const api = baseApi.injectEndpoints({
     }),
     getTaskList: builder.query<FetchTaskListResponse, FetchTaskListRequest>({
       query: ({ id }) => ({
-        url: makePath(['task-lists', id]),
+        url: buildPath(API_ENDPOINTS.TASKS.LISTS.SHOW, {
+          listId: id,
+        }),
       }),
       providesTags: (res) => [{ type: 'TaskList', id: res?.data.id }],
     }),
@@ -41,7 +46,9 @@ const api = baseApi.injectEndpoints({
       UpdateTaskListRequest
     >({
       query: ({ id, ...data }) => ({
-        url: makePath(['task-lists', id]),
+        url: buildPath(API_ENDPOINTS.TASKS.LISTS.UPDATE, {
+          listId: id,
+        }),
         method: 'PATCH',
         data,
       }),
@@ -52,7 +59,9 @@ const api = baseApi.injectEndpoints({
       DestroyTaskListRequest
     >({
       query: ({ id }) => ({
-        url: makePath(['task-lists', id]),
+        url: buildPath(API_ENDPOINTS.TASKS.LISTS.DESTROY, {
+          listId: id,
+        }),
         method: 'DELETE',
       }),
       invalidatesTags: (res) => [{ type: 'TaskList', id: res?.data.id }],

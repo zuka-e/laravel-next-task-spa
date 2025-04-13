@@ -1,6 +1,6 @@
 import { HttpResponse, http } from 'msw';
 
-import { API_ROUTE } from '@/config/api';
+import { API_BASE_URL, API_ENDPOINTS } from '@/config/api';
 import type {
   CreateTaskCardRequest,
   CreateTaskCardResponse,
@@ -15,7 +15,6 @@ import type {
   UpdateTaskCardRequest,
   UpdateTaskCardResponse,
 } from '@/store/api';
-import { makePath } from '@/utils/api';
 import { taskCardController } from '@test/api/http/controllers';
 import { notFoundErrorResponse } from '@test/api/http/responses/errors';
 import { withMiddleware } from '@test/api/http/utils';
@@ -28,7 +27,7 @@ type TaskCardParams = {
 
 export const handlers = [
   http.get(
-    API_ROUTE + makePath(['task-lists', ':listId'], ['task-cards']),
+    API_BASE_URL + API_ENDPOINTS.TASKS.LISTS.CARDS.INDEX,
     withMiddleware<
       Pick<TaskCardParams, 'listId'>,
       FetchTaskCardsRequest,
@@ -45,7 +44,7 @@ export const handlers = [
   ),
 
   http.post(
-    API_ROUTE + makePath(['task-lists', ':listId'], ['task-cards']),
+    API_BASE_URL + API_ENDPOINTS.TASKS.LISTS.CARDS.CREATE,
     withMiddleware<
       TaskCardParams,
       CreateTaskCardRequest,
@@ -66,7 +65,7 @@ export const handlers = [
   ),
 
   http.get(
-    API_ROUTE + makePath(['task-cards', ':cardId']),
+    API_BASE_URL + API_ENDPOINTS.TASKS.CARDS.SHOW,
     withMiddleware<
       TaskCardParams,
       FetchTaskCardRequest,
@@ -87,7 +86,7 @@ export const handlers = [
   ),
 
   http.patch(
-    API_ROUTE + makePath(['task-cards', ':cardId']),
+    API_BASE_URL + API_ENDPOINTS.TASKS.CARDS.UPDATE,
     withMiddleware<
       Pick<TaskCardParams, 'cardId'>,
       UpdateTaskCardRequest,
@@ -109,7 +108,7 @@ export const handlers = [
   ),
 
   http.delete(
-    API_ROUTE + makePath(['task-cards', ':cardId']),
+    API_BASE_URL + API_ENDPOINTS.TASKS.CARDS.DESTROY,
     withMiddleware<
       Pick<TaskCardParams, 'cardId'>,
       DestroyTaskCardRequest,
@@ -130,7 +129,7 @@ export const handlers = [
   ),
 
   http.get(
-    API_ROUTE + makePath(['task-boards', ':boardId']) + '/search',
+    API_BASE_URL + API_ENDPOINTS.TASKS.BOARDS.CARDS.SEARCH,
     withMiddleware<
       Pick<TaskCardParams, 'boardId'>,
       SearchTasksByBoardRequest,
