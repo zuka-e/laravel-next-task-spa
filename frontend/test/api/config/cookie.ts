@@ -17,11 +17,11 @@ export const XSRF_TOKEN = 'XSRF-TOKEN';
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies
  */
-export const options: SerializeOptions = {
+export const options = {
   // domain: `.${new URL(process.env.NEXT_PUBLIC_APP_URL || '').host}`,
   path: '/',
   // maxAge: 300,
   // httpOnly: true,
   // secure: true,
   sameSite: 'lax',
-};
+} as const satisfies SerializeOptions;

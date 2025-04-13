@@ -1,8 +1,12 @@
-export const APP_URL = process.env['NEXT_PUBLIC_APP_URL'] || '';
-export const APP_NAME = process.env['NEXT_PUBLIC_APP_NAME'] || '';
+import { z } from 'zod';
 
-export const GUEST_NAME = process.env['NEXT_PUBLIC_GUEST_NAME'] || '';
-export const GUEST_EMAIL = process.env['NEXT_PUBLIC_GUEST_EMAIL'] || '';
-export const GUEST_PASSWORD = process.env['NEXT_PUBLIC_GUEST_PASSWORD'] || '';
+export const APP_URL = z
+  .string()
+  .url()
+  .parse(process.env['NEXT_PUBLIC_APP_URL']);
 
-if (!APP_NAME) throw Error('environment variables required');
+export const APP_NAME = z.string().parse(process.env['NEXT_PUBLIC_APP_NAME']);
+
+export const GUEST_NAME = 'ゲストユーザー';
+export const GUEST_EMAIL = 'test@example.com';
+export const GUEST_PASSWORD = 'password';

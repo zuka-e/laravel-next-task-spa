@@ -27,9 +27,10 @@ export const titleCommand = commands.group(
   },
 );
 
-// デフォルトの並び順は以下を参照
-// node_modules/@uiw/react-md-editor/lib/commands/getCommands
-export const mdCommands: commands.ICommand[] = [
+/**
+ * @default getCommands()
+ */
+export const mdCommands = [
   commands.bold,
   commands.italic,
   commands.strikethrough,
@@ -45,4 +46,4 @@ export const mdCommands: commands.ICommand[] = [
   commands.unorderedListCommand,
   commands.orderedListCommand,
   commands.checkedListCommand,
-];
+] as const satisfies commands.ICommand[];

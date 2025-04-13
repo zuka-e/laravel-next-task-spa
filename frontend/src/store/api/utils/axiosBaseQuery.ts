@@ -8,7 +8,7 @@ import axios, {
   type Method,
 } from 'axios';
 
-import { GET_CSRF_TOKEN_PATH } from '@/config/api';
+import { API_ENDPOINTS } from '@/config/api';
 import { setHttpStatus } from '@/store/slices';
 import isReadRequest from './isReadRequest';
 
@@ -61,7 +61,7 @@ const axiosBaseQuery = (
   return async (config, api) => {
     try {
       if (!isReadRequest(config.method ?? 'GET')) {
-        await apiClient.get(GET_CSRF_TOKEN_PATH);
+        await apiClient.get(API_ENDPOINTS.AUTH.CSRF_TOKEN);
       }
       const response = await apiClient.request(config);
       return { data: response.data };

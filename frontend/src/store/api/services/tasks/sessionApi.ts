@@ -1,16 +1,6 @@
-import {
-  FORGOT_PASSWORD_PATH,
-  RESET_PASSWORD_PATH,
-  SESSION_PATH,
-  SIGNIN_PATH,
-  SIGNOUT_PATH,
-  SIGNUP_PATH,
-  UPDATE_PASSWORD_PATH,
-  USER_INFO_PATH,
-  VERIFICATION_NOTIFICATION_PATH,
-  VERIFY_EMAIL_PATH,
-} from '@/config/api';
+import { API_ENDPOINTS } from '@/config/api';
 import { getPreviousUrl, setIntendedUrl } from '@/lib/routes';
+import { buildPath } from '@/utils/api/url';
 import baseApi from './baseApi';
 import type {
   DeleteAccountRequest,
@@ -51,12 +41,16 @@ const api = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // cf. https://redux-toolkit.js.org/rtk-query/usage/queries
     getSession: builder.query<FetchSessionResponse, FetchSessionRequest>({
-      query: () => ({ url: SESSION_PATH }),
+      query: () => ({ url: API_ENDPOINTS.AUTH.SESSION }),
       providesTags: ['Session'],
     }),
     // cf. https://redux-toolkit.js.org/rtk-query/usage/mutations
     login: builder.mutation<LoginResponse, LoginRequest>({
-      query: (data) => ({ url: SIGNIN_PATH, method: 'POST', data }),
+      query: (data) => ({
+        url: API_ENDPOINTS.AUTH.LOGIN,
+        method: 'POST',
+        data,
+      }),
       // cf. https://redux-toolkit.js.org/rtk-query/api/createApi#onquerystarted
       onQueryStarted() {
         setIntendedUrl(getPreviousUrl() ?? '/');
@@ -64,7 +58,7 @@ const api = baseApi.injectEndpoints({
       invalidatesTags: ['Session', 'TaskBoard'],
     }),
     logout: builder.mutation<LogoutResponse, LogoutRequest>({
-      query: () => ({ url: SIGNOUT_PATH, method: 'POST' }),
+      query: () => ({ url: API_ENDPOINTS.AUTH.LOGOUT, method: 'POST' }),
       // cf. https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#pessimistic-updates
       async onQueryStarted(_, { queryFulfilled, dispatch }) {
         setIntendedUrl('/');
@@ -81,7 +75,7 @@ const api = baseApi.injectEndpoints({
     }),
     register: builder.mutation<RegisterResponse, RegisterRequest>({
       query: (data) => ({
-        url: SIGNUP_PATH,
+        url: API_ENDPOINTS.AUTH.SIGNUP,
         method: 'POST',
         data: { name: data.email, ...data },
       }),
@@ -96,7 +90,10 @@ const api = baseApi.injectEndpoints({
         const path = credentials.replace(' ', '/');
 
         return {
-          url: `${VERIFY_EMAIL_PATH}/${path}?${queryString}`,
+          url: buildPath(API_ENDPOINTS.AUTH.VERIFY_EMAIL, {
+            token: path,
+            hash: queryString,
+          }),
         };
       },
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
@@ -115,34 +112,51 @@ const api = baseApi.injectEndpoints({
       RequestVerificationEmailResponse,
       RequestVerificationEmailRequest
     >({
-      query: () => ({ url: VERIFICATION_NOTIFICATION_PATH, method: 'POST' }),
+      query: () => ({
+        url: API_ENDPOINTS.AUTH.VERIFICATION_NOTIFICATION,
+        method: 'POST',
+      }),
     }),
     updateProfile: builder.mutation<
       UpdateProfileResponse,
       UpdateProfileRequest
     >({
-      query: (data) => ({ url: USER_INFO_PATH, method: 'PATCH', data }),
+      query: (data) => ({
+        url: API_ENDPOINTS.AUTH.UPDATE_PROFILE,
+        method: 'PATCH',
+        data,
+      }),
       invalidatesTags: ['Session'],
     }),
     updatePassword: builder.mutation<
       UpdatePasswordResponse,
       UpdatePasswordRequest
     >({
-      query: (data) => ({ url: UPDATE_PASSWORD_PATH, method: 'PATCH', data }),
+      query: (data) => ({
+        url: API_ENDPOINTS.AUTH.UPDATE_PASSWORD,
+        method: 'PATCH',
+        data,
+      }),
       invalidatesTags: ['Session'],
     }),
     forgotPassword: builder.mutation<
       ForgotPasswordResponse,
       ForgotPasswordRequest
     >({
-      query: (data) => ({ url: FORGOT_PASSWORD_PATH, method: 'POST', data }),
+      query: (data) => ({
+        url: API_ENDPOINTS.AUTH.FORGOT_PASSWORD,
+        method: 'POST',
+        data,
+      }),
     }),
     resetPassword: builder.mutation<
       ResetPasswordResponse,
       ResetPasswordRequest
     >({
       query: (data) => ({
-        url: `${RESET_PASSWORD_PATH}/${data.token}`,
+        url: buildPath(API_ENDPOINTS.AUTH.RESET_PASSWORD, {
+          token: data.token,
+        }),
         method: 'POST',
         data,
       }),
@@ -152,7 +166,10 @@ const api = baseApi.injectEndpoints({
       DeleteAccountResponse,
       DeleteAccountRequest
     >({
-      query: () => ({ url: SIGNUP_PATH, method: 'DELETE' }),
+      query: () => ({
+        url: API_ENDPOINTS.AUTH.DELETE_ACCOUNT,
+        method: 'DELETE',
+      }),
       invalidatesTags: ['Session'],
     }),
     // cf. https://redux-toolkit.js.org/rtk-query/usage/automated-refetching#providing-errors-to-the-cache

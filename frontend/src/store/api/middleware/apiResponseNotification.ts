@@ -1,40 +1,44 @@
-import {
-  isAsyncThunkAction,
-  type Middleware,
-  type PayloadAction,
-} from '@reduxjs/toolkit';
+import { isAsyncThunkAction, type Middleware } from '@reduxjs/toolkit';
 import { isAxiosError } from 'axios';
 
-import { type ApiResponse } from '@/store/api/services/tasks';
+import { NOTIFIABLE } from '@/store/api/config/response';
 import { isApiResponse } from '@/store/api/services/tasks/utils';
 import { pushNotification } from '@/store/slices';
-import type { GuardType } from '@/types/utils';
+import { isPlainObject } from '@/utils/types';
 
 /**
- * Determine if the action is an API response.
+ * Create a notification action if the API response contains certain props.
  */
-const isAsyncThunkActionResponse = (
-  action: unknown,
-): action is GuardType<typeof isAsyncThunkAction> &
-  PayloadAction<ApiResponse> => {
+const createNotificationIfNeeded = (action: unknown) => {
   if (!isAsyncThunkAction(action)) {
-    return false;
+    return;
   }
 
-  const response = isAxiosError(action.payload)
+  const status = isAxiosError(action.payload)
+    ? action.payload.response?.status
+    : undefined;
+
+  if (status === 404) {
+    return;
+  }
+
+  const data = isAxiosError(action.payload)
     ? action.payload.response?.data
     : action.payload;
 
-  return isApiResponse(response);
-};
+  if (!isPlainObject(data)) {
+    return;
+  }
 
-/**
- * Determine if the `response` should be notified.
- */
-const shouldNotify = (response: ApiResponse): boolean => {
-  const notifiable: ApiResponse['severity'][] = ['success', 'warning', 'error'];
+  if (!isApiResponse(data)) {
+    return;
+  }
 
-  return notifiable.includes(response.severity);
+  if (!NOTIFIABLE.includes(data.severity as (typeof NOTIFIABLE)[number])) {
+    return;
+  }
+
+  return pushNotification(data);
 };
 
 /**
@@ -44,8 +48,10 @@ const shouldNotify = (response: ApiResponse): boolean => {
  * @see https://redux.js.org/usage/usage-with-typescript#type-checking-middleware
  */
 const apiResponseNotification: Middleware = (api) => (next) => (action) => {
-  if (isAsyncThunkActionResponse(action) && shouldNotify(action.payload)) {
-    api.dispatch(pushNotification(action.payload));
+  const notification = createNotificationIfNeeded(action);
+
+  if (notification) {
+    api.dispatch(notification);
   }
 
   return next(action);

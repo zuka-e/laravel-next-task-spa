@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import { HttpResponse, http, type PathParams } from 'msw';
 
+import { API_BASE_URL, API_ENDPOINTS } from '@/config/api';
 import type {
   DeleteAccountResponse,
   FetchSessionResponse,
@@ -39,7 +40,6 @@ import {
 } from '@test/api/http/responses/errors';
 import { withMiddleware } from '@test/api/http/utils';
 import { generatePasswordResetUrl } from '@test/api/http/utils/passwords';
-import { url } from '@test/api/http/utils/route';
 import { authenticate, isUniqueEmail } from '@test/api/http/utils/validation';
 import { generateVerificationUrl } from '@test/api/http/utils/verifications';
 import { verifyHash } from '@test/utils/crypto';
@@ -51,7 +51,7 @@ const sanitizeUser = (user: User): Omit<User, 'password'> => {
 
 export const handlers = [
   http.post(
-    url('SIGNUP_PATH'),
+    API_BASE_URL + API_ENDPOINTS.AUTH.SIGNUP,
     withMiddleware<
       PathParams,
       RegisterRequest,
@@ -83,7 +83,7 @@ export const handlers = [
   ),
 
   http.get(
-    url('GET_CSRF_TOKEN_PATH'),
+    API_BASE_URL + API_ENDPOINTS.AUTH.CSRF_TOKEN,
     withMiddleware()(async () => {
       // cf. https://github.com/laravel/sanctum/blob/3.x/src/Http/Controllers/CsrfCookieController.php
       return HttpResponse.json({
@@ -94,7 +94,7 @@ export const handlers = [
   ),
 
   http.get(
-    url('SESSION_PATH'),
+    API_BASE_URL + API_ENDPOINTS.AUTH.SESSION,
     withMiddleware<PathParams, undefined, FetchSessionResponse>()(() => {
       const currentUser = getUser();
 
@@ -107,7 +107,7 @@ export const handlers = [
   ),
 
   http.post(
-    url('VERIFICATION_NOTIFICATION_PATH'),
+    API_BASE_URL + API_ENDPOINTS.AUTH.VERIFICATION_NOTIFICATION,
     withMiddleware<
       PathParams,
       undefined,
@@ -135,7 +135,7 @@ export const handlers = [
   ),
 
   http.post(
-    url('SIGNIN_PATH'),
+    API_BASE_URL + API_ENDPOINTS.AUTH.LOGIN,
     withMiddleware<
       PathParams,
       LoginRequest,
@@ -160,9 +160,9 @@ export const handlers = [
   ),
 
   http.get(
-    `${url('VERIFY_EMAIL_PATH')}/:token/:hash`,
+    API_BASE_URL + API_ENDPOINTS.AUTH.VERIFY_EMAIL,
     withMiddleware<
-      PathParams,
+      PathParams<'token' | 'hash'>,
       VerifyEmailRequest,
       VerifyEmailResponse | ValidationErrorResponse
     >([validateSignature])(({ params }) => {
@@ -196,7 +196,7 @@ export const handlers = [
   ),
 
   http.patch(
-    url('USER_INFO_PATH'),
+    API_BASE_URL + API_ENDPOINTS.AUTH.UPDATE_PROFILE,
     withMiddleware<
       PathParams,
       UpdateProfileRequest,
@@ -226,7 +226,7 @@ export const handlers = [
   ),
 
   http.patch(
-    url('UPDATE_PASSWORD_PATH'),
+    API_BASE_URL + API_ENDPOINTS.AUTH.UPDATE_PASSWORD,
     withMiddleware<
       PathParams,
       UpdatePasswordRequest,
@@ -253,7 +253,7 @@ export const handlers = [
   ),
 
   http.post(
-    url('FORGOT_PASSWORD_PATH'),
+    API_BASE_URL + API_ENDPOINTS.AUTH.FORGOT_PASSWORD,
     withMiddleware<
       PathParams,
       ForgotPasswordRequest,
@@ -286,7 +286,7 @@ export const handlers = [
   ),
 
   http.post(
-    `${url('RESET_PASSWORD_PATH')}/:token`,
+    API_BASE_URL + API_ENDPOINTS.AUTH.RESET_PASSWORD,
     withMiddleware<
       PathParams<'token'>,
       Omit<ResetPasswordRequest, 'token'>,
@@ -300,7 +300,7 @@ export const handlers = [
   ),
 
   http.post(
-    url('SIGNOUT_PATH'),
+    API_BASE_URL + API_ENDPOINTS.AUTH.LOGOUT,
     withMiddleware<PathParams, undefined, LogoutResponse>()(() => {
       logoutWithSession();
 
@@ -314,7 +314,7 @@ export const handlers = [
   ),
 
   http.delete(
-    url('SIGNUP_PATH'),
+    API_BASE_URL + API_ENDPOINTS.AUTH.DELETE_ACCOUNT,
     withMiddleware<PathParams, undefined, DeleteAccountResponse>()(() => {
       const currentUser = getUser()!;
 

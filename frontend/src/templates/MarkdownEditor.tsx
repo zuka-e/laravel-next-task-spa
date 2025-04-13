@@ -7,7 +7,7 @@ import type { MDEditorProps, PreviewType } from '@uiw/react-md-editor';
 import { Controller, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { mdCommands } from '@/config/mdEditor';
+import { mdCommands } from '@/config/md-editor';
 import { Fieldset, SubmitButton } from '@/templates';
 
 /**

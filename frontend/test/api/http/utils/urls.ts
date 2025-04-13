@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import type { DefaultBodyType, StrictRequest } from 'msw';
 
-import { API_ROUTE } from '@/config/api';
+import { API_BASE_URL } from '@/config/api';
 import { APP_URL } from '@/config/app';
 import { hash, verifyHash } from '@test/utils/crypto';
 
@@ -47,7 +47,7 @@ export const hasValidSignature = (
   req: StrictRequest<DefaultBodyType>,
 ): boolean => {
   const verificationUrl = new URL(
-    req.url.replace(new RegExp(`^${API_ROUTE}`), APP_URL),
+    req.url.replace(new RegExp(`^${API_BASE_URL}`), APP_URL),
   );
   const searchParams = verificationUrl.searchParams;
   const expires = parseInt(searchParams.get('expires') ?? '');

@@ -1,6 +1,6 @@
 import { HttpResponse, http } from 'msw';
 
-import { API_ROUTE } from '@/config/api';
+import { API_BASE_URL, API_ENDPOINTS } from '@/config/api';
 import type {
   CreateTaskListRequest,
   CreateTaskListResponse,
@@ -13,7 +13,6 @@ import type {
   UpdateTaskListRequest,
   UpdateTaskListResponse,
 } from '@/store/api';
-import { makePath } from '@/utils/api';
 import { taskListController } from '@test/api/http/controllers';
 import { notFoundErrorResponse } from '@test/api/http/responses/errors';
 import { withMiddleware } from '@test/api/http/utils';
@@ -25,7 +24,7 @@ type TaskListParams = {
 
 export const handlers = [
   http.get(
-    API_ROUTE + makePath(['task-boards', ':boardId'], ['task-lists']),
+    API_BASE_URL + API_ENDPOINTS.TASKS.BOARDS.LISTS.INDEX,
     withMiddleware<
       Pick<TaskListParams, 'boardId'>,
       FetchTaskListsRequest,
@@ -42,7 +41,7 @@ export const handlers = [
   ),
 
   http.post(
-    API_ROUTE + makePath(['task-boards', ':boardId'], ['task-lists']),
+    API_BASE_URL + API_ENDPOINTS.TASKS.BOARDS.LISTS.CREATE,
     withMiddleware<
       Pick<TaskListParams, 'boardId'>,
       CreateTaskListRequest,
@@ -63,7 +62,7 @@ export const handlers = [
   ),
 
   http.get(
-    API_ROUTE + makePath(['task-lists', ':listId']),
+    API_BASE_URL + API_ENDPOINTS.TASKS.LISTS.SHOW,
     withMiddleware<
       TaskListParams,
       FetchTaskListRequest,
@@ -84,7 +83,7 @@ export const handlers = [
   ),
 
   http.patch(
-    API_ROUTE + makePath(['task-lists', ':listId']),
+    API_BASE_URL + API_ENDPOINTS.TASKS.LISTS.UPDATE,
     withMiddleware<
       Pick<TaskListParams, 'listId'>,
       UpdateTaskListRequest,
@@ -106,7 +105,7 @@ export const handlers = [
   ),
 
   http.delete(
-    API_ROUTE + makePath(['task-lists', ':listId']),
+    API_BASE_URL + API_ENDPOINTS.TASKS.LISTS.DESTROY,
     withMiddleware<
       Pick<TaskListParams, 'listId'>,
       DestroyTaskListRequest,

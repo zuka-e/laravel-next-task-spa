@@ -1,8 +1,9 @@
 import { type AxiosError } from 'axios';
 
+import { SEVERITIES } from '@/store/api/config/response';
 import type { TaskBoard, TaskCard, TaskList, User } from './models';
 
-type Severity = 'success' | 'info' | 'warning' | 'error';
+type Severity = (typeof SEVERITIES)[number];
 
 /**
  * API response with default properties

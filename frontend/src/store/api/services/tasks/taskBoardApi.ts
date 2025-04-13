@@ -1,8 +1,9 @@
+import { API_ENDPOINTS } from '@/config/api';
 import {
   getTagsForList,
   getTagsForPartialList,
 } from '@/store/api/utils/caching';
-import { makePath } from '@/utils/api';
+import { buildPath } from '@/utils/api/url';
 import baseApi from './baseApi';
 import type {
   CreateTaskBoardRequest,
@@ -53,7 +54,7 @@ const api = baseApi.injectEndpoints({
       FetchTaskBoardsRequest
     >({
       query: ({ page }) => ({
-        url: makePath(['task-boards']),
+        url: API_ENDPOINTS.TASKS.BOARDS.INDEX,
         params: { page },
       }),
       // cf. https://redux-toolkit.js.org/rtk-query/usage/mutations#revalidation-example
@@ -64,7 +65,7 @@ const api = baseApi.injectEndpoints({
       CreateTaskBoardRequest
     >({
       query: (data) => ({
-        url: makePath(['task-boards']),
+        url: API_ENDPOINTS.TASKS.BOARDS.CREATE,
         method: 'POST',
         data,
       }),
@@ -72,7 +73,9 @@ const api = baseApi.injectEndpoints({
     }),
     getTaskBoard: builder.query<FetchTaskBoardResponse, FetchTaskBoardRequest>({
       query: (arg) => ({
-        url: makePath(['task-boards', arg.id]),
+        url: buildPath(API_ENDPOINTS.TASKS.BOARDS.SHOW, {
+          boardId: arg.id,
+        }),
       }),
       // cf. https://redux-toolkit.js.org/rtk-query/usage/mutations#revalidation-example
       providesTags: (res) => [{ type: 'TaskBoard', id: res?.data.id }],
@@ -82,7 +85,9 @@ const api = baseApi.injectEndpoints({
       UpdateTaskBoardRequest
     >({
       query: ({ id, ...data }) => ({
-        url: makePath(['task-boards', id]),
+        url: buildPath(API_ENDPOINTS.TASKS.BOARDS.UPDATE, {
+          boardId: id,
+        }),
         method: 'PATCH',
         data,
       }),
@@ -93,7 +98,9 @@ const api = baseApi.injectEndpoints({
       DestroyTaskBoardRequest
     >({
       query: ({ id }) => ({
-        url: makePath(['task-boards', id]),
+        url: buildPath(API_ENDPOINTS.TASKS.BOARDS.DESTROY, {
+          boardId: id,
+        }),
         method: 'DELETE',
       }),
       invalidatesTags: (res) => [{ type: 'TaskBoard', id: res?.data.id }],
@@ -103,7 +110,9 @@ const api = baseApi.injectEndpoints({
       FetchKanbanBoardRequest
     >({
       query: (arg) => ({
-        url: `/boards/${arg.id}?asKanban=1`,
+        url: buildPath(API_ENDPOINTS.TASKS.BOARDS.AS_KANBAN, {
+          boardId: arg.id,
+        }),
       }),
       providesTags: (res) => {
         return [
@@ -149,7 +158,9 @@ const api = baseApi.injectEndpoints({
         destIndex,
         cardId,
       }) => ({
-        url: `/boards/${boardId}/move_card`,
+        url: buildPath(API_ENDPOINTS.TASKS.BOARDS.MOVE_CARD, {
+          boardId,
+        }),
         method: 'POST',
         data: {
           cardId,
