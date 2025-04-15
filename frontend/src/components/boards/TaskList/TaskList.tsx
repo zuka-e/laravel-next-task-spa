@@ -3,7 +3,7 @@ import { Card, CardActions, Chip, Grid, type SelectProps } from '@mui/material';
 import clsx from 'clsx';
 
 import { DND_ENTITY_TYPE } from '@/lib/dnd/entities';
-import { useDroppable } from '@/lib/dnd/hooks';
+import { useDroppable, useScrollable } from '@/lib/dnd/hooks';
 import { useTaskDetails } from '@/lib/hooks';
 import { useCreateTaskCardMutation } from '@/store/api';
 import type * as Model from '@/store/api/services/tasks/models';
@@ -34,6 +34,7 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
   const [filterValue, setFilterValue] = useState<FilterName>(cardFilter.ALL);
   const draggableRef = useRef<HTMLDivElement>(null);
   const dropzoneRef = useRef<HTMLDivElement>(null);
+  const scrollableRef = useRef<HTMLDivElement>(null);
 
   const [createTaskCard, { isLoading, error }] = useCreateTaskCardMutation();
 
@@ -62,6 +63,8 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
     },
     draggableRef,
   });
+
+  useScrollable({ scrollableRef });
 
   return (
     <div ref={dropzoneRef} className="h-full">
@@ -94,7 +97,7 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
           </Grid>
         </CardActions>
 
-        <div className="overflow-x-hidden overflow-y-auto">
+        <div ref={scrollableRef} className="overflow-x-hidden overflow-y-auto">
           <div className="flex flex-col">
             {filteredCards.map((card, i) => (
               <TaskCard key={card.id} card={card} index={i} />

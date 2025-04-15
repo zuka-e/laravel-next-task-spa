@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, type JSX } from 'react';
+import { memo, useCallback, useEffect, useRef, type JSX } from 'react';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -18,6 +18,7 @@ import { BoardMenu } from '@/components/boards/TaskBoard';
 import { TaskList } from '@/components/boards/TaskList';
 import { BaseLayout } from '@/layouts';
 import { getDropTarget, isDraggableItem } from '@/lib/dnd/entities';
+import { useScrollable } from '@/lib/dnd/hooks';
 import type { AuthPage } from '@/routes';
 import {
   useCreateTaskListMutation,
@@ -50,6 +51,7 @@ export const getStaticProps: GetStaticProps<TaskBoardProps> = async () => {
 const TaskBoard = memo(function TaskBoard(): JSX.Element {
   const router = useRouter();
   const { pathParams } = useRoute();
+  const scrollableRef = useRef<HTMLDivElement>(null);
   const [
     createTaskList,
     { isLoading: isLoadingToCreate, error: creationError },
@@ -116,6 +118,8 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
     [kanbanBoard, moveTaskCard, pathParams],
   );
 
+  useScrollable({ scrollableRef, speed: 'fast' });
+
   useEffect(() => {
     return monitorForElements({
       onDrop: handleDrop,
@@ -179,6 +183,7 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
             className="relative flex-auto flex-nowrap justify-between"
           >
             <Grid
+              ref={scrollableRef}
               container
               wrap="nowrap"
               className="absolute inset-0 overflow-x-auto [&>div]:w-80 [&>div]:shrink-0 [&>div]:p-2"

@@ -15,6 +15,9 @@ importers:
       '@atlaskit/pragmatic-drag-and-drop':
         specifier: ^1.5.0
         version: 1.5.3
+      '@atlaskit/pragmatic-drag-and-drop-auto-scroll':
+        specifier: ^2.1.0
+        version: 2.1.0
       '@atlaskit/pragmatic-drag-and-drop-hitbox':
         specifier: ^1.0.3
         version: 1.0.3
@@ -227,6 +230,9 @@ packages:
 
   '@asamuzakjp/css-color@3.1.1':
     resolution: {integrity: sha512-hpRD68SV2OMcZCsrbdkccTw5FXjNDLo5OuqSHyHZfwweGsDWZwDJ2+gONyNAbazZclobMirACLw0lk8WVxIqxA==}
+
+  '@atlaskit/pragmatic-drag-and-drop-auto-scroll@2.1.0':
+    resolution: {integrity: sha512-E52y8/0BTTf4ai6BJyFYgdVHFgQ1AES33KvAVQpZ41jMkoukLIq6UoCudOXku7xs3qoPygQdpC+vitVUuEFJXw==}
 
   '@atlaskit/pragmatic-drag-and-drop-hitbox@1.0.3':
     resolution: {integrity: sha512-/Sbu/HqN2VGLYBhnsG7SbRNg98XKkbF6L7XDdBi+izRybfaK1FeMfodPpm/xnBHPJzwYMdkE0qtLyv6afhgMUA==}
@@ -4571,6 +4577,11 @@ snapshots:
       '@csstools/css-parser-algorithms': 3.0.4(@csstools/css-tokenizer@3.0.3)
       '@csstools/css-tokenizer': 3.0.3
       lru-cache: 10.4.3
+
+  '@atlaskit/pragmatic-drag-and-drop-auto-scroll@2.1.0':
+    dependencies:
+      '@atlaskit/pragmatic-drag-and-drop': 1.5.3
+      '@babel/runtime': 7.27.0
 
   '@atlaskit/pragmatic-drag-and-drop-hitbox@1.0.3':
     dependencies:
