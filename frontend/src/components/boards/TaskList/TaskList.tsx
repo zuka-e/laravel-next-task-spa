@@ -1,18 +1,9 @@
-import {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type JSX,
-} from 'react';
-import { attachClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
-import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { memo, useCallback, useMemo, useRef, useState, type JSX } from 'react';
 import { Card, CardActions, Chip, Grid, type SelectProps } from '@mui/material';
 import clsx from 'clsx';
 
-import { DND_ENTITY_TYPE, type DroppableItem } from '@/lib/dnd/entities';
+import { DND_ENTITY_TYPE } from '@/lib/dnd/entities';
+import { useDroppable } from '@/lib/dnd/hooks';
 import { useTaskDetails } from '@/lib/hooks';
 import { useCreateTaskCardMutation } from '@/store/api';
 import type * as Model from '@/store/api/services/tasks/models';
@@ -61,29 +52,16 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
     [],
   );
 
-  useEffect(() => {
-    if (!dropzoneRef.current) return;
-
-    return dropTargetForElements({
-      element: dropzoneRef.current,
-      getData: ({ input }) => {
-        const data: DroppableItem = {
-          isDroppable: true,
-          type: DND_ENTITY_TYPE.COLUMN,
-          id: list.id,
-          index,
-        } as const;
-
-        return draggableRef.current
-          ? attachClosestEdge(data, {
-              input,
-              element: draggableRef.current!,
-              allowedEdges: ['top', 'bottom'],
-            })
-          : data;
-      },
-    });
-  }, [list.id, index]);
+  useDroppable({
+    dropzoneRef,
+    droppableItem: {
+      isDroppable: true,
+      type: DND_ENTITY_TYPE.COLUMN,
+      id: list.id,
+      index,
+    },
+    draggableRef,
+  });
 
   return (
     <div ref={dropzoneRef} className="h-full">

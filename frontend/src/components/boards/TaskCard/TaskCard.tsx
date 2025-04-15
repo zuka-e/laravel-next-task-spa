@@ -1,25 +1,9 @@
-import {
-  memo,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type JSX,
-} from 'react';
-import { attachClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
-import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
-import {
-  draggable,
-  dropTargetForElements,
-} from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { memo, useCallback, useRef, type JSX } from 'react';
 import { Typography } from '@mui/material';
 import clsx from 'clsx';
 
-import {
-  DND_ENTITY_TYPE,
-  type DraggableItem,
-  type DroppableItem,
-} from '@/lib/dnd/entities';
+import { DND_ENTITY_TYPE } from '@/lib/dnd/entities';
+import { useSortable } from '@/lib/dnd/hooks';
 import { useTaskDetails } from '@/lib/hooks';
 import type * as Model from '@/store/api/services/tasks/models';
 
@@ -31,8 +15,6 @@ type TaskCardProps = {
 const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
   const { card, index } = props;
   const { showTaskDetails, isTaskSelected } = useTaskDetails();
-  const [isDragging, setIsDragging] = useState(false);
-  const [isDraggedOver, setIsDraggedOver] = useState(false);
 
   const draggableRef = useRef<HTMLDivElement>(null);
   const dropzoneRef = useRef<HTMLDivElement>(null);
@@ -41,46 +23,23 @@ const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
     showTaskDetails('c', card.id);
   }, [card.id, showTaskDetails]);
 
-  useEffect(() => {
-    if (!draggableRef.current || !dropzoneRef.current) return;
-
-    return combine(
-      draggable({
-        element: draggableRef.current,
-        getInitialData: (): DraggableItem =>
-          ({
-            isDraggable: true,
-            type: DND_ENTITY_TYPE.ITEM,
-            id: card.id,
-            index,
-            parentId: card.listId,
-          }) as const,
-        onDragStart: () => setIsDragging(true),
-        onDrop: () => setIsDragging(false),
-      }),
-      dropTargetForElements({
-        element: dropzoneRef.current,
-        onDragStart: () => setIsDraggedOver(true),
-        onDragEnter: () => setIsDraggedOver(true),
-        onDragLeave: () => setIsDraggedOver(false),
-        onDrop: () => setIsDraggedOver(false),
-        getData: ({ input, element }) => {
-          const data: DroppableItem = {
-            isDroppable: true,
-            type: DND_ENTITY_TYPE.ITEM,
-            id: card.id,
-            index,
-          } as const;
-
-          return attachClosestEdge(data, {
-            input,
-            element,
-            allowedEdges: ['top', 'bottom'],
-          });
-        },
-      }),
-    );
-  }, [card.id, card.listId, index]);
+  const { isDragging, isDraggedOver } = useSortable({
+    draggableRef,
+    draggableItem: {
+      isDraggable: true,
+      type: DND_ENTITY_TYPE.ITEM,
+      id: card.id,
+      index,
+      parentId: card.listId,
+    },
+    dropzoneRef,
+    droppableItem: {
+      isDroppable: true,
+      type: DND_ENTITY_TYPE.ITEM,
+      id: card.id,
+      index,
+    },
+  });
 
   return (
     <div
