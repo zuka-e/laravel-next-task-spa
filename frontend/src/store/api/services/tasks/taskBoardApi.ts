@@ -181,55 +181,33 @@ const api = baseApi.injectEndpoints({
             { id: boardId },
             (draft) => {
               const srcList = draft.data.kanbanBoard.lists[srcListId];
-
-              const destList =
-                srcListId === destListId
-                  ? srcList
-                  : draft.data.kanbanBoard.lists[destListId];
+              const destList = draft.data.kanbanBoard.lists[destListId];
 
               if (!srcList || !destList) {
                 throw new Error('srcList or destList is undefined');
               }
 
-              if (srcListId === destListId) {
-                if (srcIndex === destIndex) {
-                  return;
-                }
+              const srcCardIds = [...srcList.cardIds];
+              const destCardIds =
+                srcListId === destListId ? srcCardIds : [...destList.cardIds];
 
-                const list = draft.data.kanbanBoard.lists[destListId];
+              const [removedCardId] = srcCardIds.splice(srcIndex, 1);
+              destCardIds.splice(destIndex, 0, removedCardId ?? '');
 
-                if (!list) {
-                  return;
-                }
+              srcList.cardIds = srcCardIds;
+              srcList.cards = getOrderedCards(draft.data.allCards, srcCardIds);
 
-                const destCardIds = [...(destList.cardIds ?? [])];
-                const [removedCardId] = destCardIds.splice(srcIndex, 1);
-                destCardIds.splice(destIndex, 0, removedCardId ?? '');
-
-                list.cardIds = destCardIds;
-                list.cards = getOrderedCards(draft.data.allCards, destCardIds);
-              } else {
-                const srcList = draft.data.kanbanBoard.lists[srcListId];
-                const destList = draft.data.kanbanBoard.lists[destListId];
+              if (srcListId !== destListId) {
                 const card = draft.data.allCards[cardId];
 
-                if (!(srcList && destList && card)) {
-                  return;
+                if (!card) {
+                  throw new Error('card is undefined');
                 }
 
-                const srcCardIds = [...(srcList.cardIds ?? [])];
-                const [removedCardId] = srcCardIds.splice(srcIndex, 1);
-
-                const destCardIds = [...(destList.cardIds ?? [])];
-                destCardIds.splice(destIndex, 0, removedCardId ?? '');
-
-                card.listId = destListId;
-
-                srcList.cardIds = srcCardIds;
-                srcList.cards = getOrderedCards(
-                  draft.data.allCards,
-                  srcCardIds,
-                );
+                draft.data.allCards = {
+                  ...draft.data.allCards,
+                  [cardId]: { ...card, listId: destListId },
+                };
 
                 destList.cardIds = destCardIds;
                 destList.cards = getOrderedCards(
