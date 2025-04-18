@@ -1,6 +1,7 @@
 import { useEffect, useState, type RefObject } from 'react';
 import {
   attachClosestEdge,
+  extractClosestEdge,
   type Edge,
 } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
@@ -25,6 +26,7 @@ const useDroppable = (args: {
   } = args;
 
   const [isDraggedOver, setIsDraggedOver] = useState(false);
+  const [closestEdge, setClosestEdge] = useState<Edge | null>(null);
 
   useEffect(() => {
     if (!dropzoneRef.current) {
@@ -40,11 +42,26 @@ const useDroppable = (args: {
         onDragEnter: () => {
           setIsDraggedOver(true);
         },
+        onDrag: (args) => {
+          if (args.source.data['id'] === droppableItem.id) {
+            return;
+          }
+
+          const closestEdge =
+            args.location.current.dropTargets[0]?.data['type'] ===
+            args.self.data['type']
+              ? extractClosestEdge(args.self.data)
+              : null;
+
+          setClosestEdge(closestEdge);
+        },
         onDragLeave: () => {
           setIsDraggedOver(false);
+          setClosestEdge(null);
         },
         onDrop: () => {
           setIsDraggedOver(false);
+          setClosestEdge(null);
         },
         getData: ({ input, element }) => {
           return attachClosestEdge(droppableItem, {
@@ -57,7 +74,7 @@ const useDroppable = (args: {
     );
   }, [dropzoneRef, draggableRef, droppableItem, allowedEdges]);
 
-  return { isDraggedOver };
+  return { isDraggedOver, closestEdge };
 };
 
 export default useDroppable;

@@ -21,6 +21,9 @@ importers:
       '@atlaskit/pragmatic-drag-and-drop-hitbox':
         specifier: ^1.0.3
         version: 1.0.3
+      '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator':
+        specifier: ^3.1.0
+        version: 3.1.0(@types/react@19.1.2)(react@19.1.0)
       '@emotion/react':
         specifier: ^11.10.4
         version: 11.14.0(@types/react@19.1.2)(react@19.1.0)
@@ -231,14 +234,43 @@ packages:
   '@asamuzakjp/css-color@3.1.1':
     resolution: {integrity: sha512-hpRD68SV2OMcZCsrbdkccTw5FXjNDLo5OuqSHyHZfwweGsDWZwDJ2+gONyNAbazZclobMirACLw0lk8WVxIqxA==}
 
+  '@atlaskit/atlassian-context@0.2.0':
+    resolution: {integrity: sha512-msLRSp0qck6eflkShplgyIoOogNKxKRc6QIWGQlSvKGxHQNEbLEkRGcDzdh8PuBxSs1gda7OqYrdtQYQiPbpTQ==}
+    peerDependencies:
+      react: ^18.2.0
+
+  '@atlaskit/ds-lib@4.0.0':
+    resolution: {integrity: sha512-nM0wAo8bm7FyAYuId6Ba2MFnLSVzlsZpyfRxPJ7dMFqEhJ4R53/CoT8v18mvi2Hu1Y4+d1t97lOyybHfgFyb+A==}
+    peerDependencies:
+      react: ^18.2.0
+
+  '@atlaskit/feature-gate-js-client@5.0.0':
+    resolution: {integrity: sha512-ZK/1HqPIL9/cNfbZDGr4bf+etgva2XJK9UJSyhwHcTlCaWw4XmFu2BIpswS21y0izHk2ePqmo66VXl90XKHaUw==}
+
+  '@atlaskit/platform-feature-flags@1.1.1':
+    resolution: {integrity: sha512-YKuy3RsqCEoNALiMHVma0GGHkzZMSIBsEgZlV/2TPw65QRzOWJvKA3ZIKucmXzr3m7AUqg1XHwXvVlUuNZhUgg==}
+
   '@atlaskit/pragmatic-drag-and-drop-auto-scroll@2.1.0':
     resolution: {integrity: sha512-E52y8/0BTTf4ai6BJyFYgdVHFgQ1AES33KvAVQpZ41jMkoukLIq6UoCudOXku7xs3qoPygQdpC+vitVUuEFJXw==}
 
   '@atlaskit/pragmatic-drag-and-drop-hitbox@1.0.3':
     resolution: {integrity: sha512-/Sbu/HqN2VGLYBhnsG7SbRNg98XKkbF6L7XDdBi+izRybfaK1FeMfodPpm/xnBHPJzwYMdkE0qtLyv6afhgMUA==}
 
+  '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator@3.1.0':
+    resolution: {integrity: sha512-rLZphd7/wo+ol5mj0jyo/rVG83A19EuRSfckx+Lk0otb93GBCyBT0NriQwauHalqMxubVjqi+i1WFn6G7KajUw==}
+    peerDependencies:
+      react: ^18.2.0 || ^19.0.0
+
+  '@atlaskit/pragmatic-drag-and-drop@1.5.2':
+    resolution: {integrity: sha512-fDuTwlDD11r3ev5tLJ6JnzQUiG9v77c8zGcNdO7RRNtZZbOHam8CFhmyFGY4E/mLjvgYng0UkcyCrSBc4FXYZw==}
+
   '@atlaskit/pragmatic-drag-and-drop@1.5.3':
     resolution: {integrity: sha512-YFhSvBJjnPbYuZrCDaiTLwdJ+zxgS7uBaBObzB8Io77DFnGi3M4IV87Jwc1dwb6RS4BszslPOrX0axz0pODCsw==}
+
+  '@atlaskit/tokens@4.8.0':
+    resolution: {integrity: sha512-M6FoQvw5oiCnu4sdXD+NC/wdPc+k2VY8O9yVw7MhYLZY5o1nlyhoqdFluA59di8IH1BGx1iuw77BkEqpos2Ojw==}
+    peerDependencies:
+      react: ^18.2.0
 
   '@babel/code-frame@7.26.2':
     resolution: {integrity: sha512-RJlIHRueQgwWitWgF8OdFYGZX328Ax5BCemNGlqHfplnRT9ESi8JkFlvaVYbS+UubVY6dpv87Fs2u5M29iNFVQ==}
@@ -479,6 +511,11 @@ packages:
   '@commitlint/types@19.8.0':
     resolution: {integrity: sha512-LRjP623jPyf3Poyfb0ohMj8I3ORyBDOwXAgxxVPbSD0unJuW2mJWeiRfaQinjtccMqC5Wy1HOMfa4btKjbNxbg==}
     engines: {node: '>=v18'}
+
+  '@compiled/react@0.18.4':
+    resolution: {integrity: sha512-tO0cAZTOMky8IcBscs6VQsMRUos8nXixIsQWPY8XWbF5JYYkIxuJ0ojpkjdUBkXBdgdjBjp6kczoub8BLPjHZg==}
+    peerDependencies:
+      react: '>= 16.12.0'
 
   '@csstools/color-helpers@5.0.2':
     resolution: {integrity: sha512-JqWH1vsgdGcw2RR6VliXXdA0/59LttzlU8UlRT/iUUsEeWfYq8I+K0yhihEUTTHLRm1EXvpsCx3083EU15ecsA==}
@@ -1329,6 +1366,12 @@ packages:
 
   '@standard-schema/utils@0.3.0':
     resolution: {integrity: sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==}
+
+  '@statsig/client-core@3.15.4':
+    resolution: {integrity: sha512-TB7LuNJN2MnzNLa/JlFuNmz6NnMPuUkibbF9TuMv+fDyboYYBwbiFPjBKMX49F1cANaLGRZDLv0nY4vGZyIWdw==}
+
+  '@statsig/js-client@3.15.4':
+    resolution: {integrity: sha512-Bn4FqXRPpo8tyoN6O2LvhCdiYsvGSkuUvQAu4FXOTUW38TskLCJUUfp1vaRXLMjo8OWKDWUsVrqU5iEhvxbbQg==}
 
   '@swc/counter@0.1.3':
     resolution: {integrity: sha512-e2BR4lsJkkRlKZ/qCHPw9ZaSxc0MVUd7gtbtaB7aMvHeJVYe8sOB8DBZkP2DtISHGSku9sCK6T6cnY0CtXrOCQ==}
@@ -2394,6 +2437,9 @@ packages:
   esutils@2.0.3:
     resolution: {integrity: sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==}
     engines: {node: '>=0.10.0'}
+
+  eventemitter2@4.1.2:
+    resolution: {integrity: sha512-erx0niBaTi8B7ywjGAcg8ilGNRl/xs/o4MO2ZMpRlpZ62mYzjGTBlOpxxRIrPQqBs9mbXkEux6aR+Sc5vQ/wUw==}
 
   eventemitter3@5.0.1:
     resolution: {integrity: sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==}
@@ -3733,6 +3779,16 @@ packages:
       react: '>=16.6.0'
       react-dom: '>=16.6.0'
 
+  react-uid@2.4.0:
+    resolution: {integrity: sha512-+MVs/25NrcZuGrmlVRWPOSsbS8y72GJOBsR7d68j3/wqOrRBF52U29XAw4+XSelw0Vm6s5VmGH5mCbTCPGVCVg==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      '@types/react': 19.1.2
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+
   react@19.1.0:
     resolution: {integrity: sha512-FS+XFBNvn3GTAWq26joslQgWNoFu08F4kl0J4CgdNKADkdSGXQyTCnKteIAJy96Br6YbpEU1LSzV5dYtjMkMDg==}
     engines: {node: '>=0.10.0'}
@@ -4578,6 +4634,38 @@ snapshots:
       '@csstools/css-tokenizer': 3.0.3
       lru-cache: 10.4.3
 
+  '@atlaskit/atlassian-context@0.2.0(react@19.1.0)':
+    dependencies:
+      '@babel/runtime': 7.27.0
+      react: 19.1.0
+
+  '@atlaskit/ds-lib@4.0.0(@types/react@19.1.2)(react@19.1.0)':
+    dependencies:
+      '@atlaskit/platform-feature-flags': 1.1.1(react@19.1.0)
+      '@babel/runtime': 7.27.0
+      bind-event-listener: 3.0.0
+      react: 19.1.0
+      react-uid: 2.4.0(@types/react@19.1.2)(react@19.1.0)
+    transitivePeerDependencies:
+      - '@types/react'
+
+  '@atlaskit/feature-gate-js-client@5.0.0(react@19.1.0)':
+    dependencies:
+      '@atlaskit/atlassian-context': 0.2.0(react@19.1.0)
+      '@babel/runtime': 7.27.0
+      '@statsig/client-core': 3.15.4
+      '@statsig/js-client': 3.15.4
+      eventemitter2: 4.1.2
+    transitivePeerDependencies:
+      - react
+
+  '@atlaskit/platform-feature-flags@1.1.1(react@19.1.0)':
+    dependencies:
+      '@atlaskit/feature-gate-js-client': 5.0.0(react@19.1.0)
+      '@babel/runtime': 7.27.0
+    transitivePeerDependencies:
+      - react
+
   '@atlaskit/pragmatic-drag-and-drop-auto-scroll@2.1.0':
     dependencies:
       '@atlaskit/pragmatic-drag-and-drop': 1.5.3
@@ -4588,11 +4676,42 @@ snapshots:
       '@atlaskit/pragmatic-drag-and-drop': 1.5.3
       '@babel/runtime': 7.22.6
 
+  '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator@3.1.0(@types/react@19.1.2)(react@19.1.0)':
+    dependencies:
+      '@atlaskit/pragmatic-drag-and-drop': 1.5.2
+      '@atlaskit/pragmatic-drag-and-drop-hitbox': 1.0.3
+      '@atlaskit/tokens': 4.8.0(@types/react@19.1.2)(react@19.1.0)
+      '@babel/runtime': 7.27.0
+      '@compiled/react': 0.18.4(react@19.1.0)
+      react: 19.1.0
+    transitivePeerDependencies:
+      - '@types/react'
+      - supports-color
+
+  '@atlaskit/pragmatic-drag-and-drop@1.5.2':
+    dependencies:
+      '@babel/runtime': 7.27.0
+      bind-event-listener: 3.0.0
+      raf-schd: 4.0.3
+
   '@atlaskit/pragmatic-drag-and-drop@1.5.3':
     dependencies:
       '@babel/runtime': 7.27.0
       bind-event-listener: 3.0.0
       raf-schd: 4.0.3
+
+  '@atlaskit/tokens@4.8.0(@types/react@19.1.2)(react@19.1.0)':
+    dependencies:
+      '@atlaskit/ds-lib': 4.0.0(@types/react@19.1.2)(react@19.1.0)
+      '@atlaskit/platform-feature-flags': 1.1.1(react@19.1.0)
+      '@babel/runtime': 7.27.0
+      '@babel/traverse': 7.27.0
+      '@babel/types': 7.27.0
+      bind-event-listener: 3.0.0
+      react: 19.1.0
+    transitivePeerDependencies:
+      - '@types/react'
+      - supports-color
 
   '@babel/code-frame@7.26.2':
     dependencies:
@@ -4948,6 +5067,11 @@ snapshots:
     dependencies:
       '@types/conventional-commits-parser': 5.0.1
       chalk: 5.4.1
+
+  '@compiled/react@0.18.4(react@19.1.0)':
+    dependencies:
+      csstype: 3.1.3
+      react: 19.1.0
 
   '@csstools/color-helpers@5.0.2': {}
 
@@ -5644,6 +5768,12 @@ snapshots:
   '@standard-schema/spec@1.0.0': {}
 
   '@standard-schema/utils@0.3.0': {}
+
+  '@statsig/client-core@3.15.4': {}
+
+  '@statsig/js-client@3.15.4':
+    dependencies:
+      '@statsig/client-core': 3.15.4
 
   '@swc/counter@0.1.3': {}
 
@@ -6918,6 +7048,8 @@ snapshots:
       '@types/estree': 1.0.7
 
   esutils@2.0.3: {}
+
+  eventemitter2@4.1.2: {}
 
   eventemitter3@5.0.1: {}
 
@@ -8497,6 +8629,13 @@ snapshots:
       prop-types: 15.8.1
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
+
+  react-uid@2.4.0(@types/react@19.1.2)(react@19.1.0):
+    dependencies:
+      react: 19.1.0
+      tslib: 2.8.1
+    optionalDependencies:
+      '@types/react': 19.1.2
 
   react@19.1.0: {}
 

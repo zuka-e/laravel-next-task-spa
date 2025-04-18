@@ -1,4 +1,6 @@
 import { memo, useCallback, useRef, type JSX } from 'react';
+import dynamic from 'next/dynamic';
+import { type DropIndicatorProps } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box';
 import { Typography } from '@mui/material';
 import clsx from 'clsx';
 
@@ -6,6 +8,33 @@ import { DND_ENTITY_TYPE } from '@/lib/dnd/entities';
 import { useSortable } from '@/lib/dnd/hooks';
 import { useTaskDetails } from '@/lib/hooks';
 import type * as Model from '@/store/api/services/tasks/models';
+
+/**
+ * ※ In case of normal import, an error will happens.
+ *
+ * Error: Failed to load external module @atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box: SyntaxError: Unexpected token '.'
+ *
+ * [externals]/@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box [external] (@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box, cjs)
+ *
+ * WARN  Issues with peer dependencies found
+ * .
+ * └─┬ @atlaskit/pragmatic-drag-and-drop-react-drop-indicator 3.1.0
+ *   └─┬ @atlaskit/tokens 4.8.0
+ *     ├── ✕ unmet peer react@^18.2.0: found 19.1.0
+ *     ├─┬ @atlaskit/platform-feature-flags 1.1.1
+ *     │ └─┬ @atlaskit/feature-gate-js-client 5.0.0
+ *     │   └─┬ @atlaskit/atlassian-context 0.2.0
+ *     │     └── ✕ unmet peer react@^18.2.0: found 19.1.0
+ *     └─┬ @atlaskit/ds-lib 4.0.0
+ *       └── ✕ unmet peer react@^18.2.0: found 19.1.0
+ */
+const DropIndicator = dynamic<DropIndicatorProps>(
+  () =>
+    import('@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box').then(
+      (mod) => mod.default,
+    ),
+  { ssr: false },
+);
 
 type TaskCardProps = {
   card: Pick<Model.TaskCard, 'id' | 'listId' | 'title'>;
@@ -23,7 +52,7 @@ const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
     showTaskDetails('c', card.id);
   }, [card.id, showTaskDetails]);
 
-  const { isDragging, isDraggedOver } = useSortable({
+  const { isDragging, isDraggedOver, closestEdge } = useSortable({
     draggableRef,
     draggableItem: {
       isDraggable: true,
@@ -50,7 +79,7 @@ const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
       <div
         ref={draggableRef}
         className={clsx(
-          'p-2 cursor-pointer bg-white rounded-md hover:opacity-80',
+          'relative p-2 cursor-pointer bg-white rounded-md hover:opacity-80',
           isTaskSelected('c', card.id) && 'opacity-80 outline outline-primary',
           isDraggedOver && 'bg-gray-100',
         )}
@@ -59,6 +88,7 @@ const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
         <Typography className="line-clamp-3 whitespace-pre-wrap p-1.5">
           {card.title}
         </Typography>
+        {closestEdge && <DropIndicator edge={closestEdge} />}
       </div>
     </div>
   );

@@ -1,4 +1,6 @@
 import { memo, useCallback, useMemo, useRef, useState, type JSX } from 'react';
+import dynamic from 'next/dynamic';
+import { type DropIndicatorProps } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box';
 import { Card, CardActions, Chip, Grid, type SelectProps } from '@mui/material';
 import clsx from 'clsx';
 
@@ -11,6 +13,14 @@ import { LabeledSelect } from '@/templates';
 import { AddTaskButton } from '..';
 import { TaskCard } from '../TaskCard';
 import { ListCardHeader } from '.';
+
+const DropIndicator = dynamic<DropIndicatorProps>(
+  () =>
+    import('@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box').then(
+      (mod) => mod.default,
+    ),
+  { ssr: false },
+);
 
 const cardFilter = {
   ALL: 'All',
@@ -53,7 +63,7 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
     [],
   );
 
-  useDroppable({
+  const { closestEdge } = useDroppable({
     dropzoneRef,
     droppableItem: {
       isDroppable: true,
@@ -97,6 +107,11 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
           </Grid>
         </CardActions>
 
+        {closestEdge === 'top' && (
+          <div className="relative mx-2">
+            <DropIndicator edge={closestEdge} gap="0.25rem" />
+          </div>
+        )}
         <div ref={scrollableRef} className="overflow-x-hidden overflow-y-auto">
           <div className="flex flex-col">
             {filteredCards.map((card, i) => (
@@ -104,6 +119,11 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
             ))}
           </div>
         </div>
+        {closestEdge === 'bottom' && (
+          <div className="relative mx-2">
+            <DropIndicator edge={closestEdge} gap="0.25rem" />
+          </div>
+        )}
 
         <CardActions>
           <AddTaskButton
