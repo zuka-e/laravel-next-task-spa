@@ -192,7 +192,11 @@ const api = baseApi.injectEndpoints({
                 srcListId === destListId ? srcCardIds : [...destList.cardIds];
 
               const [removedCardId] = srcCardIds.splice(srcIndex, 1);
-              destCardIds.splice(destIndex, 0, removedCardId ?? '');
+              destCardIds.splice(
+                destIndex === -1 ? destCardIds.length : destIndex,
+                0,
+                removedCardId!,
+              );
 
               srcList.cardIds = srcCardIds;
               srcList.cards = getOrderedCards(draft.data.allCards, srcCardIds);

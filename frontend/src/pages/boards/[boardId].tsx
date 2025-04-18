@@ -17,7 +17,8 @@ import { InfoBox } from '@/components/boards/InfoBox';
 import { BoardMenu } from '@/components/boards/TaskBoard';
 import { TaskList } from '@/components/boards/TaskList';
 import { BaseLayout } from '@/layouts';
-import { getDropTarget, isDraggableItem } from '@/lib/dnd/entities';
+import { getDestIndex, getDropTarget } from '@/lib/dnd';
+import { isDraggableItem } from '@/lib/dnd/entities';
 import { useScrollable } from '@/lib/dnd/hooks';
 import type { AuthPage } from '@/routes';
 import {
@@ -88,6 +89,11 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
         return;
       }
 
+      // If draggable and droppable is the same
+      if (dest.dropTargets[0]?.data['id'] === source.data.id) {
+        return;
+      }
+
       /** Destination card if dropped on it */
       const destCard = getDropTarget(dest.dropTargets, 'item');
       const destList = getDropTarget(dest.dropTargets, 'column');
@@ -96,26 +102,37 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
         throw new Error('Destination column is not found.');
       }
 
+      const srcListId = source.data.parentId!;
+      const destListId = destList.data.id;
+      const srcIndex = source.data.index;
+
       /** Dropped area of the destination element */
       // ※ Added by `attachClosestEdge()`
-      const closestEdge = destCard ? null : extractClosestEdge(destList.data);
+      const closestEdge = destCard
+        ? extractClosestEdge(destCard.data)
+        : extractClosestEdge(destList.data);
 
-      const destIndex = destCard
-        ? destCard.data.index
-        : closestEdge === 'top'
-          ? 0
-          : (kanbanBoard?.lists?.[destList.data.id]?.cards.length ?? 0);
+      const destIndex = getDestIndex({
+        srcIndex: srcListId === destListId ? srcIndex : null,
+        targetIndex: destCard?.data.index ?? null,
+        closestEdge,
+        axis: 'vertical',
+      });
+
+      if (srcListId === destListId && srcIndex === destIndex) {
+        return;
+      }
 
       moveTaskCard({
         boardId: pathParams?.['boardId'] ?? '',
-        srcListId: source.data.parentId!,
-        destListId: destList.data.id,
-        srcIndex: source.data.index,
+        srcListId,
+        destListId,
+        srcIndex,
         destIndex,
         cardId: source.data.id,
       });
     },
-    [kanbanBoard, moveTaskCard, pathParams],
+    [moveTaskCard, pathParams],
   );
 
   useScrollable({ scrollableRef, speed: 'fast' });

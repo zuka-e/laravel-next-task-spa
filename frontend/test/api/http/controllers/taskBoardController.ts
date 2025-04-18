@@ -113,7 +113,11 @@ export const moveCard = (
 
   const newDestCardIds =
     srcListId === destListId ? newSrcCardIds : [...destList.cardIds];
-  newDestCardIds.splice(destIndex, 0, removedCardId);
+  newDestCardIds.splice(
+    destIndex === -1 ? newDestCardIds.length : destIndex,
+    0,
+    removedCardId,
+  );
 
   const updatedLists: TaskList[] = [];
 
