@@ -80,7 +80,13 @@ export const moveCard = (
 
   const card = db.taskCard.findFirst({ where: { id: { equals: cardId } } });
 
-  if (!card || card.listId !== srcListId) {
+  if (!card) {
+    console.error('card not exist.');
+    return null;
+  }
+
+  if (card.listId !== srcListId) {
+    console.error('listId not match', card.listId, srcListId);
     return null;
   }
 
@@ -89,6 +95,7 @@ export const moveCard = (
   });
 
   if (!srcList) {
+    console.error('srcList not exist.');
     return null;
   }
 
@@ -97,10 +104,12 @@ export const moveCard = (
   });
 
   if (!destList) {
+    console.error('destList not exist.');
     return null;
   }
 
   if (srcList.cardIds[srcIndex] !== cardId) {
+    console.error('cardId not exist.', srcList.cardIds[srcIndex], cardId);
     return null;
   }
 
@@ -108,6 +117,7 @@ export const moveCard = (
   const [removedCardId] = newSrcCardIds.splice(srcIndex, 1);
 
   if (!removedCardId) {
+    console.error('removedCardId not exist.');
     return null;
   }
 
@@ -127,6 +137,7 @@ export const moveCard = (
   });
 
   if (!updatedSrcList) {
+    console.error('updatedSrcList not exist.');
     return null;
   }
 
@@ -139,6 +150,7 @@ export const moveCard = (
     });
 
     if (!updatedDestList) {
+      console.error('updatedDestList not exist.');
       return null;
     }
 
@@ -150,6 +162,7 @@ export const moveCard = (
     });
 
     if (!updatedCard) {
+      console.error('updatedCard not exist.');
       return null;
     }
 
