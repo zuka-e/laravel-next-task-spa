@@ -4,6 +4,8 @@ import {
   getTagsForPartialList,
 } from '@/store/api/utils/caching';
 import { buildPath } from '@/utils/api/url';
+import { arrayToObjectById } from '@/utils/array';
+import { getOrderedArray } from '@/utils/sort';
 import baseApi from './baseApi';
 import type {
   CreateTaskBoardRequest,
@@ -23,21 +25,6 @@ import type {
   UpdateTaskBoardRequest,
   UpdateTaskBoardResponse,
 } from './types';
-
-const getOrderedCards = <T extends { id: string }>(
-  cards: Record<string, T>,
-  cardIds: string[],
-) => {
-  return cardIds.reduce<T[]>((acc, cardId) => {
-    const card = cards[cardId];
-
-    if (card) {
-      acc.push(card);
-    }
-
-    return acc;
-  }, []);
-};
 
 /**
  * @see https://redux-toolkit.js.org/rtk-query/api/created-api/code-splitting
@@ -129,17 +116,12 @@ const api = baseApi.injectEndpoints({
           lists: {},
         };
 
-        const allCards = res.data.cards.reduce<
-          FetchKanbanBoardTransformedResponse['data']['allCards']
-        >((acc, card) => {
-          acc[card.id] = card;
-          return acc;
-        }, {});
+        const allCards = arrayToObjectById(res.data.cards);
 
         res.data.lists.forEach((list) => {
           kanbanBoard.lists[list.id] = {
             ...list,
-            cards: getOrderedCards(allCards, list.cardIds ?? []),
+            cards: getOrderedArray(allCards, list.cardIds),
           };
         });
 
@@ -199,7 +181,7 @@ const api = baseApi.injectEndpoints({
               );
 
               srcList.cardIds = srcCardIds;
-              srcList.cards = getOrderedCards(draft.data.allCards, srcCardIds);
+              srcList.cards = getOrderedArray(draft.data.allCards, srcCardIds);
 
               if (srcListId !== destListId) {
                 const card = draft.data.allCards[cardId];
@@ -214,7 +196,7 @@ const api = baseApi.injectEndpoints({
                 };
 
                 destList.cardIds = destCardIds;
-                destList.cards = getOrderedCards(
+                destList.cards = getOrderedArray(
                   draft.data.allCards,
                   destCardIds,
                 );
