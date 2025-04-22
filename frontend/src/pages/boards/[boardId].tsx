@@ -11,6 +11,7 @@ import type { DragLocationHistory } from '@atlaskit/pragmatic-drag-and-drop/type
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 import { Container, Divider, Grid, IconButton, Skeleton } from '@mui/material';
 import { skipToken } from '@reduxjs/toolkit/query';
+import { Virtualizer } from 'virtua';
 
 import { AddTaskButton, EditableTitle, SearchField } from '@/components/boards';
 import { InfoBox } from '@/components/boards/InfoBox';
@@ -203,13 +204,20 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
               ref={scrollableRef}
               container
               wrap="nowrap"
-              className="absolute inset-0 overflow-x-auto [&>div]:w-80 [&>div]:shrink-0 [&>div]:p-2"
+              className="absolute inset-0 overflow-x-auto"
             >
-              {Object.values(kanbanBoard?.lists ?? {}).map((list, i) => (
-                <Grid item key={list.id} id={list.id}>
-                  <TaskList list={list} index={i} />
-                </Grid>
-              ))}
+              <Virtualizer horizontal>
+                {Object.values(kanbanBoard?.lists ?? {}).map((list, i) => (
+                  <Grid
+                    item
+                    key={list.id}
+                    id={list.id}
+                    className="w-80 shrink-0 p-2"
+                  >
+                    <TaskList list={list} index={i} />
+                  </Grid>
+                ))}
+              </Virtualizer>
               {kanbanBoard && (
                 <Grid item>
                   <AddTaskButton

@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic';
 import { type DropIndicatorProps } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box';
 import { Card, CardActions, Chip, Grid, type SelectProps } from '@mui/material';
 import clsx from 'clsx';
+import { Virtualizer } from 'virtua';
 
 import { DND_ENTITY_TYPE } from '@/lib/dnd/entities';
 import { useDroppable, useScrollable } from '@/lib/dnd/hooks';
@@ -113,11 +114,11 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
           </div>
         )}
         <div ref={scrollableRef} className="overflow-x-hidden overflow-y-auto">
-          <div className="flex flex-col">
+          <Virtualizer>
             {filteredCards.map((card, i) => (
               <TaskCard key={card.id} card={card} index={i} />
             ))}
-          </div>
+          </Virtualizer>
         </div>
         {closestEdge === 'bottom' && (
           <div className="relative mx-2">
