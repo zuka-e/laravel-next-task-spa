@@ -3,7 +3,7 @@
 services:
   nginx:
     # cf. https://hub.docker.com/_/nginx
-    image: nginx:1.27
+    image: nginx:1.28
     # cf. https://docs.docker.com/compose/environment-variables/env-file
     environment:
       APP_DOMAIN: ${APP_DOMAIN}
