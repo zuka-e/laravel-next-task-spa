@@ -52,7 +52,7 @@ const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
     showTaskDetails('c', card.id);
   }, [card.id, showTaskDetails]);
 
-  const { isDragging, isDraggedOver, closestEdge } = useSortable({
+  const { isDragging, closestEdge } = useSortable({
     draggableRef,
     draggableItem: {
       isDraggable: true,
@@ -71,17 +71,13 @@ const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
   });
 
   return (
-    <div
-      ref={dropzoneRef}
-      onClick={handleClick}
-      className={clsx('px-2 py-1', isDragging && 'opacity-50')}
-    >
+    <div ref={dropzoneRef} onClick={handleClick} className="px-2 py-1">
       <div
         ref={draggableRef}
         className={clsx(
           'relative p-2 cursor-pointer bg-white rounded-md hover:opacity-80',
           isTaskSelected('c', card.id) && 'opacity-80 outline outline-primary',
-          isDraggedOver && 'bg-gray-100',
+          isDragging && 'opacity-50',
         )}
         title={card.title}
       >
