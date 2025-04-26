@@ -5,7 +5,6 @@ import { Card, CardActions, Chip, Grid, type SelectProps } from '@mui/material';
 import clsx from 'clsx';
 import { Virtualizer } from 'virtua';
 
-import { DND_ENTITY_TYPE } from '@/lib/dnd/entities';
 import { useDroppable, useScrollable } from '@/lib/dnd/hooks';
 import { useTaskDetails } from '@/lib/hooks';
 import { useCreateTaskCardMutation } from '@/store/api';
@@ -68,7 +67,7 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
     dropzoneRef,
     droppableItem: {
       isDroppable: true,
-      type: DND_ENTITY_TYPE.COLUMN,
+      type: 'column',
       id: list.id,
       index,
     },

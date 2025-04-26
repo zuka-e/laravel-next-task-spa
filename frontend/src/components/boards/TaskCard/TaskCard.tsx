@@ -4,7 +4,6 @@ import { type DropIndicatorProps } from '@atlaskit/pragmatic-drag-and-drop-react
 import { Typography } from '@mui/material';
 import clsx from 'clsx';
 
-import { DND_ENTITY_TYPE } from '@/lib/dnd/entities';
 import { useSortable } from '@/lib/dnd/hooks';
 import { useTaskDetails } from '@/lib/hooks';
 import type * as Model from '@/store/api/services/tasks/models';
@@ -56,7 +55,7 @@ const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
     draggableRef,
     draggableItem: {
       isDraggable: true,
-      type: DND_ENTITY_TYPE.ITEM,
+      type: 'item',
       id: card.id,
       index,
       parentId: card.listId,
@@ -64,7 +63,7 @@ const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
     dropzoneRef,
     droppableItem: {
       isDroppable: true,
-      type: DND_ENTITY_TYPE.ITEM,
+      type: 'item',
       id: card.id,
       index,
     },

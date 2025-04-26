@@ -1,16 +1,14 @@
-import type { DndEntityType } from '@/lib/dnd/entities/type';
+import type { DndItem } from '@/lib/dnd/entities/dnd-item';
+import type { DndEntityType } from '@/lib/dnd/types';
 import { isPlainObject } from '@/utils/types';
 
 /**
  * Draggable item type.
  */
-export type DraggableItem<T extends DndEntityType = DndEntityType> = {
-  isDraggable: true;
-  type: T;
-  id: string;
-  index: number;
-  parentId?: string;
-};
+export type DraggableItem<T extends DndEntityType = DndEntityType> =
+  DndItem<T> & {
+    isDraggable: true;
+  };
 
 /**
  * Check if the value is a draggable item.

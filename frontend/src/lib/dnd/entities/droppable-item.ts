@@ -1,15 +1,14 @@
-import type { DndEntityType } from '@/lib/dnd/entities/type';
+import type { DndItem } from '@/lib/dnd/entities/dnd-item';
+import type { DndEntityType } from '@/lib/dnd/types';
 import { isPlainObject } from '@/utils/types';
 
 /**
  * Droppable item type.
  */
-export type DroppableItem<T extends DndEntityType = DndEntityType> = {
-  isDroppable: true;
-  type: T;
-  id: string;
-  index: number;
-};
+export type DroppableItem<T extends DndEntityType = DndEntityType> =
+  DndItem<T> & {
+    isDroppable: true;
+  };
 
 /**
  * Check if the value is a droppable item.
