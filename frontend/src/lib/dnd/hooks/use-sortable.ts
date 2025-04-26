@@ -1,4 +1,4 @@
-import { useEffect, useState, type RefObject } from 'react';
+import { useEffect, useMemo, useState, type RefObject } from 'react';
 import {
   attachClosestEdge,
   extractClosestEdge,
@@ -10,25 +10,41 @@ import {
   dropTargetForElements,
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 
-import type { DraggableItem, DroppableItem } from '@/lib/dnd/entities';
+import type { DndItem, DraggableItem, DroppableItem } from '@/lib/dnd/entities';
+import type { Axis, DndEntityType } from '@/lib/dnd/types';
+import { getAllowedEdgesByAxis } from '@/lib/dnd/utils';
 
 /**
  * Make the element draggable and droppable.
  */
-const useSortable = (args: {
+const useSortable = <T extends DndEntityType>({
+  draggableRef,
+  dropzoneRef,
+  data,
+  axis = 'vertical',
+}: {
   draggableRef: RefObject<HTMLElement | null>;
   dropzoneRef: RefObject<HTMLElement | null>;
-  draggableItem: DraggableItem;
-  droppableItem: DroppableItem;
-  allowedEdges?: Edge[];
+  data: DndItem<T>;
+  axis?: Axis;
 }) => {
-  const {
-    draggableRef,
-    dropzoneRef,
-    draggableItem,
-    droppableItem,
-    allowedEdges = ['top', 'bottom'],
-  } = args;
+  const draggableItem = useMemo((): DraggableItem => {
+    return {
+      ...data,
+      isDraggable: true,
+    };
+  }, [data]);
+
+  const droppableItem = useMemo((): DroppableItem => {
+    return {
+      ...data,
+      isDroppable: true,
+    };
+  }, [data]);
+
+  const allowedEdges = useMemo((): Edge[] => {
+    return getAllowedEdgesByAxis(axis);
+  }, [axis]);
 
   const [isDragging, setIsDragging] = useState(false);
   const [isDraggedOver, setIsDraggedOver] = useState(false);
@@ -59,7 +75,7 @@ const useSortable = (args: {
           setIsDraggedOver(true);
         },
         onDrag: (args) => {
-          if (args.source.data['id'] === droppableItem.id) {
+          if (args.source.data['id'] === data.id) {
             return;
           }
 
@@ -80,15 +96,25 @@ const useSortable = (args: {
           setClosestEdge(null);
         },
         getData: ({ input, element }) => {
-          return attachClosestEdge(droppableItem, {
-            input,
-            element,
-            allowedEdges,
-          });
+          return allowedEdges
+            ? attachClosestEdge(droppableItem, {
+                input,
+                element,
+                allowedEdges,
+              })
+            : droppableItem;
         },
       }),
     );
-  }, [draggableRef, dropzoneRef, draggableItem, droppableItem, allowedEdges]);
+  }, [
+    draggableRef,
+    dropzoneRef,
+    draggableItem,
+    droppableItem,
+    data.type,
+    data.id,
+    allowedEdges,
+  ]);
 
   return { isDragging, isDraggedOver, closestEdge };
 };

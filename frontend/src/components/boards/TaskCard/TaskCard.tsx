@@ -53,19 +53,12 @@ const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
 
   const { isDragging, closestEdge } = useSortable({
     draggableRef,
-    draggableItem: {
-      isDraggable: true,
+    dropzoneRef,
+    data: {
       type: 'item',
       id: card.id,
       index,
       parentId: card.listId,
-    },
-    dropzoneRef,
-    droppableItem: {
-      isDroppable: true,
-      type: 'item',
-      id: card.id,
-      index,
     },
   });
 
