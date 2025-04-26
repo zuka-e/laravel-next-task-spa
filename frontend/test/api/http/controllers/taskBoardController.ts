@@ -4,6 +4,8 @@ import type {
   FetchKanbanBoardResponse,
   MoveTaskCardRequest,
   MoveTaskCardResponse,
+  MoveTaskListRequest,
+  MoveTaskListResponse,
   PaginationResponse,
 } from '@/store/api';
 import { getUser } from '@test/api/auth';
@@ -71,6 +73,50 @@ export const update = (
 
 export const destroy = (id: TaskBoard['id']): TaskBoard | null => {
   return db.taskBoard.delete({ where: { id: { equals: id } } });
+};
+
+export const moveList = (
+  id: TaskBoard['id'],
+  params: Omit<MoveTaskListRequest, 'boardId'>,
+): MoveTaskListResponse['data'] | null => {
+  const { srcIndex, destIndex, listId } = params;
+
+  const board = db.taskBoard.findFirst({
+    where: { id: { equals: id } },
+  });
+
+  if (!board) {
+    console.log('board not exist.');
+    return null;
+  }
+
+  const listIds = [...board.listIds];
+  const [removedListId] = listIds.splice(srcIndex, 1);
+
+  if (removedListId !== listId) {
+    console.error('listId not match.');
+    return null;
+  }
+
+  listIds.splice(
+    destIndex === -1 ? listIds.length : destIndex,
+    0,
+    removedListId,
+  );
+
+  const updatedBoard = db.taskBoard.update({
+    where: { id: { equals: id } },
+    data: { listIds },
+  });
+
+  if (!updatedBoard) {
+    console.error("board couldn't be updated.");
+    return null;
+  }
+
+  return {
+    board: updatedBoard,
+  };
 };
 
 export const moveCard = (

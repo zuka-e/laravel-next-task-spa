@@ -22,6 +22,8 @@ import type {
   KanbanBoard,
   MoveTaskCardRequest,
   MoveTaskCardResponse,
+  MoveTaskListRequest,
+  MoveTaskListResponse,
   UpdateTaskBoardRequest,
   UpdateTaskBoardResponse,
 } from './types';
@@ -131,6 +133,50 @@ const api = baseApi.injectEndpoints({
         };
       },
     }),
+    moveTaskList: builder.mutation<MoveTaskListResponse, MoveTaskListRequest>({
+      query: ({ boardId, srcIndex, destIndex, listId }) => ({
+        url: buildPath(API_ENDPOINTS.TASKS.BOARDS.MOVE_LIST, {
+          boardId,
+        }),
+        method: 'POST',
+        data: {
+          srcIndex,
+          destIndex,
+          listId,
+        },
+      }),
+      onQueryStarted: async (
+        { boardId, srcIndex, destIndex },
+        { dispatch, queryFulfilled },
+      ) => {
+        // cf. https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#optimistic-updates
+        const patchResult = dispatch(
+          api.util.updateQueryData(
+            'getKanbanBoard',
+            { id: boardId },
+            (draft) => {
+              const board = draft.data.kanbanBoard;
+              const listIds = [...board.listIds];
+
+              const [removedListId] = listIds.splice(srcIndex, 1);
+              listIds.splice(
+                destIndex === -1 ? listIds.length : destIndex,
+                0,
+                removedListId!,
+              );
+
+              board.listIds = listIds;
+            },
+          ),
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
+    }),
     moveTaskCard: builder.mutation<MoveTaskCardResponse, MoveTaskCardRequest>({
       query: ({
         boardId,
@@ -222,5 +268,6 @@ export const {
   useGetKanbanBoardQuery,
   useUpdateTaskBoardMutation,
   useDestroyTaskBoardMutation,
+  useMoveTaskListMutation,
   useMoveTaskCardMutation,
 } = api;

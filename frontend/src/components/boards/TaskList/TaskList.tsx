@@ -5,7 +5,7 @@ import { Card, CardActions, Chip, Grid, type SelectProps } from '@mui/material';
 import clsx from 'clsx';
 import { Virtualizer } from 'virtua';
 
-import { useDroppable, useScrollable } from '@/lib/dnd/hooks';
+import { useDroppable, useScrollable, useSortable } from '@/lib/dnd/hooks';
 import { useTaskDetails } from '@/lib/hooks';
 import { useCreateTaskCardMutation } from '@/store/api';
 import type * as Model from '@/store/api/services/tasks/models';
@@ -44,6 +44,7 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
   const [filterValue, setFilterValue] = useState<FilterName>(cardFilter.ALL);
   const draggableRef = useRef<HTMLDivElement>(null);
   const dropzoneRef = useRef<HTMLDivElement>(null);
+  const itemDropzoneRef = useRef<HTMLDivElement>(null);
   const scrollableRef = useRef<HTMLDivElement>(null);
 
   const [createTaskCard, { isLoading, error }] = useCreateTaskCardMutation();
@@ -63,76 +64,94 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
     [],
   );
 
-  const { closestEdge } = useDroppable({
+  const { isDragging, closestEdge } = useSortable({
+    draggableRef,
     dropzoneRef,
-    droppableItem: {
-      isDroppable: true,
+    data: {
       type: 'column',
       id: list.id,
       index,
     },
-    draggableRef,
+    axis: 'horizontal',
+  });
+
+  const { closestEdge: itemClosestEdge } = useDroppable({
+    ref: draggableRef,
+    data: {
+      type: 'column',
+      id: list.id,
+      index,
+    },
+    allowedEntities: ['item'],
+    dropzoneRef: itemDropzoneRef,
   });
 
   useScrollable({ scrollableRef });
 
   return (
-    <div ref={dropzoneRef} className="h-full">
-      <Card
-        ref={draggableRef}
-        elevation={7}
-        className={clsx(
-          'flex max-h-full flex-col',
-          isTaskSelected('l', list.id)
-            ? 'bg-secondary-dark outline outline-primary'
-            : 'bg-secondary',
-        )}
-      >
-        <ListCardHeader list={list} />
+    <div ref={itemDropzoneRef} className="h-full">
+      <div ref={dropzoneRef} className="relative h-full">
+        <Card
+          ref={draggableRef}
+          elevation={7}
+          className={clsx(
+            'flex max-h-full flex-col hover:backdrop-opacity-0', // ※ `hover:...` is workaround for drag previews
+            isTaskSelected('l', list.id)
+              ? 'bg-secondary-dark outline outline-primary'
+              : 'bg-secondary',
+            isDragging && 'opacity-50',
+          )}
+        >
+          <ListCardHeader list={list} />
 
-        <CardActions>
-          <Grid container alignItems="center" justifyContent="space-between">
-            <Grid item>
-              <LabeledSelect
-                label="Filter"
-                options={cardFilter}
-                value={filterValue}
-                color="error"
-                onChange={handleChange}
-              />
+          <CardActions>
+            <Grid container alignItems="center" justifyContent="space-between">
+              <Grid item>
+                <LabeledSelect
+                  label="Filter"
+                  options={cardFilter}
+                  value={filterValue}
+                  color="error"
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item>
+                <Chip label={filteredCards.length} title="タスク数" />
+              </Grid>
             </Grid>
-            <Grid item>
-              <Chip label={filteredCards.length} title="タスク数" />
-            </Grid>
-          </Grid>
-        </CardActions>
+          </CardActions>
 
-        {closestEdge === 'top' && (
-          <div className="relative mx-2">
-            <DropIndicator edge={closestEdge} gap="0.25rem" />
+          {itemClosestEdge === 'top' && (
+            <div className="relative mx-2">
+              <DropIndicator edge={itemClosestEdge} gap="0.25rem" />
+            </div>
+          )}
+          <div
+            ref={scrollableRef}
+            className="overflow-x-hidden overflow-y-auto"
+          >
+            <Virtualizer>
+              {filteredCards.map((card, i) => (
+                <TaskCard key={card.id} card={card} index={i} />
+              ))}
+            </Virtualizer>
           </div>
-        )}
-        <div ref={scrollableRef} className="overflow-x-hidden overflow-y-auto">
-          <Virtualizer>
-            {filteredCards.map((card, i) => (
-              <TaskCard key={card.id} card={card} index={i} />
-            ))}
-          </Virtualizer>
-        </div>
-        {closestEdge === 'bottom' && (
-          <div className="relative mx-2">
-            <DropIndicator edge={closestEdge} gap="0.25rem" />
-          </div>
-        )}
+          {itemClosestEdge === 'bottom' && (
+            <div className="relative mx-2">
+              <DropIndicator edge={itemClosestEdge} gap="0.25rem" />
+            </div>
+          )}
 
-        <CardActions>
-          <AddTaskButton
-            disabled={isLoading}
-            error={error}
-            onSubmit={(data) => createTaskCard({ listId: list.id, ...data })}
-          />
-        </CardActions>
-      </Card>
+          <CardActions>
+            <AddTaskButton
+              disabled={isLoading}
+              error={error}
+              onSubmit={(data) => createTaskCard({ listId: list.id, ...data })}
+            />
+          </CardActions>
+        </Card>
+        {closestEdge && <DropIndicator edge={closestEdge} gap="1rem" />}
+      </div>
     </div>
   );
 });

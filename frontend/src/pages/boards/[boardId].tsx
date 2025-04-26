@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useRef, type JSX } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, type JSX } from 'react';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -26,11 +26,13 @@ import {
   useCreateTaskListMutation,
   useGetKanbanBoardQuery,
   useMoveTaskCardMutation,
+  useMoveTaskListMutation,
   useUpdateTaskBoardMutation,
 } from '@/store/api';
 import { isNotFoundError } from '@/store/api/utils/errors';
 import { PopoverControl } from '@/templates';
 import { useRoute } from '@/utils/hooks';
+import { getOrderedArray } from '@/utils/sort';
 
 type TaskBoardProps = AuthPage;
 
@@ -62,6 +64,7 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
     updateTaskBoard,
     { isLoading: isLoadingToUpdate, error: updateError },
   ] = useUpdateTaskBoardMutation();
+  const [moveTaskList] = useMoveTaskListMutation();
   const [moveTaskCard] = useMoveTaskCardMutation();
 
   const { data: { data: { kanbanBoard = undefined } = {} } = {}, error } =
@@ -72,6 +75,12 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
   if (isNotFoundError(error)) {
     router.replace('/boards');
   }
+
+  const orderedLists = useMemo(() => {
+    return kanbanBoard
+      ? getOrderedArray(kanbanBoard.lists, kanbanBoard.listIds)
+      : [];
+  }, [kanbanBoard]);
 
   const handleDrop = useCallback(
     async ({
@@ -103,8 +112,6 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
         throw new Error('Destination column is not found.');
       }
 
-      const srcListId = source.data.parentId!;
-      const destListId = destList.data.id;
       const srcIndex = source.data.index;
 
       /** Dropped area of the destination element */
@@ -112,6 +119,31 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
       const closestEdge = destCard
         ? extractClosestEdge(destCard.data)
         : extractClosestEdge(destList.data);
+
+      if (source.data['type'] === 'column') {
+        const destIndex = getDestIndex({
+          srcIndex,
+          targetIndex: destList.data.index,
+          closestEdge,
+          axis: 'horizontal',
+        });
+
+        if (srcIndex === destIndex) {
+          return;
+        }
+
+        moveTaskList({
+          boardId: pathParams?.['boardId'] ?? '',
+          srcIndex,
+          destIndex,
+          listId: source.data.id,
+        });
+
+        return;
+      }
+
+      const srcListId = source.data.parentId!;
+      const destListId = destList.data.id;
 
       const destIndex = getDestIndex({
         srcIndex: srcListId === destListId ? srcIndex : null,
@@ -133,7 +165,7 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
         cardId: source.data.id,
       });
     },
-    [moveTaskCard, pathParams],
+    [moveTaskCard, moveTaskList, pathParams],
   );
 
   useScrollable({ scrollableRef, speed: 'fast' });
@@ -207,19 +239,19 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
               className="absolute inset-0 overflow-x-auto"
             >
               <Virtualizer horizontal>
-                {Object.values(kanbanBoard?.lists ?? {}).map((list, i) => (
+                {orderedLists.map((list, i) => (
                   <Grid
                     item
                     key={list.id}
                     id={list.id}
                     className="w-80 shrink-0 p-2"
                   >
-                    <TaskList list={list} index={i} />
+                    <TaskList key={list.id} list={list} index={i} />
                   </Grid>
                 ))}
               </Virtualizer>
               {kanbanBoard && (
-                <Grid item>
+                <Grid item className="w-80 shrink-0 p-2">
                   <AddTaskButton
                     disabled={isLoadingToCreate}
                     error={creationError}

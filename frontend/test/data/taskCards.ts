@@ -72,12 +72,14 @@ const initialize = () => {
         .findMany({ where: { boardId: { equals: board.id } } })
         .forEach((list, j) => {
           const count = !i && !j ? 50 : 2;
-
           const cards = seed({ count, belongsTo: { list } });
+          const initialCardIds = j === 0 ? [cardOfGuestUser.id] : [];
 
           db.taskList.update({
             where: { id: { equals: list.id } },
-            data: { cardIds: cards.map((card) => card.id) },
+            data: {
+              cardIds: [...initialCardIds, ...cards.map((card) => card.id)],
+            },
           });
         });
     });
@@ -87,12 +89,15 @@ const initialize = () => {
     .forEach((board) => {
       db.taskList
         .findMany({ where: { boardId: { equals: board.id } } })
-        .forEach((list) => {
+        .forEach((list, j) => {
           const cards = seed({ count: 2, belongsTo: { list } });
+          const initialCardIds = j === 0 ? [cardOfOtherUser.id] : [];
 
           db.taskList.update({
             where: { id: { equals: list.id } },
-            data: { cardIds: cards.map((card) => card.id) },
+            data: {
+              cardIds: [...initialCardIds, ...cards.map((card) => card.id)],
+            },
           });
         });
     });

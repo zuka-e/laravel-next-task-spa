@@ -68,6 +68,9 @@ const useSortable = <T extends DndEntityType>({
       }),
       dropTargetForElements({
         element: dropzoneRef.current,
+        canDrop: (args) => {
+          return args.source.data['type'] === data.type;
+        },
         onDragStart: () => {
           setIsDraggedOver(true);
         },

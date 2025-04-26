@@ -1,4 +1,4 @@
-import { useEffect, useState, type RefObject } from 'react';
+import { useEffect, useMemo, useState, type RefObject } from 'react';
 import {
   attachClosestEdge,
   extractClosestEdge,
@@ -7,35 +7,53 @@ import {
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 
-import type { DroppableItem } from '@/lib/dnd/entities';
+import type { DndItem, DroppableItem } from '@/lib/dnd/entities';
+import type { Axis, DndEntityType } from '@/lib/dnd/types';
+import { getAllowedEdgesByAxis } from '@/lib/dnd/utils';
 
 /**
  * Make the element droppable.
  */
-const useDroppable = (args: {
-  dropzoneRef: RefObject<HTMLElement | null>;
-  droppableItem: DroppableItem;
-  draggableRef?: RefObject<HTMLElement | null>;
-  allowedEdges?: Edge[];
+const useDroppable = ({
+  ref,
+  data,
+  allowedEntities,
+  axis = 'vertical',
+  dropzoneRef,
+}: {
+  ref: RefObject<HTMLElement | null>;
+  data: DndItem;
+  allowedEntities: DndEntityType[];
+  axis?: Axis;
+  dropzoneRef?: RefObject<HTMLElement | null>;
 }) => {
-  const {
-    dropzoneRef,
-    draggableRef,
-    droppableItem,
-    allowedEdges = ['top', 'bottom'],
-  } = args;
+  const droppableItem = useMemo((): DroppableItem => {
+    return {
+      ...data,
+      isDroppable: true,
+    };
+  }, [data]);
+
+  const allowedEdges = useMemo((): Edge[] => {
+    return getAllowedEdgesByAxis(axis);
+  }, [axis]);
 
   const [isDraggedOver, setIsDraggedOver] = useState(false);
   const [closestEdge, setClosestEdge] = useState<Edge | null>(null);
 
   useEffect(() => {
-    if (!dropzoneRef.current) {
+    if (!ref.current) {
       return;
     }
 
     return combine(
       dropTargetForElements({
-        element: dropzoneRef.current,
+        element: dropzoneRef?.current ?? ref.current,
+        canDrop: (args) => {
+          return allowedEntities.includes(
+            args.source.data['type'] as DndEntityType,
+          );
+        },
         onDragStart: () => {
           setIsDraggedOver(true);
         },
@@ -43,7 +61,7 @@ const useDroppable = (args: {
           setIsDraggedOver(true);
         },
         onDrag: (args) => {
-          if (args.source.data['id'] === droppableItem.id) {
+          if (args.source.data['id'] === data.id) {
             return;
           }
 
@@ -66,13 +84,13 @@ const useDroppable = (args: {
         getData: ({ input, element }) => {
           return attachClosestEdge(droppableItem, {
             input,
-            element: draggableRef?.current ?? element,
+            element,
             allowedEdges,
           });
         },
       }),
     );
-  }, [dropzoneRef, draggableRef, droppableItem, allowedEdges]);
+  }, [ref, droppableItem, data.id, allowedEntities, dropzoneRef, allowedEdges]);
 
   return { isDraggedOver, closestEdge };
 };

@@ -14,6 +14,8 @@ import type {
   FetchTaskBoardsResponse,
   MoveTaskCardRequest,
   MoveTaskCardResponse,
+  MoveTaskListRequest,
+  MoveTaskListResponse,
   UpdateTaskBoardRequest,
   UpdateTaskBoardResponse,
 } from '@/store/api';
@@ -133,6 +135,29 @@ export const handlers = [
         severity: 'warning',
         message: 'タスクボードを削除しました。',
         data: deleted,
+      });
+    }),
+  ),
+
+  http.post(
+    API_BASE_URL + API_ENDPOINTS.TASKS.BOARDS.MOVE_LIST,
+    withMiddleware<
+      Pick<TaskBoardParams, 'boardId'>,
+      MoveTaskListRequest,
+      MoveTaskListResponse
+    >()(async ({ params, request }) => {
+      const data = await request.json();
+
+      const updated = taskBoardController.moveList(params['boardId'], data);
+
+      if (!updated) {
+        return notFoundErrorResponse();
+      }
+
+      return HttpResponse.json({
+        severity: 'info',
+        message: 'タスクリストを移動しました。',
+        data: updated,
       });
     }),
   ),

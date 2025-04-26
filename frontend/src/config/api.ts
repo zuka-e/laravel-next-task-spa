@@ -36,6 +36,7 @@ export const API_ENDPOINTS = {
       UPDATE: '/boards/:boardId',
       DESTROY: '/boards/:boardId',
       AS_KANBAN: '/boards/:boardId?asKanban=1',
+      MOVE_LIST: '/boards/:boardId/move-list',
       MOVE_CARD: '/boards/:boardId/move-card',
       LISTS: {
         INDEX: '/boards/:boardId/lists',
