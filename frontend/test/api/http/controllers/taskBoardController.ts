@@ -8,6 +8,7 @@ import type {
   MoveTaskListResponse,
   PaginationResponse,
 } from '@/store/api';
+import { sortFn } from '@/utils/sort';
 import { getUser } from '@test/api/auth';
 import db from '@test/api/database/manager';
 import type { TaskBoard, TaskList } from '@test/api/database/models';
@@ -122,7 +123,7 @@ export const moveList = (
 export const moveCard = (
   params: Omit<MoveTaskCardRequest, 'boardId'>,
 ): MoveTaskCardResponse['data'] | null => {
-  const { cardId, srcListId, destListId, srcIndex, destIndex } = params;
+  const { cardId, src, dest } = params;
 
   const card = db.taskCard.findFirst({ where: { id: { equals: cardId } } });
 
@@ -131,13 +132,13 @@ export const moveCard = (
     return null;
   }
 
-  if (card.listId !== srcListId) {
-    console.error('listId not match', card.listId, srcListId);
+  if (card.listId !== src.listId) {
+    console.error('listId not match', card.listId, src.listId);
     return null;
   }
 
   const srcList = db.taskList.findFirst({
-    where: { id: { equals: srcListId } },
+    where: { id: { equals: src.listId } },
   });
 
   if (!srcList) {
@@ -146,7 +147,7 @@ export const moveCard = (
   }
 
   const destList = db.taskList.findFirst({
-    where: { id: { equals: destListId } },
+    where: { id: { equals: dest.listId } },
   });
 
   if (!destList) {
@@ -154,23 +155,56 @@ export const moveCard = (
     return null;
   }
 
-  if (srcList.cardIds[srcIndex] !== cardId) {
-    console.error('cardId not exist.', srcList.cardIds[srcIndex], cardId);
+  const orderedSrcCards = src.sort?.key
+    ? db.taskCard
+        .findMany({
+          where: { listId: { equals: srcList.id } },
+        })
+        .sort((a, b) =>
+          sortFn(a as never, b as never, {
+            key: src.sort!.key,
+            direction: src.sort!.direction,
+          }),
+        )
+    : null;
+
+  const orderedDestCards = dest.sort?.key
+    ? db.taskCard
+        .findMany({
+          where: { listId: { equals: destList.id } },
+        })
+        .sort((a, b) =>
+          sortFn(a as never, b as never, {
+            key: dest.sort!.key,
+            direction: dest.sort!.direction,
+          }),
+        )
+    : null;
+
+  if (!orderedSrcCards && srcList.cardIds[src.index] !== cardId) {
+    console.error('cardId not exist.', srcList.cardIds[src.index], cardId);
     return null;
   }
 
-  const newSrcCardIds = [...srcList.cardIds];
-  const [removedCardId] = newSrcCardIds.splice(srcIndex, 1);
+  const newSrcCardIds = orderedSrcCards
+    ? orderedSrcCards.map((card) => card.id)
+    : [...srcList.cardIds];
+  const [removedCardId] = newSrcCardIds.splice(src.index, 1);
 
   if (!removedCardId) {
-    console.error('removedCardId not exist.');
+    console.error('removedCardId not exist.', cardId, src.index, newSrcCardIds);
     return null;
   }
 
   const newDestCardIds =
-    srcListId === destListId ? newSrcCardIds : [...destList.cardIds];
+    src.listId === dest.listId
+      ? newSrcCardIds
+      : orderedDestCards
+        ? orderedDestCards.map((card) => card.id)
+        : [...destList.cardIds];
+
   newDestCardIds.splice(
-    destIndex === -1 ? newDestCardIds.length : destIndex,
+    dest.index === -1 ? newDestCardIds.length : dest.index,
     0,
     removedCardId,
   );
@@ -178,7 +212,7 @@ export const moveCard = (
   const updatedLists: TaskList[] = [];
 
   const updatedSrcList = db.taskList.update({
-    where: { id: { equals: srcListId } },
+    where: { id: { equals: src.listId } },
     data: { cardIds: newSrcCardIds },
   });
 
@@ -189,9 +223,9 @@ export const moveCard = (
 
   updatedLists.push(updatedSrcList);
 
-  if (srcListId !== destListId) {
+  if (src.listId !== dest.listId) {
     const updatedDestList = db.taskList.update({
-      where: { id: { equals: destListId } },
+      where: { id: { equals: dest.listId } },
       data: { cardIds: newDestCardIds },
     });
 
@@ -204,7 +238,7 @@ export const moveCard = (
 
     const updatedCard = db.taskCard.update({
       where: { id: { equals: cardId } },
-      data: { listId: destListId },
+      data: { listId: dest.listId },
     });
 
     if (!updatedCard) {

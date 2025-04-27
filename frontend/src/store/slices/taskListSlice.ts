@@ -9,7 +9,7 @@ type State = {
     {
       search: {
         cursor?: string;
-        sort?: Partial<Sort<TaskCard>>;
+        sort?: Sort<TaskCard>;
       };
     }
   >;
@@ -47,7 +47,7 @@ export const taskListSlice = createSlice({
       state,
       action: PayloadAction<{
         id: TaskList['id'];
-        sort: Partial<Sort<TaskCard>>;
+        sort: Sort<TaskCard> | undefined;
       }>,
     ) {
       const { id, sort } = action.payload;

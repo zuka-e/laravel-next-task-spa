@@ -5,11 +5,8 @@ import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import type { TaskCard, TaskList } from '@/store/api/services/tasks/models';
 import { setSortByBoard, setSortByList } from '@/store/slices';
 import { useAppDispatch, useAppSelector } from '@/utils/hooks';
+import type { Sort } from '@/utils/sort';
 
-// import { type Sort } from '@/utils/sort';
-
-// type Option = Record<string, Sort<TaskCard> & { label: string }>;
-// todo: satisfies
 const options = {
   'title-asc': {
     label: 'タイトル (昇順)',
@@ -41,12 +38,7 @@ const options = {
     key: 'updatedAt',
     direction: 'desc',
   },
-  'sequence-asc': {
-    label: 'カスタム',
-    key: 'sequence',
-    direction: 'asc',
-  },
-} as const;
+} as const satisfies Record<`${string}-${string}`, Sort & { label: string }>;
 
 type SortSelectProps =
   | { boardId?: TaskList['boardId'] }
@@ -67,7 +59,7 @@ const SortSelect = memo(function SortSelect(
         ? state.taskList.data[listId]?.search.sort
         : undefined;
 
-    return sort ?? options['sequence-asc'];
+    return sort;
   });
 
   const handleClick = useCallback(

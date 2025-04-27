@@ -31,7 +31,7 @@ import {
 } from '@/store/api';
 import { isNotFoundError } from '@/store/api/utils/errors';
 import { PopoverControl } from '@/templates';
-import { useRoute } from '@/utils/hooks';
+import { useDeepEqualSelector, useRoute } from '@/utils/hooks';
 import { getOrderedArray } from '@/utils/sort';
 
 type TaskBoardProps = AuthPage;
@@ -55,6 +55,15 @@ export const getStaticProps: GetStaticProps<TaskBoardProps> = async () => {
 const TaskBoard = memo(function TaskBoard(): JSX.Element {
   const router = useRouter();
   const { pathParams } = useRoute();
+
+  const boardId = useMemo(() => {
+    return pathParams?.['boardId'] ?? '';
+  }, [pathParams]);
+
+  const searchState = useDeepEqualSelector(
+    (state) => state.taskBoard.data[boardId]?.search,
+  );
+
   const scrollableRef = useRef<HTMLDivElement>(null);
   const [
     createTaskList,
@@ -68,19 +77,22 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
   const [moveTaskCard] = useMoveTaskCardMutation();
 
   const { data: { data: { kanbanBoard = undefined } = {} } = {}, error } =
-    useGetKanbanBoardQuery(
-      pathParams ? { id: pathParams['boardId'] ?? '' } : skipToken,
-    );
+    useGetKanbanBoardQuery(pathParams ? { id: boardId } : skipToken);
 
   if (isNotFoundError(error)) {
     router.replace('/boards');
   }
 
   const orderedLists = useMemo(() => {
-    return kanbanBoard
-      ? getOrderedArray(kanbanBoard.lists, kanbanBoard.listIds)
-      : [];
-  }, [kanbanBoard]);
+    if (!kanbanBoard) return [];
+
+    const key = searchState?.sort?.key;
+    const direction = searchState?.sort?.direction;
+
+    return !key
+      ? getOrderedArray(kanbanBoard.lists, { ids: kanbanBoard.listIds })
+      : getOrderedArray(kanbanBoard.lists, { key: key as never, direction });
+  }, [kanbanBoard, searchState?.sort?.direction, searchState?.sort?.key]);
 
   const handleDrop = useCallback(
     async ({
@@ -106,12 +118,7 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
 
       /** Destination card if dropped on it */
       const destCard = getDropTarget(dest.dropTargets, 'item');
-      const destList = getDropTarget(dest.dropTargets, 'column');
-
-      if (!destList) {
-        throw new Error('Destination column is not found.');
-      }
-
+      const destList = getDropTarget(dest.dropTargets, 'column')!;
       const srcIndex = source.data.index;
 
       /** Dropped area of the destination element */
@@ -133,7 +140,7 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
         }
 
         moveTaskList({
-          boardId: pathParams?.['boardId'] ?? '',
+          boardId,
           srcIndex,
           destIndex,
           listId: source.data.id,
@@ -142,30 +149,36 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
         return;
       }
 
-      const srcListId = source.data.parentId!;
-      const destListId = destList.data.id;
+      const src = location.initial;
+      const srcList = getDropTarget(src.dropTargets, 'column')!;
 
       const destIndex = getDestIndex({
-        srcIndex: srcListId === destListId ? srcIndex : null,
+        srcIndex: srcList.data.id === destList.data.id ? srcIndex : null,
         targetIndex: destCard?.data.index ?? null,
         closestEdge,
         axis: 'vertical',
       });
 
-      if (srcListId === destListId && srcIndex === destIndex) {
+      if (srcList.data.id === destList.data.id && srcIndex === destIndex) {
         return;
       }
 
       moveTaskCard({
-        boardId: pathParams?.['boardId'] ?? '',
-        srcListId,
-        destListId,
-        srcIndex,
-        destIndex,
+        boardId,
+        src: {
+          listId: srcList.data.id,
+          index: srcIndex,
+          sort: srcList.data.sort as never,
+        },
+        dest: {
+          listId: destList.data.id,
+          index: destIndex,
+          sort: destList.data.sort as never,
+        },
         cardId: source.data.id,
       });
     },
-    [moveTaskCard, moveTaskList, pathParams],
+    [boardId, moveTaskCard, moveTaskList],
   );
 
   useScrollable({ scrollableRef, speed: 'fast' });

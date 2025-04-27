@@ -10,6 +10,8 @@ import { useTaskDetails } from '@/lib/hooks';
 import { useCreateTaskCardMutation } from '@/store/api';
 import type * as Model from '@/store/api/services/tasks/models';
 import { LabeledSelect } from '@/templates';
+import { useDeepEqualSelector } from '@/utils/hooks';
+import { sortFn } from '@/utils/sort';
 import { AddTaskButton } from '..';
 import { TaskCard } from '../TaskCard';
 import { ListCardHeader } from '.';
@@ -40,6 +42,9 @@ type TaskListProps = {
 const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
   const { list, index } = props;
 
+  const searchState = useDeepEqualSelector(
+    (state) => state.taskList.data[list.id]?.search,
+  );
   const { isTaskSelected } = useTaskDetails();
   const [filterValue, setFilterValue] = useState<FilterName>(cardFilter.ALL);
   const draggableRef = useRef<HTMLDivElement>(null);
@@ -50,12 +55,26 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
   const [createTaskCard, { isLoading, error }] = useCreateTaskCardMutation();
 
   const filteredCards = useMemo(() => {
-    return (list.cards ?? []).filter((card) => {
+    const cards = (list.cards ?? []).filter((card) => {
       if (filterValue === cardFilter.TODO) return !card.done;
       else if (filterValue === cardFilter.DONE) return card.done;
       else return true;
     });
-  }, [filterValue, list]);
+
+    return !searchState?.sort?.key
+      ? cards
+      : cards.sort((a, b) =>
+          sortFn(a, b, {
+            key: searchState?.sort?.key as keyof typeof a,
+            direction: searchState?.sort?.direction,
+          }),
+        );
+  }, [
+    filterValue,
+    list.cards,
+    searchState?.sort?.direction,
+    searchState?.sort?.key,
+  ]);
 
   const handleChange = useCallback<NonNullable<SelectProps['onChange']>>(
     (event): void => {
@@ -81,6 +100,7 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
       type: 'column',
       id: list.id,
       index,
+      sort: searchState?.sort ? { ...searchState.sort } : undefined,
     },
     allowedEntities: ['item'],
     dropzoneRef: itemDropzoneRef,

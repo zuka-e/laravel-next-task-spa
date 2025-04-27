@@ -10,7 +10,7 @@ describe('sort utilities', () => {
   describe('getOrderedArray', () => {
     it('should return ordered array from Map input', () => {
       const map = new Map(sampleData.map((item) => [item.id, item]));
-      const orderedIds = [2, 1, 3];
+      const orderedIds = { ids: [2, 1, 3] };
       const result = getOrderedArray(map, orderedIds);
 
       expect(result).toEqual([
@@ -29,7 +29,7 @@ describe('sort utilities', () => {
         {} as Record<number, (typeof sampleData)[0]>,
       );
 
-      const orderedIds = [3, 1, 2];
+      const orderedIds = { ids: [3, 1, 2] };
       const result = getOrderedArray(record, orderedIds);
 
       expect(result).toEqual([
@@ -41,7 +41,7 @@ describe('sort utilities', () => {
 
     it('should handle missing records gracefully', () => {
       const map = new Map(sampleData.map((item) => [item.id, item]));
-      const orderedIds = [2, 999, 1]; // 999 doesn't exist
+      const orderedIds = { ids: [2, 999, 1] }; // 999 doesn't exist
       const result = getOrderedArray(map, orderedIds);
 
       expect(result).toEqual([
@@ -52,8 +52,75 @@ describe('sort utilities', () => {
 
     it('should handle empty input', () => {
       const map = new Map();
-      const result = getOrderedArray(map, []);
+      const result = getOrderedArray(map, { ids: [] });
       expect(result).toEqual([]);
+    });
+
+    it('should return array sorted by key ascending (Record input)', () => {
+      const record = sampleData.reduce(
+        (acc, item) => {
+          acc[item.id] = item;
+          return acc;
+        },
+        {} as Record<number, (typeof sampleData)[0]>,
+      );
+      const result = getOrderedArray(record, { key: 'id', direction: 'asc' });
+      expect(result).toEqual([
+        { id: 1, name: 'Alpha' },
+        { id: 2, name: 'Bravo' },
+        { id: 3, name: 'Charlie' },
+      ]);
+    });
+
+    it('should return array sorted by key descending (Record input)', () => {
+      const record = sampleData.reduce(
+        (acc, item) => {
+          acc[item.id] = item;
+          return acc;
+        },
+        {} as Record<number, (typeof sampleData)[0]>,
+      );
+      const result = getOrderedArray(record, { key: 'id', direction: 'desc' });
+      expect(result).toEqual([
+        { id: 3, name: 'Charlie' },
+        { id: 2, name: 'Bravo' },
+        { id: 1, name: 'Alpha' },
+      ]);
+    });
+
+    it('should return array sorted by string key ascending (Record input)', () => {
+      const record = sampleData.reduce(
+        (acc, item) => {
+          acc[item.id] = item;
+          return acc;
+        },
+        {} as Record<number, (typeof sampleData)[0]>,
+      );
+      const result = getOrderedArray(record, { key: 'name', direction: 'asc' });
+      expect(result).toEqual([
+        { id: 1, name: 'Alpha' },
+        { id: 2, name: 'Bravo' },
+        { id: 3, name: 'Charlie' },
+      ]);
+    });
+
+    it('should return array sorted by string key descending (Record input)', () => {
+      const record = sampleData.reduce(
+        (acc, item) => {
+          acc[item.id] = item;
+          return acc;
+        },
+        {} as Record<number, (typeof sampleData)[0]>,
+      );
+      const result = getOrderedArray(record, {
+        key: 'name',
+        direction: 'desc',
+      });
+      expect(result).toEqual([
+        { id: 3, name: 'Charlie' },
+        { id: 2, name: 'Bravo' },
+        { id: 1, name: 'Alpha' },
+      ]);
     });
   });
 

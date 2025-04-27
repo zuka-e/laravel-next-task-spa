@@ -1,22 +1,36 @@
-export type Sort<T> = {
-  key: keyof T;
-  direction?: 'asc' | 'desc';
-};
+/**
+ * Sort rule
+ */
+export type Sort<T extends Record<string, unknown> = Record<string, unknown>> =
+  {
+    key: keyof T;
+    direction?: 'asc' | 'desc';
+  };
 
 /**
- * `Array.sort()`の比較関数として利用
- * 1. `number`型、`Date`型の場合は数値比較
- * 2. 上記以外の型は`string`型に変換して比較
+ * Sort method for an array of records
+ */
+export type Sorter<T extends { id: K }, K> = Sort<T> | { ids: K[] };
+
+/**
+ * A function that determines the order of the elements.
  *
- * @see https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#description
- * */
-export const compare = <T>(
+ * - A negative value indicates that `a` should come before `b`.
+ * - A positive value indicates that `a` should come after `b`.
+ * - `0` or `NaN` indicates that `a` and `b` are considered equal.
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#comparefn
+ * @example
+ * array.sort((a, b) => compare(a, b, { key, direction }));
+ */
+export type SortFn = <T extends Record<string, unknown>>(
   a: T,
   b: T,
-  key: keyof T,
-  direction?: 'asc' | 'desc',
-) => {
-  const process = () => {
+  sort: Sort<T>,
+) => number;
+
+export const sortFn: SortFn = (a, b, { key, direction }) => {
+  const compare = () => {
     const valueA = a[key];
     const valueB = b[key];
 
@@ -33,7 +47,7 @@ export const compare = <T>(
     else return 0;
   };
 
-  return direction === 'desc' ? -process() : process();
+  return direction === 'desc' ? -compare() : compare();
 };
 
 /**
@@ -44,14 +58,23 @@ export const compare = <T>(
  *   { id: 1, name: 'Alpha' },
  *   { id: 2, name: 'Bravo' },
  * ];
- * const orderedArray = getOrderedArray(arrayToMapById(array), [2, 1]);
+ * const orderedArray = getOrderedArray(arrayToMapById(array), {ids: [2, 1]});
  * // [ { id: 2, name: 'Bravo' }, { id: 1, name: 'Alpha' } ]
  */
 export const getOrderedArray = <T extends { id: K }, K extends string | number>(
   records: Map<K, T> | Record<K, T>,
-  ids: K[],
+  sorter: Sorter<T, K>,
 ): T[] => {
-  return ids.reduce<T[]>((acc, id) => {
+  if (!('ids' in sorter)) {
+    const values =
+      records instanceof Map
+        ? [...records.values()]
+        : (Object.values(records) as T[]);
+
+    return values.sort((a, b) => sortFn(a, b, sorter));
+  }
+
+  return sorter.ids.reduce<T[]>((acc, id) => {
     const record = records instanceof Map ? records.get(id) : records[id];
 
     if (record) {

@@ -3,9 +3,10 @@ import {
   getTagsForList,
   getTagsForPartialList,
 } from '@/store/api/utils/caching';
+import { setSortByList } from '@/store/slices';
 import { buildPath } from '@/utils/api/url';
 import { arrayToObjectById } from '@/utils/array';
-import { getOrderedArray } from '@/utils/sort';
+import { getOrderedArray, sortFn } from '@/utils/sort';
 import baseApi from './baseApi';
 import type {
   CreateTaskBoardRequest,
@@ -123,7 +124,7 @@ const api = baseApi.injectEndpoints({
         res.data.lists.forEach((list) => {
           kanbanBoard.lists[list.id] = {
             ...list,
-            cards: getOrderedArray(allCards, list.cardIds),
+            cards: getOrderedArray(allCards, { ids: list.cardIds }),
           };
         });
 
@@ -178,28 +179,19 @@ const api = baseApi.injectEndpoints({
       },
     }),
     moveTaskCard: builder.mutation<MoveTaskCardResponse, MoveTaskCardRequest>({
-      query: ({
-        boardId,
-        srcListId,
-        destListId,
-        srcIndex,
-        destIndex,
-        cardId,
-      }) => ({
+      query: ({ boardId, src, dest, cardId }) => ({
         url: buildPath(API_ENDPOINTS.TASKS.BOARDS.MOVE_CARD, {
           boardId,
         }),
         method: 'POST',
         data: {
+          src,
+          dest,
           cardId,
-          srcListId,
-          srcIndex,
-          destListId,
-          destIndex,
         },
       }),
       onQueryStarted: async (
-        { boardId, srcListId, destListId, srcIndex, destIndex, cardId },
+        { boardId, src, dest, cardId },
         { dispatch, queryFulfilled },
       ) => {
         // cf. https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#optimistic-updates
@@ -208,28 +200,55 @@ const api = baseApi.injectEndpoints({
             'getKanbanBoard',
             { id: boardId },
             (draft) => {
-              const srcList = draft.data.kanbanBoard.lists[srcListId];
-              const destList = draft.data.kanbanBoard.lists[destListId];
+              const srcList = draft.data.kanbanBoard.lists[src.listId];
+              const destList = draft.data.kanbanBoard.lists[dest.listId];
 
               if (!srcList || !destList) {
                 throw new Error('srcList or destList is undefined');
               }
 
-              const srcCardIds = [...srcList.cardIds];
-              const destCardIds =
-                srcListId === destListId ? srcCardIds : [...destList.cardIds];
+              const orderedSrcCards = src.sort?.key
+                ? srcList.cards.sort((a, b) =>
+                    sortFn(a, b, {
+                      key: src.sort!.key as keyof typeof a,
+                      direction: src.sort!.direction,
+                    }),
+                  )
+                : null;
 
-              const [removedCardId] = srcCardIds.splice(srcIndex, 1);
+              const orderedDestCards = dest.sort?.key
+                ? destList.cards.sort((a, b) =>
+                    sortFn(a, b, {
+                      key: dest.sort!.key as keyof typeof a,
+                      direction: dest.sort!.direction,
+                    }),
+                  )
+                : null;
+
+              const srcCardIds = orderedSrcCards
+                ? orderedSrcCards.map((card) => card.id)
+                : [...srcList.cardIds];
+
+              const destCardIds =
+                src.listId === dest.listId
+                  ? srcCardIds
+                  : orderedDestCards
+                    ? orderedDestCards.map((card) => card.id)
+                    : [...destList.cardIds];
+
+              const [removedCardId] = srcCardIds.splice(src.index, 1);
               destCardIds.splice(
-                destIndex === -1 ? destCardIds.length : destIndex,
+                dest.index === -1 ? destCardIds.length : dest.index,
                 0,
                 removedCardId!,
               );
 
               srcList.cardIds = srcCardIds;
-              srcList.cards = getOrderedArray(draft.data.allCards, srcCardIds);
+              srcList.cards = getOrderedArray(draft.data.allCards, {
+                ids: srcCardIds,
+              });
 
-              if (srcListId !== destListId) {
+              if (src.listId !== dest.listId) {
                 const card = draft.data.allCards[cardId];
 
                 if (!card) {
@@ -238,14 +257,13 @@ const api = baseApi.injectEndpoints({
 
                 draft.data.allCards = {
                   ...draft.data.allCards,
-                  [cardId]: { ...card, listId: destListId },
+                  [cardId]: { ...card, listId: dest.listId },
                 };
 
                 destList.cardIds = destCardIds;
-                destList.cards = getOrderedArray(
-                  draft.data.allCards,
-                  destCardIds,
-                );
+                destList.cards = getOrderedArray(draft.data.allCards, {
+                  ids: destCardIds,
+                });
               }
             },
           ),
@@ -253,6 +271,7 @@ const api = baseApi.injectEndpoints({
 
         try {
           await queryFulfilled;
+          dispatch(setSortByList({ id: dest.listId, sort: undefined }));
         } catch {
           patchResult.undo();
         }
