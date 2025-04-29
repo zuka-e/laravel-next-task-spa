@@ -346,6 +346,7 @@ export type MoveTaskListRequest = {
   srcIndex: number;
   destIndex: number;
   listId: TaskList['id'];
+  sort?: Sort<TaskList>;
 };
 
 export type MoveTaskListResponse = ApiResponse<{

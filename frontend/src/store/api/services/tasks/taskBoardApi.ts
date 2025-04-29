@@ -135,7 +135,7 @@ const api = baseApi.injectEndpoints({
       },
     }),
     moveTaskList: builder.mutation<MoveTaskListResponse, MoveTaskListRequest>({
-      query: ({ boardId, srcIndex, destIndex, listId }) => ({
+      query: ({ boardId, srcIndex, destIndex, listId, sort }) => ({
         url: buildPath(API_ENDPOINTS.TASKS.BOARDS.MOVE_LIST, {
           boardId,
         }),
@@ -144,10 +144,11 @@ const api = baseApi.injectEndpoints({
           srcIndex,
           destIndex,
           listId,
+          sort,
         },
       }),
       onQueryStarted: async (
-        { boardId, srcIndex, destIndex },
+        { boardId, srcIndex, destIndex, sort },
         { dispatch, queryFulfilled },
       ) => {
         // cf. https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#optimistic-updates
@@ -156,8 +157,18 @@ const api = baseApi.injectEndpoints({
             'getKanbanBoard',
             { id: boardId },
             (draft) => {
-              const board = draft.data.kanbanBoard;
-              const listIds = [...board.listIds];
+              const kanbanBoard = draft.data.kanbanBoard;
+
+              const orderedLists = sort?.key
+                ? getOrderedArray(kanbanBoard.lists, {
+                    key: sort.key as never,
+                    direction: sort.direction,
+                  })
+                : null;
+
+              const listIds = orderedLists?.map((card) => card.id) ?? [
+                ...kanbanBoard.listIds,
+              ];
 
               const [removedListId] = listIds.splice(srcIndex, 1);
               listIds.splice(
@@ -166,7 +177,7 @@ const api = baseApi.injectEndpoints({
                 removedListId!,
               );
 
-              board.listIds = listIds;
+              kanbanBoard.listIds = listIds;
             },
           ),
         );

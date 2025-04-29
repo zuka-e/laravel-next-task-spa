@@ -144,6 +144,7 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
           srcIndex,
           destIndex,
           listId: source.data.id,
+          sort: searchState?.sort,
         });
 
         return;
@@ -178,7 +179,7 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
         cardId: source.data.id,
       });
     },
-    [boardId, moveTaskCard, moveTaskList],
+    [boardId, moveTaskCard, moveTaskList, searchState],
   );
 
   useScrollable({ scrollableRef, speed: 'fast' });

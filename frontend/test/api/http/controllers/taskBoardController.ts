@@ -80,7 +80,7 @@ export const moveList = (
   id: TaskBoard['id'],
   params: Omit<MoveTaskListRequest, 'boardId'>,
 ): MoveTaskListResponse['data'] | null => {
-  const { srcIndex, destIndex, listId } = params;
+  const { srcIndex, destIndex, listId, sort } = params;
 
   const board = db.taskBoard.findFirst({
     where: { id: { equals: id } },
@@ -91,7 +91,20 @@ export const moveList = (
     return null;
   }
 
-  const listIds = [...board.listIds];
+  const orderedLists = sort?.key
+    ? db.taskList
+        .findMany({
+          where: { boardId: { equals: board.id } },
+        })
+        .sort((a, b) =>
+          sortFn(a as never, b as never, {
+            key: sort.key,
+            direction: sort.direction,
+          }),
+        )
+    : null;
+
+  const listIds = orderedLists?.map((card) => card.id) ?? [...board.listIds];
   const [removedListId] = listIds.splice(srcIndex, 1);
 
   if (removedListId !== listId) {
