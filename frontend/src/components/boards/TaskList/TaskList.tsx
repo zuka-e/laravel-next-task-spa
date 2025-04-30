@@ -1,25 +1,28 @@
-import {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type JSX,
-} from 'react';
-import { attachClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
-import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { memo, useCallback, useMemo, useRef, useState, type JSX } from 'react';
+import dynamic from 'next/dynamic';
+import { type DropIndicatorProps } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box';
 import { Card, CardActions, Chip, Grid, type SelectProps } from '@mui/material';
 import clsx from 'clsx';
+import { Virtualizer } from 'virtua';
 
-import { DND_ENTITY_TYPE, type DroppableItem } from '@/lib/dnd/entities';
+import { useDroppable, useScrollable, useSortable } from '@/lib/dnd/hooks';
 import { useTaskDetails } from '@/lib/hooks';
 import { useCreateTaskCardMutation } from '@/store/api';
 import type * as Model from '@/store/api/services/tasks/models';
 import { LabeledSelect } from '@/templates';
+import { useDeepEqualSelector } from '@/utils/hooks';
+import { sortFn } from '@/utils/sort';
 import { AddTaskButton } from '..';
 import { TaskCard } from '../TaskCard';
 import { ListCardHeader } from '.';
+
+const DropIndicator = dynamic<DropIndicatorProps>(
+  () =>
+    import('@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box').then(
+      (mod) => mod.default,
+    ),
+  { ssr: false },
+);
 
 const cardFilter = {
   ALL: 'All',
@@ -39,20 +42,39 @@ type TaskListProps = {
 const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
   const { list, index } = props;
 
+  const searchState = useDeepEqualSelector(
+    (state) => state.taskList.data[list.id]?.search,
+  );
   const { isTaskSelected } = useTaskDetails();
   const [filterValue, setFilterValue] = useState<FilterName>(cardFilter.ALL);
   const draggableRef = useRef<HTMLDivElement>(null);
   const dropzoneRef = useRef<HTMLDivElement>(null);
+  const itemDropzoneRef = useRef<HTMLDivElement>(null);
+  const scrollableRef = useRef<HTMLDivElement>(null);
 
   const [createTaskCard, { isLoading, error }] = useCreateTaskCardMutation();
 
   const filteredCards = useMemo(() => {
-    return (list.cards ?? []).filter((card) => {
+    const cards = (list.cards ?? []).filter((card) => {
       if (filterValue === cardFilter.TODO) return !card.done;
       else if (filterValue === cardFilter.DONE) return card.done;
       else return true;
     });
-  }, [filterValue, list]);
+
+    return !searchState?.sort?.key
+      ? cards
+      : cards.sort((a, b) =>
+          sortFn(a, b, {
+            key: searchState?.sort?.key as keyof typeof a,
+            direction: searchState?.sort?.direction,
+          }),
+        );
+  }, [
+    filterValue,
+    list.cards,
+    searchState?.sort?.direction,
+    searchState?.sort?.key,
+  ]);
 
   const handleChange = useCallback<NonNullable<SelectProps['onChange']>>(
     (event): void => {
@@ -61,77 +83,95 @@ const TaskList = memo(function TaskList(props: TaskListProps): JSX.Element {
     [],
   );
 
-  useEffect(() => {
-    if (!dropzoneRef.current) return;
+  const { isDragging, closestEdge } = useSortable({
+    draggableRef,
+    dropzoneRef,
+    data: {
+      type: 'column',
+      id: list.id,
+      index,
+    },
+    axis: 'horizontal',
+  });
 
-    return dropTargetForElements({
-      element: dropzoneRef.current,
-      getData: ({ input }) => {
-        const data: DroppableItem = {
-          isDroppable: true,
-          type: DND_ENTITY_TYPE.COLUMN,
-          id: list.id,
-          index,
-        } as const;
+  const { closestEdge: itemClosestEdge } = useDroppable({
+    ref: draggableRef,
+    data: {
+      type: 'column',
+      id: list.id,
+      index,
+      sort: searchState?.sort ? { ...searchState.sort } : undefined,
+    },
+    allowedEntities: ['item'],
+    dropzoneRef: itemDropzoneRef,
+  });
 
-        return draggableRef.current
-          ? attachClosestEdge(data, {
-              input,
-              element: draggableRef.current!,
-              allowedEdges: ['top', 'bottom'],
-            })
-          : data;
-      },
-    });
-  }, [list.id, index]);
+  useScrollable({ scrollableRef });
 
   return (
-    <div ref={dropzoneRef} className="h-full">
-      <Card
-        ref={draggableRef}
-        elevation={7}
-        className={clsx(
-          'flex max-h-full flex-col',
-          isTaskSelected('l', list.id)
-            ? 'bg-secondary-dark outline outline-primary'
-            : 'bg-secondary',
-        )}
-      >
-        <ListCardHeader list={list} />
+    <div ref={itemDropzoneRef} className="h-full">
+      <div ref={dropzoneRef} className="relative h-full">
+        <Card
+          ref={draggableRef}
+          elevation={7}
+          className={clsx(
+            'flex max-h-full flex-col hover:backdrop-opacity-0', // ※ `hover:...` is workaround for drag previews
+            isTaskSelected('l', list.id)
+              ? 'bg-secondary-dark outline outline-primary'
+              : 'bg-secondary',
+            isDragging && 'opacity-50',
+          )}
+        >
+          <ListCardHeader list={list} />
 
-        <CardActions>
-          <Grid container alignItems="center" justifyContent="space-between">
-            <Grid item>
-              <LabeledSelect
-                label="Filter"
-                options={cardFilter}
-                value={filterValue}
-                color="error"
-                onChange={handleChange}
-              />
+          <CardActions>
+            <Grid container alignItems="center" justifyContent="space-between">
+              <Grid item>
+                <LabeledSelect
+                  label="Filter"
+                  options={cardFilter}
+                  value={filterValue}
+                  color="error"
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item>
+                <Chip label={filteredCards.length} title="タスク数" />
+              </Grid>
             </Grid>
-            <Grid item>
-              <Chip label={filteredCards.length} title="タスク数" />
-            </Grid>
-          </Grid>
-        </CardActions>
+          </CardActions>
 
-        <div className="overflow-x-hidden overflow-y-auto">
-          <div className="flex flex-col">
-            {filteredCards.map((card, i) => (
-              <TaskCard key={card.id} card={card} index={i} />
-            ))}
+          {itemClosestEdge === 'top' && (
+            <div className="relative mx-2">
+              <DropIndicator edge={itemClosestEdge} gap="0.25rem" />
+            </div>
+          )}
+          <div
+            ref={scrollableRef}
+            className="overflow-x-hidden overflow-y-auto"
+          >
+            <Virtualizer>
+              {filteredCards.map((card, i) => (
+                <TaskCard key={card.id} card={card} index={i} />
+              ))}
+            </Virtualizer>
           </div>
-        </div>
+          {itemClosestEdge === 'bottom' && (
+            <div className="relative mx-2">
+              <DropIndicator edge={itemClosestEdge} gap="0.25rem" />
+            </div>
+          )}
 
-        <CardActions>
-          <AddTaskButton
-            disabled={isLoading}
-            error={error}
-            onSubmit={(data) => createTaskCard({ listId: list.id, ...data })}
-          />
-        </CardActions>
-      </Card>
+          <CardActions>
+            <AddTaskButton
+              disabled={isLoading}
+              error={error}
+              onSubmit={(data) => createTaskCard({ listId: list.id, ...data })}
+            />
+          </CardActions>
+        </Card>
+        {closestEdge && <DropIndicator edge={closestEdge} gap="1rem" />}
+      </div>
     </div>
   );
 });

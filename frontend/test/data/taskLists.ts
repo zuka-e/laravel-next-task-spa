@@ -35,8 +35,8 @@ type SeederProps = {
 };
 
 const seed = (props: SeederProps) => {
-  [...Array(props.count)].forEach((_, i) => {
-    db.taskList.create({
+  return [...Array(props.count)].map((_, i) => {
+    return db.taskList.create({
       id: faker.string.uuid(),
       boardId: props.belongsTo.board.id,
       title: `${faker.hacker.adjective()} ${faker.hacker.verb()}`,
@@ -61,13 +61,25 @@ const initialize = () => {
     .findMany({ where: { userId: { equals: guestUser.id } } })
     .forEach((board, i) => {
       const count = i === 0 ? 50 : 2;
-      seed({ count, belongsTo: { board } });
+      const lists = seed({ count, belongsTo: { board } });
+      const initialListIds = i === 0 ? [listOfGuestUser.id] : [];
+
+      db.taskBoard.update({
+        where: { id: { equals: board.id } },
+        data: { listIds: [...initialListIds, ...lists.map((list) => list.id)] },
+      });
     });
 
   db.taskBoard
     .findMany({ where: { userId: { equals: otherUser.id } } })
-    .forEach((board) => {
-      seed({ count: 2, belongsTo: { board } });
+    .forEach((board, i) => {
+      const lists = seed({ count: 2, belongsTo: { board } });
+      const initialListIds = i === 0 ? [listOfOtherUser.id] : [];
+
+      db.taskBoard.update({
+        where: { id: { equals: board.id } },
+        data: { listIds: [...initialListIds, ...lists.map((list) => list.id)] },
+      });
     });
 };
 

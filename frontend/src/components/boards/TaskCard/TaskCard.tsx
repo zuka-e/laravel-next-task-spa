@@ -1,27 +1,39 @@
-import {
-  memo,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type JSX,
-} from 'react';
-import { attachClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
-import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
-import {
-  draggable,
-  dropTargetForElements,
-} from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { memo, useCallback, useRef, type JSX } from 'react';
+import dynamic from 'next/dynamic';
+import { type DropIndicatorProps } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box';
 import { Typography } from '@mui/material';
 import clsx from 'clsx';
 
-import {
-  DND_ENTITY_TYPE,
-  type DraggableItem,
-  type DroppableItem,
-} from '@/lib/dnd/entities';
+import { useSortable } from '@/lib/dnd/hooks';
 import { useTaskDetails } from '@/lib/hooks';
 import type * as Model from '@/store/api/services/tasks/models';
+
+/**
+ * ※ In case of normal import, an error will happens.
+ *
+ * Error: Failed to load external module @atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box: SyntaxError: Unexpected token '.'
+ *
+ * [externals]/@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box [external] (@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box, cjs)
+ *
+ * WARN  Issues with peer dependencies found
+ * .
+ * └─┬ @atlaskit/pragmatic-drag-and-drop-react-drop-indicator 3.1.0
+ *   └─┬ @atlaskit/tokens 4.8.0
+ *     ├── ✕ unmet peer react@^18.2.0: found 19.1.0
+ *     ├─┬ @atlaskit/platform-feature-flags 1.1.1
+ *     │ └─┬ @atlaskit/feature-gate-js-client 5.0.0
+ *     │   └─┬ @atlaskit/atlassian-context 0.2.0
+ *     │     └── ✕ unmet peer react@^18.2.0: found 19.1.0
+ *     └─┬ @atlaskit/ds-lib 4.0.0
+ *       └── ✕ unmet peer react@^18.2.0: found 19.1.0
+ */
+const DropIndicator = dynamic<DropIndicatorProps>(
+  () =>
+    import('@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box').then(
+      (mod) => mod.default,
+    ),
+  { ssr: false },
+);
 
 type TaskCardProps = {
   card: Pick<Model.TaskCard, 'id' | 'listId' | 'title'>;
@@ -31,8 +43,6 @@ type TaskCardProps = {
 const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
   const { card, index } = props;
   const { showTaskDetails, isTaskSelected } = useTaskDetails();
-  const [isDragging, setIsDragging] = useState(false);
-  const [isDraggedOver, setIsDraggedOver] = useState(false);
 
   const draggableRef = useRef<HTMLDivElement>(null);
   const dropzoneRef = useRef<HTMLDivElement>(null);
@@ -41,65 +51,32 @@ const TaskCard = memo(function TaskCard(props: TaskCardProps): JSX.Element {
     showTaskDetails('c', card.id);
   }, [card.id, showTaskDetails]);
 
-  useEffect(() => {
-    if (!draggableRef.current || !dropzoneRef.current) return;
-
-    return combine(
-      draggable({
-        element: draggableRef.current,
-        getInitialData: (): DraggableItem =>
-          ({
-            isDraggable: true,
-            type: DND_ENTITY_TYPE.ITEM,
-            id: card.id,
-            index,
-            parentId: card.listId,
-          }) as const,
-        onDragStart: () => setIsDragging(true),
-        onDrop: () => setIsDragging(false),
-      }),
-      dropTargetForElements({
-        element: dropzoneRef.current,
-        onDragStart: () => setIsDraggedOver(true),
-        onDragEnter: () => setIsDraggedOver(true),
-        onDragLeave: () => setIsDraggedOver(false),
-        onDrop: () => setIsDraggedOver(false),
-        getData: ({ input, element }) => {
-          const data: DroppableItem = {
-            isDroppable: true,
-            type: DND_ENTITY_TYPE.ITEM,
-            id: card.id,
-            index,
-          } as const;
-
-          return attachClosestEdge(data, {
-            input,
-            element,
-            allowedEdges: ['top', 'bottom'],
-          });
-        },
-      }),
-    );
-  }, [card.id, card.listId, index]);
+  const { isDragging, closestEdge } = useSortable({
+    draggableRef,
+    dropzoneRef,
+    data: {
+      type: 'item',
+      id: card.id,
+      index,
+      parentId: card.listId,
+    },
+  });
 
   return (
-    <div
-      ref={dropzoneRef}
-      onClick={handleClick}
-      className={clsx('px-2 py-1', isDragging && 'opacity-50')}
-    >
+    <div ref={dropzoneRef} onClick={handleClick} className="px-2 py-1">
       <div
         ref={draggableRef}
         className={clsx(
-          'p-2 cursor-pointer bg-white rounded-md hover:opacity-80',
+          'relative p-2 cursor-pointer bg-white rounded-md hover:opacity-80',
           isTaskSelected('c', card.id) && 'opacity-80 outline outline-primary',
-          isDraggedOver && 'bg-gray-100',
+          isDragging && 'opacity-50',
         )}
         title={card.title}
       >
         <Typography className="line-clamp-3 whitespace-pre-wrap p-1.5">
           {card.title}
         </Typography>
+        {closestEdge && <DropIndicator edge={closestEdge} />}
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, type JSX } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, type JSX } from 'react';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -11,23 +11,28 @@ import type { DragLocationHistory } from '@atlaskit/pragmatic-drag-and-drop/type
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 import { Container, Divider, Grid, IconButton, Skeleton } from '@mui/material';
 import { skipToken } from '@reduxjs/toolkit/query';
+import { Virtualizer } from 'virtua';
 
 import { AddTaskButton, EditableTitle, SearchField } from '@/components/boards';
 import { InfoBox } from '@/components/boards/InfoBox';
 import { BoardMenu } from '@/components/boards/TaskBoard';
 import { TaskList } from '@/components/boards/TaskList';
 import { BaseLayout } from '@/layouts';
-import { getDropTarget, isDraggableItem } from '@/lib/dnd/entities';
+import { getDestIndex, getDropTarget } from '@/lib/dnd';
+import { isDraggableItem } from '@/lib/dnd/entities';
+import { useScrollable } from '@/lib/dnd/hooks';
 import type { AuthPage } from '@/routes';
 import {
   useCreateTaskListMutation,
   useGetKanbanBoardQuery,
   useMoveTaskCardMutation,
+  useMoveTaskListMutation,
   useUpdateTaskBoardMutation,
 } from '@/store/api';
 import { isNotFoundError } from '@/store/api/utils/errors';
 import { PopoverControl } from '@/templates';
-import { useRoute } from '@/utils/hooks';
+import { useDeepEqualSelector, useRoute } from '@/utils/hooks';
+import { getOrderedArray } from '@/utils/sort';
 
 type TaskBoardProps = AuthPage;
 
@@ -50,6 +55,16 @@ export const getStaticProps: GetStaticProps<TaskBoardProps> = async () => {
 const TaskBoard = memo(function TaskBoard(): JSX.Element {
   const router = useRouter();
   const { pathParams } = useRoute();
+
+  const boardId = useMemo(() => {
+    return pathParams?.['boardId'] ?? '';
+  }, [pathParams]);
+
+  const searchState = useDeepEqualSelector(
+    (state) => state.taskBoard.data[boardId]?.search,
+  );
+
+  const scrollableRef = useRef<HTMLDivElement>(null);
   const [
     createTaskList,
     { isLoading: isLoadingToCreate, error: creationError },
@@ -58,16 +73,26 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
     updateTaskBoard,
     { isLoading: isLoadingToUpdate, error: updateError },
   ] = useUpdateTaskBoardMutation();
+  const [moveTaskList] = useMoveTaskListMutation();
   const [moveTaskCard] = useMoveTaskCardMutation();
 
   const { data: { data: { kanbanBoard = undefined } = {} } = {}, error } =
-    useGetKanbanBoardQuery(
-      pathParams ? { id: pathParams['boardId'] ?? '' } : skipToken,
-    );
+    useGetKanbanBoardQuery(pathParams ? { id: boardId } : skipToken);
 
   if (isNotFoundError(error)) {
     router.replace('/boards');
   }
+
+  const orderedLists = useMemo(() => {
+    if (!kanbanBoard) return [];
+
+    const key = searchState?.sort?.key;
+    const direction = searchState?.sort?.direction;
+
+    return !key
+      ? getOrderedArray(kanbanBoard.lists, { ids: kanbanBoard.listIds })
+      : getOrderedArray(kanbanBoard.lists, { key: key as never, direction });
+  }, [kanbanBoard, searchState?.sort?.direction, searchState?.sort?.key]);
 
   const handleDrop = useCallback(
     async ({
@@ -86,35 +111,78 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
         return;
       }
 
+      // If draggable and droppable is the same
+      if (dest.dropTargets[0]?.data['id'] === source.data.id) {
+        return;
+      }
+
       /** Destination card if dropped on it */
       const destCard = getDropTarget(dest.dropTargets, 'item');
-      const destList = getDropTarget(dest.dropTargets, 'column');
-
-      if (!destList) {
-        throw new Error('Destination column is not found.');
-      }
+      const destList = getDropTarget(dest.dropTargets, 'column')!;
+      const srcIndex = source.data.index;
 
       /** Dropped area of the destination element */
       // ※ Added by `attachClosestEdge()`
-      const closestEdge = destCard ? null : extractClosestEdge(destList.data);
+      const closestEdge = destCard
+        ? extractClosestEdge(destCard.data)
+        : extractClosestEdge(destList.data);
 
-      const destIndex = destCard
-        ? destCard.data.index
-        : closestEdge === 'top'
-          ? 0
-          : (kanbanBoard?.lists?.[destList.data.id]?.cards.length ?? 0);
+      if (source.data['type'] === 'column') {
+        const destIndex = getDestIndex({
+          srcIndex,
+          targetIndex: destList.data.index,
+          closestEdge,
+          axis: 'horizontal',
+        });
+
+        if (srcIndex === destIndex) {
+          return;
+        }
+
+        moveTaskList({
+          boardId,
+          srcIndex,
+          destIndex,
+          listId: source.data.id,
+          sort: searchState?.sort,
+        });
+
+        return;
+      }
+
+      const src = location.initial;
+      const srcList = getDropTarget(src.dropTargets, 'column')!;
+
+      const destIndex = getDestIndex({
+        srcIndex: srcList.data.id === destList.data.id ? srcIndex : null,
+        targetIndex: destCard?.data.index ?? null,
+        closestEdge,
+        axis: 'vertical',
+      });
+
+      if (srcList.data.id === destList.data.id && srcIndex === destIndex) {
+        return;
+      }
 
       moveTaskCard({
-        boardId: pathParams?.['boardId'] ?? '',
-        srcListId: source.data.parentId!,
-        destListId: destList.data.id,
-        srcIndex: source.data.index,
-        destIndex,
+        boardId,
+        src: {
+          listId: srcList.data.id,
+          index: srcIndex,
+          sort: srcList.data.sort as never,
+        },
+        dest: {
+          listId: destList.data.id,
+          index: destIndex,
+          sort: destList.data.sort as never,
+        },
         cardId: source.data.id,
       });
     },
-    [kanbanBoard, moveTaskCard, pathParams],
+    [boardId, moveTaskCard, moveTaskList, searchState],
   );
+
+  useScrollable({ scrollableRef, speed: 'fast' });
 
   useEffect(() => {
     return monitorForElements({
@@ -179,17 +247,25 @@ const TaskBoard = memo(function TaskBoard(): JSX.Element {
             className="relative flex-auto flex-nowrap justify-between"
           >
             <Grid
+              ref={scrollableRef}
               container
               wrap="nowrap"
-              className="absolute inset-0 overflow-x-auto [&>div]:w-80 [&>div]:shrink-0 [&>div]:p-2"
+              className="absolute inset-0 overflow-x-auto"
             >
-              {Object.values(kanbanBoard?.lists ?? {}).map((list, i) => (
-                <Grid item key={list.id} id={list.id}>
-                  <TaskList list={list} index={i} />
-                </Grid>
-              ))}
+              <Virtualizer horizontal>
+                {orderedLists.map((list, i) => (
+                  <Grid
+                    item
+                    key={list.id}
+                    id={list.id}
+                    className="w-80 shrink-0 p-2"
+                  >
+                    <TaskList key={list.id} list={list} index={i} />
+                  </Grid>
+                ))}
+              </Virtualizer>
               {kanbanBoard && (
-                <Grid item>
+                <Grid item className="w-80 shrink-0 p-2">
                   <AddTaskButton
                     disabled={isLoadingToCreate}
                     error={creationError}

@@ -1,6 +1,7 @@
 import { type AxiosError } from 'axios';
 
 import { SEVERITIES } from '@/store/api/config/response';
+import type { Sort } from '@/utils/sort';
 import type { TaskBoard, TaskCard, TaskList, User } from './models';
 
 type Severity = (typeof SEVERITIES)[number];
@@ -340,13 +341,33 @@ export type DestroyTaskCardResponse = ApiResponse<{
 
 export type DestroyTaskCardRequest = Pick<TaskCard, 'id'>;
 
-export type MoveTaskCardRequest = {
-  boardId: string;
-  srcListId: string;
-  destListId: string;
+export type MoveTaskListRequest = {
+  boardId: TaskBoard['id'];
   srcIndex: number;
   destIndex: number;
-  cardId: string;
+  listId: TaskList['id'];
+  sort?: Sort<TaskList>;
+};
+
+export type MoveTaskListResponse = ApiResponse<{
+  data: {
+    board: Pick<TaskBoard, 'id' | 'title' | 'listIds'>;
+  };
+}>;
+
+export type MoveTaskCardRequest = {
+  boardId: TaskBoard['id'];
+  src: {
+    listId: TaskList['id'];
+    index: number;
+    sort?: Sort<TaskCard>;
+  };
+  dest: {
+    listId: TaskList['id'];
+    index: number;
+    sort?: Sort<TaskCard>;
+  };
+  cardId: TaskCard['id'];
 };
 
 export type MoveTaskCardResponse = ApiResponse<{
