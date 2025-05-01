@@ -61,9 +61,10 @@ const Header = memo(function Header(): JSX.Element {
             <Image
               src={logo.src}
               alt={APP_NAME}
-              width="120"
-              height="30"
+              width="0"
+              height="0"
               priority
+              className="inline-block w-32 h-8"
             />
           </Link>
         </div>

@@ -6,7 +6,7 @@ const colors = require('tailwindcss/colors');
 /** @satisfies {import('tailwindcss').Config} */
 const config = {
   content: ['./src/**/*.{ts,tsx}'],
-  important: '#__next',
+  important: true,
   theme: {
     // https://tailwindcss.com/docs/screens
     screens: {
