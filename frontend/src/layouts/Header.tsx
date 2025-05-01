@@ -64,7 +64,7 @@ const Header = memo(function Header(): JSX.Element {
               width="0"
               height="0"
               priority
-              className="w-32 h-8"
+              className="inline-block w-32 h-8"
             />
           </Link>
         </div>
