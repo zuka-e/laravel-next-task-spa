@@ -19,6 +19,9 @@ ARG HOME=/home/${USER}
 
 ENV LC_ALL=C.UTF-8
 
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
 WORKDIR ${WORKDIR}
 
 RUN useradd -m -s /bin/bash ${USER}
@@ -36,6 +39,8 @@ RUN apt-get update && apt-get install -y \
     && apt-get -y autoremove \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+RUN corepack enable
+
 # VSCode extensions for DevContainer
 RUN mkdir -p ${HOME}/.vscode-server/extensions \
     && chown -R ${USER} ${HOME}/.vscode-server
@@ -44,11 +49,11 @@ RUN mkdir -p ${HOME}/.vscode-server/extensions \
 RUN mkdir -p ./node_modules \
     && chown -R ${USER}:${USER} ./node_modules
 
-USER ${USER}
-
-COPY ./package.json ./pnpm-lock.yaml ./
+COPY --chown=${USER}:${USER} ./package.json ./pnpm-lock.yaml ./
 
 RUN pnpm install --frozen-lockfile --prefer-offline
+
+USER ${USER}
 
 COPY ./ ./
 
