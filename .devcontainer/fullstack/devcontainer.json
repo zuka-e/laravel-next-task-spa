@@ -1,10 +1,12 @@
 // https://containers.dev/implementors/json_reference/#compose-specific
 {
   "dockerComposeFile": [
-    "${localWorkspaceFolder}/docker-compose.base.yml",
-    "${localWorkspaceFolder}/docker-compose.backend.yml",
-    "${localWorkspaceFolder}/docker-compose.frontend.yml",
-    "${localWorkspaceFolder}/docker-compose.devcontainer.yml"
+    "${localWorkspaceFolder}/docker-compose.backend.base.yml",
+    "${localWorkspaceFolder}/docker-compose.backend.dev.yml",
+    "${localWorkspaceFolder}/docker-compose.frontend.base.yml",
+    "${localWorkspaceFolder}/docker-compose.frontend.dev.yml",
+    "${localWorkspaceFolder}/docker-compose.backend.devcontainer.yml",
+    "${localWorkspaceFolder}/docker-compose.frontend.devcontainer.yml"
   ],
   "initializeCommand": "${localWorkspaceFolder}/.devcontainer/init-env.sh backend,frontend",
   "shutdownAction": "none",

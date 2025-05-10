@@ -1,0 +1,22 @@
+# If it fails to `Reopen in Container`, see the *container* log for the detailed and ensure:
+# - to set `.env` values for the expected environment
+# - to remove the previous volume that affects the subsequent
+# - local builds works (`docker-compose -f docker-compose.base.yml -f docker-compose.dev.yml`)
+# If Git doen’t works, `Manage Unsafe Repositories` form `Source Control` in sidebar.
+
+services:
+  node:
+    profiles: ["frontend"]
+    volumes:
+      - type: volume
+        source: vscode-extensions
+        target: /home/${CONTAINER_USER}/.vscode-server/extensions
+      - type: bind
+        source: ./
+        target: ${CONTAINER_PROJECT_DIR}
+        consistency: delegated
+volumes:
+  vscode-extensions:
+    # https://docs.docker.com/compose/compose-file/07-volumes/#name
+    name: vscode-extensions-for-laravel-api
+    external: true
