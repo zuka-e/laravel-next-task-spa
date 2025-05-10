@@ -10,7 +10,7 @@ ARG NODE_VERSION
 
 # cf. https://hub.docker.com/_/node/
 # cf. https://github.com/nodejs/docker-node/blob/main/docs/BestPractices.md
-FROM node:${NODE_VERSION:-22} as base
+FROM node:${NODE_VERSION:-22} AS base
 
 ARG CONFIG_DIR=./docker/app
 ARG WORKDIR=/var/www/html
@@ -31,7 +31,7 @@ RUN useradd -m -s /bin/bash ${USER}
 #==========================================================================
 # cf. https://github.com/vercel/next.js/blob/canary/examples/with-docker-compose/next-app/dev.Dockerfile
 
-FROM base as local
+FROM base AS local
 
 RUN apt-get update && apt-get install -y \
         git \
@@ -63,7 +63,7 @@ CMD ["pnpm", "dev"]
 # For package installation
 #==========================================================================
 
-FROM base as build
+FROM base AS build
 
 COPY ./package.json ./pnpm.lock ./
 
@@ -78,7 +78,7 @@ RUN pnpm build
 #==========================================================================
 # cf. https://github.com/vercel/next.js/blob/canary/examples/with-docker-compose/next-app/prod.Dockerfile
 
-FROM build as production
+FROM build AS production
 
 RUN mkdir -p ./.next \
     && chown -R ${USER}:${USER} ./.next
