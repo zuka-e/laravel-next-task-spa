@@ -3,7 +3,6 @@
   "dockerComposeFile": [
     "${localWorkspaceFolder}/docker-compose.base.yml",
     "${localWorkspaceFolder}/docker-compose.frontend.yml",
-    "${localWorkspaceFolder}/docker-compose.dev.yml",
     "${localWorkspaceFolder}/docker-compose.devcontainer.yml"
   ],
   "initializeCommand": "${localWorkspaceFolder}/.devcontainer/init-env.sh frontend",

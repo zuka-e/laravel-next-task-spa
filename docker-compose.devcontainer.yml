@@ -6,6 +6,7 @@
 
 services:
   php-fpm:
+    profiles: ["backend"]
     volumes:
       - type: volume
         source: vscode-extensions
@@ -15,6 +16,7 @@ services:
         target: ${CONTAINER_PROJECT_DIR}
         consistency: delegated
   node:
+    profiles: ["frontend"]
     volumes:
       - type: volume
         source: vscode-extensions

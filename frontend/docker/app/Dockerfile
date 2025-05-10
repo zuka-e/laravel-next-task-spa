@@ -1,6 +1,6 @@
 # cf. https://docs.docker.com/develop/develop-images/dockerfile_best-practices
 
-ARG NODE_VERSION=22
+ARG NODE_VERSION
 
 # cf. https://github.com/vercel/next.js/blob/canary/examples/with-docker/Dockerfile
 
@@ -10,7 +10,7 @@ ARG NODE_VERSION=22
 
 # cf. https://hub.docker.com/_/node/
 # cf. https://github.com/nodejs/docker-node/blob/main/docs/BestPractices.md
-FROM node:${NODE_VERSION} as base
+FROM node:${NODE_VERSION:-22} as base
 
 ARG CONFIG_DIR=./docker/app
 ARG WORKDIR=/var/www/html

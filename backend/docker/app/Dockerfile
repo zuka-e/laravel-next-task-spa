@@ -7,13 +7,13 @@ FROM composer:2.8 as composer
 
 # cf. https://hub.docker.com/_/node/
 # cf. https://github.com/nodejs/docker-node/blob/main/docs/BestPractices.md
-FROM node:22 as node
+FROM node:${NODE_VERSION:-22} as node
 
 #==========================================================================
 # Base Image for each environment
 #==========================================================================
 # cf. https://hub.docker.com/_/php - Image Variants
-FROM php:${PHP_VERSION}-fpm AS base
+FROM php:${PHP_VERSION:-8.4}-fpm as base
 
 ARG CONFIG_DIR=./docker/app
 ARG WORKDIR=/var/www/html

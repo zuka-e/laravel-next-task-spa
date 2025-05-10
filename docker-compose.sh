@@ -17,8 +17,8 @@ resolve_env ".env.docker-compose"
 resolve_env "./backend/.env" &&
   docker compose \
     -f docker-compose.base.yml \
-    -f docker-compose.fullstack.yml \
-    -f docker-compose.dev.yml \
+    -f docker-compose.backend.yml \
+    -f docker-compose.frontend.yml \
     --profile backend \
     --profile frontend \
     "$@"

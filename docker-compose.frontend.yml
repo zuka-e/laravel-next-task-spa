@@ -1,11 +1,54 @@
+# cf. https://docs.docker.com/compose/compose-file
+# cf. https://docs.docker.com/compose/multiple-compose-files
+# cf. https://docs.docker.com/compose/reference/#specifying-multiple-compose-files
+
+# e.g. docker-compose -f docker-compose.base.yml -f docker-compose.dev.yml --progress=plain build
+# e.g. docker compose -f docker-compose.base.yml -f docker-compose.dev.yml exec -u root php-fpm bash
+
 services:
   nginx:
-    profiles: ['frontend']
+    profiles: ["frontend"]
+    # cf. https://hub.docker.com/_/nginx
+    image: nginx:1.28
+    # cf. https://docs.docker.com/compose/environment-variables/env-file
+    environment:
+      APP_DOMAIN: ${APP_DOMAIN}
+    ports:
+      - ${FORWARD_APP_PORT:-80}:80
     volumes:
       - type: bind
-        source: ./frontend/docker/nginx/frontend.conf
+        source: ./frontend/docker/nginx/dev.conf
         target: /etc/nginx/templates/frontend.conf.template
         read_only: true
     depends_on:
       node:
         condition: service_started
+  node:
+    profiles: ["frontend"]
+    # cf. https://docs.docker.com/compose/compose-file/build
+    build:
+      context: ./frontend
+      dockerfile: ./docker/app/Dockerfile
+      target: ${ENV}
+      args:
+        CONFIG_DIR: ./docker/app
+        NODE_VERSION: ${NODE_VERSION}
+        USER: ${CONTAINER_USER:-nextjs}
+        WORKDIR: ${CONTAINER_PROJECT_DIR}/frontend
+    image: ${USER}/${COMPOSE_PROJECT_NAME}-node
+    environment:
+      SHELL: /usr/bin/bash
+    volumes:
+      - type: volume
+        source: node_modules
+        target: ${CONTAINER_PROJECT_DIR}/frontend/node_modules/
+      # cf. https://docs.docker.com/desktop/previous-versions/edge-releases-mac/#docker-desktop-community-2330
+      - type: bind
+        source: ./frontend
+        target: ${CONTAINER_PROJECT_DIR}/frontend
+        consistency: delegated
+    ports:
+      - ${FORWARD_NODE_PORT:-3000}:3000
+volumes:
+  node_modules:
+    driver: local
