@@ -7,19 +7,29 @@
 
 services:
   php-fpm:
+    volumes:
+      # cf. https://docs.docker.com/desktop/previous-versions/edge-releases-mac/#docker-desktop-community-2330
+      - type: bind
+        source: ./backend
+        target: ${CONTAINER_PROJECT_DIR}/backend
+        consistency: delegated
+      - type: volume
+        source: node_modules-backend
+        target: ${CONTAINER_PROJECT_DIR}/backend/node_modules/
     depends_on:
       redis:
         condition: service_healthy
         restart: true
   mysql:
+    profiles: ["backend"]
     volumes:
       - type: bind
         source: ./backend/docker/mysql/create-testing-database.sh
         target: /docker-entrypoint-initdb.d/10-create-testing-database.sh
         read_only: true
   redis:
+    profiles: ["backend"]
     image: redis:7.4-alpine
-    profiles: ['backend']
     ports:
       - ${FORWARD_REDIS_PORT:-6380}:6379
     volumes:
@@ -27,45 +37,19 @@ services:
         source: redis
         target: /data
     healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
+      test: ["CMD", "redis-cli", "ping"]
       retries: 3
       timeout: 5s
   # cf. https://github.com/axllent/mailpit
   mailpit:
+    profiles: ["backend"]
     # cf. https://hub.docker.com/r/axllent/mailpit
     image: axllent/mailpit:latest
-    profiles: ['backend']
     ports:
       - ${FORWARD_MAILPIT_PORT:-1025}:1025
       - ${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025
-  node:
-    # cf. https://docs.docker.com/compose/compose-file/build
-    build:
-      context: ./frontend
-      dockerfile: ./docker/app/Dockerfile
-      target: ${ENV}
-      args:
-        CONFIG_DIR: ./docker/app
-        NODE_VERSION: ${NODE_VERSION}
-        USER: ${CONTAINER_USER:-nextjs}
-        WORKDIR: ${CONTAINER_PROJECT_DIR}/frontend
-    image: ${USER}/${COMPOSE_PROJECT_NAME}-node
-    profiles: ['frontend']
-    environment:
-      SHELL: /usr/bin/bash
-    volumes:
-      - type: volume
-        source: node_modules
-        target: ${CONTAINER_PROJECT_DIR}/frontend/node_modules/
-      # cf. https://docs.docker.com/desktop/previous-versions/edge-releases-mac/#docker-desktop-community-2330
-      - type: bind
-        source: ./frontend
-        target: ${CONTAINER_PROJECT_DIR}/frontend
-        consistency: delegated
-    ports:
-      - ${FORWARD_NODE_PORT:-3000}:3000
 volumes:
   redis:
     driver: local
-  node_modules:
+  node_modules-backend:
     driver: local

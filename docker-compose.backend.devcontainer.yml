@@ -6,19 +6,11 @@
 
 services:
   php-fpm:
+    profiles: ["backend"]
     volumes:
       - type: volume
         source: vscode-extensions
         target: /home/${WEB_USER}/.vscode-server/extensions
-      - type: bind
-        source: ./
-        target: ${CONTAINER_PROJECT_DIR}
-        consistency: delegated
-  node:
-    volumes:
-      - type: volume
-        source: vscode-extensions
-        target: /home/${CONTAINER_USER}/.vscode-server/extensions
       - type: bind
         source: ./
         target: ${CONTAINER_PROJECT_DIR}
