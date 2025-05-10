@@ -8,13 +8,6 @@
 services:
   nginx:
     profiles: ["frontend"]
-    # cf. https://hub.docker.com/_/nginx
-    image: nginx:1.28
-    # cf. https://docs.docker.com/compose/environment-variables/env-file
-    environment:
-      APP_DOMAIN: ${APP_DOMAIN}
-    ports:
-      - ${FORWARD_APP_PORT:-80}:80
     volumes:
       - type: bind
         source: ./frontend/docker/nginx/dev.conf
