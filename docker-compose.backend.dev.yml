@@ -29,7 +29,7 @@ services:
         read_only: true
   redis:
     profiles: ["backend"]
-    image: redis:7.4-alpine
+    image: redis:8.0-alpine
     ports:
       - ${FORWARD_REDIS_PORT:-6380}:6379
     volumes:
