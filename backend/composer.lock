@@ -293,22 +293,23 @@
         },
         {
             "name": "bref/laravel-bridge",
-            "version": "2.5.6",
+            "version": "2.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brefphp/laravel-bridge.git",
-                "reference": "e22f2989aceea56e5d9e26d31b60f50a3d113651"
+                "reference": "a748a4bf1fbcfc89d3f6bb872192682297b32aa9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brefphp/laravel-bridge/zipball/e22f2989aceea56e5d9e26d31b60f50a3d113651",
-                "reference": "e22f2989aceea56e5d9e26d31b60f50a3d113651",
+                "url": "https://api.github.com/repos/brefphp/laravel-bridge/zipball/a748a4bf1fbcfc89d3f6bb872192682297b32aa9",
+                "reference": "a748a4bf1fbcfc89d3f6bb872192682297b32aa9",
                 "shasum": ""
             },
             "require": {
                 "aws/aws-sdk-php": "^3.222",
                 "bref/bref": "^2.1.8",
                 "bref/laravel-health-check": "^1",
+                "bref/monolog-bridge": "^1.0",
                 "illuminate/container": "^8.0 || ^9.0 || ^10.0 || ^11.0 || ^12.0",
                 "illuminate/contracts": "^8.0 || ^9.0 || ^10.0 || ^11.0 || ^12.0",
                 "illuminate/http": "^8.0 || ^9.0 || ^10.0 || ^11.0 || ^12.0",
@@ -319,10 +320,10 @@
                 "riverline/multipart-parser": "^2.0"
             },
             "require-dev": {
-                "nunomaduro/larastan": "^2.2",
+                "larastan/larastan": "^2.11 || ^3",
                 "orchestra/testbench": "^7.13 || ^9.0 || ^10.0",
                 "php-parallel-lint/php-parallel-lint": "^1.3",
-                "phpunit/phpunit": "^9.5",
+                "phpunit/phpunit": "^9.5 || ^10 || ^11",
                 "squizlabs/php_codesniffer": "^3.7"
             },
             "type": "library",
@@ -356,9 +357,9 @@
             ],
             "support": {
                 "issues": "https://github.com/brefphp/laravel-bridge/issues",
-                "source": "https://github.com/brefphp/laravel-bridge/tree/2.5.6"
+                "source": "https://github.com/brefphp/laravel-bridge/tree/2.6.0"
             },
-            "time": "2025-03-31T17:36:30+00:00"
+            "time": "2025-06-14T15:19:29+00:00"
         },
         {
             "name": "bref/laravel-health-check",
@@ -415,6 +416,59 @@
                 }
             ],
             "time": "2025-02-25T10:34:39+00:00"
+        },
+        {
+            "name": "bref/monolog-bridge",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/brefphp/monolog-bridge.git",
+                "reference": "0dd46623b4a298838ca103f93d8cb29db029cc30"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/brefphp/monolog-bridge/zipball/0dd46623b4a298838ca103f93d8cb29db029cc30",
+                "reference": "0dd46623b4a298838ca103f93d8cb29db029cc30",
+                "shasum": ""
+            },
+            "require": {
+                "monolog/monolog": "^2.4|^3",
+                "php": ">=8.0"
+            },
+            "require-dev": {
+                "mnapoli/hard-mode": "^0.3",
+                "phpstan/phpstan": "^1",
+                "phpunit/phpunit": "^9.6|^10.5|^11|^12"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Bref\\Monolog\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Monolog formatter optimized for AWS Lambda and CloudWatch",
+            "keywords": [
+                "aws",
+                "bref",
+                "cloudwatch",
+                "lambda",
+                "monolog"
+            ],
+            "support": {
+                "issues": "https://github.com/brefphp/monolog-bridge/issues",
+                "source": "https://github.com/brefphp/monolog-bridge/tree/1.0.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/mnapoli",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-06-14T15:06:36+00:00"
         },
         {
             "name": "brick/math",
@@ -1711,16 +1765,16 @@
         },
         {
             "name": "laravel/fortify",
-            "version": "v1.25.4",
+            "version": "v1.27.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/fortify.git",
-                "reference": "f185600e2d3a861834ad00ee3b7863f26ac25d3f"
+                "reference": "0fb2ec99dfee77ed66884668fc06683acca91ebd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/fortify/zipball/f185600e2d3a861834ad00ee3b7863f26ac25d3f",
-                "reference": "f185600e2d3a861834ad00ee3b7863f26ac25d3f",
+                "url": "https://api.github.com/repos/laravel/fortify/zipball/0fb2ec99dfee77ed66884668fc06683acca91ebd",
+                "reference": "0fb2ec99dfee77ed66884668fc06683acca91ebd",
                 "shasum": ""
             },
             "require": {
@@ -1772,7 +1826,7 @@
                 "issues": "https://github.com/laravel/fortify/issues",
                 "source": "https://github.com/laravel/fortify"
             },
-            "time": "2025-01-26T19:34:46+00:00"
+            "time": "2025-06-11T14:30:52+00:00"
         },
         {
             "name": "laravel/framework",
@@ -2264,16 +2318,16 @@
         },
         {
             "name": "laravel/telescope",
-            "version": "v5.9.0",
+            "version": "v5.9.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/telescope.git",
-                "reference": "f729607079c20fc0f82b9e3e7d533248d18dc554"
+                "reference": "403d4ad1ecfe126139f5cf29cabd6b1c816c46a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/telescope/zipball/f729607079c20fc0f82b9e3e7d533248d18dc554",
-                "reference": "f729607079c20fc0f82b9e3e7d533248d18dc554",
+                "url": "https://api.github.com/repos/laravel/telescope/zipball/403d4ad1ecfe126139f5cf29cabd6b1c816c46a2",
+                "reference": "403d4ad1ecfe126139f5cf29cabd6b1c816c46a2",
                 "shasum": ""
             },
             "require": {
@@ -2327,9 +2381,9 @@
             ],
             "support": {
                 "issues": "https://github.com/laravel/telescope/issues",
-                "source": "https://github.com/laravel/telescope/tree/v5.9.0"
+                "source": "https://github.com/laravel/telescope/tree/v5.9.1"
             },
-            "time": "2025-06-03T13:58:03+00:00"
+            "time": "2025-06-10T21:42:27+00:00"
         },
         {
             "name": "league/commonmark",
