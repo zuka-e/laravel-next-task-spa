@@ -14,7 +14,7 @@ importers:
     dependencies:
       '@atlaskit/pragmatic-drag-and-drop':
         specifier: ^1.5.0
-        version: 1.7.3
+        version: 1.7.4
       '@atlaskit/pragmatic-drag-and-drop-auto-scroll':
         specifier: ^2.1.0
         version: 2.1.1
@@ -264,8 +264,8 @@ packages:
     peerDependencies:
       react: ^18.2.0 || ^19.0.0
 
-  '@atlaskit/pragmatic-drag-and-drop@1.7.3':
-    resolution: {integrity: sha512-3cm7lndqKP0kBVEUEM3LU+hP1Gs2iGu9yHi5i5jt/HYQqTxmXWlojNZe94BdJ8QyRpdq5MVExsSpqjyfwEInyw==}
+  '@atlaskit/pragmatic-drag-and-drop@1.7.4':
+    resolution: {integrity: sha512-lZHnO9BJdHPKnwB0uvVUCyDnIhL+WAHzXQ2EXX0qacogOsnvIUiCgY0BLKhBqTCWln3/f/Ox5jU54MKO6ayh9A==}
 
   '@atlaskit/tokens@5.0.0':
     resolution: {integrity: sha512-v+wUs6tsTx0ZnW+CsWrs+IiNIKIr97bonw81ZyqFECIzG+jZzuzErgp3KRDhwUorNvboUoyYvYddHrOsEziOfw==}
@@ -4567,8 +4567,8 @@ packages:
     resolution: {integrity: sha512-VwddBukDzu71offAQR975unBIGqfKZpM+8ZX6ySk8nYhVoo5CYaZyzt3YBvYtRtO+aoGlqxPg/B87NGVZ/fu6g==}
     engines: {node: '>=12'}
 
-  webpack-sources@3.3.2:
-    resolution: {integrity: sha512-ykKKus8lqlgXX/1WjudpIEjqsafjOTcOJqxnAbMLAu/KCsDCJ6GBtvscewvTkrn24HsnvFwrSCbenFrhtcCsAA==}
+  webpack-sources@3.3.3:
+    resolution: {integrity: sha512-yd1RBzSGanHkitROoPFd6qsrxt+oFhg/129YzheDGqeustzX0vTZJZsSsQjVQC4yzBQ56K55XU8gaNCtIzOnTg==}
     engines: {node: '>=10.13.0'}
 
   webpack@5.97.1:
@@ -4760,17 +4760,17 @@ snapshots:
 
   '@atlaskit/pragmatic-drag-and-drop-auto-scroll@2.1.1':
     dependencies:
-      '@atlaskit/pragmatic-drag-and-drop': 1.7.3
+      '@atlaskit/pragmatic-drag-and-drop': 1.7.4
       '@babel/runtime': 7.27.4
 
   '@atlaskit/pragmatic-drag-and-drop-hitbox@1.1.0':
     dependencies:
-      '@atlaskit/pragmatic-drag-and-drop': 1.7.3
+      '@atlaskit/pragmatic-drag-and-drop': 1.7.4
       '@babel/runtime': 7.22.6
 
   '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator@3.2.1(@types/react@19.1.8)(react@19.1.0)':
     dependencies:
-      '@atlaskit/pragmatic-drag-and-drop': 1.7.3
+      '@atlaskit/pragmatic-drag-and-drop': 1.7.4
       '@atlaskit/pragmatic-drag-and-drop-hitbox': 1.1.0
       '@atlaskit/tokens': 5.0.0(@types/react@19.1.8)(react@19.1.0)
       '@babel/runtime': 7.27.4
@@ -4780,7 +4780,7 @@ snapshots:
       - '@types/react'
       - supports-color
 
-  '@atlaskit/pragmatic-drag-and-drop@1.7.3':
+  '@atlaskit/pragmatic-drag-and-drop@1.7.4':
     dependencies:
       '@babel/runtime': 7.27.6
       bind-event-listener: 3.0.0
@@ -6868,7 +6868,7 @@ snapshots:
 
   date-fns@2.30.0:
     dependencies:
-      '@babel/runtime': 7.27.4
+      '@babel/runtime': 7.27.6
 
   dayjs@1.11.13: {}
 
@@ -9655,7 +9655,7 @@ snapshots:
 
   webidl-conversions@7.0.0: {}
 
-  webpack-sources@3.3.2: {}
+  webpack-sources@3.3.3: {}
 
   webpack@5.97.1:
     dependencies:
@@ -9681,7 +9681,7 @@ snapshots:
       tapable: 2.2.2
       terser-webpack-plugin: 5.3.14(webpack@5.97.1)
       watchpack: 2.4.4
-      webpack-sources: 3.3.2
+      webpack-sources: 3.3.3
     transitivePeerDependencies:
       - '@swc/core'
       - esbuild
