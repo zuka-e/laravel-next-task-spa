@@ -46,7 +46,7 @@ services:
         restart: true
   mysql:
     # cf. https://hub.docker.com/_/mariadb
-    image: mariadb:11
+    image: mariadb:12
     profiles: ["backend"]
     environment:
       MARIADB_ROOT_PASSWORD: ${DB_PASSWORD}
