@@ -111,8 +111,8 @@
   },
   "pnpm": {
     "overrides": {
-      "@types/react": "19.1.11",
-      "@types/react-dom": "19.1.7"
+      "@types/react": "19.1.12",
+      "@types/react-dom": "19.1.9"
     }
   }
 }
