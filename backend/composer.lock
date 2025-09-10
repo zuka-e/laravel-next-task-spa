@@ -214,16 +214,16 @@
         },
         {
             "name": "bref/bref",
-            "version": "2.4.11",
+            "version": "2.4.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brefphp/bref.git",
-                "reference": "60185bca6a71328eb17cef58dd01ee07c52942ac"
+                "reference": "a7860315e9c24fb1d4a587fd06542983d06db557"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brefphp/bref/zipball/60185bca6a71328eb17cef58dd01ee07c52942ac",
-                "reference": "60185bca6a71328eb17cef58dd01ee07c52942ac",
+                "url": "https://api.github.com/repos/brefphp/bref/zipball/a7860315e9c24fb1d4a587fd06542983d06db557",
+                "reference": "a7860315e9c24fb1d4a587fd06542983d06db557",
                 "shasum": ""
             },
             "require": {
@@ -277,7 +277,7 @@
             ],
             "support": {
                 "issues": "https://github.com/brefphp/bref/issues",
-                "source": "https://github.com/brefphp/bref/tree/2.4.11"
+                "source": "https://github.com/brefphp/bref/tree/2.4.12"
             },
             "funding": [
                 {
@@ -289,7 +289,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-09-02T13:52:45+00:00"
+            "time": "2025-09-10T10:32:17+00:00"
         },
         {
             "name": "bref/laravel-bridge",
@@ -1830,16 +1830,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v11.45.3",
+            "version": "v11.46.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "f88bacee8daae65774ca8aa0f0bd32293e4f82b0"
+                "reference": "2c6d85f22d08123ad45aa3a6726b16f06e68eecd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/f88bacee8daae65774ca8aa0f0bd32293e4f82b0",
-                "reference": "f88bacee8daae65774ca8aa0f0bd32293e4f82b0",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/2c6d85f22d08123ad45aa3a6726b16f06e68eecd",
+                "reference": "2c6d85f22d08123ad45aa3a6726b16f06e68eecd",
                 "shasum": ""
             },
             "require": {
@@ -2041,7 +2041,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2025-09-02T23:56:44+00:00"
+            "time": "2025-09-08T21:54:34+00:00"
         },
         {
             "name": "laravel/octane",
