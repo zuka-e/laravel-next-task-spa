@@ -98,7 +98,7 @@ importers:
         version: 4.1.13
       virtua:
         specifier: ^0.43.0
-        version: 0.43.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+        version: 0.43.2(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       yup:
         specifier: ^1.6.1
         version: 1.7.0
@@ -1962,8 +1962,8 @@ packages:
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
 
-  baseline-browser-mapping@2.8.5:
-    resolution: {integrity: sha512-TiU4qUT9jdCuh4aVOG7H1QozyeI2sZRqoRPdqBIaslfNt4WUSanRBueAwl2x5jt4rXBMim3lIN2x6yT8PDi24Q==}
+  baseline-browser-mapping@2.8.6:
+    resolution: {integrity: sha512-wrH5NNqren/QMtKUEEJf7z86YjfqW/2uw3IL3/xpqZUC95SSVIFXYQeeGjL6FT/X68IROu6RMehZQS5foy2BXw==}
     hasBin: true
 
   bcp-47-match@2.0.3:
@@ -4456,8 +4456,8 @@ packages:
   vfile@6.0.3:
     resolution: {integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==}
 
-  virtua@0.43.1:
-    resolution: {integrity: sha512-379ETgqWgzugIJ/crFxNGbqUSMUv0cGxJdpXC7SYvsUpdFWzaqFJIz1XXnJVlTjmE5CYjT+2ipQvAn5N9efGag==}
+  virtua@0.43.2:
+    resolution: {integrity: sha512-4Tv2qThKZ767PCkFbS5fz8Cy9JmqRV9hq24nGabFl+ddvw+iVdIx11tuWxKvWRhvOZOK5TUosNRUDjIkS6f3FA==}
     peerDependencies:
       react: '>=16.14.0'
       react-dom: '>=16.14.0'
@@ -6537,7 +6537,7 @@ snapshots:
 
   balanced-match@1.0.2: {}
 
-  baseline-browser-mapping@2.8.5: {}
+  baseline-browser-mapping@2.8.6: {}
 
   bcp-47-match@2.0.3: {}
 
@@ -6574,7 +6574,7 @@ snapshots:
 
   browserslist@4.26.2:
     dependencies:
-      baseline-browser-mapping: 2.8.5
+      baseline-browser-mapping: 2.8.6
       caniuse-lite: 1.0.30001743
       electron-to-chromium: 1.5.221
       node-releases: 2.0.21
@@ -9511,7 +9511,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  virtua@0.43.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
+  virtua@0.43.2(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
     optionalDependencies:
       react: 19.1.1
       react-dom: 19.1.1(react@19.1.1)
