@@ -32,7 +32,7 @@ importers:
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(@types/react@19.2.6)(react@19.2.0)
       '@hookform/resolvers':
         specifier: ^5.0.1
-        version: 5.2.2(react-hook-form@7.66.0(react@19.2.0))
+        version: 5.2.2(react-hook-form@7.66.1(react@19.2.0))
       '@ianvs/prettier-plugin-sort-imports':
         specifier: ^4.4.1
         version: 4.7.0(prettier@3.6.2)
@@ -89,7 +89,7 @@ importers:
         version: 19.2.0(react@19.2.0)
       react-hook-form:
         specifier: ^7.55.0
-        version: 7.66.0(react@19.2.0)
+        version: 7.66.1(react@19.2.0)
       react-redux:
         specifier: ^9.2.0
         version: 9.2.0(@types/react@19.2.6)(react@19.2.0)(redux@5.0.1)
@@ -1971,8 +1971,8 @@ packages:
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
 
-  baseline-browser-mapping@2.8.28:
-    resolution: {integrity: sha512-gYjt7OIqdM0PcttNYP2aVrr2G0bMALkBaoehD4BuRGjAOtipg0b6wHg1yNL+s5zSnLZZrGHOw4IrND8CD+3oIQ==}
+  baseline-browser-mapping@2.8.29:
+    resolution: {integrity: sha512-sXdt2elaVnhpDNRDz+1BDx1JQoJRuNk7oVlAlbGiFkLikHCAQiccexF/9e91zVi6RCgqspl04aP+6Cnl9zRLrA==}
     hasBin: true
 
   bcp-47-match@2.0.3:
@@ -2035,8 +2035,8 @@ packages:
   caniuse-lite@1.0.30001749:
     resolution: {integrity: sha512-0rw2fJOmLfnzCRbkm8EyHL8SvI2Apu5UbnQuTsJ0ClgrH8hcwFooJ1s5R0EP8o8aVrFu8++ae29Kt9/gZAZp/Q==}
 
-  caniuse-lite@1.0.30001754:
-    resolution: {integrity: sha512-x6OeBXueoAceOmotzx3PO4Zpt4rzpeIFsSr6AAePTZxSkXiYDUmpypEl7e2+8NCd9bD7bXjqyef8CJYPC1jfxg==}
+  caniuse-lite@1.0.30001756:
+    resolution: {integrity: sha512-4HnCNKbMLkLdhJz3TToeVWHSnfJvPaq6vu/eRP0Ahub/07n484XHhBF5AJoSGHdVrS8tKFauUQz8Bp9P7LVx7A==}
 
   ccount@2.0.1:
     resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
@@ -2342,8 +2342,8 @@ packages:
   electron-to-chromium@1.5.187:
     resolution: {integrity: sha512-cl5Jc9I0KGUoOoSbxvTywTa40uspGJt/BDBoDLoxJRSBpWh4FFXBsjNRHfQrONsV/OoEjDfHUmZQa2d6Ze4YgA==}
 
-  electron-to-chromium@1.5.253:
-    resolution: {integrity: sha512-O0tpQ/35rrgdiGQ0/OFWhy1itmd9A6TY9uQzlqj3hKSu/aYpe7UIn5d7CU2N9myH6biZiWF3VMZVuup8pw5U9w==}
+  electron-to-chromium@1.5.256:
+    resolution: {integrity: sha512-uqYq1IQhpXXLX+HgiXdyOZml7spy4xfy42yPxcCCRjswp0fYM2X+JwCON07lqnpLEGVCj739B7Yr+FngmHBMEQ==}
 
   emoji-regex@10.6.0:
     resolution: {integrity: sha512-toUI84YS5YmxW219erniWD0CIVOo46xGKColeNQRgOzDorgBi1v4D71/OFzgD9GO2UGKIv1C3Sp8DAn0+j5w7A==}
@@ -3796,8 +3796,8 @@ packages:
     peerDependencies:
       react: ^19.2.0
 
-  react-hook-form@7.66.0:
-    resolution: {integrity: sha512-xXBqsWGKrY46ZqaHDo+ZUYiMUgi8suYu5kdrS20EG8KiL7VRQitEbNjm+UcrDYrNi1YLyfpmAeGjCZYXLT9YBw==}
+  react-hook-form@7.66.1:
+    resolution: {integrity: sha512-2KnjpgG2Rhbi+CIiIBQQ9Df6sMGH5ExNyFl4Hw9qO7pIqMBR8Bvu9RQyjl3JM4vehzCh9soiNUM/xYMswb2EiA==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
@@ -5381,10 +5381,10 @@ snapshots:
 
   '@faker-js/faker@9.9.0': {}
 
-  '@hookform/resolvers@5.2.2(react-hook-form@7.66.0(react@19.2.0))':
+  '@hookform/resolvers@5.2.2(react-hook-form@7.66.1(react@19.2.0))':
     dependencies:
       '@standard-schema/utils': 0.3.0
-      react-hook-form: 7.66.0(react@19.2.0)
+      react-hook-form: 7.66.1(react@19.2.0)
 
   '@humanfs/core@0.19.1': {}
 
@@ -6559,7 +6559,7 @@ snapshots:
 
   balanced-match@1.0.2: {}
 
-  baseline-browser-mapping@2.8.28: {}
+  baseline-browser-mapping@2.8.29: {}
 
   bcp-47-match@2.0.3: {}
 
@@ -6596,9 +6596,9 @@ snapshots:
 
   browserslist@4.28.0:
     dependencies:
-      baseline-browser-mapping: 2.8.28
-      caniuse-lite: 1.0.30001754
-      electron-to-chromium: 1.5.253
+      baseline-browser-mapping: 2.8.29
+      caniuse-lite: 1.0.30001756
+      electron-to-chromium: 1.5.256
       node-releases: 2.0.27
       update-browserslist-db: 1.1.4(browserslist@4.28.0)
 
@@ -6627,7 +6627,7 @@ snapshots:
 
   caniuse-lite@1.0.30001749: {}
 
-  caniuse-lite@1.0.30001754: {}
+  caniuse-lite@1.0.30001756: {}
 
   ccount@2.0.1: {}
 
@@ -6899,7 +6899,7 @@ snapshots:
 
   electron-to-chromium@1.5.187: {}
 
-  electron-to-chromium@1.5.253: {}
+  electron-to-chromium@1.5.256: {}
 
   emoji-regex@10.6.0: {}
 
@@ -8693,7 +8693,7 @@ snapshots:
       react: 19.2.0
       scheduler: 0.27.0
 
-  react-hook-form@7.66.0(react@19.2.0):
+  react-hook-form@7.66.1(react@19.2.0):
     dependencies:
       react: 19.2.0
 
