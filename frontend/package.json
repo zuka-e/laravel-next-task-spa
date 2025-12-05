@@ -85,7 +85,7 @@
     "jsdom": "^26.0.0",
     "lint-staged": "^16.0.0",
     "msw": "^2.2.9",
-    "prettier": "3.7.3",
+    "prettier": "3.7.4",
     "prettier-plugin-tailwindcss": "^0.7.0",
     "tsconfck": "^3.1.5",
     "typescript": "^5.8.3",
