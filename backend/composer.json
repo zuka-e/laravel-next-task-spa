@@ -13,7 +13,7 @@
         "bref/laravel-bridge": "^2.3",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/fortify": "^1.22",
-        "laravel/framework": "^11.18",
+        "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
         "laravel/telescope": "^5.0"
     },
