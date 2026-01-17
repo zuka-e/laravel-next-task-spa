@@ -70,8 +70,8 @@ importers:
         specifier: ^1.11.5
         version: 1.11.19
       markdown-to-jsx:
-        specifier: ^7.1.2
-        version: 7.7.17(react@19.2.3)
+        specifier: ^9.0.0
+        version: 9.5.7(react@19.2.3)
       next:
         specifier: 15.5.9
         version: 15.5.9(@babel/core@7.24.8)(@playwright/test@1.57.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -3307,13 +3307,22 @@ packages:
   markdown-table@3.0.4:
     resolution: {integrity: sha512-wiYz4+JrLyb/DqW2hkFJxP7Vd7JuTDm77fvbM8VfEQdmSMqcImWeeRbHwZjBjIFki/VaMK2BhFi7oUUZeM5bqw==}
 
-  markdown-to-jsx@7.7.17:
-    resolution: {integrity: sha512-7mG/1feQ0TX5I7YyMZVDgCC/y2I3CiEhIRQIhyov9nGBP5eoVrOXXHuL5ZP8GRfxVZKRiXWJgwXkb9It+nQZfQ==}
-    engines: {node: '>= 10'}
+  markdown-to-jsx@9.5.7:
+    resolution: {integrity: sha512-0RO+9IgcURudRI6tmsKFt0S9fCHeUMFzfWmJ84XOKOQ+CEb8pARtWHAxpCPmlbDIs2HAlOXjJKJz4oOwAZBGRg==}
+    engines: {node: '>= 18'}
     peerDependencies:
-      react: '>= 0.14.0'
+      react: '>= 16.0.0'
+      react-native: '*'
+      solid-js: '>=1.0.0'
+      vue: '>=3.0.0'
     peerDependenciesMeta:
       react:
+        optional: true
+      react-native:
+        optional: true
+      solid-js:
+        optional: true
+      vue:
         optional: true
 
   math-intrinsics@1.1.0:
@@ -8107,7 +8116,7 @@ snapshots:
 
   markdown-table@3.0.4: {}
 
-  markdown-to-jsx@7.7.17(react@19.2.3):
+  markdown-to-jsx@9.5.7(react@19.2.3):
     optionalDependencies:
       react: 19.2.3
 
